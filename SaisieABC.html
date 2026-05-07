@@ -3,290 +3,531 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Éditeur ABC Mobile</title>
-    <!-- Chargement de la librairie de rendu de partition ABCJS -->
+    <title>ABC Compositeur - Math & Highlight</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/abcjs/6.2.2/abcjs-basic-min.js"></script>
     <style>
         :root {
-            --bg-color: #f0f0f0;
-            --panel-bg: #ffffff;
-            --btn-note: #e3f2fd;
-            --btn-note-border: #2196f3;
-            --btn-duration: #fff3e0;
-            --btn-duration-border: #ff9800;
-            --text-color: #333;
+            --bg-color: #f0f0f0; --panel-bg: #ffffff;
+            --col-width: 60px; --btn-size: 44px;
+            --c-note: #e3f2fd; --b-note: #1565c0;
+            --c-sym: #fff3e0; --b-sym: #ef6c00;
+            --c-act: #eceff1; --b-act: #455a64;
+            --c-oct: #f3e5f5; --b-oct: #7b1fa2;
+            --highlight-note: #ff0000;
         }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-color);
-            overflow: hidden; /* Empêche le scroll global */
-        }
-
-        /* ZONE HAUT : Partition (Milieu Haut) */
-        #score-container {
-            flex: 1; /* Prend l'espace restant */
-            background: var(--panel-bg);
-            border-bottom: 2px solid #ccc;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #paper {
-            width: 100%;
-            height: 100%;
-            overflow-y: auto; /* Scroll interne si la partition est longue */
-        }
-
-        /* Indicateur de position (optionnel visuel) */
-        .highlight-measure {
-            fill: #fff9c4 !important; /* Couleur de fond pour la mesure active */
-        }
-
-        /* ZONE BAS : Texte ABC (Milieu Bas) */
-        #editor-container {
-            height: 25%; /* 25% de l'écran pour le texte */
-            background: var(--panel-bg);
-            border-top: 1px solid #ccc;
-            display: flex;
-            flex-direction: column;
-        }
-
-        textarea#abc-text {
-            flex: 1;
-            width: 100%;
-            border: none;
-            padding: 10px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 16px;
-            resize: none;
-            outline: none;
-            box-sizing: border-box;
-        }
-
-        /* ZONE CLAVIERS : Gauche et Droite */
-        #keyboards {
-            height: 35%; /* 35% pour les boutons */
-            display: flex;
-            background: #ddd;
-            padding: 5px;
-            gap: 5px;
-        }
-
-        .column {
-            flex: 1;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 boutons par ligne */
-            grid-gap: 4px;
-            align-content: start;
-        }
-
-        button {
-            border: 2px solid #999;
-            border-radius: 6px;
-            font-size: 18px;
-            font-weight: bold;
-            background: #fff;
-            color: var(--text-color);
-            padding: 10px 0;
-            touch-action: manipulation;
-            cursor: pointer;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        button:active {
-            transform: scale(0.95);
-            background: #eee;
-        }
-
-        /* Styles spécifiques */
-        .btn-note {
-            background-color: var(--btn-note);
-            border-color: var(--btn-note-border);
-        }
-
-        .btn-duration {
-            background-color: var(--btn-duration);
-            border-color: var(--btn-duration-border);
-            font-size: 16px;
-        }
+        body { margin: 0; height: 100vh; display: flex; flex-direction: row; background: var(--bg-color); font-family: -apple-system, sans-serif; overflow: hidden; }
+        .side-col { width: var(--col-width); background: #dfe3e8; display: flex; flex-direction: column; align-items: center; padding: 2px; gap: 2px; overflow-y: auto; border-right: 1px solid #bbb; flex-shrink: 0; }
+        .side-col.right { border-right: none; border-left: 1px solid #bbb; }
         
-        .btn-action {
-            background-color: #e0e0e0;
-            border-color: #999;
+        button { width: var(--btn-size); height: var(--btn-size); border: 1px solid rgba(0,0,0,0.2); border-radius: 4px; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; margin: 0; touch-action: manipulation; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1); user-select: none; }
+        button:active { background: #ccc; transform: translateY(1px); }
+        
+        .btn-note { background: var(--c-note); border-color: var(--b-note); color: #0d47a1; }
+        .btn-note span { line-height: 1; }
+        .btn-note .name { font-size: 9px; font-weight: normal; margin-top: 1px; opacity: 0.8; }
+        .btn-note .letter { font-size: 15px; font-weight: bold; }
+        
+        .btn-sym { background: var(--c-sym); border-color: var(--b-sym); color: #e65100; font-size: 18px; font-weight: bold; }
+        .btn-oct { background: var(--c-oct); border-color: var(--b-oct); color: #4a148c; font-size: 10px; font-weight: bold; text-align: center; line-height: 1.1; }
+        
+        .btn-act { background: var(--c-act); border-color: var(--b-act); color: #263238; font-size: 11px; height: 32px; width: 90%; margin-bottom: 2px; }
+        .btn-space { background: #fff9c4; border-color: #fbc02d; color: #f57f17; font-size: 20px; font-weight: bold; }
+
+        .note-icon { width: 24px; height: 24px; fill: #e65100; }
+
+        #main-area { flex: 1; display: flex; flex-direction: column; background: var(--panel-bg); position: relative; min-width: 0; }
+        #top-bar { height: 40px; background: #fff8e1; border-bottom: 1px solid #ffe082; display: flex; align-items: center; padding: 0 5px; gap: 4px; font-size: 12px; flex-shrink: 0; }
+        .input-group { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+        .input-group label { font-weight: bold; color: #555; font-size: 11px; }
+        .input-group input { border: 1px solid #ccc; border-radius: 3px; padding: 3px 4px; font-size: 12px; background: #fff; width: 70px; outline: none; }
+        #inp-title { width: 100px; }
+
+        #score-view { flex: 2; border-bottom: 2px solid #ccc; overflow: auto; position: relative; background: #fff; min-height: 150px; }
+        #paper { width: 100%; min-height: 100%; padding: 10px; box-sizing: border-box; }
+        
+        #status-bar { height: 20px; background: #e3f2fd; color: #1565c0; font-size: 10px; display: flex; align-items: center; padding: 0 5px; border-bottom: 1px solid #bbdefb; font-weight: bold; }
+        #code-view { flex: 1; border-top: 1px solid #eee; background: #fafafa; min-height: 80px; position: relative; }
+        
+        textarea#abc-code { 
+            width: 100%; height: 100%; border: none; resize: none; padding: 5px; 
+            font-family: 'Courier New', monospace; font-size: 13px; outline: none; 
+            box-sizing: border-box; background: transparent; 
         }
 
-        /* Ajustement pour petits écrans */
-        @media (max-height: 600px) {
-            #editor-container { height: 20%; }
-            #keyboards { height: 40%; }
-            button { padding: 5px 0; font-size: 16px; }
+        /* Surlignage Rouge Partition */
+        .highlight-note path, .highlight-note circle, .highlight-note ellipse, .highlight-note line, .highlight-note rect, .highlight-note use {
+            stroke: var(--highlight-note) !important;
+            fill: var(--highlight-note) !important;
+            stroke-width: 2px !important;
+        }
+        .highlight-note text {
+            fill: var(--highlight-note) !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. AFFICHAGE PARTITION (HAUT) -->
-    <div id="score-container">
-        <div id="paper"></div>
+    <!-- GAUCHE : NOTES -->
+    <div class="side-col">
+        <button class="btn-act" onclick="scrollToCenter()">◎</button>
+        <button class="btn-note" onclick="ins('C ')"><span class="letter">C</span><span class="name">Do</span></button>
+        <button class="btn-note" onclick="ins('D ')"><span class="letter">D</span><span class="name">Ré</span></button>
+        <button class="btn-note" onclick="ins('E ')"><span class="letter">E</span><span class="name">Mi</span></button>
+        <button class="btn-note" onclick="ins('F ')"><span class="letter">F</span><span class="name">Fa</span></button>
+        <button class="btn-note" onclick="ins('G ')"><span class="letter">G</span><span class="name">Sol</span></button>
+        <button class="btn-note" onclick="ins('A ')"><span class="letter">A</span><span class="name">La</span></button>
+        <button class="btn-note" onclick="ins('B ')"><span class="letter">B</span><span class="name">Si</span></button>
+        <div style="height:4px;"></div>
+        <button class="btn-note" onclick="ins('z ')"><span class="letter">z</span><span class="name">Sil</span></button>
+        <button class="btn-note" onclick="ins('| ')"><span class="letter">|</span><span class="name">Bar</span></button>
     </div>
 
-    <!-- 2. TEXTE ABC (BAS) -->
-    <div id="editor-container">
-        <textarea id="abc-text" spellcheck="false" placeholder="Tapez ou utilisez les boutons...">X:1
+    <!-- CENTRE -->
+    <div id="main-area">
+        <div id="top-bar">
+            <div class="input-group"><label>T:</label><input type="text" id="inp-title" value="Ma Mélodie" oninput="updateCode()"></div>
+            <div class="input-group"><label>M:</label><input type="text" id="inp-meter" value="4/4" oninput="updateCode()"></div>
+            <div class="input-group"><label>L:</label><input type="text" id="inp-unit" value="1/8" oninput="updateCode()"></div>
+            <div class="input-group"><label>K:</label><input type="text" id="inp-key" value="C" oninput="updateCode()"></div>
+        </div>
+
+        <div id="score-view"><div id="paper"></div></div>
+        <div id="status-bar">Surlignage actif</div>
+        <div id="code-view">
+            <textarea id="abc-code" spellcheck="false" oninput="updateCode()" onclick="highlightActiveNote()" onkeyup="highlightActiveNote()">X:1
 T:Ma Mélodie
 M:4/4
-L:1/4
+L:1/8
 K:C
-C D E F | G A B c |</textarea>
+C D E F G A B c |</textarea>
+        </div>
     </div>
 
-    <!-- 3. CLAVIERS (GAUCHE / DROITE) -->
-    <div id="keyboards">
-        
-        <!-- COLONNE GAUCHE : NOTES -->
-        <div class="column">
-            <button class="btn-note" onclick="insertNote('C')">C</button>
-            <button class="btn-note" onclick="insertNote('D')">D</button>
-            <button class="btn-note" onclick="insertNote('E')">E</button>
-            <button class="btn-note" onclick="insertNote('F')">F</button>
-            <button class="btn-note" onclick="insertNote('G')">G</button>
-            <button class="btn-note" onclick="insertNote('A')">A</button>
-            <button class="btn-note" onclick="insertNote('B')">B</button>
-            <button class="btn-note" onclick="insertNote('c')">c</button>
-            <button class="btn-note" onclick="insertNote('d')">d</button>
-            <button class="btn-note" onclick="insertNote('e')">e</button>
-            <button class="btn-note" onclick="insertNote('f')">f</button>
-            <button class="btn-note" onclick="insertNote('g')">g</button>
-            <button class="btn-note" onclick="insertNote('z')">z</button> <!-- Silence -->
-            <button class="btn-note" onclick="insertNote('|')">|</button> <!-- Barre mesure -->
-            <button class="btn-note" onclick="insertNote(':|')">:||</button> <!-- Répétition -->
-        </div>
+    <!-- DROITE -->
+    <div class="side-col right">
+        <button class="btn-oct" onclick="smartOctave(1)">Oct<br>+</button>
+        <button class="btn-oct" onclick="smartOctave(-1)">Oct<br>-</button>
+        <div style="height:4px;"></div>
 
-        <!-- COLONNE DROITE : DURÉES & ALTÉRATIONS -->
-        <div class="column">
-            <button class="btn-duration" onclick="insertDuration('/')">/ (1/2)</button>
-            <button class="btn-duration" onclick="insertDuration('')">1</button>
-            <button class="btn-duration" onclick="insertDuration('2')">2</button>
-            <button class="btn-duration" onclick="insertDuration('4')">4</button>
-            <button class="btn-duration" onclick="insertDuration('8')">8</button>
-            <button class="btn-duration" onclick="insertChar('^')"># (Dièse)</button>
-            <button class="btn-duration" onclick="insertChar('_')">b (Bémol)</button>
-            <button class="btn-duration" onclick="insertChar('=')">♮ (Bécarre)</button>
-            <button class="btn-duration" onclick="insertChar('.')">.</button>
-            <button class="btn-duration" onclick="insertChar(',')">,</button>
-            <button class="btn-duration" onclick="insertChar("'")">' (Octave)</button>
-            <button class="btn-action" onclick="deleteChar()">⌫ Effacer</button>
-            <button class="btn-action" onclick="renderABC()">🔄 Rafraîchir</button>
-        </div>
+        <button class="btn-sym" onclick="smartAccidental('^')">♯</button>
+        <button class="btn-sym" onclick="smartAccidental('_')">♭</button>
+        <button class="btn-sym" onclick="smartAccidental('=')">♮</button>
+        <div style="height:4px;"></div>
+
+        <button class="btn-sym" onclick="ins('1')">
+            <svg class="note-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="#e65100" stroke-width="2" fill="none" /></svg>
+        </button>
+        <button class="btn-sym" onclick="ins('2')">
+            <svg class="note-icon" viewBox="0 0 24 24"><ellipse cx="10" cy="16" rx="6" ry="4" stroke="#e65100" stroke-width="2" fill="white" transform="rotate(-20 10 16)"/><line x1="15" y1="13" x2="15" y2="2" stroke="#e65100" stroke-width="2" /></svg>
+        </button>
+        <button class="btn-sym" onclick="ins('4')">
+            <svg class="note-icon" viewBox="0 0 24 24"><ellipse cx="10" cy="16" rx="6" ry="4" fill="#e65100" transform="rotate(-20 10 16)"/><line x1="15" y1="13" x2="15" y2="2" stroke="#e65100" stroke-width="2" /></svg>
+        </button>
+        <button class="btn-sym" onclick="ins('8')">
+            <svg class="note-icon" viewBox="0 0 24 24"><ellipse cx="10" cy="16" rx="6" ry="4" fill="#e65100" transform="rotate(-20 10 16)"/><line x1="15" y1="13" x2="15" y2="2" stroke="#e65100" stroke-width="2" /><path d="M15 2 Q22 2 22 6" stroke="#e65100" stroke-width="2" fill="none" /></svg>
+        </button>
+        <button class="btn-sym" onclick="ins('16')">
+            <svg class="note-icon" viewBox="0 0 24 24"><ellipse cx="10" cy="16" rx="6" ry="4" fill="#e65100" transform="rotate(-20 10 16)"/><line x1="15" y1="13" x2="15" y2="2" stroke="#e65100" stroke-width="2" /><path d="M15 2 Q22 2 22 6 M15 6 Q22 6 22 10" stroke="#e65100" stroke-width="2" fill="none" /></svg>
+        </button>
+
+        <div style="height:4px;"></div>
+        <button class="btn-sym" onclick="smartDot()" title="Rendre pointée (x1.5)">.</button>
+        <button class="btn-space" onclick="ins(' ')">␣</button>
+        
+        <div style="height:4px;"></div>
+        <button class="btn-act" style="background:#ffcdd2; border-color:#c62828; color:#b71c1c;" onclick="del()">⌫</button>
     </div>
 
     <script>
-        const textarea = document.getElementById('abc-text');
+        const codeArea = document.getElementById('abc-code');
         const paper = document.getElementById('paper');
-        let abcjsRenderer = null;
+        const inpTitle = document.getElementById('inp-title');
+        const inpMeter = document.getElementById('inp-meter');
+        const inpUnit = document.getElementById('inp-unit');
+        const inpKey = document.getElementById('inp-key');
 
-        // Initialisation du rendu ABCJS
-        function initRender() {
-            if (ABCJS) {
-                abcjsRenderer = ABCJS.renderAbc(paper, textarea.value, {
-                    responsive: "resize",
-                    add_classes: true
-                })[0];
-            }
-        }
+        // --- MOTEUR DE RENDU AVEC SURLIGNAGE ---
+        function render(highlightRange = null) {
+            const code = codeArea.value;
+            paper.innerHTML = ""; 
+            
+            if (typeof ABCJS === 'undefined') return;
 
-        // Fonction de rendu mise à jour
-        function renderABC() {
-            const code = textarea.value;
-            if (!abcjsRenderer) {
-                initRender();
-            } else {
-                abcjsRenderer.tuneBook.parse(code);
-                abcjsRenderer.draw({
-                    oneSvgPerLine: false, // Important pour le scroll fluide
-                    responsive: "resize"
+            try {
+                let renderCode = code;
+
+                // Si on a une plage à surligner, on injecte la classe
+                if (highlightRange) {
+                    const prefix = code.substring(0, highlightRange.start);
+                    const suffix = code.substring(highlightRange.end);
+                    const noteText = code.substring(highlightRange.start, highlightRange.end);
+                    // Injection de la classe ABCJS
+                    renderCode = prefix + "!class.highlight-note!" + noteText + suffix;
+                }
+
+                ABCJS.renderAbc(paper, renderCode, { 
+                    responsive: "resize", 
+                    add_classes: true, 
+                    scale: 1.0 
                 });
+
+                document.getElementById('status-bar').textContent = highlightRange ? "Note active surlignée" : "Affiché";
+            } catch (e) {
+                console.warn(e);
+                document.getElementById('status-bar').textContent = "Erreur de syntaxe (temporaire)";
             }
-            // Ici, on pourrait ajouter la logique pour scroller vers la mesure active
-            // en analysant la position du curseur dans le textarea.
         }
 
-        // Insérer une note à la position du curseur
-        function insertNote(note) {
-            insertAtCursor(textarea, note + " ");
-            renderABC();
-            textarea.focus();
-        }
+        // --- DÉTECTION ROBUSTE DE LA NOTE ACTIVE ---
+        function getNoteRange(code, cursorPos) {
+            if (!code || cursorPos < 0) return null;
 
-        // Insérer une durée (après la note sélectionnée ou à la fin)
-        function insertDuration(dur) {
-            // Logique simplifiée : ajoute la durée à la fin ou remplace la dernière durée
-            // Pour une UX mobile parfaite, il faudrait analyser le token précédent.
-            // Ici, on ajoute simplement le caractère.
-            insertAtCursor(textarea, dur);
-            renderABC();
-            textarea.focus();
-        }
-
-        // Insérer un caractère spécial
-        function insertChar(char) {
-            insertAtCursor(textarea, char);
-            renderABC();
-            textarea.focus();
-        }
-
-        // Effacer le caractère avant le curseur
-        function deleteChar() {
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
+            // 1. Chercher vers la gauche pour trouver le début de la note
+            let start = cursorPos;
+            // Si on est sur un espace, on recule jusqu'au dernier caractère non-espace
+            while (start > 0 && code[start-1] === ' ') start--;
             
+            // Maintenant on est soit sur une note, soit sur un séparateur
+            // On recule tant qu'on voit des caractères appartenant à une note (altérations, octaves, chiffres, points)
+            while (start > 0) {
+                const char = code[start-1];
+                if (/[A-Ga-gz\^_=\',0-9.]/.test(char)) {
+                    start--;
+                } else {
+                    break;
+                }
+            }
+
+            // 2. Chercher vers la droite pour trouver la fin
+            let end = cursorPos;
+            // Si on est sur un espace, on avance jusqu'au premier caractère non-espace
+            while (end < code.length && code[end] === ' ') end++;
+
+            // On avance tant qu'on voit des caractères de note (chiffres, points)
+            // Important : on ne prend pas les lettres ici car on les a déjà prises en allant à gauche
+            // Sauf si le curseur était avant la lettre (cas rare avec notre logique de gauche)
+            while (end < code.length) {
+                const char = code[end];
+                if (/[0-9.]/.test(char)) {
+                    end++;
+                } else if (/[A-Ga-gz]/.test(char) && start === cursorPos) {
+                    // Cas où le curseur était avant la note
+                    end++;
+                } else {
+                    break;
+                }
+            }
+
+            // Validation : doit contenir au moins une lettre ou 'z'
+            const segment = code.substring(start, end);
+            if (/[A-Ga-gz]/.test(segment)) {
+                return { start, end };
+            }
+            return null;
+        }
+
+        function highlightActiveNote() {
+            const pos = codeArea.selectionStart;
+            const range = getNoteRange(codeArea.value, pos);
+            render(range);
+        }
+
+        function updateCode() {
+            const lines = codeArea.value.split('\n');
+            let bodyStart = 0;
+            for(let i=0; i<lines.length; i++) {
+                if(lines[i].startsWith('K:')) { bodyStart = i + 1; break; }
+            }
+            const body = lines.slice(bodyStart).join('\n');
+            const newCode = `X:1
+T:${inpTitle.value}
+M:${inpMeter.value}
+L:${inpUnit.value}
+K:${inpKey.value}
+${body}`;
+            codeArea.value = newCode;
+            highlightActiveNote();
+        }
+
+        function ins(txt, addSpace = true) {
+            const start = codeArea.selectionStart;
+            const val = codeArea.value;
+            let insertStr = txt;
+            if (addSpace) insertStr += " ";
+            
+            codeArea.value = val.substring(0, start) + insertStr + val.substring(start);
+            const newPos = start + insertStr.length;
+            codeArea.selectionStart = codeArea.selectionEnd = newPos;
+            codeArea.focus();
+            highlightActiveNote();
+        }
+
+        // --- LOGIQUE MATHÉMATIQUE DU POINT ---
+        function smartDot() {
+            const val = codeArea.value;
+            const pos = codeArea.selectionStart;
+            
+            // 1. Trouver la note active
+            const range = getNoteRange(val, pos);
+            if (!range) return;
+
+            const segment = val.substring(range.start, range.end);
+            
+            // 2. Extraire la durée actuelle (chiffres à la fin du segment)
+            // Ex: "C4" -> 4, "C" -> 1 (implicite), "C." -> déjà pointé
+            if (segment.includes('.')) return; // Déjà pointé
+
+            const match = segment.match(/(\d+)$/);
+            let currentDurationNum = 1; // Par défaut (unité de base)
+            let hasExplicitDuration = false;
+
+            if (match) {
+                currentDurationNum = parseInt(match[1], 10);
+                hasExplicitDuration = true;
+            }
+
+            // 3. Calculer la nouvelle durée (x1.5)
+            const newDuration = currentDurationNum * 1.5;
+            
+            // On arrondit pour éviter les erreurs flottantes, mais en ABC les durées sont entières ou fractions simples
+            // 1 * 1.5 = 1.5 -> En ABC on écrit rarement 1.5, on utilise le point.
+            // MAIS la consigne est : "ajouter 3/2 à une croche, 3 pour une noire"
+            // Si L=1/8 (Croche=1) : 
+            //   Croche (1) -> 1.5 ? Non, en ABC standard on écrit "1." ou on change le chiffre si on compte en unités plus petites.
+            //   La consigne dit : "3/2 à une croche". Si l'unité est 1, 1.5 n'est pas un entier.
+            //   Cependant, si on considère que le chiffre représente le dénominateur relatif à L:
+            //   L=1/8. 
+            //   Croche = 1 (sous entendu 1/1 de L). Pointée = 1.5.
+            //   Noire = 2 (2/1 de L). Pointée = 3.
+            //   Blanche = 4. Pointée = 6.
+            //   Ronde = 8. Pointée = 12.
+            
+            // Le standard ABC accepte les chiffres pairs et impairs. 
+            // Si L=1/8, une noire pointée s'écrit souvent "3" (3 croches).
+            // Une croche pointée s'écrit "1." ou "3/2" (mais 3/2 est lourd). 
+            // La consigne dit "ajouter 3/2". Je vais interpréter cela comme : 
+            // Si le résultat est entier, on met le chiffre. Sinon, on ajoute le point.
+            // MAIS la consigne précise : "3 pour une noire". Donc si j'ai "4" (noire en base 1/8? Non, noire=2 en base 1/8).
+            
+            // Réinterprétons strictement : 
+            // L:1/8.
+            // Note "C" (implicite 1). Pointée -> 1.5. ABC n'aime pas 1.5. On écrit "C.".
+            // Note "C2" (Noire = 2 croches). Pointée -> 3. On écrit "C3".
+            // Note "C4" (Blanche = 4 croches). Pointée -> 6. On écrit "C6".
+            
+            // Algorithme :
+            // Si (currentDurationNum * 1.5) est un entier -> On remplace le chiffre par ce entier.
+            // Sinon -> On ajoute un point '.' à la fin.
+            
+            const calculated = currentDurationNum * 1.5;
+            
+            let newCodeSegment = segment;
+            
+            if (Number.isInteger(calculated)) {
+                // Remplacement du chiffre
+                if (hasExplicitDuration) {
+                    // On remplace les chiffres à la fin
+                    newCodeSegment = segment.replace(/\d+$/, calculated.toString());
+                } else {
+                    // Pas de chiffre avant (valeur 1), devient le chiffre calculé (ex: 1->1.5 non entier, donc else)
+                    // Ce cas ne tombe ici que si 1*1.5 est entier (impossible)
+                    newCodeSegment = segment + calculated.toString(); 
+                }
+            } else {
+                // Résultat fractionnaire (ex: 1.5), on ajoute le point
+                newCodeSegment = segment + '.';
+            }
+
+            // Reconstruction du texte
+            const prefix = val.substring(0, range.start);
+            const suffix = val.substring(range.end);
+            
+            codeArea.value = prefix + newCodeSegment + suffix;
+            
+            // Positionner le curseur à la fin
+            const newPos = range.start + newCodeSegment.length;
+            codeArea.selectionStart = codeArea.selectionEnd = newPos;
+            codeArea.focus();
+            highlightActiveNote();
+        }
+
+        function smartOctave(direction) {
+            const start = codeArea.selectionStart;
+            const val = codeArea.value;
+            if (start === 0) return;
+
+            let pos = start - 1;
+            let noteChar = null;
+            let noteIndex = -1;
+            let octaveMarks = 0; 
+
+            while (pos >= 0) {
+                const char = val[pos];
+                if (/[A-Ga-g]/.test(char)) {
+                    noteChar = char;
+                    noteIndex = pos;
+                    break;
+                } else if (char === "'") {
+                    octaveMarks++;
+                    pos--;
+                } else if (char === ',') {
+                    octaveMarks--;
+                    pos--;
+                } else if (['^', '_', '='].includes(char)) {
+                    pos--;
+                } else {
+                    break;
+                }
+            }
+
+            if (noteChar === null) return;
+
+            const isUpper = /^[A-G]$/.test(noteChar);
+            let currentLevel = isUpper ? 0 : 1;
+            currentLevel += octaveMarks;
+
+            const newLevel = currentLevel + direction;
+            let newNoteChar = noteChar;
+            let newMarks = "";
+
+            if (newLevel === 0) {
+                newNoteChar = noteChar.toUpperCase();
+            } else if (newLevel === 1) {
+                newNoteChar = noteChar.toLowerCase();
+            } else if (newLevel < 0) {
+                newNoteChar = noteChar.toUpperCase();
+                newMarks = ",".repeat(Math.abs(newLevel));
+            } else if (newLevel > 1) {
+                newNoteChar = noteChar.toLowerCase();
+                newMarks = "'".repeat(newLevel - 1);
+            }
+
+            // On doit préserver les altérations et la durée si elles existent
+            // On reconstruit depuis noteIndex jusqu'au start (qui inclut les marques d'octave)
+            // Mais il faut aussi préserver la durée (chiffres) qui est après les marques d'octave
+            
+            // Retrouver la fin de la note (chiffres/points)
+            let end = start;
+            while (end < val.length && /[0-9.]/.test(val[end])) end++;
+
+            const prefix = val.substring(0, noteIndex);
+            const suffix = val.substring(end);
+            const durationPart = val.substring(noteIndex + 1, end); // Chiffres/points après la lettre
+            
+            // Reconstruire : Lettre + Nouvelles Marques + Ancienne Durée
+            // Attention : les anciennes marques d'octave sont dans val[noteIndex+1 ... start-1]
+            // On les ignore car on les a recalculées dans newMarks
+            
+            const newSegment = newNoteChar + newMarks + durationPart;
+            
+            codeArea.value = prefix + newSegment + suffix;
+            const newPos = noteIndex + newSegment.length;
+            codeArea.selectionStart = codeArea.selectionEnd = newPos;
+            codeArea.focus();
+            highlightActiveNote();
+        }
+
+        function smartAccidental(type) {
+            const start = codeArea.selectionStart;
+            const val = codeArea.value;
+            if (start === 0) return;
+
+            const char1 = val[start - 1];
+            const char2 = start > 1 ? val[start - 2] : '';
+            
+            let deleteCount = 0;
+
+            const isDoubleSharp = (char1 === '^' && char2 === '^');
+            const isDoubleFlat = (char1 === '_' && char2 === '_');
+            const isSingleSharp = (char1 === '^' && char2 !== '^');
+            const isSingleFlat = (char1 === '_' && char2 !== '_');
+            const isNatural = (char1 === '=');
+
+            if (type === '=') {
+                if (isDoubleSharp || isDoubleFlat) deleteCount = 2;
+                else if (isSingleSharp || isSingleFlat || isNatural) deleteCount = 1;
+                
+                if (deleteCount > 0) {
+                    const prefix = val.substring(0, start - deleteCount);
+                    const suffix = val.substring(start);
+                    codeArea.value = prefix + '=' + suffix;
+                    codeArea.selectionStart = codeArea.selectionEnd = start - deleteCount + 1;
+                } else {
+                    ins('=', false); return; 
+                }
+            } 
+            else if (type === '^') {
+                if (isSingleFlat || isDoubleFlat || isNatural) {
+                    deleteCount = isDoubleFlat ? 2 : 1;
+                    const prefix = val.substring(0, start - deleteCount);
+                    const suffix = val.substring(start);
+                    codeArea.value = prefix + '^' + suffix;
+                    codeArea.selectionStart = codeArea.selectionEnd = start - deleteCount + 1;
+                } else if (isSingleSharp) {
+                    ins('^', false); return;
+                } else if (isDoubleSharp) {
+                    return;
+                } else {
+                    ins('^', false); return;
+                }
+            } 
+            else if (type === '_') {
+                if (isSingleSharp || isDoubleSharp || isNatural) {
+                    deleteCount = isDoubleSharp ? 2 : 1;
+                    const prefix = val.substring(0, start - deleteCount);
+                    const suffix = val.substring(start);
+                    codeArea.value = prefix + '_' + suffix;
+                    codeArea.selectionStart = codeArea.selectionEnd = start - deleteCount + 1;
+                } else if (isSingleFlat) {
+                    ins('_', false); return;
+                } else if (isDoubleFlat) {
+                    return;
+                } else {
+                    ins('_', false); return;
+                }
+            }
+            codeArea.focus();
+            highlightActiveNote();
+        }
+
+        function del() {
+            const start = codeArea.selectionStart;
+            const end = codeArea.selectionEnd;
+            const val = codeArea.value;
             if (start === end && start > 0) {
-                textarea.value = textarea.value.substring(0, start - 1) + textarea.value.substring(end);
-                textarea.selectionStart = textarea.selectionEnd = start - 1;
+                codeArea.value = val.substring(0, start - 1) + val.substring(end);
+                codeArea.selectionStart = codeArea.selectionEnd = start - 1;
             } else if (start !== end) {
-                textarea.value = textarea.value.substring(0, start) + textarea.value.substring(end);
-                textarea.selectionStart = textarea.selectionEnd = start;
+                codeArea.value = val.substring(0, start) + val.substring(end);
+                codeArea.selectionStart = codeArea.selectionEnd = start;
             }
-            renderABC();
-            textarea.focus();
+            codeArea.focus();
+            highlightActiveNote();
         }
 
-        // Utilitaire pour insérer du texte là où est le curseur
-        function insertAtCursor(myField, myValue) {
-            const startPos = myField.selectionStart;
-            const endPos = myField.selectionEnd;
-
-            myField.value = myField.value.substring(0, startPos)
-                + myValue
-                + myField.value.substring(endPos, myField.value.length);
-            
-            const newPos = startPos + myValue.length;
-            myField.selectionStart = newPos;
-            myField.selectionEnd = newPos;
+        function scrollToCenter() {
+            document.getElementById('score-view').scrollTop = (paper.scrollHeight - paper.clientHeight) / 2;
         }
 
-        // Écouteur pour mettre à jour la partition en temps réel lors de la frappe manuelle
-        textarea.addEventListener('input', renderABC);
-
-        // Lancement initial
-        window.onload = function() {
-            initRender();
-            // Focus automatique sur la zone de texte pour commencer
-            // textarea.focus(); 
-        };
-
-        // Gestion du redimensionnement
-        window.addEventListener('resize', renderABC);
+        // Initialisation
+        window.addEventListener('load', () => {
+            if (typeof ABCJS === 'undefined') {
+                document.getElementById('status-bar').textContent = "Erreur: ABCJS non chargé";
+                document.getElementById('status-bar').style.background = "#ffcdd2";
+            } else {
+                setTimeout(() => {
+                    const code = codeArea.value;
+                    // Trouver la première note
+                    const match = code.search(/[A-Ga-gz]/);
+                    if (match !== -1) {
+                        codeArea.selectionStart = codeArea.selectionEnd = match + 1;
+                    }
+                    highlightActiveNote();
+                }, 100);
+            }
+        });
+        
+        window.addEventListener('resize', () => highlightActiveNote());
     </script>
 </body>
 </html>
