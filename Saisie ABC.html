@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Éditeur ABC Mobile</title>
+    <!-- Chargement de la librairie de rendu de partition ABCJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/abcjs/6.2.2/abcjs-basic-min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f0f0f0;
+            --panel-bg: #ffffff;
+            --btn-note: #e3f2fd;
+            --btn-note-border: #2196f3;
+            --btn-duration: #fff3e0;
+            --btn-duration-border: #ff9800;
+            --text-color: #333;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-color);
+            overflow: hidden; /* Empêche le scroll global */
+        }
+
+        /* ZONE HAUT : Partition (Milieu Haut) */
+        #score-container {
+            flex: 1; /* Prend l'espace restant */
+            background: var(--panel-bg);
+            border-bottom: 2px solid #ccc;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #paper {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto; /* Scroll interne si la partition est longue */
+        }
+
+        /* Indicateur de position (optionnel visuel) */
+        .highlight-measure {
+            fill: #fff9c4 !important; /* Couleur de fond pour la mesure active */
+        }
+
+        /* ZONE BAS : Texte ABC (Milieu Bas) */
+        #editor-container {
+            height: 25%; /* 25% de l'écran pour le texte */
+            background: var(--panel-bg);
+            border-top: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea#abc-text {
+            flex: 1;
+            width: 100%;
+            border: none;
+            padding: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* ZONE CLAVIERS : Gauche et Droite */
+        #keyboards {
+            height: 35%; /* 35% pour les boutons */
+            display: flex;
+            background: #ddd;
+            padding: 5px;
+            gap: 5px;
+        }
+
+        .column {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 boutons par ligne */
+            grid-gap: 4px;
+            align-content: start;
+        }
+
+        button {
+            border: 2px solid #999;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #fff;
+            color: var(--text-color);
+            padding: 10px 0;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            background: #eee;
+        }
+
+        /* Styles spécifiques */
+        .btn-note {
+            background-color: var(--btn-note);
+            border-color: var(--btn-note-border);
+        }
+
+        .btn-duration {
+            background-color: var(--btn-duration);
+            border-color: var(--btn-duration-border);
+            font-size: 16px;
+        }
+        
+        .btn-action {
+            background-color: #e0e0e0;
+            border-color: #999;
+        }
+
+        /* Ajustement pour petits écrans */
+        @media (max-height: 600px) {
+            #editor-container { height: 20%; }
+            #keyboards { height: 40%; }
+            button { padding: 5px 0; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. AFFICHAGE PARTITION (HAUT) -->
+    <div id="score-container">
+        <div id="paper"></div>
+    </div>
+
+    <!-- 2. TEXTE ABC (BAS) -->
+    <div id="editor-container">
+        <textarea id="abc-text" spellcheck="false" placeholder="Tapez ou utilisez les boutons...">X:1
+T:Ma Mélodie
+M:4/4
+L:1/4
+K:C
+C D E F | G A B c |</textarea>
+    </div>
+
+    <!-- 3. CLAVIERS (GAUCHE / DROITE) -->
+    <div id="keyboards">
+        
+        <!-- COLONNE GAUCHE : NOTES -->
+        <div class="column">
+            <button class="btn-note" onclick="insertNote('C')">C</button>
+            <button class="btn-note" onclick="insertNote('D')">D</button>
+            <button class="btn-note" onclick="insertNote('E')">E</button>
+            <button class="btn-note" onclick="insertNote('F')">F</button>
+            <button class="btn-note" onclick="insertNote('G')">G</button>
+            <button class="btn-note" onclick="insertNote('A')">A</button>
+            <button class="btn-note" onclick="insertNote('B')">B</button>
+            <button class="btn-note" onclick="insertNote('c')">c</button>
+            <button class="btn-note" onclick="insertNote('d')">d</button>
+            <button class="btn-note" onclick="insertNote('e')">e</button>
+            <button class="btn-note" onclick="insertNote('f')">f</button>
+            <button class="btn-note" onclick="insertNote('g')">g</button>
+            <button class="btn-note" onclick="insertNote('z')">z</button> <!-- Silence -->
+            <button class="btn-note" onclick="insertNote('|')">|</button> <!-- Barre mesure -->
+            <button class="btn-note" onclick="insertNote(':|')">:||</button> <!-- Répétition -->
+        </div>
+
+        <!-- COLONNE DROITE : DURÉES & ALTÉRATIONS -->
+        <div class="column">
+            <button class="btn-duration" onclick="insertDuration('/')">/ (1/2)</button>
+            <button class="btn-duration" onclick="insertDuration('')">1</button>
+            <button class="btn-duration" onclick="insertDuration('2')">2</button>
+            <button class="btn-duration" onclick="insertDuration('4')">4</button>
+            <button class="btn-duration" onclick="insertDuration('8')">8</button>
+            <button class="btn-duration" onclick="insertChar('^')"># (Dièse)</button>
+            <button class="btn-duration" onclick="insertChar('_')">b (Bémol)</button>
+            <button class="btn-duration" onclick="insertChar('=')">♮ (Bécarre)</button>
+            <button class="btn-duration" onclick="insertChar('.')">.</button>
+            <button class="btn-duration" onclick="insertChar(',')">,</button>
+            <button class="btn-duration" onclick="insertChar("'")">' (Octave)</button>
+            <button class="btn-action" onclick="deleteChar()">⌫ Effacer</button>
+            <button class="btn-action" onclick="renderABC()">🔄 Rafraîchir</button>
+        </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('abc-text');
+        const paper = document.getElementById('paper');
+        let abcjsRenderer = null;
+
+        // Initialisation du rendu ABCJS
+        function initRender() {
+            if (ABCJS) {
+                abcjsRenderer = ABCJS.renderAbc(paper, textarea.value, {
+                    responsive: "resize",
+                    add_classes: true
+                })[0];
+            }
+        }
+
+        // Fonction de rendu mise à jour
+        function renderABC() {
+            const code = textarea.value;
+            if (!abcjsRenderer) {
+                initRender();
+            } else {
+                abcjsRenderer.tuneBook.parse(code);
+                abcjsRenderer.draw({
+                    oneSvgPerLine: false, // Important pour le scroll fluide
+                    responsive: "resize"
+                });
+            }
+            // Ici, on pourrait ajouter la logique pour scroller vers la mesure active
+            // en analysant la position du curseur dans le textarea.
+        }
+
+        // Insérer une note à la position du curseur
+        function insertNote(note) {
+            insertAtCursor(textarea, note + " ");
+            renderABC();
+            textarea.focus();
+        }
+
+        // Insérer une durée (après la note sélectionnée ou à la fin)
+        function insertDuration(dur) {
+            // Logique simplifiée : ajoute la durée à la fin ou remplace la dernière durée
+            // Pour une UX mobile parfaite, il faudrait analyser le token précédent.
+            // Ici, on ajoute simplement le caractère.
+            insertAtCursor(textarea, dur);
+            renderABC();
+            textarea.focus();
+        }
+
+        // Insérer un caractère spécial
+        function insertChar(char) {
+            insertAtCursor(textarea, char);
+            renderABC();
+            textarea.focus();
+        }
+
+        // Effacer le caractère avant le curseur
+        function deleteChar() {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            
+            if (start === end && start > 0) {
+                textarea.value = textarea.value.substring(0, start - 1) + textarea.value.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start - 1;
+            } else if (start !== end) {
+                textarea.value = textarea.value.substring(0, start) + textarea.value.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start;
+            }
+            renderABC();
+            textarea.focus();
+        }
+
+        // Utilitaire pour insérer du texte là où est le curseur
+        function insertAtCursor(myField, myValue) {
+            const startPos = myField.selectionStart;
+            const endPos = myField.selectionEnd;
+
+            myField.value = myField.value.substring(0, startPos)
+                + myValue
+                + myField.value.substring(endPos, myField.value.length);
+            
+            const newPos = startPos + myValue.length;
+            myField.selectionStart = newPos;
+            myField.selectionEnd = newPos;
+        }
+
+        // Écouteur pour mettre à jour la partition en temps réel lors de la frappe manuelle
+        textarea.addEventListener('input', renderABC);
+
+        // Lancement initial
+        window.onload = function() {
+            initRender();
+            // Focus automatique sur la zone de texte pour commencer
+            // textarea.focus(); 
+        };
+
+        // Gestion du redimensionnement
+        window.addEventListener('resize', renderABC);
+    </script>
+</body>
+</html>
