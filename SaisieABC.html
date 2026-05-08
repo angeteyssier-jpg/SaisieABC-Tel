@@ -1,241 +1,106 @@
 <style>
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-
   .abc-app * { box-sizing: border-box; }
-  .abc-app {
-    max-width: 380px;
-    margin: 0 auto;
-    padding: 8px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    color: #1a1a1a;
-    background: #f5f4ef;
-    border-radius: 10px;
-  }
-  .abc-card {
-    background: #ffffff;
-    border: 1px solid #d8d6ce;
-    border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 8px;
-  }
-  .abc-label {
-    font-size: 10px;
-    color: #888780;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-  }
+  .abc-app { max-width: 380px; margin: 0 auto; padding: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f5f4ef; border-radius: 10px; }
+  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 8px; padding: 8px; margin-bottom: 8px; }
+  .abc-label { font-size: 10px; color: #888780; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
   .score-wrap { height: 110px; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
-
-  .abc-text {
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 12px;
-    background: #f1efe8;
-    border: 1px solid #d8d6ce;
-    border-radius: 8px;
-    padding: 6px 8px;
-    min-height: 44px;
-    max-height: 80px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
-    color: #1a1a1a;
-    line-height: 1.5;
-  }
-  .abc-text .cursor {
-    display: inline-block;
-    width: 1px;
-    background: #185fa5;
-    animation: blink 1s steps(2) infinite;
-    height: 13px;
-    vertical-align: middle;
-  }
-  @keyframes blink { 50% { opacity: 0; } }
-
-  .abc-app button.k {
-    display: block;
-    width: 100%;
-    height: 36px;
-    padding: 0 2px;
-    background: #ffffff;
-    border: 1px solid #b4b2a9;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    color: #1a1a1a;
-    cursor: pointer;
-    text-align: center;
-    line-height: 34px;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-appearance: none;
-    appearance: none;
-  }
+  .abc-text { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; background: #f1efe8; border: 1px solid #d8d6ce; border-radius: 8px; padding: 6px 8px; min-height: 44px; max-height: 110px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; color: #1a1a1a; line-height: 1.5; }
+  .abc-text .sel { background: #fcebeb; color: #791f1f; padding: 0 1px; border-radius: 2px; }
+  .abc-app button.k { display: block; width: 100%; height: 36px; padding: 0 2px; background: #ffffff; border: 1px solid #b4b2a9; border-radius: 6px; font-family: inherit; font-size: 13px; font-weight: 500; color: #1a1a1a; cursor: pointer; text-align: center; line-height: 34px; -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none; }
   .abc-app button.k:active { background: #e8e6df; }
-  .abc-app button.k.active {
-    background: #e6f1fb;
-    border-color: #378add;
-    color: #0c447c;
-  }
-  .abc-app button.k.symbol {
-    font-size: 18px;
-    font-family: "Times New Roman", serif;
-  }
-  .abc-app button.k.tiny {
-    height: 30px;
-    line-height: 28px;
-    font-size: 12px;
-  }
-  .abc-app button.k .sub {
-    font-size: 9px;
-    color: #888780;
-    font-weight: 400;
-    margin-left: 2px;
-  }
-  .abc-app button.k.primary {
-    background: #185fa5;
-    border-color: #185fa5;
-    color: #ffffff;
-  }
-  .abc-app button.k.danger {
-    background: #fcebeb;
-    border-color: #e24b4a;
-    color: #791f1f;
-  }
-
-  .header-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px; }
-  .toolbar    { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 8px; }
-
+  .abc-app button.k.active { background: #e6f1fb; border-color: #378add; color: #0c447c; }
+  .abc-app button.k.symbol { font-size: 18px; font-family: "Times New Roman", serif; }
+  .abc-app button.k.tiny { height: 30px; line-height: 28px; font-size: 12px; }
+  .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
+  .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
+  .header-row { display: grid; grid-template-columns: 36px 1fr 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+  .toolbar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-bottom: 6px; }
+  .repeat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 8px; }
   .keypad { display: grid; grid-template-columns: 56px 1fr 96px; gap: 6px; align-items: start; }
   .col > .k { margin-bottom: 4px; }
   .col > .k:last-child { margin-bottom: 0; }
-
   .center-pad > * { margin-bottom: 4px; }
-  .meas-ctrl {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 4px;
-    align-items: center;
-    background: #ebe9e0;
-    padding: 4px;
-    border-radius: 6px;
-  }
+  .meas-ctrl { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; align-items: center; background: #ebe9e0; padding: 4px; border-radius: 6px; }
   .meas-ctrl .label { font-size: 10px; color: #5f5e5a; text-align: center; line-height: 1.2; }
   .meas-ctrl b { font-weight: 500; color: #1a1a1a; }
-
+  .ctx-info { background: #f3f1ea; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px 6px; font-size: 10px; color: #5f5e5a; line-height: 1.4; text-align: center; }
+  .ctx-info b { color: #1a1a1a; font-weight: 500; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
-
-  .mode-pill {
-    display: inline-block;
-    padding: 1px 6px;
-    border-radius: 8px;
-    font-size: 9px;
-    font-weight: 500;
-    background: #e6f1fb;
-    color: #0c447c;
-  }
-  .mode-pill.replace { background: #faece7; color: #993c1d; }
-
-  .header-edit {
-    background: #e6f1fb;
-    border: 1px solid #378add;
-    border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 8px;
-    display: none;
-  }
-  .header-edit.open { display: block; }
-  .header-edit .row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-  .header-edit input {
-    flex: 1;
-    height: 36px;
-    font-family: ui-monospace, monospace;
-    font-size: 13px;
-    padding: 0 8px;
-    border: 1px solid #b4b2a9;
-    border-radius: 6px;
-    background: #ffffff;
-    color: #1a1a1a;
-  }
-  .header-edit .field-label {
-    font-family: ui-monospace, monospace;
-    font-size: 13px;
-    color: #0c447c;
-    font-weight: 500;
-    min-width: 24px;
-  }
-  .header-edit .actions { display: flex; gap: 6px; justify-content: flex-end; }
-  .header-edit .actions .k { width: auto; padding: 0 12px; height: 30px; line-height: 28px; font-size: 12px; }
+  .panel { background: #e6f1fb; border: 1px solid #378add; border-radius: 8px; padding: 8px; margin-bottom: 8px; display: none; }
+  .panel.open { display: block; }
+  .panel .title { font-size: 11px; color: #0c447c; font-weight: 500; margin-bottom: 6px; }
+  .panel .row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .panel input { flex: 1; height: 36px; font-family: ui-monospace, monospace; font-size: 13px; padding: 0 8px; border: 1px solid #b4b2a9; border-radius: 6px; background: #ffffff; color: #1a1a1a; }
+  .panel .field-label { font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; min-width: 24px; }
+  .panel .actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+  .panel .actions .k { width: auto; padding: 0 12px; height: 30px; line-height: 28px; font-size: 12px; }
+  .panel .stepper { display: grid; grid-template-columns: 36px 1fr 36px; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .panel .stepper .val { text-align: center; font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; }
+  .panel .scope-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+  .panel small { display: block; color: #5f5e5a; font-size: 10px; margin-bottom: 6px; }
 </style>
 
 <div class="abc-app">
   <h2 class="sr-only">Éditeur ABC mobile</h2>
-
-  <div class="header-edit" id="header-edit">
-    <div class="row">
-      <span class="field-label" id="he-label">X:</span>
-      <input type="text" id="he-input" autocomplete="off" />
-    </div>
+  <div class="panel" id="panel">
+    <div class="title" id="panel-title">Édition</div>
+    <div id="panel-body"></div>
     <div class="actions">
-      <button class="k" id="he-cancel">Annuler</button>
-      <button class="k primary" id="he-ok">OK</button>
+      <button class="k" id="panel-cancel">Annuler</button>
+      <button class="k primary" id="panel-ok">OK</button>
     </div>
   </div>
-
   <div class="abc-card">
-    <div class="abc-label">Partition · mesure <span id="meas-num">1</span></div>
+    <div class="abc-label">Partition · mesure <span id="meas-num">1</span> · slot <span id="slot-num">1</span></div>
     <div class="score-wrap" id="score"></div>
   </div>
-
   <div class="abc-card">
     <div class="abc-label">Code ABC</div>
     <div class="abc-text" id="abc-out"></div>
   </div>
-
   <div class="header-row">
+    <button class="k tiny" id="btn-undo" title="annuler">↶</button>
     <button class="k tiny" data-hdr="X">X:</button>
     <button class="k tiny" data-hdr="T">T:</button>
     <button class="k tiny" data-hdr="M">M:</button>
     <button class="k tiny" data-hdr="K">K:</button>
+    <button class="k tiny" data-hdr="CLEF">Clé</button>
   </div>
-
   <div class="toolbar">
-    <button class="k tiny" id="btn-bar">|</button>
-    <button class="k tiny" id="btn-rest">z</button>
-    <button class="k tiny" id="btn-ins">Ins</button>
-    <button class="k tiny" id="btn-del">Suppr</button>
-    <button class="k tiny" id="btn-clear">⌫</button>
+    <button class="k tiny" id="btn-rest">→ Silence</button>
+    <button class="k tiny" id="btn-add-meas">+ Mesure</button>
   </div>
-
+  <div class="repeat-row">
+    <button class="k tiny" id="btn-rep-start" title="début reprise">𝄆</button>
+    <button class="k tiny" id="btn-rep-end" title="fin reprise">𝄇</button>
+    <button class="k tiny" id="btn-volta1" title="volta 1">|1</button>
+    <button class="k tiny" id="btn-volta2" title="volta 2">|2</button>
+  </div>
   <div class="keypad">
     <div class="col" id="notes-col">
-      <button class="k" id="btn-undo" title="annuler">↶</button>
-      <button class="k" id="cur-prev" title="curseur ←">◀</button>
+      <button class="k" id="cur-prev" title="slot précédent">◀</button>
     </div>
-
     <div class="col center-pad">
-      <div class="meas-ctrl">
-        <button class="k tiny" id="meas-prev">◀</button>
-        <div class="label">Mesure<br><b id="meas-pos">1</b></div>
-        <button class="k tiny" id="meas-next">▶</button>
-      </div>
       <div class="meas-ctrl">
         <button class="k tiny" id="oct-down">▽</button>
         <div class="label">Octave<br><b id="oct-val">0</b></div>
         <button class="k tiny" id="oct-up">△</button>
       </div>
-      <div class="label" style="text-align:center; padding-top: 4px; font-size:10px; color:#5f5e5a;">
-        <span id="mode-pill" class="mode-pill">Insertion</span>
+      <div class="meas-ctrl">
+        <button class="k tiny" id="meas-prev">◀</button>
+        <div class="label">Mesure<br><b id="meas-pos">1</b></div>
+        <button class="k tiny" id="meas-next">▶</button>
       </div>
+      <div class="ctx-info" id="ctx-info">M: <b>4/4</b> · L: <b>1/4</b> · K: <b>0</b> · Clé <b>Sol</b></div>
     </div>
-
     <div class="col">
-      <button class="k" id="cur-next" title="curseur →">▶</button>
+      <button class="k" id="cur-next" title="slot suivant">▶</button>
       <div class="grid2" id="dur-pad"></div>
       <div class="grid3" id="alt-pad"></div>
-      <button class="k symbol" id="dot-btn" title="point sur la dernière note">♩·</button>
+      <button class="k symbol" id="dot-btn" title="point sur le slot actif">♩·</button>
     </div>
   </div>
 </div>
@@ -243,441 +108,565 @@
 <script>
 (function(){
   const NOTES = [
-    {label:'Do',  sub:'C', n:'C'},
-    {label:'Ré',  sub:'D', n:'D'},
-    {label:'Mi',  sub:'E', n:'E'},
-    {label:'Fa',  sub:'F', n:'F'},
-    {label:'Sol', sub:'G', n:'G'},
-    {label:'La',  sub:'A', n:'A'},
-    {label:'Si',  sub:'B', n:'B'},
+    {label:'Do',sub:'C',n:'C'},{label:'Ré',sub:'D',n:'D'},{label:'Mi',sub:'E',n:'E'},
+    {label:'Fa',sub:'F',n:'F'},{label:'Sol',sub:'G',n:'G'},{label:'La',sub:'A',n:'A'},{label:'Si',sub:'B',n:'B'},
   ];
-  const DURATIONS = [
-    {label:'𝅗𝅥', d:2},
-    {label:'♩', d:1},
-    {label:'♪', d:0.5},
-    {label:'♬', d:0.25},
-  ];
+  const DURATIONS = [{label:'𝅗𝅥',d:2},{label:'♩',d:1},{label:'♪',d:0.5},{label:'♬',d:0.25}];
+  const SHARP_NOTES = ['F','C','G','D','A','E','B'];
+  const FLAT_NOTES  = ['B','E','A','D','G','C','F'];
 
   const state = {
-    headers: { X:'1', T:'', M:'4/4', K:'C' },
-    tokens: [],
-    currentDur: 1,
-    currentAcc: '',
+    headers: { X:'1', T:'' },
+    pieceMeter: '4/4',
+    pieceUnit: '1/4',     // L: default note length
+    pieceKeySig: 0,
+    pieceClef: 'treble',
+    measures: [],
+    sel: {m:0, s:0},
     octave: 0,
-    cursorBefore: null,    // index where next insertion goes; null = at end
-    replaceMode: false,    // false = insertion, true = remplacement
+    timeChanges: {},
+    keyChanges:  {},
+    clefChanges: {},
+    repeats:     {},
   };
 
-  function effDToAbc(d){
-    if(d===1) return '';
-    if(d===2) return '2';
-    if(d===3) return '3';
-    if(d===0.5) return '/2';
-    if(d===0.25) return '/4';
-    if(d===0.75) return '3/4';
-    if(d===1.5) return '3/2';
-    if(d===0.375) return '3/8';
-    return '';
+  function parseMeter(meter){
+    if(!meter) return {num:4, den:4};
+    if(meter === 'C') return {num:4, den:4};
+    if(meter === 'C|') return {num:2, den:2};
+    const m = meter.match(/^\s*(\d+)\s*\/\s*(\d+)\s*$/);
+    if(m) return {num:parseInt(m[1],10), den:parseInt(m[2],10)};
+    return {num:4, den:4};
+  }
+  function meterAt(idx){ let cur = state.pieceMeter; for(let i=0; i<=idx; i++){ if(state.timeChanges[i]) cur = state.timeChanges[i]; } return cur; }
+  function keyAt(idx){ let cur = state.pieceKeySig; for(let i=0; i<=idx; i++){ if(state.keyChanges[i] !== undefined) cur = state.keyChanges[i]; } return cur; }
+  function clefAt(idx){ let cur = state.pieceClef; for(let i=0; i<=idx; i++){ if(state.clefChanges[i]) cur = state.clefChanges[i]; } return cur; }
+  function measureCapacity(meter){ const {num, den} = parseMeter(meter); return num * (4/den); }
+  function effDur(t){ return t.dot ? t.dur*1.5 : t.dur; }
+  function beamGroupUnit(meter){ const {num, den} = parseMeter(meter); if(den === 8 && num % 3 === 0 && num >= 6) return 1.5; return 4/den; }
+
+  function buildEmptyMeasure(meter){
+    const {num, den} = parseMeter(meter);
+    const beatDur = 4 / den;
+    const slots = [];
+    for(let i=0; i<num; i++) slots.push({type:'rest', dur:beatDur, dot:false});
+    return slots;
+  }
+  function rebuildMeasures(){
+    const count = Math.max(state.measures.length, 3);
+    state.measures = [];
+    state.timeChanges = {}; state.keyChanges = {}; state.clefChanges = {}; state.repeats = {};
+    for(let i=0; i<count; i++) state.measures.push(buildEmptyMeasure(state.pieceMeter));
+    state.sel = {m:0, s:0};
   }
 
-  function tokenStr(t){
-    if(t.type==='bar') return '|';
+  const REST_UNITS_DESC = [4, 2, 1, 0.5, 0.25, 0.125];
+  function fillRests(offset, remaining, beat){
+    const out = []; const eps = 1e-6;
+    let cur = +offset.toFixed(6); let rem = +remaining.toFixed(6);
+    const distToBeat = ((cur % beat) === 0) ? 0 : (beat - (cur % beat));
+    if(distToBeat > eps && rem > eps){
+      let toFill = Math.min(distToBeat, rem);
+      const subs = REST_UNITS_DESC.filter(u => u <= beat/2 + eps);
+      let used = 0;
+      for(const u of subs){ while(toFill - used >= u - eps){ out.push({type:'rest', dur:u, dot:false}); used = +(used + u).toFixed(6); } }
+      cur = +(cur + used).toFixed(6); rem = +(rem - used).toFixed(6);
+    }
+    while(rem >= beat - eps){ out.push({type:'rest', dur:beat, dot:false}); rem = +(rem - beat).toFixed(6); cur = +(cur + beat).toFixed(6); }
+    if(rem > eps){
+      const subs = REST_UNITS_DESC.filter(u => u <= beat/2 + eps);
+      let leftover = rem;
+      for(const u of subs){ while(leftover >= u - eps){ out.push({type:'rest', dur:u, dot:false}); leftover = +(leftover - u).toFixed(6); } }
+    }
+    return out;
+  }
+  function rebalanceMeasure(m, anchorIdx){
+    const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
+    const cap = measureCapacity(meter);
+    const meas = state.measures[m];
+    let used = 0;
+    for(let i=0; i<=anchorIdx; i++) used += effDur(meas[i]);
+    if(used >= cap){ state.measures[m] = meas.slice(0, anchorIdx + 1); return; }
+    const remaining = +(cap - used).toFixed(6);
+    const tail = fillRests(used, remaining, beat);
+    state.measures[m] = meas.slice(0, anchorIdx + 1).concat(tail);
+  }
+
+  // ABC duration encoding: depends on L: (default note length)
+  // Internal unit = 1 quarter note. L: 1/4 → multiplier = 1.
+  // L: 1/8 → multiplier = 2 (a quarter is "2" eighths).
+  // L: 1/16 → multiplier = 4. L: 1/2 → multiplier = 0.5.
+  function unitMultiplier(){
+    // pieceUnit is "1/N"; multiplier so that  ABC_value = quarter_dur * multiplier
+    const m = state.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);
+    if(!m) return 1;
+    const denom = parseInt(m[1],10); // 4, 8, 16, 2, 1, ...
+    // 1 quarter (in our units) = denom/4 of the L: unit
+    return denom / 4;
+  }
+  function effDToAbc(d){
+    // d is in quarter units; multiplier converts to L: units
+    const v = d * unitMultiplier();
+    if(Math.abs(v - 1) < 1e-9) return '';
+    if(Math.abs(v - 2) < 1e-9) return '2';
+    if(Math.abs(v - 3) < 1e-9) return '3';
+    if(Math.abs(v - 4) < 1e-9) return '4';
+    if(Math.abs(v - 6) < 1e-9) return '6';
+    if(Math.abs(v - 8) < 1e-9) return '8';
+    if(Math.abs(v - 0.5) < 1e-9) return '/2';
+    if(Math.abs(v - 0.25) < 1e-9) return '/4';
+    if(Math.abs(v - 0.125) < 1e-9) return '/8';
+    if(Math.abs(v - 1.5) < 1e-9) return '3/2';
+    if(Math.abs(v - 0.75) < 1e-9) return '3/4';
+    if(Math.abs(v - 0.375) < 1e-9) return '3/8';
+    // Generic fallback: try fraction num/den approximation
+    // Convert v to a/b
+    const denom = 16;
+    const numer = Math.round(v * denom);
+    if(numer % denom === 0) return String(numer/denom);
+    if(numer === 1) return '/' + denom;
+    // simplify
+    function gcd(a,b){ return b?gcd(b,a%b):a; }
+    const g = gcd(numer, denom);
+    const a = numer/g, b = denom/g;
+    if(b === 1) return String(a);
+    if(a === 1) return '/' + b;
+    return a + '/' + b;
+  }
+  function slotStr(t){
     let s = '';
-    if(t.type==='note'){
+    if(t.type === 'note'){
       s += t.acc || '';
       let n = t.note;
       if(t.octave>=1) n = n.toLowerCase();
       s += n;
       if(t.octave>=2) s += "'".repeat(t.octave-1);
       else if(t.octave<=-1) s += ",".repeat(-t.octave);
-    } else if(t.type==='rest'){ s += 'z'; }
-    let effD = t.dot ? t.dur*1.5 : t.dur;
-    s += effDToAbc(effD);
+    } else { s += 'z'; }
+    s += effDToAbc(effDur(t));
     return s;
   }
 
-  function getCb(){ return state.cursorBefore == null ? state.tokens.length : state.cursorBefore; }
+  function keyAbc(sig){
+    if(sig === 0) return 'C';
+    if(sig > 0) return ['C','G','D','A','E','B','F#','C#'][sig];
+    return ['C','F','Bb','Eb','Ab','Db','Gb','Cb'][-sig];
+  }
+  function clefAbcSuffix(c){ if(c === 'bass') return ' clef=bass'; if(c === 'treble8') return ' clef=treble-8'; return ''; }
+  function clefHumanLabel(c){ if(c === 'bass') return 'Fa'; if(c === 'treble8') return 'Sol-8'; return 'Sol'; }
 
-  function getMeasures(){
-    const cb = getCb();
-    const measures = [[]];
-    let curM = 0, cursorMeasure = 0;
-    state.tokens.forEach((tok, i)=>{
-      if(i === cb) cursorMeasure = curM;
-      if(tok.type==='bar'){ measures.push([]); curM++; }
-      else { measures[curM].push({tok, idx:i}); }
+  function buildBarSeparator(prevMi, mi){
+    const prevEnd = (prevMi >= 0) && state.repeats[prevMi]?.end;
+    const thisStart = state.repeats[mi]?.start;
+    if(prevEnd && thisStart) return ':|:';
+    if(prevEnd) return ':|';
+    if(thisStart) return '|:';
+    if(mi === 0) return '';
+    return '|';
+  }
+  function buildInlineFor(mi){
+    const parts = [];
+    if(mi === 0) return '';
+    if(state.timeChanges[mi]) parts.push('[M:' + state.timeChanges[mi] + ']');
+    const keyChange = state.keyChanges[mi];
+    const clefChange = state.clefChanges[mi];
+    if(keyChange !== undefined || clefChange){
+      const sig = keyChange !== undefined ? keyChange : keyAt(mi);
+      const cl  = clefChange ? clefChange : clefAt(mi);
+      let inner = 'K:' + keyAbc(sig);
+      if(cl && cl !== 'treble') inner += clefAbcSuffix(cl);
+      parts.push('[' + inner + ']');
+    }
+    return parts.join('');
+  }
+  function buildVoltaFor(mi){ const r = state.repeats[mi]; if(!r || !r.volta) return ''; return '[' + r.volta; }
+
+  function renderAbc(){
+    let header = '';
+    if(state.headers.X) header += 'X:' + state.headers.X + '\n';
+    if(state.headers.T) header += 'T:' + state.headers.T + '\n';
+    header += 'M:' + state.pieceMeter + '\n';
+    header += 'L:' + state.pieceUnit + '\n';
+    header += 'K:' + keyAbc(state.pieceKeySig) + clefAbcSuffix(state.pieceClef) + '\n';
+
+    let body = '';
+    state.measures.forEach((m, mi)=>{
+      body += buildBarSeparator(mi - 1, mi);
+      body += buildInlineFor(mi);
+      body += buildVoltaFor(mi);
+      m.forEach((t, si)=>{
+        const s = slotStr(t);
+        if(mi === state.sel.m && si === state.sel.s) body += '<span class="sel">' + s + '</span>';
+        else body += s;
+      });
     });
-    if(cb === state.tokens.length) cursorMeasure = curM;
-    return {measures, cursorMeasure, cb};
+    const lastIdx = state.measures.length - 1;
+    if(state.repeats[lastIdx]?.end) body += ':|';
+    else body += '|';
+
+    document.getElementById('abc-out').innerHTML = header + body;
   }
 
-  function stepIndex(note, octave){
-    const map = {C:0,D:1,E:2,F:3,G:4,A:5,B:6};
-    return map[note] + 7*octave;
+  // ====== rendering (score) ======
+  const W = 360, H = 110;
+  const staffTopY = 35, lineGap = 8;
+  const leftPad = 60, rightPad = 8;
+  function clefRefStep(c){ return c === 'bass' ? -12 : 2; }
+  function noteY(step, c){ const refStep = clefRefStep(c); const bottomLineY = staffTopY + 4*lineGap; return bottomLineY - (step - refStep) * (lineGap/2); }
+  function stepIndex(note, octave){ const map = {C:0,D:1,E:2,F:3,G:4,A:5,B:6}; return map[note] + 7*octave; }
+  const TREBLE_SHARP_STEPS = { F:10, C:7, G:11, D:8, A:5, E:9, B:6 };
+  const TREBLE_FLAT_STEPS  = { B:6, E:9, A:5, D:8, G:4, C:7, F:10 };
+  const BASS_SHARP_STEPS   = { F:-4, C:-7, G:-3, D:-6, A:-9, E:-5, B:-8 };
+  const BASS_FLAT_STEPS    = { B:-8, E:-5, A:-9, D:-6, G:-10, C:-7, F:-4 };
+
+  function keySigAccidentals(sig, c){
+    const out = [];
+    if(sig > 0){ const map = c === 'bass' ? BASS_SHARP_STEPS : TREBLE_SHARP_STEPS; for(let i=0; i<sig; i++) out.push({sym:'♯', step: map[SHARP_NOTES[i]]}); }
+    else if(sig < 0){ const map = c === 'bass' ? BASS_FLAT_STEPS : TREBLE_FLAT_STEPS; for(let i=0; i<-sig; i++) out.push({sym:'♭', step: map[FLAT_NOTES[i]]}); }
+    return out;
   }
-  function noteY(staffTopY, lineGap, step){
-    return staffTopY + 4*lineGap - (step - 2) * (lineGap/2);
+
+  function computeBeamGroups(meas, meter){
+    const groupUnit = beamGroupUnit(meter); const eps = 1e-6;
+    const groups = []; let curGroup = null; let offset = 0;
+    function flush(){ if(curGroup && curGroup.length >= 2) groups.push(curGroup); curGroup = null; }
+    for(let i=0; i<meas.length; i++){
+      const t = meas[i]; const eD = effDur(t);
+      const groupIdx = Math.floor((offset + eps) / groupUnit);
+      const groupStart = groupIdx * groupUnit;
+      const beamable = (t.type === 'note') && (eD <= 0.5 + eps);
+      const crosses = (offset + eD) > (groupStart + groupUnit + eps);
+      if(beamable && !crosses){
+        if(curGroup && curGroup.startGroup === groupIdx){ curGroup.push(i); }
+        else { flush(); curGroup = [i]; curGroup.startGroup = groupIdx; }
+      } else flush();
+      offset = +(offset + eD).toFixed(6);
+    }
+    flush();
+    return groups;
+  }
+
+  function drawNoteHead(t, cx, color, c, drawFlag, stemUp){
+    let svg = '';
+    const step = stepIndex(t.note, t.octave);
+    const y = noteY(step, c);
+    const refStep = clefRefStep(c);
+    if(step >= refStep + 10){ for(let s=refStep+10; s<=step; s+=2){ const ly = noteY(s, c); svg += '<line x1="'+(cx-6)+'" y1="'+ly+'" x2="'+(cx+6)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'; } }
+    if(step <= refStep - 2){ for(let s=refStep-2; s>=step; s-=2){ const ly = noteY(s, c); svg += '<line x1="'+(cx-6)+'" y1="'+ly+'" x2="'+(cx+6)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'; } }
+    if(t.acc==='^') svg += '<text x="'+(cx-10)+'" y="'+(y+3)+'" font-size="13" fill="'+color+'" font-family="serif">♯</text>';
+    else if(t.acc==='_') svg += '<text x="'+(cx-10)+'" y="'+(y+3)+'" font-size="13" fill="'+color+'" font-family="serif">♭</text>';
+    else if(t.acc==='=') svg += '<text x="'+(cx-10)+'" y="'+(y+3)+'" font-size="11" fill="'+color+'" font-family="serif">♮</text>';
+    const eD = effDur(t);
+    const filled = eD < 2;
+    const hasStem = eD < 4;
+    let flagCount = 0;
+    if(eD <= 0.125 + 1e-6) flagCount = 3;
+    else if(eD <= 0.25 + 1e-6) flagCount = 2;
+    else if(eD <= 0.5 + 1e-6) flagCount = 1;
+    svg += '<ellipse cx="'+cx+'" cy="'+y+'" rx="4.2" ry="3.2" transform="rotate(-20 '+cx+' '+y+')" fill="'+(filled?color:'none')+'" stroke="'+color+'" stroke-width="1"/>';
+    let stemTipY = y; let sx = cx;
+    if(hasStem){
+      sx = stemUp ? cx+3.8 : cx-3.8;
+      stemTipY = stemUp ? y - 22 : y + 22;
+      svg += '<line x1="'+sx+'" y1="'+y+'" x2="'+sx+'" y2="'+stemTipY+'" stroke="'+color+'" stroke-width="0.9"/>';
+      if(drawFlag){
+        for(let f=0; f<flagCount; f++){
+          const flagY = stemUp ? (stemTipY + f*4) : (stemTipY - f*4);
+          if(stemUp) svg += '<path d="M '+sx+' '+flagY+' Q '+(sx+8)+' '+(flagY+4)+' '+(sx+5)+' '+(flagY+10)+'" stroke="'+color+'" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+          else svg += '<path d="M '+sx+' '+flagY+' Q '+(sx-8)+' '+(flagY-4)+' '+(sx-5)+' '+(flagY-10)+'" stroke="'+color+'" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+        }
+      }
+    }
+    if(t.dot){ svg += '<circle cx="'+(cx+8)+'" cy="'+y+'" r="1.4" fill="'+color+'"/>'; }
+    return {svg, headY: y, stemTipY, stemX: sx, flagCount};
+  }
+  function drawRest(t, cx, color){
+    let svg = '';
+    const y = staffTopY + 2*lineGap;
+    const eD = effDur(t);
+    if(eD >= 4) svg += '<rect x="'+(cx-5)+'" y="'+(staffTopY + lineGap)+'" width="10" height="4" fill="'+color+'"/>';
+    else if(eD >= 2) svg += '<rect x="'+(cx-5)+'" y="'+(staffTopY + 2*lineGap - 4)+'" width="10" height="4" fill="'+color+'"/>';
+    else if(eD >= 1) svg += '<text x="'+(cx-4)+'" y="'+(staffTopY + 3*lineGap)+'" font-size="20" font-family="serif" fill="'+color+'">𝄽</text>';
+    else if(eD >= 0.5) svg += '<text x="'+(cx-4)+'" y="'+(staffTopY + 3*lineGap)+'" font-size="20" font-family="serif" fill="'+color+'">𝄾</text>';
+    else svg += '<text x="'+(cx-4)+'" y="'+(staffTopY + 3*lineGap)+'" font-size="20" font-family="serif" fill="'+color+'">𝄿</text>';
+    if(t.dot) svg += '<circle cx="'+(cx+8)+'" cy="'+y+'" r="1.4" fill="'+color+'"/>';
+    return {svg, headY: y};
   }
 
   function renderScore(){
-    const {measures, cursorMeasure, cb} = getMeasures();
-    document.getElementById('meas-num').textContent = cursorMeasure + 1;
-    document.getElementById('meas-pos').textContent = cursorMeasure + 1;
-
-    let startM, cursorPos;
-    if(cursorMeasure === 0){ startM = 0; cursorPos = 0; }
-    else { startM = cursorMeasure - 1; cursorPos = 1; }
-    const displayed = [0,1,2].map(i=> measures[startM+i] || null);
-
-    const W = 360, H = 110;
-    const staffTopY = 35, lineGap = 8;
-    const leftPad = 28, rightPad = 8;
-    const usable = W - leftPad - rightPad;
-    const measureW = usable / 3;
-    const ink = '#1a1a1a';
-    const cursorColor = state.replaceMode ? '#993c1d' : '#185fa5';
-    const dim = '#888780';
-
-    let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">`;
-
-    for(let i=0;i<5;i++){
-      const y = staffTopY + i*lineGap;
-      svg += `<line x1="${leftPad-4}" y1="${y}" x2="${W-rightPad}" y2="${y}" stroke="${ink}" stroke-width="0.6" opacity="0.55"/>`;
-    }
-    svg += `<text x="${leftPad-22}" y="${staffTopY + 4*lineGap + 6}" font-size="44" font-family="serif" fill="${ink}" opacity="0.85">𝄞</text>`;
-
-    for(let i=0;i<=3;i++){
-      const x = leftPad + i*measureW;
-      svg += `<line x1="${x}" y1="${staffTopY}" x2="${x}" y2="${staffTopY+4*lineGap}" stroke="${ink}" stroke-width="${i===0?1.2:0.8}" opacity="0.7"/>`;
-    }
-
+    const selM = state.sel.m;
+    document.getElementById('meas-num').textContent = selM + 1;
+    document.getElementById('meas-pos').textContent = selM + 1;
+    document.getElementById('slot-num').textContent = state.sel.s + 1;
+    let startM, selPos;
+    if(selM === 0){ startM = 0; selPos = 0; } else { startM = selM - 1; selPos = 1; }
+    const displayed = [0,1,2].map(i=> state.measures[startM+i] || null);
+    const usable = W - leftPad - rightPad; const measureW = usable / 3;
+    const ink = '#1a1a1a'; const sel = '#e24b4a'; const dim = '#888780';
+    const headClef = clefAt(startM); const headKey = keyAt(startM); const headMtr = meterAt(startM);
+    let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">';
+    for(let i=0;i<5;i++){ const y = staffTopY + i*lineGap; svg += '<line x1="'+(leftPad-30)+'" y1="'+y+'" x2="'+(W-rightPad)+'" y2="'+y+'" stroke="'+ink+'" stroke-width="0.6" opacity="0.55"/>'; }
+    if(headClef === 'bass'){ svg += '<text x="'+(leftPad-50)+'" y="'+(staffTopY + lineGap + 6)+'" font-size="38" font-family="serif" fill="'+ink+'" opacity="0.85">𝄢</text>'; }
+    else { svg += '<text x="'+(leftPad-52)+'" y="'+(staffTopY + 4*lineGap + 6)+'" font-size="44" font-family="serif" fill="'+ink+'" opacity="0.85">𝄞</text>'; if(headClef === 'treble8') svg += '<text x="'+(leftPad-38)+'" y="'+(staffTopY + 5*lineGap + 7)+'" font-size="9" fill="'+ink+'" opacity="0.85">8</text>'; }
+    let keyX = leftPad - 18;
+    keySigAccidentals(headKey, headClef).forEach(acc=>{ const ky = noteY(acc.step, headClef) + 4; svg += '<text x="'+keyX+'" y="'+ky+'" font-size="14" font-family="serif" fill="'+ink+'">'+acc.sym+'</text>'; keyX += 7; });
+    const {num, den} = parseMeter(headMtr);
+    const meterX = Math.max(keyX + 4, leftPad - 12);
+    svg += '<text x="'+meterX+'" y="'+(staffTopY + 1.7*lineGap + 1)+'" font-size="14" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+num+'</text>';
+    svg += '<text x="'+meterX+'" y="'+(staffTopY + 3.6*lineGap + 1)+'" font-size="14" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+den+'</text>';
+    for(let i=0;i<=3;i++){ const x = leftPad + i*measureW; svg += '<line x1="'+x+'" y1="'+staffTopY+'" x2="'+x+'" y2="'+(staffTopY+4*lineGap)+'" stroke="'+ink+'" stroke-width="'+(i===0?1.2:0.8)+'" opacity="0.7"/>'; }
     for(let i=0;i<3;i++){
       const mIdx = startM + i;
-      if(measures[mIdx] !== undefined){
-        svg += `<text x="${leftPad + i*measureW + 2}" y="${staffTopY-4}" font-size="9" fill="${dim}">${mIdx+1}</text>`;
+      if(state.measures[mIdx] !== undefined){
+        let label = String(mIdx+1); const tags = [];
+        if(mIdx > startM){
+          if(state.timeChanges[mIdx]) tags.push(state.timeChanges[mIdx]);
+          if(state.keyChanges[mIdx] !== undefined) tags.push('K' + (state.keyChanges[mIdx]>=0?'+'+state.keyChanges[mIdx]:state.keyChanges[mIdx]));
+          if(state.clefChanges[mIdx]) tags.push(clefHumanLabel(state.clefChanges[mIdx]));
+        }
+        if(tags.length) label += ' (' + tags.join(' ') + ')';
+        svg += '<text x="'+(leftPad + i*measureW + 2)+'" y="'+(staffTopY-4)+'" font-size="9" fill="'+dim+'">'+label+'</text>';
       }
     }
-
+    for(let i=0;i<3;i++){
+      const mIdx = startM + i; if(state.measures[mIdx] === undefined) continue;
+      const xL = leftPad + i*measureW; const xR = leftPad + (i+1)*measureW;
+      const r = state.repeats[mIdx];
+      if(r){
+        if(r.start){ svg += '<line x1="'+(xL+2)+'" y1="'+staffTopY+'" x2="'+(xL+2)+'" y2="'+(staffTopY+4*lineGap)+'" stroke="'+ink+'" stroke-width="2.2"/>'; svg += '<circle cx="'+(xL+7)+'" cy="'+(staffTopY+1.5*lineGap)+'" r="1.3" fill="'+ink+'"/>'; svg += '<circle cx="'+(xL+7)+'" cy="'+(staffTopY+2.5*lineGap)+'" r="1.3" fill="'+ink+'"/>'; }
+        if(r.end){ svg += '<circle cx="'+(xR-7)+'" cy="'+(staffTopY+1.5*lineGap)+'" r="1.3" fill="'+ink+'"/>'; svg += '<circle cx="'+(xR-7)+'" cy="'+(staffTopY+2.5*lineGap)+'" r="1.3" fill="'+ink+'"/>'; svg += '<line x1="'+(xR-2)+'" y1="'+staffTopY+'" x2="'+(xR-2)+'" y2="'+(staffTopY+4*lineGap)+'" stroke="'+ink+'" stroke-width="2.2"/>'; }
+        if(r.volta){
+          const yV = staffTopY - 13;
+          svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xR-2)+'" y2="'+yV+'" stroke="'+ink+'" stroke-width="0.9"/>';
+          svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xL+2)+'" y2="'+(yV+5)+'" stroke="'+ink+'" stroke-width="0.9"/>';
+          svg += '<text x="'+(xL+5)+'" y="'+(yV+7)+'" font-size="9" fill="'+ink+'" font-weight="bold">'+r.volta+'.</text>';
+        }
+      }
+    }
     displayed.forEach((m, mi)=>{
       if(!m) return;
       const x0 = leftPad + mi*measureW + 12;
       const slotW = (measureW - 18) / Math.max(m.length, 1);
-      m.forEach((entry, ni)=>{
-        const cx = x0 + ni*slotW + slotW/2;
-        const t = entry.tok;
-        if(t.type==='note'){
-          const step = stepIndex(t.note, t.octave);
-          const y = noteY(staffTopY, lineGap, step);
-          if(step >= 12){
-            for(let s=12; s<=step; s+=2){
-              const ly = noteY(staffTopY, lineGap, s);
-              svg += `<line x1="${cx-6}" y1="${ly}" x2="${cx+6}" y2="${ly}" stroke="${ink}" stroke-width="0.7"/>`;
-            }
+      const measureIdx = startM + mi;
+      const localClef = clefAt(measureIdx); const localMeter = meterAt(measureIdx);
+      const beamGroups = computeBeamGroups(m, localMeter);
+      const slotToGroup = {};
+      beamGroups.forEach((g, gIdx)=>{ g.forEach(slotIdx => slotToGroup[slotIdx] = {gIdx, group:g}); });
+      const middleStep = clefRefStep(localClef) + 4;
+      const groupStemDir = beamGroups.map(g=>{ let sum = 0; for(const idx of g){ const t = m[idx]; sum += stepIndex(t.note, t.octave); } return (sum/g.length) < middleStep ? 'up' : 'down'; });
+      const groupBeamData = beamGroups.map((g, gIdx)=>{
+        const stemUp = groupStemDir[gIdx] === 'up';
+        let extremeY = stemUp ? Infinity : -Infinity; const stemXs = [];
+        g.forEach(slotIdx=>{
+          const t = m[slotIdx]; const cx = x0 + slotIdx*slotW + slotW/2;
+          const sx = stemUp ? cx+3.8 : cx-3.8;
+          const headY = noteY(stepIndex(t.note, t.octave), localClef);
+          const naturalTip = stemUp ? headY - 22 : headY + 22;
+          if(stemUp) extremeY = Math.min(extremeY, naturalTip); else extremeY = Math.max(extremeY, naturalTip);
+          stemXs.push({slotIdx, sx, headY});
+        });
+        return { stemUp, beamY: extremeY, stems: stemXs };
+      });
+      m.forEach((t, si)=>{
+        const cx = x0 + si*slotW + slotW/2;
+        const isSel = (measureIdx === selM && si === state.sel.s);
+        const color = isSel ? sel : ink;
+        if(t.type === 'note'){
+          const grp = slotToGroup[si];
+          if(grp){
+            const gIdx = grp.gIdx; const stemUp = groupStemDir[gIdx] === 'up'; const beamY = groupBeamData[gIdx].beamY;
+            const drawn = drawNoteHead(t, cx, color, localClef, false, stemUp);
+            const sx = drawn.stemX; const headY = drawn.headY;
+            svg += drawn.svg;
+            svg += '<line x1="'+sx+'" y1="'+headY+'" x2="'+sx+'" y2="'+beamY+'" stroke="'+color+'" stroke-width="0.9"/>';
+            if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="9" fill="none" stroke="'+sel+'" stroke-width="0.8" opacity="0.4"/>';
+          } else {
+            const step = stepIndex(t.note, t.octave); const stemUp = step < middleStep;
+            const drawn = drawNoteHead(t, cx, color, localClef, true, stemUp);
+            svg += drawn.svg;
+            if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="9" fill="none" stroke="'+sel+'" stroke-width="0.8" opacity="0.4"/>';
           }
-          if(step <= 0){
-            for(let s=0; s>=step; s-=2){
-              const ly = noteY(staffTopY, lineGap, s);
-              svg += `<line x1="${cx-6}" y1="${ly}" x2="${cx+6}" y2="${ly}" stroke="${ink}" stroke-width="0.7"/>`;
-            }
-          }
-          if(t.acc==='^') svg += `<text x="${cx-10}" y="${y+3}" font-size="13" fill="${ink}" font-family="serif">♯</text>`;
-          else if(t.acc==='_') svg += `<text x="${cx-10}" y="${y+3}" font-size="13" fill="${ink}" font-family="serif">♭</text>`;
-          else if(t.acc==='=') svg += `<text x="${cx-10}" y="${y+3}" font-size="11" fill="${ink}" font-family="serif">♮</text>`;
-
-          const effD = t.dot ? t.dur*1.5 : t.dur;
-          const filled = effD < 2;
-          const hasStem = effD < 4;
-          const flagCount = effD <= 0.25 ? 2 : (effD <= 0.5 ? 1 : 0);
-
-          svg += `<ellipse cx="${cx}" cy="${y}" rx="4.2" ry="3.2" transform="rotate(-20 ${cx} ${y})" fill="${filled?ink:'none'}" stroke="${ink}" stroke-width="1"/>`;
-          if(hasStem){
-            const stemUp = step < 7;
-            const sx = stemUp ? cx+3.8 : cx-3.8;
-            const sy2 = stemUp ? y - 22 : y + 22;
-            svg += `<line x1="${sx}" y1="${y}" x2="${sx}" y2="${sy2}" stroke="${ink}" stroke-width="0.9"/>`;
-            for(let f=0; f<flagCount; f++){
-              const fy = sy2 + (stemUp ? f*4 : -f*4);
-              svg += `<path d="M ${sx} ${fy} q 6 3 5 9" stroke="${ink}" stroke-width="0.9" fill="none"/>`;
-            }
-          }
-          if(t.dot){
-            svg += `<circle cx="${cx+8}" cy="${y}" r="1.4" fill="${ink}"/>`;
-          }
-        } else if(t.type==='rest'){
-          const y = staffTopY + 2*lineGap;
-          svg += `<rect x="${cx-4}" y="${y-2}" width="8" height="4" fill="${ink}"/>`;
-          if(t.dot) svg += `<circle cx="${cx+8}" cy="${y}" r="1.4" fill="${ink}"/>`;
+        } else {
+          const drawn = drawRest(t, cx, color);
+          svg += drawn.svg;
+          if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="9" fill="none" stroke="'+sel+'" stroke-width="0.8" opacity="0.4"/>';
         }
       });
+      beamGroups.forEach((g, gIdx)=>{
+        const data = groupBeamData[gIdx]; const stemUp = data.stemUp; const beamY = data.beamY; const stems = data.stems;
+        const xStart = stems[0].sx; const xEnd = stems[stems.length-1].sx;
+        const beamThickness = 3;
+        const beamCount = Math.max(...g.map(idx=>{ const t = m[idx]; const eD = effDur(t); if(eD <= 0.125 + 1e-6) return 3; if(eD <= 0.25 + 1e-6) return 2; return 1; }));
+        const dyOffset = stemUp ? beamThickness + 1 : -(beamThickness + 1);
+        for(let bi = 0; bi < beamCount; bi++){ const yy = beamY + bi * dyOffset; svg += '<rect x="'+xStart+'" y="'+(yy - beamThickness/2)+'" width="'+(xEnd - xStart)+'" height="'+beamThickness+'" fill="'+ink+'"/>'; }
+      });
     });
-
-    const cursorM = measures[cursorMeasure] || [];
-    let localIdx = 0;
-    for(const e of cursorM){ if(e.idx < cb) localIdx++; else break; }
-    const mx = leftPad + cursorPos*measureW;
-    const slotW2 = (measureW - 18) / Math.max(cursorM.length, 1) || (measureW-18);
-    const cursorX = cursorM.length === 0 ? mx + measureW/2 : mx + 12 + localIdx*slotW2;
-    const cursorWidth = state.replaceMode ? 3 : 1.3;
-    svg += `<line x1="${cursorX}" y1="${staffTopY-6}" x2="${cursorX}" y2="${staffTopY+4*lineGap+6}" stroke="${cursorColor}" stroke-width="${cursorWidth}" opacity="0.85"><animate attributeName="opacity" values="0.85;0.25;0.85" dur="1s" repeatCount="indefinite"/></line>`;
-
-    svg += `</svg>`;
+    svg += '</svg>';
     document.getElementById('score').innerHTML = svg;
   }
 
-  function renderAbc(){
-    const cb = getCb();
-    let header = '';
-    if(state.headers.X) header += 'X:' + state.headers.X + '\n';
-    if(state.headers.T) header += 'T:' + state.headers.T + '\n';
-    if(state.headers.M) header += 'M:' + state.headers.M + '\n';
-    if(state.headers.K) header += 'K:' + state.headers.K + '\n';
-
-    let before = '', after = '';
-    state.tokens.forEach((t,i)=>{
-      const s = tokenStr(t);
-      if(i < cb) before += s; else after += s;
-    });
-    document.getElementById('abc-out').innerHTML = header + before + '<span class="cursor">|</span>' + after;
-  }
-
+  function selectedSlot(){ const m = state.measures[state.sel.m]; return m ? (m[state.sel.s] || null) : null; }
   function renderState(){
     document.getElementById('oct-val').textContent = state.octave > 0 ? '+'+state.octave : state.octave;
-
-    const pill = document.getElementById('mode-pill');
-    pill.textContent = state.replaceMode ? 'Remplacement' : 'Insertion';
-    pill.classList.toggle('replace', state.replaceMode);
-
-    const insBtn = document.getElementById('btn-ins');
-    insBtn.classList.toggle('active', state.replaceMode);
-
-    document.querySelectorAll('#dur-pad .k').forEach(b=>{
-      b.classList.toggle('active', parseFloat(b.dataset.dur) === state.currentDur);
-    });
-    document.querySelectorAll('#alt-pad .k').forEach(b=>{
-      if(b.dataset.acc !== undefined) b.classList.toggle('active', state.currentAcc === b.dataset.acc);
-    });
+    const sl = selectedSlot();
+    document.querySelectorAll('#dur-pad .k').forEach(b=>{ const activeD = sl ? sl.dur : 1; b.classList.toggle('active', parseFloat(b.dataset.dur) === activeD); });
+    document.querySelectorAll('#alt-pad .k').forEach(b=>{ const activeAcc = (sl && sl.type==='note') ? (sl.acc || '') : ''; b.classList.toggle('active', activeAcc === b.dataset.acc && b.dataset.acc !== ''); });
+    const m = state.sel.m;
+    const sigLabel = (s)=> s === 0 ? '0' : (s>0 ? '+'+s : ''+s);
+    document.getElementById('ctx-info').innerHTML = 'M: <b>' + meterAt(m) + '</b> · L: <b>' + state.pieceUnit + '</b> · K: <b>' + sigLabel(keyAt(m)) + '</b> · Clé <b>' + clefHumanLabel(clefAt(m)) + '</b>';
   }
-
   function render(){ renderScore(); renderAbc(); renderState(); }
 
-  // --- helpers for navigation skipping bars ---
-  function isPlayable(t){ return t && (t.type === 'note' || t.type === 'rest'); }
-
-  function moveCursorRight(){
-    let cb = getCb();
-    // skip past current pos: find next playable token boundary
-    let i = cb;
-    // advance at least one token, then keep skipping bars
-    if(i < state.tokens.length){
-      i++;
-      while(i < state.tokens.length && state.tokens[i].type === 'bar') i++;
-    }
-    state.cursorBefore = (i >= state.tokens.length) ? null : i;
-    render();
-  }
-  function moveCursorLeft(){
-    let cb = getCb();
-    let i = cb - 1;
-    // skip backward over bars
-    while(i > 0 && state.tokens[i-1] && state.tokens[i-1].type === 'bar' && state.tokens[i] && state.tokens[i].type === 'bar') i--;
-    // we want to land BEFORE the previous playable token: cb' = index of that token
-    // simplest: find the previous playable token index, then set cb' = that index
-    let prevPlayable = -1;
-    for(let j = cb - 1; j >= 0; j--){
-      if(isPlayable(state.tokens[j])){ prevPlayable = j; break; }
-    }
-    if(prevPlayable >= 0){
-      state.cursorBefore = prevPlayable;
-    } else {
-      state.cursorBefore = 0;
-    }
-    render();
-  }
-
-  function insertOrReplace(tok){
-    let cb = getCb();
-    if(state.replaceMode){
-      // find next playable token at/after cb and replace it
-      let target = -1;
-      for(let i = cb; i < state.tokens.length; i++){
-        if(isPlayable(state.tokens[i])){ target = i; break; }
-      }
-      if(target >= 0){
-        state.tokens[target] = tok;
-        // advance cursor past replaced token, skipping bars
-        let i = target + 1;
-        while(i < state.tokens.length && state.tokens[i].type === 'bar') i++;
-        state.cursorBefore = (i >= state.tokens.length) ? null : i;
-      } else {
-        // nothing to replace, append
-        state.tokens.push(tok);
-        state.cursorBefore = null;
-      }
-    } else {
-      state.tokens.splice(cb, 0, tok);
-      let next = cb + 1;
-      while(next < state.tokens.length && state.tokens[next].type === 'bar') next++;
-      state.cursorBefore = (next >= state.tokens.length) ? null : next;
-    }
-    render();
-  }
-
-  // notes
-  const notesCol = document.getElementById('notes-col');
-  NOTES.forEach(n=>{
-    const b = document.createElement('button');
-    b.className = 'k';
-    b.innerHTML = n.label + '<span class="sub">' + n.sub + '</span>';
-    b.addEventListener('click', ()=>{
-      insertOrReplace({type:'note', note:n.n, octave:state.octave, dur:state.currentDur, acc:state.currentAcc, dot:false});
-      state.currentAcc = ''; render();
-    });
-    notesCol.appendChild(b);
-  });
-
-  // durations
-  const durPad = document.getElementById('dur-pad');
-  DURATIONS.forEach(d=>{
-    const b = document.createElement('button');
-    b.className = 'k symbol';
-    b.dataset.dur = d.d;
-    b.textContent = d.label;
-    b.addEventListener('click', ()=>{ state.currentDur = d.d; render(); });
-    durPad.appendChild(b);
-  });
-
-  // accidentals
-  const altPad = document.getElementById('alt-pad');
-  [{label:'♯',acc:'^'},{label:'♭',acc:'_'},{label:'♮',acc:'='}].forEach(a=>{
-    const b = document.createElement('button');
-    b.className = 'k symbol';
-    b.dataset.acc = a.acc;
-    b.textContent = a.label;
-    b.addEventListener('click', ()=>{
-      state.currentAcc = (state.currentAcc === a.acc) ? '' : a.acc;
-      render();
-    });
-    altPad.appendChild(b);
-  });
-
-  // dot on last note
-  document.getElementById('dot-btn').addEventListener('click', ()=>{
-    const cb = getCb();
-    for(let i = cb - 1; i >= 0; i--){
-      const t = state.tokens[i];
-      if(t.type === 'note' || t.type === 'rest'){
-        t.dot = !t.dot; render(); return;
-      }
-    }
-  });
-
-  // octave
-  document.getElementById('oct-up').addEventListener('click', ()=>{ state.octave = Math.min(3, state.octave+1); render(); });
-  document.getElementById('oct-down').addEventListener('click', ()=>{ state.octave = Math.max(-2, state.octave-1); render(); });
-
-  // cursor (skip bars)
-  document.getElementById('cur-prev').addEventListener('click', moveCursorLeft);
-  document.getElementById('cur-next').addEventListener('click', moveCursorRight);
-
+  function selectNext(){ let {m, s} = state.sel; if(s + 1 < state.measures[m].length){ state.sel = {m, s:s+1}; render(); return; } if(m + 1 < state.measures.length){ state.sel = {m:m+1, s:0}; render(); return; } }
+  function selectPrev(){ let {m, s} = state.sel; if(s > 0){ state.sel = {m, s:s-1}; render(); return; } if(m > 0){ state.sel = {m:m-1, s: state.measures[m-1].length - 1}; render(); return; } }
   function jumpMeasure(delta){
-    const {cursorMeasure} = getMeasures();
-    const target = Math.max(0, cursorMeasure + delta);
-    if(target === 0){ state.cursorBefore = 0; render(); return; }
-    let count = 0;
-    for(let i=0; i<state.tokens.length; i++){
-      if(state.tokens[i].type==='bar'){
-        count++;
-        if(count === target){
-          state.cursorBefore = i+1;
-          if(state.cursorBefore === state.tokens.length) state.cursorBefore = null;
-          render(); return;
-        }
-      }
-    }
-    state.cursorBefore = null; render();
+    const cur = state.sel.m;
+    if(delta > 0 && cur === state.measures.length - 1){ state.measures.push(buildEmptyMeasure(meterAt(cur))); state.sel = {m: state.measures.length - 1, s: 0}; render(); return; }
+    const target = cur + delta;
+    if(target < 0 || target >= state.measures.length) return;
+    state.sel = {m:target, s:0}; render();
   }
+
+  function setNoteAtSelection(noteName){ const sl = selectedSlot(); if(!sl) return; const dur = sl.dur, dot = sl.dot; const acc = (sl.type === 'note') ? sl.acc : ''; state.measures[state.sel.m][state.sel.s] = { type:'note', note: noteName, octave: state.octave, dur, dot, acc }; render(); }
+  function setRestAtSelection(){ const sl = selectedSlot(); if(!sl) return; state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; render(); }
+  function setDurAtSelection(d){ const sl = selectedSlot(); if(!sl) return; sl.dur = d; rebalanceMeasure(state.sel.m, state.sel.s); const newLen = state.measures[state.sel.m].length; if(state.sel.s >= newLen) state.sel.s = newLen - 1; render(); }
+  function toggleDotAtSelection(){ const sl = selectedSlot(); if(!sl) return; sl.dot = !sl.dot; rebalanceMeasure(state.sel.m, state.sel.s); const newLen = state.measures[state.sel.m].length; if(state.sel.s >= newLen) state.sel.s = newLen - 1; render(); }
+  function toggleAccAtSelection(acc){ const sl = selectedSlot(); if(sl && sl.type === 'note'){ sl.acc = (sl.acc === acc) ? '' : acc; render(); } }
+  function changeOctave(delta){ state.octave = Math.max(-2, Math.min(3, state.octave + delta)); const sl = selectedSlot(); if(sl && sl.type === 'note'){ sl.octave = Math.max(-2, Math.min(3, sl.octave + delta)); } render(); }
+
+  const notesCol = document.getElementById('notes-col');
+  NOTES.forEach(n=>{ const b = document.createElement('button'); b.className = 'k'; b.innerHTML = n.label + '<span class="sub">' + n.sub + '</span>'; b.addEventListener('click', ()=> setNoteAtSelection(n.n)); notesCol.appendChild(b); });
+  const durPad = document.getElementById('dur-pad');
+  DURATIONS.forEach(d=>{ const b = document.createElement('button'); b.className = 'k symbol'; b.dataset.dur = d.d; b.textContent = d.label; b.addEventListener('click', ()=> setDurAtSelection(d.d)); durPad.appendChild(b); });
+  const altPad = document.getElementById('alt-pad');
+  [{label:'♯',acc:'^'},{label:'♭',acc:'_'},{label:'♮',acc:'='}].forEach(a=>{ const b = document.createElement('button'); b.className = 'k symbol'; b.dataset.acc = a.acc; b.textContent = a.label; b.addEventListener('click', ()=> toggleAccAtSelection(a.acc)); altPad.appendChild(b); });
+  document.getElementById('dot-btn').addEventListener('click', toggleDotAtSelection);
+  document.getElementById('oct-up').addEventListener('click', ()=> changeOctave(+1));
+  document.getElementById('oct-down').addEventListener('click', ()=> changeOctave(-1));
+  document.getElementById('cur-prev').addEventListener('click', selectPrev);
+  document.getElementById('cur-next').addEventListener('click', selectNext);
   document.getElementById('meas-prev').addEventListener('click', ()=> jumpMeasure(-1));
   document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
+  document.getElementById('btn-rest').addEventListener('click', setRestAtSelection);
 
-  // toolbar
-  document.getElementById('btn-bar').addEventListener('click', ()=>{
-    // bars always insert (replace mode does not eat bars)
-    const cb = getCb();
-    state.tokens.splice(cb, 0, {type:'bar'});
-    state.cursorBefore = (cb + 1 >= state.tokens.length) ? null : cb + 1;
-    render();
-  });
-  document.getElementById('btn-rest').addEventListener('click', ()=>{
-    insertOrReplace({type:'rest', dur:state.currentDur, dot:false});
-  });
+  function ensureRepeat(m){ if(!state.repeats[m]) state.repeats[m] = {}; return state.repeats[m]; }
+  document.getElementById('btn-rep-start').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.start = !r.start; render(); });
+  document.getElementById('btn-rep-end').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.end = !r.end; render(); });
+  document.getElementById('btn-volta1').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 1) ? 0 : 1; render(); });
+  document.getElementById('btn-volta2').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 2) ? 0 : 2; render(); });
 
-  // INS: toggle insertion / remplacement
-  document.getElementById('btn-ins').addEventListener('click', ()=>{
-    state.replaceMode = !state.replaceMode;
-    render();
-  });
-
-  // SUPPR: delete next playable token (or bar) at/after cursor
-  document.getElementById('btn-del').addEventListener('click', ()=>{
-    const cb = getCb();
-    if(cb < state.tokens.length){
-      state.tokens.splice(cb, 1);
-      if(state.cursorBefore !== null && state.cursorBefore >= state.tokens.length){
-        state.cursorBefore = null;
-      }
-      render();
-    } else if(state.tokens.length > 0){
-      // at end: delete last
-      state.tokens.pop();
-      state.cursorBefore = null;
-      render();
-    }
-  });
-
-  document.getElementById('btn-undo').addEventListener('click', ()=>{
-    const cb = getCb();
-    if(cb > 0){
-      state.tokens.splice(cb-1, 1);
-      state.cursorBefore = cb-1;
-      if(state.cursorBefore === state.tokens.length) state.cursorBefore = null;
-      render();
-    }
-  });
-  document.getElementById('btn-clear').addEventListener('click', ()=>{
-    state.tokens = []; state.cursorBefore = null; render();
-  });
-
-  // headers
-  const HEADER_NAMES = { X:'Numéro X:', T:'Titre T:', M:'Métrique M:', K:'Tonalité K:' };
-  let editingHeader = null;
-  const headerEdit = document.getElementById('header-edit');
-  const heInput = document.getElementById('he-input');
-  const heLabel = document.getElementById('he-label');
-
-  document.querySelectorAll('[data-hdr]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      editingHeader = b.dataset.hdr;
-      heLabel.textContent = HEADER_NAMES[editingHeader];
-      heInput.value = state.headers[editingHeader] || '';
-      headerEdit.classList.add('open');
-      setTimeout(()=> heInput.focus(), 50);
+  document.getElementById('btn-add-meas').addEventListener('click', ()=>{
+    openPanel({
+      title: 'Ajouter une mesure',
+      body: '<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small><div class="scope-row"><button class="k" id="addleft">À gauche</button><button class="k primary" id="addright">À droite</button></div>',
+      hideActions: true,
+      onMount: ()=>{
+        function shiftKeys(map, threshold, inclusive){ const out = {}; for(const k of Object.keys(map)){ const i = parseInt(k,10); const shift = inclusive ? (i >= threshold) : (i > threshold); out[shift ? i+1 : i] = map[k]; } return out; }
+        document.getElementById('addleft').addEventListener('click', ()=>{
+          const meter = meterAt(state.sel.m);
+          state.measures.splice(state.sel.m, 0, buildEmptyMeasure(meter));
+          state.timeChanges = shiftKeys(state.timeChanges, state.sel.m, true);
+          state.keyChanges  = shiftKeys(state.keyChanges,  state.sel.m, true);
+          state.clefChanges = shiftKeys(state.clefChanges, state.sel.m, true);
+          state.repeats     = shiftKeys(state.repeats,     state.sel.m, true);
+          state.sel = {m: state.sel.m, s: 0};
+          closePanel(); render();
+        });
+        document.getElementById('addright').addEventListener('click', ()=>{
+          const meter = meterAt(state.sel.m);
+          state.measures.splice(state.sel.m+1, 0, buildEmptyMeasure(meter));
+          state.timeChanges = shiftKeys(state.timeChanges, state.sel.m, false);
+          state.keyChanges  = shiftKeys(state.keyChanges,  state.sel.m, false);
+          state.clefChanges = shiftKeys(state.clefChanges, state.sel.m, false);
+          state.repeats     = shiftKeys(state.repeats,     state.sel.m, false);
+          state.sel = {m: state.sel.m+1, s: 0};
+          closePanel(); render();
+        });
+      },
     });
   });
-  document.getElementById('he-ok').addEventListener('click', ()=>{
-    if(editingHeader){ state.headers[editingHeader] = heInput.value.trim(); }
-    headerEdit.classList.remove('open');
-    editingHeader = null;
-    render();
-  });
-  document.getElementById('he-cancel').addEventListener('click', ()=>{
-    headerEdit.classList.remove('open');
-    editingHeader = null;
-  });
-  heInput.addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter'){ document.getElementById('he-ok').click(); }
-    else if(e.key === 'Escape'){ document.getElementById('he-cancel').click(); }
+
+  document.getElementById('btn-undo').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; render(); } });
+
+  const panel = document.getElementById('panel');
+  const panelTitle = document.getElementById('panel-title');
+  const panelBody = document.getElementById('panel-body');
+  const panelOk = document.getElementById('panel-ok');
+  const panelCancel = document.getElementById('panel-cancel');
+  let currentOnOk = null;
+  function openPanel({title, body, onMount, onOk, hideActions}){ panelTitle.textContent = title; panelBody.innerHTML = body; currentOnOk = onOk || null; panelOk.style.display = hideActions ? 'none' : ''; panelCancel.style.display = hideActions ? 'none' : ''; panel.classList.add('open'); if(onMount) setTimeout(onMount, 50); }
+  function closePanel(){ panel.classList.remove('open'); currentOnOk = null; }
+  panelOk.addEventListener('click', ()=>{ if(currentOnOk) currentOnOk(); closePanel(); render(); });
+  panelCancel.addEventListener('click', closePanel);
+
+  document.querySelector('[data-hdr="X"]').addEventListener('click', ()=>{ openPanel({ title: 'Numéro X:', body: '<div class="row"><span class="field-label">X:</span><input id="hi" type="text" value="' + (state.headers.X||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.X = document.getElementById('hi').value.trim(); } }); });
+  document.querySelector('[data-hdr="T"]').addEventListener('click', ()=>{ openPanel({ title: 'Titre T:', body: '<div class="row"><span class="field-label">T:</span><input id="hi" type="text" value="' + (state.headers.T||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.T = document.getElementById('hi').value.trim(); } }); });
+
+  function scopePanel({title, renderControls, applyPiece, applyHere}){
+    openPanel({
+      title,
+      body: renderControls() + '<small>Appliquer à :</small><div class="scope-row"><button class="k" id="scope-piece">Tout le morceau</button><button class="k primary" id="scope-here">À partir de la mesure ' + (state.sel.m+1) + '</button></div>',
+      hideActions: true,
+      onMount: ()=>{
+        if(typeof renderControls.mount === 'function') renderControls.mount();
+        document.getElementById('scope-piece').addEventListener('click', ()=>{ applyPiece(); closePanel(); render(); });
+        document.getElementById('scope-here').addEventListener('click', ()=>{ applyHere(); closePanel(); render(); });
+      },
+    });
+  }
+
+  document.querySelector('[data-hdr="M"]').addEventListener('click', ()=>{
+    const cur = meterAt(state.sel.m); const {num, den} = parseMeter(cur);
+    let n = num, d = den; const denValues = [1,2,4,8,16];
+    // Also expose L: stepper here (piece-wide)
+    let unitDenom = parseInt(state.pieceUnit.split('/')[1], 10);
+    const unitDenoms = [1,2,4,8,16,32];
+    function controls(){
+      return ('<div class="stepper"><button class="k" id="num-d">−</button><div class="val">Num: <b id="num-v">'+n+'</b></div><button class="k" id="num-u">+</button></div>'+
+              '<div class="stepper"><button class="k" id="den-d">−</button><div class="val">Dén: <b id="den-v">'+d+'</b></div><button class="k" id="den-u">+</button></div>'+
+              '<small>Unité par défaut L: (tout le morceau)</small>'+
+              '<div class="stepper"><button class="k" id="L-d">−</button><div class="val">L: 1/<b id="L-v">'+unitDenom+'</b></div><button class="k" id="L-u">+</button></div>');
+    }
+    controls.mount = function(){
+      const upd = ()=>{ document.getElementById('num-v').textContent = n; document.getElementById('den-v').textContent = d; document.getElementById('L-v').textContent = unitDenom; };
+      document.getElementById('num-u').addEventListener('click', ()=>{ n = Math.min(16, n+1); upd(); });
+      document.getElementById('num-d').addEventListener('click', ()=>{ n = Math.max(1, n-1); upd(); });
+      document.getElementById('den-u').addEventListener('click', ()=>{ const i = denValues.indexOf(d); if(i<denValues.length-1){ d = denValues[i+1]; upd(); } });
+      document.getElementById('den-d').addEventListener('click', ()=>{ const i = denValues.indexOf(d); if(i>0){ d = denValues[i-1]; upd(); } });
+      document.getElementById('L-u').addEventListener('click', ()=>{ const i = unitDenoms.indexOf(unitDenom); if(i<unitDenoms.length-1){ unitDenom = unitDenoms[i+1]; upd(); } });
+      document.getElementById('L-d').addEventListener('click', ()=>{ const i = unitDenoms.indexOf(unitDenom); if(i>0){ unitDenom = unitDenoms[i-1]; upd(); } });
+    };
+    scopePanel({
+      title:'Métrique M: et unité L:',
+      renderControls: controls,
+      applyPiece: ()=>{ state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom; state.timeChanges = {}; rebuildMeasures(); },
+      applyHere: ()=>{
+        // L: is piece-wide in ABC; we still update it
+        state.pieceUnit = '1/' + unitDenom;
+        const newMeter = n + '/' + d;
+        state.timeChanges[state.sel.m] = newMeter;
+        for(let i = state.sel.m; i < state.measures.length; i++){ if(i > state.sel.m && state.timeChanges[i]) break; state.measures[i] = buildEmptyMeasure(meterAt(i)); }
+        state.sel = {m: state.sel.m, s: 0};
+      },
+    });
   });
 
+  document.querySelector('[data-hdr="K"]').addEventListener('click', ()=>{
+    let sig = keyAt(state.sel.m);
+    const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + (s === 1 ? ' dièse' : ' dièses'); return Math.abs(s) + (Math.abs(s) === 1 ? ' bémol' : ' bémols'); };
+    function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭ −</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯ +</button></div>'); }
+    controls.mount = function(){ const upd = ()=>{ document.getElementById('sig-v').textContent = labelOf(sig); }; document.getElementById('sig-u').addEventListener('click', ()=>{ sig = Math.min(7, sig+1); upd(); }); document.getElementById('sig-d').addEventListener('click', ()=>{ sig = Math.max(-7, sig-1); upd(); }); };
+    scopePanel({ title:'Tonalité (armure)', renderControls: controls, applyPiece: ()=>{ state.pieceKeySig = sig; state.keyChanges = {}; }, applyHere: ()=>{ state.keyChanges[state.sel.m] = sig; }, });
+  });
+
+  document.querySelector('[data-hdr="CLEF"]').addEventListener('click', ()=>{
+    let pick = clefAt(state.sel.m);
+    function controls(){ return ('<div class="grid3" id="clef-pick"><button class="k symbol" data-clef="treble">𝄞</button><button class="k" data-clef="treble8" style="font-size:11px;">Sol-8</button><button class="k symbol" data-clef="bass">𝄢</button></div>'); }
+    controls.mount = function(){ const refresh = ()=>{ document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.classList.toggle('active', b.dataset.clef === pick); }); }; refresh(); document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.addEventListener('click', ()=>{ pick = b.dataset.clef; refresh(); }); }); };
+    scopePanel({ title:'Clé', renderControls: controls, applyPiece: ()=>{ state.pieceClef = pick; state.clefChanges = {}; }, applyHere: ()=>{ state.clefChanges[state.sel.m] = pick; }, });
+  });
+
+  rebuildMeasures();
   render();
 })();
 </script>
