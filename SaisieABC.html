@@ -1,24 +1,35 @@
 <style>
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-  .abc-app * { box-sizing: border-box; }
-  .abc-app { max-width: 380px; margin: 0 auto; padding: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f5f4ef; border-radius: 10px; }
-  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 8px; padding: 8px; margin-bottom: 8px; }
-  .abc-label { font-size: 10px; color: #888780; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .score-wrap { height: 110px; }
+  .abc-app, .abc-app * { box-sizing: border-box; }
+  .abc-app { width: 100%; max-width: 100vw; padding: 6px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f5f4ef; border-radius: 10px; }
+  .abc-app.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 9999; overflow-y: auto; }
+  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 8px; padding: 6px; margin-bottom: 6px; }
+  .abc-label { font-size: 10px; color: #888780; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+  .score-wrap { width: 100%; aspect-ratio: 360 / 200; max-height: 240px; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
-  .abc-text { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; background: #f1efe8; border: 1px solid #d8d6ce; border-radius: 8px; padding: 6px 8px; min-height: 44px; max-height: 110px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; color: #1a1a1a; line-height: 1.5; }
+  .abc-text-card { background: #f1efe8; border: 1px solid #d8d6ce; border-radius: 8px; padding: 0; margin-bottom: 6px; overflow: hidden; }
+  .abc-text-head { padding: 4px 8px; font-size: 10px; color: #888780; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+  .abc-text-head .toggle { font-size: 13px; color: #185fa5; }
+  .abc-text { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; padding: 6px 8px; max-height: 130px; overflow: auto; white-space: pre; color: #1a1a1a; line-height: 1.5; border-top: 1px solid #d8d6ce; }
+  .abc-text.collapsed { display: none; }
   .abc-text .sel { background: #fcebeb; color: #791f1f; padding: 0 1px; border-radius: 2px; }
   .abc-app button.k { display: block; width: 100%; height: 36px; padding: 0 2px; background: #ffffff; border: 1px solid #b4b2a9; border-radius: 6px; font-family: inherit; font-size: 13px; font-weight: 500; color: #1a1a1a; cursor: pointer; text-align: center; line-height: 34px; -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none; }
   .abc-app button.k:active { background: #e8e6df; }
+  .abc-app button.k:disabled { color: #bbb8a8; background: #f3f1ea; cursor: not-allowed; }
   .abc-app button.k.active { background: #e6f1fb; border-color: #378add; color: #0c447c; }
   .abc-app button.k.symbol { font-size: 18px; font-family: "Times New Roman", serif; }
-  .abc-app button.k.tiny { height: 30px; line-height: 28px; font-size: 12px; }
+  .abc-app button.k.tiny { height: 30px; line-height: 28px; font-size: 11px; }
   .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
-  .header-row { display: grid; grid-template-columns: 36px 1fr 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
-  .toolbar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-bottom: 6px; }
-  .repeat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 8px; }
-  .keypad { display: grid; grid-template-columns: 56px 1fr 96px; gap: 6px; align-items: start; }
+  .header-row { display: grid; grid-template-columns: 36px 36px 1fr 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+  .undo-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+  .vol-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+  .tempo-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+  .play-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+  .repeat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px; }
+  .center-cell { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #5f5e5a; background: #ebe9e0; border-radius: 6px; padding: 0 4px; height: 30px; }
+  .center-cell b { color: #1a1a1a; margin-left: 4px; }
+  .keypad { display: grid; grid-template-columns: 56px 1fr 96px; gap: 6px; align-items: start; margin-bottom: 6px; }
   .col > .k { margin-bottom: 4px; }
   .col > .k:last-child { margin-bottom: 0; }
   .center-pad > * { margin-bottom: 4px; }
@@ -39,11 +50,11 @@
   .panel .actions .k { width: auto; padding: 0 12px; height: 30px; line-height: 28px; font-size: 12px; }
   .panel .stepper { display: grid; grid-template-columns: 36px 1fr 36px; gap: 6px; align-items: center; margin-bottom: 6px; }
   .panel .stepper .val { text-align: center; font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; }
-  .panel .scope-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+  .panel .scope-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px; }
   .panel small { display: block; color: #5f5e5a; font-size: 10px; margin-bottom: 6px; }
 </style>
 
-<div class="abc-app">
+<div class="abc-app" id="app">
   <h2 class="sr-only">Éditeur ABC mobile</h2>
   <div class="panel" id="panel">
     <div class="title" id="panel-title">Édition</div>
@@ -53,32 +64,28 @@
       <button class="k primary" id="panel-ok">OK</button>
     </div>
   </div>
+
   <div class="abc-card">
-    <div class="abc-label">Partition · mesure <span id="meas-num">1</span> · slot <span id="slot-num">1</span></div>
+    <div class="abc-label"><span>Partition · mes <span id="meas-num">1</span> · slot <span id="slot-num">1</span></span></div>
     <div class="score-wrap" id="score"></div>
   </div>
-  <div class="abc-card">
-    <div class="abc-label">Code ABC</div>
-    <div class="abc-text" id="abc-out"></div>
-  </div>
+
   <div class="header-row">
-    <button class="k tiny" id="btn-undo" title="annuler">↶</button>
+    <button class="k tiny" id="btn-fs" title="plein écran">⛶</button>
     <button class="k tiny" data-hdr="X">X:</button>
-    <button class="k tiny" data-hdr="T">T:</button>
-    <button class="k tiny" data-hdr="M">M:</button>
-    <button class="k tiny" data-hdr="K">K:</button>
+    <button class="k tiny" data-hdr="T">Titre</button>
+    <button class="k tiny" data-hdr="M">Rythme</button>
+    <button class="k tiny" data-hdr="K">Armure</button>
     <button class="k tiny" data-hdr="CLEF">Clé</button>
+    <button class="k tiny" id="btn-add-meas">+ Mes</button>
   </div>
-  <div class="toolbar">
-    <button class="k tiny" id="btn-rest">→ Silence</button>
-    <button class="k tiny" id="btn-add-meas">+ Mesure</button>
+
+  <div class="undo-row">
+    <button class="k tiny" id="btn-del" title="supprimer la note">⌫</button>
+    <button class="k tiny" id="btn-undo" title="annuler">↶</button>
+    <button class="k tiny" id="btn-redo" title="refaire">↷</button>
   </div>
-  <div class="repeat-row">
-    <button class="k tiny" id="btn-rep-start" title="début reprise">𝄆</button>
-    <button class="k tiny" id="btn-rep-end" title="fin reprise">𝄇</button>
-    <button class="k tiny" id="btn-volta1" title="volta 1">|1</button>
-    <button class="k tiny" id="btn-volta2" title="volta 2">|2</button>
-  </div>
+
   <div class="keypad">
     <div class="col" id="notes-col">
       <button class="k" id="cur-prev" title="slot précédent">◀</button>
@@ -86,22 +93,51 @@
     <div class="col center-pad">
       <div class="meas-ctrl">
         <button class="k tiny" id="oct-down">▽</button>
-        <div class="label">Octave<br><b id="oct-val">0</b></div>
+        <div class="label">Oct<br><b id="oct-val">0</b></div>
         <button class="k tiny" id="oct-up">△</button>
       </div>
       <div class="meas-ctrl">
         <button class="k tiny" id="meas-prev">◀</button>
-        <div class="label">Mesure<br><b id="meas-pos">1</b></div>
+        <div class="label">Mes<br><b id="meas-pos">1</b></div>
         <button class="k tiny" id="meas-next">▶</button>
       </div>
       <div class="ctx-info" id="ctx-info">M: <b>4/4</b> · L: <b>1/4</b> · K: <b>0</b> · Clé <b>Sol</b></div>
+      <div class="repeat-row" style="margin-bottom:0;">
+        <button class="k tiny" id="btn-rep-start" title="début reprise">𝄆</button>
+        <button class="k tiny" id="btn-rep-end" title="fin reprise">𝄇</button>
+        <button class="k tiny" id="btn-volta1" title="volta 1">|1</button>
+        <button class="k tiny" id="btn-volta2" title="volta 2">|2</button>
+      </div>
+      <div class="vol-row">
+        <button class="k tiny" id="vol-d">🔉−</button>
+        <div class="center-cell">Vol <b id="vol-v">60</b></div>
+        <button class="k tiny" id="vol-u">🔊+</button>
+      </div>
+      <div class="tempo-row">
+        <button class="k tiny" id="tempo-d">−</button>
+        <div class="center-cell">♩ <b id="tempo-v">100</b></div>
+        <button class="k tiny" id="tempo-u">+</button>
+      </div>
+      <div class="play-row">
+        <button class="k tiny primary" id="btn-play" style="grid-column: span 2;">▶ Play</button>
+        <button class="k tiny" id="btn-stop" style="grid-column: span 2;">■ Stop</button>
+      </div>
     </div>
     <div class="col">
       <button class="k" id="cur-next" title="slot suivant">▶</button>
       <div class="grid2" id="dur-pad"></div>
       <div class="grid3" id="alt-pad"></div>
       <button class="k symbol" id="dot-btn" title="point sur le slot actif">♩·</button>
+      <button class="k tiny" id="btn-rest" style="margin-top:4px;">→ Silence</button>
     </div>
+  </div>
+
+  <div class="abc-text-card">
+    <div class="abc-text-head" id="abc-toggle">
+      <span>Code ABC</span>
+      <span class="toggle" id="abc-toggle-icon">▼</span>
+    </div>
+    <pre class="abc-text" id="abc-out"></pre>
   </div>
 </div>
 
@@ -117,18 +153,51 @@
 
   const state = {
     headers: { X:'1', T:'' },
-    pieceMeter: '4/4',
-    pieceUnit: '1/4',     // L: default note length
-    pieceKeySig: 0,
-    pieceClef: 'treble',
-    measures: [],
-    sel: {m:0, s:0},
-    octave: 0,
-    timeChanges: {},
-    keyChanges:  {},
-    clefChanges: {},
-    repeats:     {},
+    pieceMeter: '4/4', pieceUnit: '1/4', pieceKeySig: 0, pieceClef: 'treble',
+    measures: [], sel: {m:0, s:0}, octave: 0,
+    timeChanges: {}, keyChanges: {}, clefChanges: {}, repeats: {},
+    tempo: 100, volume: 60,
+    abcCollapsed: false, fullscreen: false,
   };
+
+  // ===== history (undo/redo) =====
+  const history = { stack: [], pos: -1, max: 100 };
+  function snapshot(){
+    return JSON.stringify({
+      headers: state.headers, pieceMeter: state.pieceMeter, pieceUnit: state.pieceUnit,
+      pieceKeySig: state.pieceKeySig, pieceClef: state.pieceClef,
+      measures: state.measures, sel: state.sel, octave: state.octave,
+      timeChanges: state.timeChanges, keyChanges: state.keyChanges,
+      clefChanges: state.clefChanges, repeats: state.repeats,
+      tempo: state.tempo, volume: state.volume,
+    });
+  }
+  function pushHistory(){
+    if(history.pos < history.stack.length - 1){
+      history.stack = history.stack.slice(0, history.pos + 1);
+    }
+    history.stack.push(snapshot());
+    if(history.stack.length > history.max) history.stack.shift();
+    history.pos = history.stack.length - 1;
+  }
+  function loadFrom(snap){
+    const o = JSON.parse(snap);
+    Object.assign(state, o);
+  }
+  function undo(){
+    if(history.pos > 0){
+      history.pos--;
+      loadFrom(history.stack[history.pos]);
+      render();
+    }
+  }
+  function redo(){
+    if(history.pos < history.stack.length - 1){
+      history.pos++;
+      loadFrom(history.stack[history.pos]);
+      render();
+    }
+  }
 
   function parseMeter(meter){
     if(!meter) return {num:4, den:4};
@@ -153,79 +222,224 @@
     return slots;
   }
   function rebuildMeasures(){
-    const count = Math.max(state.measures.length, 3);
+    const count = Math.max(state.measures.length, 6);
     state.measures = [];
     state.timeChanges = {}; state.keyChanges = {}; state.clefChanges = {}; state.repeats = {};
     for(let i=0; i<count; i++) state.measures.push(buildEmptyMeasure(state.pieceMeter));
     state.sel = {m:0, s:0};
   }
 
-  const REST_UNITS_DESC = [4, 2, 1, 0.5, 0.25, 0.125];
-  function fillRests(offset, remaining, beat){
-    const out = []; const eps = 1e-6;
-    let cur = +offset.toFixed(6); let rem = +remaining.toFixed(6);
-    const distToBeat = ((cur % beat) === 0) ? 0 : (beat - (cur % beat));
-    if(distToBeat > eps && rem > eps){
-      let toFill = Math.min(distToBeat, rem);
-      const subs = REST_UNITS_DESC.filter(u => u <= beat/2 + eps);
-      let used = 0;
-      for(const u of subs){ while(toFill - used >= u - eps){ out.push({type:'rest', dur:u, dot:false}); used = +(used + u).toFixed(6); } }
-      cur = +(cur + used).toFixed(6); rem = +(rem - used).toFixed(6);
-    }
-    while(rem >= beat - eps){ out.push({type:'rest', dur:beat, dot:false}); rem = +(rem - beat).toFixed(6); cur = +(cur + beat).toFixed(6); }
-    if(rem > eps){
-      const subs = REST_UNITS_DESC.filter(u => u <= beat/2 + eps);
-      let leftover = rem;
-      for(const u of subs){ while(leftover >= u - eps){ out.push({type:'rest', dur:u, dot:false}); leftover = +(leftover - u).toFixed(6); } }
+  // Decompose `amount` (in quarter units) into one or more "clean" durations as a sequence of {dur, dot}.
+  // Used to express a leftover duration as one or more displayable slots (with dots if helpful).
+  // Greedy with dotted values: try big-with-dot, then big plain, etc.
+  function splitDurationGreedy(amount){
+    const eps = 1e-6;
+    const candidates = [
+      // (value, base, dot)
+      {val:6, base:4, dot:true},
+      {val:4, base:4, dot:false},
+      {val:3, base:2, dot:true},
+      {val:2, base:2, dot:false},
+      {val:1.5, base:1, dot:true},
+      {val:1, base:1, dot:false},
+      {val:0.75, base:0.5, dot:true},
+      {val:0.5, base:0.5, dot:false},
+      {val:0.375, base:0.25, dot:true},
+      {val:0.25, base:0.25, dot:false},
+      {val:0.1875, base:0.125, dot:true},
+      {val:0.125, base:0.125, dot:false},
+    ];
+    const out = [];
+    let rem = +amount.toFixed(6);
+    while(rem > eps){
+      let picked = null;
+      for(const c of candidates){
+        if(c.val <= rem + eps){ picked = c; break; }
+      }
+      if(!picked) break;
+      out.push({ dur: picked.base, dot: picked.dot });
+      rem = +(rem - picked.val).toFixed(6);
     }
     return out;
   }
-  function rebalanceMeasure(m, anchorIdx){
-    const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
-    const cap = measureCapacity(meter);
-    const meas = state.measures[m];
-    let used = 0;
-    for(let i=0; i<=anchorIdx; i++) used += effDur(meas[i]);
-    if(used >= cap){ state.measures[m] = meas.slice(0, anchorIdx + 1); return; }
-    const remaining = +(cap - used).toFixed(6);
-    const tail = fillRests(used, remaining, beat);
-    state.measures[m] = meas.slice(0, anchorIdx + 1).concat(tail);
+  // Same but biased to subdivisions of a beat to align cleanly within the meter
+  function splitDurationByBeat(offset, amount, beat){
+    const eps = 1e-6;
+    const out = [];
+    let cur = +offset.toFixed(6); let rem = +amount.toFixed(6);
+    // Step 1: align to the next beat boundary using small subdivisions (no dots in this fragment)
+    const distToBeat = ((cur % beat) === 0) ? 0 : (beat - (cur % beat));
+    if(distToBeat > eps && rem > eps){
+      const toFill = Math.min(distToBeat, rem);
+      // Use the largest plain (non-dotted) sub-beat that fits, repeat
+      const subs = [4,2,1,0.5,0.25,0.125].filter(u => u <= beat/2 + eps);
+      let used = 0;
+      for(const u of subs){
+        while(toFill - used >= u - eps){
+          out.push({dur:u, dot:false});
+          used = +(used + u).toFixed(6);
+        }
+      }
+      cur = +(cur + used).toFixed(6); rem = +(rem - used).toFixed(6);
+    }
+    // Step 2: aligned. Emit beat-rests for whole beats. Use beat itself; if beat = 1.5 (compound), allow dotted noires.
+    while(rem >= beat - eps){
+      // Try a multi-beat group with dot if it cleanly fits, e.g. 3 beats → dotted half (val 3)
+      // Otherwise just one beat.
+      out.push({dur: (beat === 1.5) ? 1 : beat, dot: (beat === 1.5)});
+      rem = +(rem - beat).toFixed(6); cur = +(cur + beat).toFixed(6);
+    }
+    // Step 3: leftover < beat
+    if(rem > eps){
+      const subs = [4,2,1,0.5,0.25,0.125].filter(u => u <= beat/2 + eps);
+      let leftover = rem;
+      for(const u of subs){
+        while(leftover >= u - eps){
+          out.push({dur:u, dot:false});
+          leftover = +(leftover - u).toFixed(6);
+        }
+      }
+    }
+    return out;
   }
 
-  // ABC duration encoding: depends on L: (default note length)
-  // Internal unit = 1 quarter note. L: 1/4 → multiplier = 1.
-  // L: 1/8 → multiplier = 2 (a quarter is "2" eighths).
-  // L: 1/16 → multiplier = 4. L: 1/2 → multiplier = 0.5.
+  // ===== Rebalance: NON-DESTRUCTIVE =====
+  // After modifying slot at (m, anchorIdx) — its NEW eff duration is sl.dur (with dot).
+  // Strategy:
+  //   newDur = effDur(slots[anchorIdx])
+  //   oldDur = previous eff duration of that same slot (passed in)
+  //   delta  = newDur - oldDur
+  //   - delta == 0: nothing to do
+  //   - delta < 0  (slot SHRUNK): we have |delta| of free time after the slot.
+  //                                Insert new slots after anchor whose total = |delta|,
+  //                                each is a COPY of the anchor (same type, same hauteur if note).
+  //                                Use splitDurationByBeat aligned with the new offset.
+  //   - delta > 0  (slot GREW):    consume `delta` from the slots after anchor.
+  //                                Walk forward: drop fully-eaten slots, partially-eaten slot keeps
+  //                                its hauteur but dur is reduced. Re-decompose the leftover with
+  //                                splitDurationByBeat.
+  //   Anything beyond the end of the measure is clamped (the slot extends but measure overflows → truncate).
+  function rebalanceMeasure(m, anchorIdx, oldEffDur){
+    const meter = meterAt(m);
+    const {den} = parseMeter(meter);
+    const beat = 4/den;
+    const cap = measureCapacity(meter);
+    const meas = state.measures[m];
+    const anchor = meas[anchorIdx];
+    const newDur = effDur(anchor);
+
+    // Compute used time before anchor
+    let beforeUsed = 0;
+    for(let i=0; i<anchorIdx; i++) beforeUsed += effDur(meas[i]);
+
+    // If anchor alone exceeds remaining capacity, truncate
+    if(beforeUsed + newDur >= cap - 1e-9){
+      // Anchor consumes everything to end. If anchor overflows, we still keep it as-is
+      state.measures[m] = meas.slice(0, anchorIdx + 1);
+      return;
+    }
+
+    const delta = +(newDur - oldEffDur).toFixed(6);
+    const eps = 1e-6;
+
+    if(Math.abs(delta) < eps){
+      // No size change, but caller still asked for rebalance (e.g. just hauteur changed): nothing to do.
+      return;
+    }
+
+    if(delta < 0){
+      // Slot SHRUNK by |delta|. Free time appears immediately after the anchor.
+      const freeAmount = -delta;
+      // Build replacement slots, each being a COPY of anchor at the right durations.
+      const offsetAfterAnchor = beforeUsed + newDur;
+      const pieces = splitDurationByBeat(offsetAfterAnchor, freeAmount, beat);
+      const newSlots = pieces.map(p => {
+        const copy = Object.assign({}, anchor, {dur: p.dur, dot: p.dot});
+        return copy;
+      });
+      // Rebuild measure: [0..anchor] + newSlots + [anchorIdx+1 .. end]
+      const tail = meas.slice(anchorIdx + 1);
+      state.measures[m] = meas.slice(0, anchorIdx + 1).concat(newSlots, tail);
+      // Now total may exceed `cap` if the existing tail still fits, normally fine.
+      // But if total > cap, truncate from the right.
+      truncateMeasureToCapacity(m, cap);
+      return;
+    }
+
+    // delta > 0: slot GREW by delta. Consume delta from slots to the right.
+    let need = delta;
+    let cursor = anchorIdx + 1;
+    while(need > eps && cursor < meas.length){
+      const slot = meas[cursor];
+      const dur = effDur(slot);
+      if(dur <= need + eps){
+        // fully eaten
+        need = +(need - dur).toFixed(6);
+        meas.splice(cursor, 1);
+        // do not increment cursor (next slot took its place)
+      } else {
+        // partially eaten: keep hauteur (and dot? no — we'll re-decompose), reduce duration
+        const remaining = +(dur - need).toFixed(6);
+        // Compute new offset for the partial slot
+        let off = 0;
+        for(let i=0; i<cursor; i++) off += effDur(meas[i]);
+        // Replace the partial slot with one or more slots (same hauteur) summing to `remaining`,
+        // aligned on beat using splitDurationByBeat.
+        const pieces = splitDurationByBeat(off + need, remaining, beat);
+        const newCopies = pieces.map(p => Object.assign({}, slot, {dur: p.dur, dot: p.dot}));
+        meas.splice(cursor, 1, ...newCopies);
+        need = 0;
+      }
+    }
+
+    // If we still need time and ran out of slots, the anchor effectively overflows; clamp.
+    truncateMeasureToCapacity(m, cap);
+  }
+
+  function truncateMeasureToCapacity(m, cap){
+    const eps = 1e-6;
+    const meas = state.measures[m];
+    let used = 0;
+    for(let i=0; i<meas.length; i++){
+      const d = effDur(meas[i]);
+      if(used + d > cap + eps){
+        // truncate measure here; the i-th slot would overflow
+        state.measures[m] = meas.slice(0, i);
+        return;
+      }
+      used += d;
+    }
+    // fill any slight underfill with a clean rest decomposition
+    if(used < cap - eps){
+      const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
+      const tail = splitDurationByBeat(used, cap - used, beat).map(p=> ({type:'rest', dur:p.dur, dot:p.dot}));
+      state.measures[m] = meas.concat(tail);
+    }
+  }
+
   function unitMultiplier(){
-    // pieceUnit is "1/N"; multiplier so that  ABC_value = quarter_dur * multiplier
     const m = state.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);
     if(!m) return 1;
-    const denom = parseInt(m[1],10); // 4, 8, 16, 2, 1, ...
-    // 1 quarter (in our units) = denom/4 of the L: unit
+    const denom = parseInt(m[1],10);
     return denom / 4;
   }
   function effDToAbc(d){
-    // d is in quarter units; multiplier converts to L: units
     const v = d * unitMultiplier();
-    if(Math.abs(v - 1) < 1e-9) return '';
-    if(Math.abs(v - 2) < 1e-9) return '2';
-    if(Math.abs(v - 3) < 1e-9) return '3';
-    if(Math.abs(v - 4) < 1e-9) return '4';
-    if(Math.abs(v - 6) < 1e-9) return '6';
-    if(Math.abs(v - 8) < 1e-9) return '8';
-    if(Math.abs(v - 0.5) < 1e-9) return '/2';
-    if(Math.abs(v - 0.25) < 1e-9) return '/4';
-    if(Math.abs(v - 0.125) < 1e-9) return '/8';
-    if(Math.abs(v - 1.5) < 1e-9) return '3/2';
-    if(Math.abs(v - 0.75) < 1e-9) return '3/4';
-    if(Math.abs(v - 0.375) < 1e-9) return '3/8';
-    // Generic fallback: try fraction num/den approximation
-    // Convert v to a/b
+    const e = 1e-9;
+    if(Math.abs(v - 1) < e) return '';
+    if(Math.abs(v - 2) < e) return '2';
+    if(Math.abs(v - 3) < e) return '3';
+    if(Math.abs(v - 4) < e) return '4';
+    if(Math.abs(v - 6) < e) return '6';
+    if(Math.abs(v - 8) < e) return '8';
+    if(Math.abs(v - 0.5) < e) return '/2';
+    if(Math.abs(v - 0.25) < e) return '/4';
+    if(Math.abs(v - 0.125) < e) return '/8';
+    if(Math.abs(v - 1.5) < e) return '3/2';
+    if(Math.abs(v - 0.75) < e) return '3/4';
+    if(Math.abs(v - 0.375) < e) return '3/8';
     const denom = 16;
     const numer = Math.round(v * denom);
-    if(numer % denom === 0) return String(numer/denom);
-    if(numer === 1) return '/' + denom;
-    // simplify
     function gcd(a,b){ return b?gcd(b,a%b):a; }
     const g = gcd(numer, denom);
     const a = numer/g, b = denom/g;
@@ -287,6 +501,7 @@
     if(state.headers.T) header += 'T:' + state.headers.T + '\n';
     header += 'M:' + state.pieceMeter + '\n';
     header += 'L:' + state.pieceUnit + '\n';
+    header += 'Q:1/4=' + state.tempo + '\n';
     header += 'K:' + keyAbc(state.pieceKeySig) + clefAbcSuffix(state.pieceClef) + '\n';
 
     let body = '';
@@ -294,38 +509,45 @@
       body += buildBarSeparator(mi - 1, mi);
       body += buildInlineFor(mi);
       body += buildVoltaFor(mi);
+      const groups = computeBeamGroups(m, meterAt(mi));
+      const groupOf = {};
+      groups.forEach((g, gi)=>{ g.forEach((idx, k)=>{ groupOf[idx] = {gi, pos:k, len:g.length}; }); });
       m.forEach((t, si)=>{
         const s = slotStr(t);
-        if(mi === state.sel.m && si === state.sel.s) body += '<span class="sel">' + s + '</span>';
-        else body += s;
+        const cell = (mi === state.sel.m && si === state.sel.s) ? '<span class="sel">' + s + '</span>' : s;
+        body += cell;
+        const isLast = (si === m.length - 1);
+        if(isLast) return;
+        const here = groupOf[si]; const next = groupOf[si+1];
+        const inSameGroup = here && next && here.gi === next.gi;
+        if(!inSameGroup) body += ' ';
       });
     });
     const lastIdx = state.measures.length - 1;
     if(state.repeats[lastIdx]?.end) body += ':|';
     else body += '|';
-
     document.getElementById('abc-out').innerHTML = header + body;
   }
 
-  // ====== rendering (score) ======
-  const W = 360, H = 110;
-  const staffTopY = 35, lineGap = 8;
-  const leftPad = 60, rightPad = 8;
+  // ====== rendering (score) — TWO-LINE LAYOUT ======
+  const SCORE_W = 360, SCORE_H = 200;
+  const STAFF_TOP_Y = 30, LINE_GAP = 7, STAFF_GAP = 38;
+  const LEFT_PAD = 50, RIGHT_PAD = 6;
+  const MEASURES_PER_LINE = 3;
+  function staffTopOfLine(line){ return STAFF_TOP_Y + line * STAFF_GAP * 1.7; }
   function clefRefStep(c){ return c === 'bass' ? -12 : 2; }
-  function noteY(step, c){ const refStep = clefRefStep(c); const bottomLineY = staffTopY + 4*lineGap; return bottomLineY - (step - refStep) * (lineGap/2); }
+  function noteY(staffTop, step, c){ const refStep = clefRefStep(c); const bottomLineY = staffTop + 4*LINE_GAP; return bottomLineY - (step - refStep) * (LINE_GAP/2); }
   function stepIndex(note, octave){ const map = {C:0,D:1,E:2,F:3,G:4,A:5,B:6}; return map[note] + 7*octave; }
   const TREBLE_SHARP_STEPS = { F:10, C:7, G:11, D:8, A:5, E:9, B:6 };
   const TREBLE_FLAT_STEPS  = { B:6, E:9, A:5, D:8, G:4, C:7, F:10 };
   const BASS_SHARP_STEPS   = { F:-4, C:-7, G:-3, D:-6, A:-9, E:-5, B:-8 };
   const BASS_FLAT_STEPS    = { B:-8, E:-5, A:-9, D:-6, G:-10, C:-7, F:-4 };
-
   function keySigAccidentals(sig, c){
     const out = [];
     if(sig > 0){ const map = c === 'bass' ? BASS_SHARP_STEPS : TREBLE_SHARP_STEPS; for(let i=0; i<sig; i++) out.push({sym:'♯', step: map[SHARP_NOTES[i]]}); }
     else if(sig < 0){ const map = c === 'bass' ? BASS_FLAT_STEPS : TREBLE_FLAT_STEPS; for(let i=0; i<-sig; i++) out.push({sym:'♭', step: map[FLAT_NOTES[i]]}); }
     return out;
   }
-
   function computeBeamGroups(meas, meter){
     const groupUnit = beamGroupUnit(meter); const eps = 1e-6;
     const groups = []; let curGroup = null; let offset = 0;
@@ -346,16 +568,16 @@
     return groups;
   }
 
-  function drawNoteHead(t, cx, color, c, drawFlag, stemUp){
+  function drawNoteHead(t, cx, color, c, drawFlag, stemUp, staffTop){
     let svg = '';
     const step = stepIndex(t.note, t.octave);
-    const y = noteY(step, c);
+    const y = noteY(staffTop, step, c);
     const refStep = clefRefStep(c);
-    if(step >= refStep + 10){ for(let s=refStep+10; s<=step; s+=2){ const ly = noteY(s, c); svg += '<line x1="'+(cx-6)+'" y1="'+ly+'" x2="'+(cx+6)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'; } }
-    if(step <= refStep - 2){ for(let s=refStep-2; s>=step; s-=2){ const ly = noteY(s, c); svg += '<line x1="'+(cx-6)+'" y1="'+ly+'" x2="'+(cx+6)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'; } }
-    if(t.acc==='^') svg += '<text x="'+(cx-10)+'" y="'+(y+3)+'" font-size="13" fill="'+color+'" font-family="serif">♯</text>';
-    else if(t.acc==='_') svg += '<text x="'+(cx-10)+'" y="'+(y+3)+'" font-size="13" fill="'+color+'" font-family="serif">♭</text>';
-    else if(t.acc==='=') svg += '<text x="'+(cx-10)+'" y="'+(y+3)+'" font-size="11" fill="'+color+'" font-family="serif">♮</text>';
+    if(step >= refStep + 10){ for(let s=refStep+10; s<=step; s+=2){ const ly = noteY(staffTop, s, c); svg += '<line x1="'+(cx-5)+'" y1="'+ly+'" x2="'+(cx+5)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'; } }
+    if(step <= refStep - 2){ for(let s=refStep-2; s>=step; s-=2){ const ly = noteY(staffTop, s, c); svg += '<line x1="'+(cx-5)+'" y1="'+ly+'" x2="'+(cx+5)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'; } }
+    if(t.acc==='^') svg += '<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="11" fill="'+color+'" font-family="serif">♯</text>';
+    else if(t.acc==='_') svg += '<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="11" fill="'+color+'" font-family="serif">♭</text>';
+    else if(t.acc==='=') svg += '<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="10" fill="'+color+'" font-family="serif">♮</text>';
     const eD = effDur(t);
     const filled = eD < 2;
     const hasStem = eD < 4;
@@ -363,33 +585,33 @@
     if(eD <= 0.125 + 1e-6) flagCount = 3;
     else if(eD <= 0.25 + 1e-6) flagCount = 2;
     else if(eD <= 0.5 + 1e-6) flagCount = 1;
-    svg += '<ellipse cx="'+cx+'" cy="'+y+'" rx="4.2" ry="3.2" transform="rotate(-20 '+cx+' '+y+')" fill="'+(filled?color:'none')+'" stroke="'+color+'" stroke-width="1"/>';
+    svg += '<ellipse cx="'+cx+'" cy="'+y+'" rx="3.6" ry="2.7" transform="rotate(-20 '+cx+' '+y+')" fill="'+(filled?color:'none')+'" stroke="'+color+'" stroke-width="0.9"/>';
     let stemTipY = y; let sx = cx;
     if(hasStem){
-      sx = stemUp ? cx+3.8 : cx-3.8;
-      stemTipY = stemUp ? y - 22 : y + 22;
-      svg += '<line x1="'+sx+'" y1="'+y+'" x2="'+sx+'" y2="'+stemTipY+'" stroke="'+color+'" stroke-width="0.9"/>';
+      sx = stemUp ? cx+3.3 : cx-3.3;
+      stemTipY = stemUp ? y - 19 : y + 19;
+      svg += '<line x1="'+sx+'" y1="'+y+'" x2="'+sx+'" y2="'+stemTipY+'" stroke="'+color+'" stroke-width="0.8"/>';
       if(drawFlag){
         for(let f=0; f<flagCount; f++){
           const flagY = stemUp ? (stemTipY + f*4) : (stemTipY - f*4);
-          if(stemUp) svg += '<path d="M '+sx+' '+flagY+' Q '+(sx+8)+' '+(flagY+4)+' '+(sx+5)+' '+(flagY+10)+'" stroke="'+color+'" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
-          else svg += '<path d="M '+sx+' '+flagY+' Q '+(sx-8)+' '+(flagY-4)+' '+(sx-5)+' '+(flagY-10)+'" stroke="'+color+'" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+          if(stemUp) svg += '<path d="M '+sx+' '+flagY+' Q '+(sx+7)+' '+(flagY+4)+' '+(sx+4)+' '+(flagY+9)+'" stroke="'+color+'" stroke-width="1" fill="none" stroke-linecap="round"/>';
+          else svg += '<path d="M '+sx+' '+flagY+' Q '+(sx-7)+' '+(flagY-4)+' '+(sx-4)+' '+(flagY-9)+'" stroke="'+color+'" stroke-width="1" fill="none" stroke-linecap="round"/>';
         }
       }
     }
-    if(t.dot){ svg += '<circle cx="'+(cx+8)+'" cy="'+y+'" r="1.4" fill="'+color+'"/>'; }
+    if(t.dot){ svg += '<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>'; }
     return {svg, headY: y, stemTipY, stemX: sx, flagCount};
   }
-  function drawRest(t, cx, color){
+  function drawRest(t, cx, color, staffTop){
     let svg = '';
-    const y = staffTopY + 2*lineGap;
+    const y = staffTop + 2*LINE_GAP;
     const eD = effDur(t);
-    if(eD >= 4) svg += '<rect x="'+(cx-5)+'" y="'+(staffTopY + lineGap)+'" width="10" height="4" fill="'+color+'"/>';
-    else if(eD >= 2) svg += '<rect x="'+(cx-5)+'" y="'+(staffTopY + 2*lineGap - 4)+'" width="10" height="4" fill="'+color+'"/>';
-    else if(eD >= 1) svg += '<text x="'+(cx-4)+'" y="'+(staffTopY + 3*lineGap)+'" font-size="20" font-family="serif" fill="'+color+'">𝄽</text>';
-    else if(eD >= 0.5) svg += '<text x="'+(cx-4)+'" y="'+(staffTopY + 3*lineGap)+'" font-size="20" font-family="serif" fill="'+color+'">𝄾</text>';
-    else svg += '<text x="'+(cx-4)+'" y="'+(staffTopY + 3*lineGap)+'" font-size="20" font-family="serif" fill="'+color+'">𝄿</text>';
-    if(t.dot) svg += '<circle cx="'+(cx+8)+'" cy="'+y+'" r="1.4" fill="'+color+'"/>';
+    if(eD >= 4) svg += '<rect x="'+(cx-4.5)+'" y="'+(staffTop + LINE_GAP)+'" width="9" height="3.5" fill="'+color+'"/>';
+    else if(eD >= 2) svg += '<rect x="'+(cx-4.5)+'" y="'+(staffTop + 2*LINE_GAP - 3.5)+'" width="9" height="3.5" fill="'+color+'"/>';
+    else if(eD >= 1) svg += '<text x="'+(cx-4)+'" y="'+(staffTop + 3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄽</text>';
+    else if(eD >= 0.5) svg += '<text x="'+(cx-4)+'" y="'+(staffTop + 3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄾</text>';
+    else svg += '<text x="'+(cx-4)+'" y="'+(staffTop + 3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄿</text>';
+    if(t.dot) svg += '<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>';
     return {svg, headY: y};
   }
 
@@ -398,109 +620,92 @@
     document.getElementById('meas-num').textContent = selM + 1;
     document.getElementById('meas-pos').textContent = selM + 1;
     document.getElementById('slot-num').textContent = state.sel.s + 1;
-    let startM, selPos;
-    if(selM === 0){ startM = 0; selPos = 0; } else { startM = selM - 1; selPos = 1; }
-    const displayed = [0,1,2].map(i=> state.measures[startM+i] || null);
-    const usable = W - leftPad - rightPad; const measureW = usable / 3;
+    const measuresPerPage = MEASURES_PER_LINE * 2;
+    const page = Math.floor(selM / measuresPerPage);
+    const startM = page * measuresPerPage;
+    const usable = SCORE_W - LEFT_PAD - RIGHT_PAD;
+    const measureW = usable / MEASURES_PER_LINE;
     const ink = '#1a1a1a'; const sel = '#e24b4a'; const dim = '#888780';
-    const headClef = clefAt(startM); const headKey = keyAt(startM); const headMtr = meterAt(startM);
-    let svg = '<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">';
-    for(let i=0;i<5;i++){ const y = staffTopY + i*lineGap; svg += '<line x1="'+(leftPad-30)+'" y1="'+y+'" x2="'+(W-rightPad)+'" y2="'+y+'" stroke="'+ink+'" stroke-width="0.6" opacity="0.55"/>'; }
-    if(headClef === 'bass'){ svg += '<text x="'+(leftPad-50)+'" y="'+(staffTopY + lineGap + 6)+'" font-size="38" font-family="serif" fill="'+ink+'" opacity="0.85">𝄢</text>'; }
-    else { svg += '<text x="'+(leftPad-52)+'" y="'+(staffTopY + 4*lineGap + 6)+'" font-size="44" font-family="serif" fill="'+ink+'" opacity="0.85">𝄞</text>'; if(headClef === 'treble8') svg += '<text x="'+(leftPad-38)+'" y="'+(staffTopY + 5*lineGap + 7)+'" font-size="9" fill="'+ink+'" opacity="0.85">8</text>'; }
-    let keyX = leftPad - 18;
-    keySigAccidentals(headKey, headClef).forEach(acc=>{ const ky = noteY(acc.step, headClef) + 4; svg += '<text x="'+keyX+'" y="'+ky+'" font-size="14" font-family="serif" fill="'+ink+'">'+acc.sym+'</text>'; keyX += 7; });
-    const {num, den} = parseMeter(headMtr);
-    const meterX = Math.max(keyX + 4, leftPad - 12);
-    svg += '<text x="'+meterX+'" y="'+(staffTopY + 1.7*lineGap + 1)+'" font-size="14" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+num+'</text>';
-    svg += '<text x="'+meterX+'" y="'+(staffTopY + 3.6*lineGap + 1)+'" font-size="14" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+den+'</text>';
-    for(let i=0;i<=3;i++){ const x = leftPad + i*measureW; svg += '<line x1="'+x+'" y1="'+staffTopY+'" x2="'+x+'" y2="'+(staffTopY+4*lineGap)+'" stroke="'+ink+'" stroke-width="'+(i===0?1.2:0.8)+'" opacity="0.7"/>'; }
-    for(let i=0;i<3;i++){
-      const mIdx = startM + i;
-      if(state.measures[mIdx] !== undefined){
+    let svg = '<svg viewBox="0 0 '+SCORE_W+' '+SCORE_H+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">';
+    for(let line=0; line<2; line++){
+      const staffTop = staffTopOfLine(line);
+      const lineStartM = startM + line * MEASURES_PER_LINE;
+      for(let i=0;i<5;i++){ const y = staffTop + i*LINE_GAP; svg += '<line x1="'+(LEFT_PAD-25)+'" y1="'+y+'" x2="'+(SCORE_W-RIGHT_PAD)+'" y2="'+y+'" stroke="'+ink+'" stroke-width="0.55" opacity="0.55"/>'; }
+      const headClef = clefAt(lineStartM); const headKey = keyAt(lineStartM); const headMtr = meterAt(lineStartM);
+      if(headClef === 'bass'){ svg += '<text x="'+(LEFT_PAD-44)+'" y="'+(staffTop + LINE_GAP + 5)+'" font-size="32" font-family="serif" fill="'+ink+'" opacity="0.85">𝄢</text>'; }
+      else { svg += '<text x="'+(LEFT_PAD-46)+'" y="'+(staffTop + 4*LINE_GAP + 5)+'" font-size="38" font-family="serif" fill="'+ink+'" opacity="0.85">𝄞</text>'; if(headClef === 'treble8') svg += '<text x="'+(LEFT_PAD-32)+'" y="'+(staffTop + 5*LINE_GAP + 6)+'" font-size="8" fill="'+ink+'" opacity="0.85">8</text>'; }
+      let keyX = LEFT_PAD - 16;
+      keySigAccidentals(headKey, headClef).forEach(acc=>{ const ky = noteY(staffTop, acc.step, headClef) + 4; svg += '<text x="'+keyX+'" y="'+ky+'" font-size="12" font-family="serif" fill="'+ink+'">'+acc.sym+'</text>'; keyX += 6; });
+      if(line === 0){ const {num, den} = parseMeter(headMtr); const meterX = Math.max(keyX + 3, LEFT_PAD - 10); svg += '<text x="'+meterX+'" y="'+(staffTop + 1.7*LINE_GAP + 1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+num+'</text>'; svg += '<text x="'+meterX+'" y="'+(staffTop + 3.6*LINE_GAP + 1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+den+'</text>'; }
+      for(let i=0;i<=MEASURES_PER_LINE;i++){ const x = LEFT_PAD + i*measureW; svg += '<line x1="'+x+'" y1="'+staffTop+'" x2="'+x+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="'+(i===0?1.1:0.7)+'" opacity="0.7"/>'; }
+      for(let i=0;i<MEASURES_PER_LINE;i++){
+        const mIdx = lineStartM + i;
+        if(state.measures[mIdx] === undefined) continue;
         let label = String(mIdx+1); const tags = [];
-        if(mIdx > startM){
+        if(mIdx > lineStartM || (mIdx > 0 && line > 0 && mIdx === lineStartM)){
           if(state.timeChanges[mIdx]) tags.push(state.timeChanges[mIdx]);
           if(state.keyChanges[mIdx] !== undefined) tags.push('K' + (state.keyChanges[mIdx]>=0?'+'+state.keyChanges[mIdx]:state.keyChanges[mIdx]));
           if(state.clefChanges[mIdx]) tags.push(clefHumanLabel(state.clefChanges[mIdx]));
         }
         if(tags.length) label += ' (' + tags.join(' ') + ')';
-        svg += '<text x="'+(leftPad + i*measureW + 2)+'" y="'+(staffTopY-4)+'" font-size="9" fill="'+dim+'">'+label+'</text>';
-      }
-    }
-    for(let i=0;i<3;i++){
-      const mIdx = startM + i; if(state.measures[mIdx] === undefined) continue;
-      const xL = leftPad + i*measureW; const xR = leftPad + (i+1)*measureW;
-      const r = state.repeats[mIdx];
-      if(r){
-        if(r.start){ svg += '<line x1="'+(xL+2)+'" y1="'+staffTopY+'" x2="'+(xL+2)+'" y2="'+(staffTopY+4*lineGap)+'" stroke="'+ink+'" stroke-width="2.2"/>'; svg += '<circle cx="'+(xL+7)+'" cy="'+(staffTopY+1.5*lineGap)+'" r="1.3" fill="'+ink+'"/>'; svg += '<circle cx="'+(xL+7)+'" cy="'+(staffTopY+2.5*lineGap)+'" r="1.3" fill="'+ink+'"/>'; }
-        if(r.end){ svg += '<circle cx="'+(xR-7)+'" cy="'+(staffTopY+1.5*lineGap)+'" r="1.3" fill="'+ink+'"/>'; svg += '<circle cx="'+(xR-7)+'" cy="'+(staffTopY+2.5*lineGap)+'" r="1.3" fill="'+ink+'"/>'; svg += '<line x1="'+(xR-2)+'" y1="'+staffTopY+'" x2="'+(xR-2)+'" y2="'+(staffTopY+4*lineGap)+'" stroke="'+ink+'" stroke-width="2.2"/>'; }
-        if(r.volta){
-          const yV = staffTopY - 13;
-          svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xR-2)+'" y2="'+yV+'" stroke="'+ink+'" stroke-width="0.9"/>';
-          svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xL+2)+'" y2="'+(yV+5)+'" stroke="'+ink+'" stroke-width="0.9"/>';
-          svg += '<text x="'+(xL+5)+'" y="'+(yV+7)+'" font-size="9" fill="'+ink+'" font-weight="bold">'+r.volta+'.</text>';
+        svg += '<text x="'+(LEFT_PAD + i*measureW + 2)+'" y="'+(staffTop-3)+'" font-size="8" fill="'+dim+'">'+label+'</text>';
+        const xL = LEFT_PAD + i*measureW; const xR = LEFT_PAD + (i+1)*measureW;
+        const r = state.repeats[mIdx];
+        if(r){
+          if(r.start){ svg += '<line x1="'+(xL+2)+'" y1="'+staffTop+'" x2="'+(xL+2)+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="2"/>'; svg += '<circle cx="'+(xL+6)+'" cy="'+(staffTop+1.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<circle cx="'+(xL+6)+'" cy="'+(staffTop+2.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; }
+          if(r.end){ svg += '<circle cx="'+(xR-6)+'" cy="'+(staffTop+1.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<circle cx="'+(xR-6)+'" cy="'+(staffTop+2.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<line x1="'+(xR-2)+'" y1="'+staffTop+'" x2="'+(xR-2)+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="2"/>'; }
+          if(r.volta){ const yV = staffTop - 11; svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xR-2)+'" y2="'+yV+'" stroke="'+ink+'" stroke-width="0.8"/>'; svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xL+2)+'" y2="'+(yV+4)+'" stroke="'+ink+'" stroke-width="0.8"/>'; svg += '<text x="'+(xL+5)+'" y="'+(yV+6)+'" font-size="8" fill="'+ink+'" font-weight="bold">'+r.volta+'.</text>'; }
         }
-      }
-    }
-    displayed.forEach((m, mi)=>{
-      if(!m) return;
-      const x0 = leftPad + mi*measureW + 12;
-      const slotW = (measureW - 18) / Math.max(m.length, 1);
-      const measureIdx = startM + mi;
-      const localClef = clefAt(measureIdx); const localMeter = meterAt(measureIdx);
-      const beamGroups = computeBeamGroups(m, localMeter);
-      const slotToGroup = {};
-      beamGroups.forEach((g, gIdx)=>{ g.forEach(slotIdx => slotToGroup[slotIdx] = {gIdx, group:g}); });
-      const middleStep = clefRefStep(localClef) + 4;
-      const groupStemDir = beamGroups.map(g=>{ let sum = 0; for(const idx of g){ const t = m[idx]; sum += stepIndex(t.note, t.octave); } return (sum/g.length) < middleStep ? 'up' : 'down'; });
-      const groupBeamData = beamGroups.map((g, gIdx)=>{
-        const stemUp = groupStemDir[gIdx] === 'up';
-        let extremeY = stemUp ? Infinity : -Infinity; const stemXs = [];
-        g.forEach(slotIdx=>{
-          const t = m[slotIdx]; const cx = x0 + slotIdx*slotW + slotW/2;
-          const sx = stemUp ? cx+3.8 : cx-3.8;
-          const headY = noteY(stepIndex(t.note, t.octave), localClef);
-          const naturalTip = stemUp ? headY - 22 : headY + 22;
-          if(stemUp) extremeY = Math.min(extremeY, naturalTip); else extremeY = Math.max(extremeY, naturalTip);
-          stemXs.push({slotIdx, sx, headY});
+        const m = state.measures[mIdx];
+        const x0 = LEFT_PAD + i*measureW + 10;
+        const slotW = (measureW - 14) / Math.max(m.length, 1);
+        const localClef = clefAt(mIdx); const localMeter = meterAt(mIdx);
+        const beamGroups = computeBeamGroups(m, localMeter);
+        const slotToGroup = {};
+        beamGroups.forEach((g, gIdx)=>{ g.forEach(slotIdx => slotToGroup[slotIdx] = {gIdx, group:g}); });
+        const middleStep = clefRefStep(localClef) + 4;
+        const groupStemDir = beamGroups.map(g=>{ let sum = 0; for(const idx of g){ const t = m[idx]; sum += stepIndex(t.note, t.octave); } return (sum/g.length) < middleStep ? 'up' : 'down'; });
+        const groupBeamData = beamGroups.map((g, gIdx)=>{
+          const stemUp = groupStemDir[gIdx] === 'up';
+          let extremeY = stemUp ? Infinity : -Infinity; const stemXs = [];
+          g.forEach(slotIdx=>{ const t = m[slotIdx]; const cx = x0 + slotIdx*slotW + slotW/2; const sx = stemUp ? cx+3.3 : cx-3.3; const headY = noteY(staffTop, stepIndex(t.note, t.octave), localClef); const naturalTip = stemUp ? headY - 19 : headY + 19; if(stemUp) extremeY = Math.min(extremeY, naturalTip); else extremeY = Math.max(extremeY, naturalTip); stemXs.push({slotIdx, sx, headY}); });
+          return { stemUp, beamY: extremeY, stems: stemXs };
         });
-        return { stemUp, beamY: extremeY, stems: stemXs };
-      });
-      m.forEach((t, si)=>{
-        const cx = x0 + si*slotW + slotW/2;
-        const isSel = (measureIdx === selM && si === state.sel.s);
-        const color = isSel ? sel : ink;
-        if(t.type === 'note'){
-          const grp = slotToGroup[si];
-          if(grp){
-            const gIdx = grp.gIdx; const stemUp = groupStemDir[gIdx] === 'up'; const beamY = groupBeamData[gIdx].beamY;
-            const drawn = drawNoteHead(t, cx, color, localClef, false, stemUp);
-            const sx = drawn.stemX; const headY = drawn.headY;
-            svg += drawn.svg;
-            svg += '<line x1="'+sx+'" y1="'+headY+'" x2="'+sx+'" y2="'+beamY+'" stroke="'+color+'" stroke-width="0.9"/>';
-            if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="9" fill="none" stroke="'+sel+'" stroke-width="0.8" opacity="0.4"/>';
+        m.forEach((t, si)=>{
+          const cx = x0 + si*slotW + slotW/2;
+          const isSel = (mIdx === selM && si === state.sel.s);
+          const color = isSel ? sel : ink;
+          if(t.type === 'note'){
+            const grp = slotToGroup[si];
+            if(grp){
+              const gIdx = grp.gIdx; const stemUp = groupStemDir[gIdx] === 'up'; const beamY = groupBeamData[gIdx].beamY;
+              const drawn = drawNoteHead(t, cx, color, localClef, false, stemUp, staffTop);
+              const sx = drawn.stemX; const headY = drawn.headY;
+              svg += drawn.svg;
+              svg += '<line x1="'+sx+'" y1="'+headY+'" x2="'+sx+'" y2="'+beamY+'" stroke="'+color+'" stroke-width="0.8"/>';
+              if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
+            } else {
+              const step = stepIndex(t.note, t.octave); const stemUp = step < middleStep;
+              const drawn = drawNoteHead(t, cx, color, localClef, true, stemUp, staffTop);
+              svg += drawn.svg;
+              if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
+            }
           } else {
-            const step = stepIndex(t.note, t.octave); const stemUp = step < middleStep;
-            const drawn = drawNoteHead(t, cx, color, localClef, true, stemUp);
+            const drawn = drawRest(t, cx, color, staffTop);
             svg += drawn.svg;
-            if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="9" fill="none" stroke="'+sel+'" stroke-width="0.8" opacity="0.4"/>';
+            if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
           }
-        } else {
-          const drawn = drawRest(t, cx, color);
-          svg += drawn.svg;
-          if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="9" fill="none" stroke="'+sel+'" stroke-width="0.8" opacity="0.4"/>';
-        }
-      });
-      beamGroups.forEach((g, gIdx)=>{
-        const data = groupBeamData[gIdx]; const stemUp = data.stemUp; const beamY = data.beamY; const stems = data.stems;
-        const xStart = stems[0].sx; const xEnd = stems[stems.length-1].sx;
-        const beamThickness = 3;
-        const beamCount = Math.max(...g.map(idx=>{ const t = m[idx]; const eD = effDur(t); if(eD <= 0.125 + 1e-6) return 3; if(eD <= 0.25 + 1e-6) return 2; return 1; }));
-        const dyOffset = stemUp ? beamThickness + 1 : -(beamThickness + 1);
-        for(let bi = 0; bi < beamCount; bi++){ const yy = beamY + bi * dyOffset; svg += '<rect x="'+xStart+'" y="'+(yy - beamThickness/2)+'" width="'+(xEnd - xStart)+'" height="'+beamThickness+'" fill="'+ink+'"/>'; }
-      });
-    });
+        });
+        beamGroups.forEach((g, gIdx)=>{
+          const data = groupBeamData[gIdx]; const stemUp = data.stemUp; const beamY = data.beamY; const stems = data.stems;
+          const xStart = stems[0].sx; const xEnd = stems[stems.length-1].sx;
+          const beamThickness = 2.5;
+          const beamCount = Math.max(...g.map(idx=>{ const t = m[idx]; const eD = effDur(t); if(eD <= 0.125 + 1e-6) return 3; if(eD <= 0.25 + 1e-6) return 2; return 1; }));
+          const dyOffset = stemUp ? beamThickness + 0.8 : -(beamThickness + 0.8);
+          for(let bi = 0; bi < beamCount; bi++){ const yy = beamY + bi * dyOffset; svg += '<rect x="'+xStart+'" y="'+(yy - beamThickness/2)+'" width="'+(xEnd - xStart)+'" height="'+beamThickness+'" fill="'+ink+'"/>'; }
+        });
+      }
+    }
     svg += '</svg>';
     document.getElementById('score').innerHTML = svg;
   }
@@ -513,27 +718,213 @@
     document.querySelectorAll('#alt-pad .k').forEach(b=>{ const activeAcc = (sl && sl.type==='note') ? (sl.acc || '') : ''; b.classList.toggle('active', activeAcc === b.dataset.acc && b.dataset.acc !== ''); });
     const m = state.sel.m;
     const sigLabel = (s)=> s === 0 ? '0' : (s>0 ? '+'+s : ''+s);
-    document.getElementById('ctx-info').innerHTML = 'M: <b>' + meterAt(m) + '</b> · L: <b>' + state.pieceUnit + '</b> · K: <b>' + sigLabel(keyAt(m)) + '</b> · Clé <b>' + clefHumanLabel(clefAt(m)) + '</b>';
+    document.getElementById('ctx-info').innerHTML = 'M:<b>' + meterAt(m) + '</b> · L:<b>' + state.pieceUnit + '</b> · K:<b>' + sigLabel(keyAt(m)) + '</b> · <b>' + clefHumanLabel(clefAt(m)) + '</b>';
+    document.getElementById('tempo-v').textContent = state.tempo;
+    document.getElementById('vol-v').textContent = state.volume;
+    document.getElementById('btn-play').textContent = audio.playing ? '⏸ Pause' : '▶ Play';
+    document.getElementById('btn-undo').disabled = (history.pos <= 0);
+    document.getElementById('btn-redo').disabled = (history.pos >= history.stack.length - 1);
   }
   function render(){ renderScore(); renderAbc(); renderState(); }
 
-  function selectNext(){ let {m, s} = state.sel; if(s + 1 < state.measures[m].length){ state.sel = {m, s:s+1}; render(); return; } if(m + 1 < state.measures.length){ state.sel = {m:m+1, s:0}; render(); return; } }
+  function selectNext(){
+    let {m, s} = state.sel;
+    if(s + 1 < state.measures[m].length){ state.sel = {m, s:s+1}; render(); return; }
+    if(m + 1 < state.measures.length){ state.sel = {m:m+1, s:0}; render(); return; }
+    // beyond last measure: create one and move into it
+    state.measures.push(buildEmptyMeasure(meterAt(m)));
+    state.sel = {m: state.measures.length - 1, s: 0};
+    pushHistory();
+    render();
+  }
   function selectPrev(){ let {m, s} = state.sel; if(s > 0){ state.sel = {m, s:s-1}; render(); return; } if(m > 0){ state.sel = {m:m-1, s: state.measures[m-1].length - 1}; render(); return; } }
   function jumpMeasure(delta){
     const cur = state.sel.m;
-    if(delta > 0 && cur === state.measures.length - 1){ state.measures.push(buildEmptyMeasure(meterAt(cur))); state.sel = {m: state.measures.length - 1, s: 0}; render(); return; }
+    if(delta > 0 && cur === state.measures.length - 1){
+      state.measures.push(buildEmptyMeasure(meterAt(cur)));
+      state.sel = {m: state.measures.length - 1, s: 0};
+      pushHistory();
+      render(); return;
+    }
     const target = cur + delta;
     if(target < 0 || target >= state.measures.length) return;
     state.sel = {m:target, s:0}; render();
   }
 
-  function setNoteAtSelection(noteName){ const sl = selectedSlot(); if(!sl) return; const dur = sl.dur, dot = sl.dot; const acc = (sl.type === 'note') ? sl.acc : ''; state.measures[state.sel.m][state.sel.s] = { type:'note', note: noteName, octave: state.octave, dur, dot, acc }; render(); }
-  function setRestAtSelection(){ const sl = selectedSlot(); if(!sl) return; state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; render(); }
-  function setDurAtSelection(d){ const sl = selectedSlot(); if(!sl) return; sl.dur = d; rebalanceMeasure(state.sel.m, state.sel.s); const newLen = state.measures[state.sel.m].length; if(state.sel.s >= newLen) state.sel.s = newLen - 1; render(); }
-  function toggleDotAtSelection(){ const sl = selectedSlot(); if(!sl) return; sl.dot = !sl.dot; rebalanceMeasure(state.sel.m, state.sel.s); const newLen = state.measures[state.sel.m].length; if(state.sel.s >= newLen) state.sel.s = newLen - 1; render(); }
-  function toggleAccAtSelection(acc){ const sl = selectedSlot(); if(sl && sl.type === 'note'){ sl.acc = (sl.acc === acc) ? '' : acc; render(); } }
-  function changeOctave(delta){ state.octave = Math.max(-2, Math.min(3, state.octave + delta)); const sl = selectedSlot(); if(sl && sl.type === 'note'){ sl.octave = Math.max(-2, Math.min(3, sl.octave + delta)); } render(); }
+  // ====== Audio ======
+  const audio = { ctx: null, master: null, playing: false, scheduled: [], stopAt: 0, raf: null };
+  function ensureAudio(){
+    if(!audio.ctx){
+      audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      audio.master = audio.ctx.createGain();
+      audio.master.connect(audio.ctx.destination);
+    }
+    audio.master.gain.value = state.volume / 200;
+    if(audio.ctx.state === 'suspended') audio.ctx.resume();
+  }
+  function midiOfNote(note, octave, acc, keySig){
+    const baseSemi = {C:0, D:2, E:4, F:5, G:7, A:9, B:11}[note];
+    let midi = 60 + baseSemi + octave * 12;
+    let alteration = 0;
+    if(acc === '^') alteration = 1;
+    else if(acc === '_') alteration = -1;
+    else if(acc === '=') alteration = 0;
+    else {
+      if(keySig > 0 && SHARP_NOTES.slice(0, keySig).includes(note)) alteration = 1;
+      else if(keySig < 0 && FLAT_NOTES.slice(0, -keySig).includes(note)) alteration = -1;
+    }
+    return midi + alteration;
+  }
+  function freqOfMidi(m){ return 440 * Math.pow(2, (m - 69)/12); }
+  function previewNote(midi, durSec = 0.25){
+    ensureAudio();
+    const t = audio.ctx.currentTime + 0.005;
+    const freq = freqOfMidi(midi);
+    const osc = audio.ctx.createOscillator();
+    const gain = audio.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+    const peak = 0.5;
+    const a = 0.005;
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(peak, t + a);
+    gain.gain.setValueAtTime(peak, t + Math.max(durSec - 0.06, a));
+    gain.gain.linearRampToValueAtTime(0, t + durSec);
+    osc.connect(gain); gain.connect(audio.master);
+    osc.start(t);
+    osc.stop(t + durSec + 0.03);
+  }
+  function playSchedule(){
+    ensureAudio();
+    stopPlayback(false);
+    audio.playing = true;
+    document.getElementById('btn-play').textContent = '⏸ Pause';
+    const startTime = audio.ctx.currentTime + 0.05;
+    let t = startTime;
+    const qDur = 60 / state.tempo;
+    state.measures.forEach((m, mi)=>{
+      const sig = keyAt(mi);
+      m.forEach((slot, si)=>{
+        const dur = effDur(slot) * qDur;
+        if(slot.type === 'note'){
+          const midi = midiOfNote(slot.note, slot.octave, slot.acc, sig);
+          const freq = freqOfMidi(midi);
+          const osc = audio.ctx.createOscillator();
+          const gain = audio.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          const a = 0.005, r = Math.min(0.05, dur * 0.3);
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.5, t + a);
+          gain.gain.setValueAtTime(0.5, t + dur - r);
+          gain.gain.linearRampToValueAtTime(0, t + dur);
+          osc.connect(gain); gain.connect(audio.master);
+          osc.start(t);
+          osc.stop(t + dur + 0.02);
+          audio.scheduled.push(osc);
+        }
+        audio.scheduled.push({ updateAt: t, measureIdx: mi, slotIdx: si });
+        t += dur;
+      });
+    });
+    audio.stopAt = t;
+    function tick(){
+      if(!audio.playing) return;
+      const now = audio.ctx.currentTime;
+      let last = null;
+      for(const ev of audio.scheduled){
+        if(ev.updateAt !== undefined && ev.updateAt <= now) last = ev;
+        if(ev.updateAt !== undefined && ev.updateAt > now) break;
+      }
+      if(last && (state.sel.m !== last.measureIdx || state.sel.s !== last.slotIdx)){
+        state.sel = { m: last.measureIdx, s: last.slotIdx };
+        renderScore(); renderState();
+      }
+      if(now >= audio.stopAt){ stopPlayback(true); return; }
+      audio.raf = requestAnimationFrame(tick);
+    }
+    audio.raf = requestAnimationFrame(tick);
+  }
+  function stopPlayback(refresh){
+    if(audio.raf){ cancelAnimationFrame(audio.raf); audio.raf = null; }
+    audio.scheduled.forEach(ev=>{ if(ev.stop) try{ev.stop();}catch(_){} });
+    audio.scheduled = [];
+    audio.playing = false;
+    document.getElementById('btn-play').textContent = '▶ Play';
+    if(refresh) render();
+  }
 
+  // ====== editing actions ======
+  function setNoteAtSelection(noteName){
+    const sl = selectedSlot(); if(!sl) return;
+    const dur = sl.dur, dot = sl.dot;
+    const acc = (sl.type === 'note') ? sl.acc : '';
+    state.measures[state.sel.m][state.sel.s] = { type:'note', note: noteName, octave: state.octave, dur, dot, acc };
+    pushHistory();
+    const midi = midiOfNote(noteName, state.octave, acc, keyAt(state.sel.m));
+    previewNote(midi);
+    render();
+  }
+  function setRestAtSelection(){
+    const sl = selectedSlot(); if(!sl) return;
+    state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot};
+    pushHistory();
+    render();
+  }
+  function setDurAtSelection(d){
+    const sl = selectedSlot(); if(!sl) return;
+    const oldEff = effDur(sl);
+    sl.dur = d;
+    // dot stays as-is (separate button)
+    rebalanceMeasure(state.sel.m, state.sel.s, oldEff);
+    const newLen = state.measures[state.sel.m].length;
+    if(state.sel.s >= newLen) state.sel.s = newLen - 1;
+    pushHistory();
+    const cur = selectedSlot();
+    if(cur && cur.type === 'note'){
+      const midi = midiOfNote(cur.note, cur.octave, cur.acc, keyAt(state.sel.m));
+      previewNote(midi, Math.min(0.4, effDur(cur) * 60 / state.tempo));
+    }
+    render();
+  }
+  function toggleDotAtSelection(){
+    const sl = selectedSlot(); if(!sl) return;
+    const oldEff = effDur(sl);
+    sl.dot = !sl.dot;
+    rebalanceMeasure(state.sel.m, state.sel.s, oldEff);
+    const newLen = state.measures[state.sel.m].length;
+    if(state.sel.s >= newLen) state.sel.s = newLen - 1;
+    pushHistory();
+    const cur = selectedSlot();
+    if(cur && cur.type === 'note'){
+      const midi = midiOfNote(cur.note, cur.octave, cur.acc, keyAt(state.sel.m));
+      previewNote(midi);
+    }
+    render();
+  }
+  function toggleAccAtSelection(acc){
+    const sl = selectedSlot();
+    if(sl && sl.type === 'note'){
+      sl.acc = (sl.acc === acc) ? '' : acc;
+      pushHistory();
+      const midi = midiOfNote(sl.note, sl.octave, sl.acc, keyAt(state.sel.m));
+      previewNote(midi);
+      render();
+    }
+  }
+  function changeOctave(delta){
+    state.octave = Math.max(-2, Math.min(3, state.octave + delta));
+    const sl = selectedSlot();
+    if(sl && sl.type === 'note'){
+      sl.octave = Math.max(-2, Math.min(3, sl.octave + delta));
+      const midi = midiOfNote(sl.note, sl.octave, sl.acc, keyAt(state.sel.m));
+      previewNote(midi);
+    }
+    pushHistory();
+    render();
+  }
+
+  // wire UI
   const notesCol = document.getElementById('notes-col');
   NOTES.forEach(n=>{ const b = document.createElement('button'); b.className = 'k'; b.innerHTML = n.label + '<span class="sub">' + n.sub + '</span>'; b.addEventListener('click', ()=> setNoteAtSelection(n.n)); notesCol.appendChild(b); });
   const durPad = document.getElementById('dur-pad');
@@ -549,16 +940,47 @@
   document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
   document.getElementById('btn-rest').addEventListener('click', setRestAtSelection);
 
+  document.getElementById('btn-del').addEventListener('click', ()=>{
+    const sl = selectedSlot();
+    if(sl){
+      state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot};
+      pushHistory();
+      render();
+    }
+  });
+  document.getElementById('btn-undo').addEventListener('click', undo);
+  document.getElementById('btn-redo').addEventListener('click', redo);
+
   function ensureRepeat(m){ if(!state.repeats[m]) state.repeats[m] = {}; return state.repeats[m]; }
-  document.getElementById('btn-rep-start').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.start = !r.start; render(); });
-  document.getElementById('btn-rep-end').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.end = !r.end; render(); });
-  document.getElementById('btn-volta1').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 1) ? 0 : 1; render(); });
-  document.getElementById('btn-volta2').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 2) ? 0 : 2; render(); });
+  document.getElementById('btn-rep-start').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.start = !r.start; pushHistory(); render(); });
+  document.getElementById('btn-rep-end').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.end = !r.end; pushHistory(); render(); });
+  document.getElementById('btn-volta1').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 1) ? 0 : 1; pushHistory(); render(); });
+  document.getElementById('btn-volta2').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 2) ? 0 : 2; pushHistory(); render(); });
+
+  document.getElementById('tempo-u').addEventListener('click', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
+  document.getElementById('tempo-d').addEventListener('click', ()=>{ state.tempo = Math.max(30, state.tempo - 5); render(); });
+  document.getElementById('vol-u').addEventListener('click', ()=>{ state.volume = Math.min(100, state.volume + 10); ensureAudio(); render(); });
+  document.getElementById('vol-d').addEventListener('click', ()=>{ state.volume = Math.max(0, state.volume - 10); ensureAudio(); render(); });
+
+  document.getElementById('btn-play').addEventListener('click', ()=>{ if(audio.playing) stopPlayback(true); else playSchedule(); });
+  document.getElementById('btn-stop').addEventListener('click', ()=> stopPlayback(true));
+
+  document.getElementById('btn-fs').addEventListener('click', ()=>{
+    state.fullscreen = !state.fullscreen;
+    document.getElementById('app').classList.toggle('fullscreen', state.fullscreen);
+    document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶ ✕' : '⛶';
+  });
+
+  document.getElementById('abc-toggle').addEventListener('click', ()=>{
+    state.abcCollapsed = !state.abcCollapsed;
+    document.getElementById('abc-out').classList.toggle('collapsed', state.abcCollapsed);
+    document.getElementById('abc-toggle-icon').textContent = state.abcCollapsed ? '▶' : '▼';
+  });
 
   document.getElementById('btn-add-meas').addEventListener('click', ()=>{
     openPanel({
       title: 'Ajouter une mesure',
-      body: '<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small><div class="scope-row"><button class="k" id="addleft">À gauche</button><button class="k primary" id="addright">À droite</button></div>',
+      body: '<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small><div class="scope-row" style="grid-template-columns: 1fr 1fr;"><button class="k" id="addleft">À gauche</button><button class="k primary" id="addright">À droite</button></div>',
       hideActions: true,
       onMount: ()=>{
         function shiftKeys(map, threshold, inclusive){ const out = {}; for(const k of Object.keys(map)){ const i = parseInt(k,10); const shift = inclusive ? (i >= threshold) : (i > threshold); out[shift ? i+1 : i] = map[k]; } return out; }
@@ -569,8 +991,7 @@
           state.keyChanges  = shiftKeys(state.keyChanges,  state.sel.m, true);
           state.clefChanges = shiftKeys(state.clefChanges, state.sel.m, true);
           state.repeats     = shiftKeys(state.repeats,     state.sel.m, true);
-          state.sel = {m: state.sel.m, s: 0};
-          closePanel(); render();
+          state.sel = {m: state.sel.m, s: 0}; pushHistory(); closePanel(); render();
         });
         document.getElementById('addright').addEventListener('click', ()=>{
           const meter = meterAt(state.sel.m);
@@ -579,14 +1000,11 @@
           state.keyChanges  = shiftKeys(state.keyChanges,  state.sel.m, false);
           state.clefChanges = shiftKeys(state.clefChanges, state.sel.m, false);
           state.repeats     = shiftKeys(state.repeats,     state.sel.m, false);
-          state.sel = {m: state.sel.m+1, s: 0};
-          closePanel(); render();
+          state.sel = {m: state.sel.m+1, s: 0}; pushHistory(); closePanel(); render();
         });
       },
     });
   });
-
-  document.getElementById('btn-undo').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; render(); } });
 
   const panel = document.getElementById('panel');
   const panelTitle = document.getElementById('panel-title');
@@ -599,18 +1017,19 @@
   panelOk.addEventListener('click', ()=>{ if(currentOnOk) currentOnOk(); closePanel(); render(); });
   panelCancel.addEventListener('click', closePanel);
 
-  document.querySelector('[data-hdr="X"]').addEventListener('click', ()=>{ openPanel({ title: 'Numéro X:', body: '<div class="row"><span class="field-label">X:</span><input id="hi" type="text" value="' + (state.headers.X||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.X = document.getElementById('hi').value.trim(); } }); });
-  document.querySelector('[data-hdr="T"]').addEventListener('click', ()=>{ openPanel({ title: 'Titre T:', body: '<div class="row"><span class="field-label">T:</span><input id="hi" type="text" value="' + (state.headers.T||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.T = document.getElementById('hi').value.trim(); } }); });
+  document.querySelector('[data-hdr="X"]').addEventListener('click', ()=>{ openPanel({ title: 'Numéro X:', body: '<div class="row"><span class="field-label">X:</span><input id="hi" type="text" value="' + (state.headers.X||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.X = document.getElementById('hi').value.trim(); pushHistory(); } }); });
+  document.querySelector('[data-hdr="T"]').addEventListener('click', ()=>{ openPanel({ title: 'Titre', body: '<div class="row"><span class="field-label">T:</span><input id="hi" type="text" value="' + (state.headers.T||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.T = document.getElementById('hi').value.trim(); pushHistory(); } }); });
 
   function scopePanel({title, renderControls, applyPiece, applyHere}){
     openPanel({
       title,
-      body: renderControls() + '<small>Appliquer à :</small><div class="scope-row"><button class="k" id="scope-piece">Tout le morceau</button><button class="k primary" id="scope-here">À partir de la mesure ' + (state.sel.m+1) + '</button></div>',
+      body: renderControls() + '<small>Appliquer à :</small><div class="scope-row"><button class="k" id="scope-cancel">Annuler</button><button class="k" id="scope-piece">Tout</button><button class="k primary" id="scope-here">Mesure ' + (state.sel.m+1) + '+</button></div>',
       hideActions: true,
       onMount: ()=>{
         if(typeof renderControls.mount === 'function') renderControls.mount();
-        document.getElementById('scope-piece').addEventListener('click', ()=>{ applyPiece(); closePanel(); render(); });
-        document.getElementById('scope-here').addEventListener('click', ()=>{ applyHere(); closePanel(); render(); });
+        document.getElementById('scope-cancel').addEventListener('click', ()=>{ closePanel(); });
+        document.getElementById('scope-piece').addEventListener('click', ()=>{ applyPiece(); pushHistory(); closePanel(); render(); });
+        document.getElementById('scope-here').addEventListener('click', ()=>{ applyHere(); pushHistory(); closePanel(); render(); });
       },
     });
   }
@@ -618,7 +1037,6 @@
   document.querySelector('[data-hdr="M"]').addEventListener('click', ()=>{
     const cur = meterAt(state.sel.m); const {num, den} = parseMeter(cur);
     let n = num, d = den; const denValues = [1,2,4,8,16];
-    // Also expose L: stepper here (piece-wide)
     let unitDenom = parseInt(state.pieceUnit.split('/')[1], 10);
     const unitDenoms = [1,2,4,8,16,32];
     function controls(){
@@ -637,11 +1055,10 @@
       document.getElementById('L-d').addEventListener('click', ()=>{ const i = unitDenoms.indexOf(unitDenom); if(i>0){ unitDenom = unitDenoms[i-1]; upd(); } });
     };
     scopePanel({
-      title:'Métrique M: et unité L:',
+      title:'Rythme',
       renderControls: controls,
       applyPiece: ()=>{ state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom; state.timeChanges = {}; rebuildMeasures(); },
       applyHere: ()=>{
-        // L: is piece-wide in ABC; we still update it
         state.pieceUnit = '1/' + unitDenom;
         const newMeter = n + '/' + d;
         state.timeChanges[state.sel.m] = newMeter;
@@ -656,7 +1073,7 @@
     const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + (s === 1 ? ' dièse' : ' dièses'); return Math.abs(s) + (Math.abs(s) === 1 ? ' bémol' : ' bémols'); };
     function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭ −</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯ +</button></div>'); }
     controls.mount = function(){ const upd = ()=>{ document.getElementById('sig-v').textContent = labelOf(sig); }; document.getElementById('sig-u').addEventListener('click', ()=>{ sig = Math.min(7, sig+1); upd(); }); document.getElementById('sig-d').addEventListener('click', ()=>{ sig = Math.max(-7, sig-1); upd(); }); };
-    scopePanel({ title:'Tonalité (armure)', renderControls: controls, applyPiece: ()=>{ state.pieceKeySig = sig; state.keyChanges = {}; }, applyHere: ()=>{ state.keyChanges[state.sel.m] = sig; }, });
+    scopePanel({ title:'Armure', renderControls: controls, applyPiece: ()=>{ state.pieceKeySig = sig; state.keyChanges = {}; }, applyHere: ()=>{ state.keyChanges[state.sel.m] = sig; }, });
   });
 
   document.querySelector('[data-hdr="CLEF"]').addEventListener('click', ()=>{
@@ -667,6 +1084,7 @@
   });
 
   rebuildMeasures();
+  pushHistory();
   render();
 })();
 </script>
