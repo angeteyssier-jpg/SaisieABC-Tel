@@ -1,7 +1,7 @@
 <style>
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
   .abc-app, .abc-app * { box-sizing: border-box; }
-  .abc-app { width: 100%; max-width: 100vw; padding: 6px 6px 90px 6px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f5f4ef; border-radius: 10px; position: relative; }
+  .abc-app { width: 100%; max-width: 100vw; padding: 6px 6px 90px 6px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f5f4ef; border-radius: 10px; position: relative; overflow-x: hidden; }
   .abc-app.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 9999; overflow-y: auto; padding-bottom: 110px; }
   .abc-app.viewmode .edit-only { display: none !important; }
   .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
@@ -15,36 +15,39 @@
   .abc-text { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; padding: 6px 8px; max-height: 130px; overflow: auto; white-space: pre; color: #1a1a1a; line-height: 1.5; border-top: 1px solid #d8d6ce; }
   .abc-text.collapsed { display: none; }
   .abc-text .sel { background: #fcebeb; color: #791f1f; padding: 0 1px; border-radius: 2px; }
-  .abc-app button.k { display: block; width: 100%; height: 36px; padding: 0 2px; background: #ffffff; border: 1px solid #b4b2a9; border-radius: 6px; font-family: inherit; font-size: 13px; font-weight: 500; color: #1a1a1a; cursor: pointer; text-align: center; line-height: 34px; -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none; }
+  .abc-app button.k { display: block; width: 100%; height: 34px; padding: 0 2px; background: #ffffff; border: 1px solid #b4b2a9; border-radius: 6px; font-family: inherit; font-size: 12px; font-weight: 500; color: #1a1a1a; cursor: pointer; text-align: center; line-height: 32px; -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none; min-width: 0; }
   .abc-app button.k:active { background: #e8e6df; }
   .abc-app button.k:disabled { color: #bbb8a8; background: #f3f1ea; cursor: not-allowed; }
   .abc-app button.k.active { background: #e6f1fb; border-color: #378add; color: #0c447c; }
-  .abc-app button.k.symbol { font-size: 18px; font-family: "Times New Roman", serif; }
-  .abc-app button.k.tiny { height: 30px; line-height: 28px; font-size: 11px; }
+  .abc-app button.k.symbol { font-size: 17px; font-family: "Times New Roman", serif; }
+  .abc-app button.k.tiny { height: 28px; line-height: 26px; font-size: 11px; }
   .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
-  .abc-app button.k.danger { background: #c34536; border-color: #c34536; color: #ffffff; }
-  .header-row { display: grid; grid-template-columns: 36px 36px 1fr 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
-  .file-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 6px; }
-  .undo-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 6px; }
-  .repeat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px; }
-  .extra-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 6px; }
-  .keypad { display: grid; grid-template-columns: 56px 1fr 96px; gap: 6px; align-items: start; margin-bottom: 6px; }
-  .col > .k { margin-bottom: 4px; }
+  .header-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 5px; }
+  .file-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 5px; }
+  .undo-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin-bottom: 5px; }
+  .extra-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 5px; }
+  .repeat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 5px; }
+  .keypad { display: grid; grid-template-columns: 50px 1fr 86px; gap: 4px; align-items: start; margin-bottom: 6px; }
+  .col > .k { margin-bottom: 3px; }
   .col > .k:last-child { margin-bottom: 0; }
   .center-pad > * { margin-bottom: 4px; }
-  .meas-ctrl { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; align-items: center; background: #ebe9e0; padding: 4px; border-radius: 6px; }
-  .meas-ctrl .label { font-size: 10px; color: #5f5e5a; text-align: center; line-height: 1.2; }
+  .meas-ctrl { display: grid; grid-template-columns: auto auto 1fr auto auto; gap: 2px; align-items: center; background: #ebe9e0; padding: 4px; border-radius: 6px; }
+  .meas-ctrl .label { font-size: 10px; color: #5f5e5a; text-align: center; line-height: 1.1; padding: 0 4px; }
   .meas-ctrl b { font-weight: 500; color: #1a1a1a; }
-  .ctx-info { background: #f3f1ea; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px 6px; font-size: 10px; color: #5f5e5a; line-height: 1.4; text-align: center; }
+  .meas-ctrl .k.tiny { padding: 0; min-width: 28px; }
+  .oct-ctrl { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; align-items: center; background: #ebe9e0; padding: 4px; border-radius: 6px; }
+  .oct-ctrl .label { font-size: 10px; color: #5f5e5a; text-align: center; line-height: 1.2; }
+  .oct-ctrl b { font-weight: 500; color: #1a1a1a; }
+  .ctx-info { background: #f3f1ea; border: 1px solid #d8d6ce; border-radius: 6px; padding: 3px 4px; font-size: 9px; color: #5f5e5a; line-height: 1.3; text-align: center; }
   .ctx-info b { color: #1a1a1a; font-weight: 500; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
-  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 4px; }
-  .bottom-bar { position: sticky; bottom: 0; left: 0; right: 0; background: #f5f4ef; border-top: 1px solid #d8d6ce; padding: 6px 4px; display: grid; grid-template-columns: auto auto 1fr 1fr 1fr 1fr 1fr 1fr auto; gap: 4px; align-items: center; margin: 6px -6px -90px -6px; z-index: 10; }
-  .bottom-bar .center-cell { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #5f5e5a; background: #ebe9e0; border-radius: 6px; padding: 0 4px; height: 30px; }
-  .bottom-bar .center-cell b { color: #1a1a1a; margin-left: 4px; }
-  .bottom-bar button.k { height: 30px; line-height: 28px; font-size: 12px; padding: 0 6px; min-width: 32px; width: auto; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 3px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; margin-bottom: 3px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 3px; }
+  .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #f5f4ef; border-top: 1px solid #d8d6ce; padding: 4px; display: grid; grid-template-columns: 36px 36px 32px 1fr 32px 32px 1fr 32px 36px; gap: 3px; align-items: center; z-index: 10; }
+  .bottom-bar .center-cell { display: flex; align-items: center; justify-content: center; font-size: 10px; color: #5f5e5a; background: #ebe9e0; border-radius: 5px; padding: 0 3px; height: 28px; }
+  .bottom-bar .center-cell b { color: #1a1a1a; margin-left: 2px; font-size: 11px; }
+  .bottom-bar button.k { height: 28px; line-height: 26px; font-size: 11px; padding: 0 4px; min-width: 0; width: 100%; }
   .panel { background: #e6f1fb; border: 1px solid #378add; border-radius: 8px; padding: 8px; margin-bottom: 8px; display: none; max-height: 70vh; overflow-y: auto; }
   .panel.open { display: block; }
   .panel .title { font-size: 11px; color: #0c447c; font-weight: 500; margin-bottom: 6px; }
@@ -53,7 +56,7 @@
   .panel textarea { width: 100%; min-height: 120px; }
   .panel .field-label { font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; min-width: 24px; }
   .panel .actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; margin-top: 6px; }
-  .panel .actions .k { width: auto; padding: 0 12px; height: 30px; line-height: 28px; font-size: 12px; }
+  .panel .actions .k { width: auto; padding: 0 12px; height: 30px; line-height: 28px; font-size: 12px; min-width: 0; }
   .panel .stepper { display: grid; grid-template-columns: 36px 1fr 36px; gap: 6px; align-items: center; margin-bottom: 6px; }
   .panel .stepper .val { text-align: center; font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; }
   .panel small { display: block; color: #5f5e5a; font-size: 10px; margin-bottom: 6px; }
@@ -61,14 +64,13 @@
   .panel .save-list .item { padding: 6px 8px; border-bottom: 1px solid #ebe9e0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; cursor: pointer; }
   .panel .save-list .item:hover { background: #f1efe8; }
   .panel .save-list .item .del { color: #c34536; font-size: 14px; padding: 0 6px; cursor: pointer; }
-  .chord-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 6px; }
-  .chord-grid .k { font-size: 11px; height: 30px; line-height: 28px; }
+  .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 6px; }
+  .chord-grid .k { font-size: 11px; height: 28px; line-height: 26px; }
   .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 6px; }
-  .root-grid .k { font-size: 11px; height: 30px; line-height: 28px; }
+  .root-grid .k { font-size: 11px; height: 28px; line-height: 26px; }
 </style>
 
 <div class="abc-app" id="app">
-  <h2 class="sr-only">Éditeur ABC mobile</h2>
   <div class="panel" id="panel">
     <div class="title" id="panel-title">Édition</div>
     <div id="panel-body"></div>
@@ -92,15 +94,15 @@
     <button class="k tiny" data-hdr="M">Rythme</button>
     <button class="k tiny" data-hdr="K">Armure</button>
     <button class="k tiny" data-hdr="CLEF">Clé</button>
-    <button class="k tiny" id="btn-add-meas">+ Mes</button>
+    <button class="k tiny" id="btn-disarm" title="désarmer (armure → altérations explicites)">K→♯</button>
   </div>
 
   <div class="file-row edit-only">
-    <button class="k tiny" id="btn-new" title="nouveau">📄 Nouv</button>
-    <button class="k tiny" id="btn-open-file" title="ouvrir .abc">📂 Ouv</button>
-    <button class="k tiny" id="btn-save-file" title="sauver .abc">💾 Sauv</button>
-    <button class="k tiny" id="btn-saves" title="sauvegardes locales">⭐ Mémo</button>
-    <button class="k tiny" id="btn-export" title="exporter ABC">⇣ ABC</button>
+    <button class="k tiny" id="btn-new">📄 Nouv</button>
+    <button class="k tiny" id="btn-open-file">📂 Ouv</button>
+    <button class="k tiny" id="btn-save-file">💾 Sauv</button>
+    <button class="k tiny" id="btn-saves">⭐ Mémo</button>
+    <button class="k tiny" id="btn-export">⇣ ABC</button>
   </div>
 
   <div class="undo-row edit-only">
@@ -109,13 +111,14 @@
     <button class="k tiny" id="btn-redo" title="refaire">↷</button>
     <button class="k tiny" id="btn-trans-down" title="transposer ½ ton ↓">−½</button>
     <button class="k tiny" id="btn-trans-up" title="transposer ½ ton ↑">+½</button>
-    <button class="k tiny" id="btn-triplet" title="triolet sur note active">3:2</button>
+    <button class="k tiny" id="btn-tuplet" title="N-uplets">3:2</button>
   </div>
 
   <div class="extra-row edit-only">
-    <button class="k tiny" id="btn-chord" title="accord">"Cm"</button>
-    <button class="k tiny" id="btn-orn" title="ornement">~T.</button>
+    <button class="k tiny" id="btn-chord">"Cm"</button>
+    <button class="k tiny" id="btn-orn">~T.</button>
     <button class="k tiny" id="btn-tie" title="lier à la note suivante">⌒</button>
+    <button class="k tiny" id="btn-rest">→ Silence</button>
   </div>
 
   <div class="keypad edit-only">
@@ -123,22 +126,24 @@
       <button class="k" id="cur-prev" title="slot précédent">◀</button>
     </div>
     <div class="col center-pad">
-      <div class="meas-ctrl">
+      <div class="oct-ctrl">
         <button class="k tiny" id="oct-down">▽</button>
         <div class="label">Oct<br><b id="oct-val">0</b></div>
         <button class="k tiny" id="oct-up">△</button>
       </div>
       <div class="meas-ctrl">
+        <button class="k tiny" id="meas-del" title="supprimer la mesure">⊟</button>
         <button class="k tiny" id="meas-prev">◀</button>
         <div class="label">Mes<br><b id="meas-pos">1</b></div>
         <button class="k tiny" id="meas-next">▶</button>
+        <button class="k tiny" id="meas-add" title="ajouter mesure à droite">⊞</button>
       </div>
-      <div class="ctx-info" id="ctx-info">M: <b>4/4</b> · L: <b>1/4</b> · K: <b>0</b> · Clé <b>Sol</b></div>
+      <div class="ctx-info" id="ctx-info">M: <b>4/4</b></div>
       <div class="repeat-row" style="margin-bottom:0;">
-        <button class="k tiny" id="btn-rep-start" title="début reprise">𝄆</button>
-        <button class="k tiny" id="btn-rep-end" title="fin reprise">𝄇</button>
-        <button class="k tiny" id="btn-volta1" title="volta 1">|1</button>
-        <button class="k tiny" id="btn-volta2" title="volta 2">|2</button>
+        <button class="k tiny" id="btn-rep-start">𝄆</button>
+        <button class="k tiny" id="btn-rep-end">𝄇</button>
+        <button class="k tiny" id="btn-volta1">|1</button>
+        <button class="k tiny" id="btn-volta2">|2</button>
       </div>
     </div>
     <div class="col">
@@ -146,7 +151,6 @@
       <div class="grid2" id="dur-pad"></div>
       <div class="grid3" id="alt-pad"></div>
       <button class="k symbol" id="dot-btn" title="point sur le slot actif">♩·</button>
-      <button class="k tiny" id="btn-rest" style="margin-top:4px;">→ Silence</button>
     </div>
   </div>
 
@@ -161,13 +165,13 @@
   <div class="bottom-bar">
     <button class="k" id="btn-play">▶</button>
     <button class="k" id="btn-stop">■</button>
-    <button class="k" id="vol-d">🔉−</button>
+    <button class="k" id="vol-d">−</button>
     <div class="center-cell">Vol <b id="vol-v">60</b></div>
-    <button class="k" id="vol-u">🔊+</button>
+    <button class="k" id="vol-u">+</button>
     <button class="k" id="tempo-d">−</button>
     <div class="center-cell">♩ <b id="tempo-v">100</b></div>
     <button class="k" id="tempo-u">+</button>
-    <button class="k" id="btn-viewmode" title="affichage seul">👁</button>
+    <button class="k" id="btn-viewmode">👁</button>
   </div>
 </div>
 
@@ -180,7 +184,6 @@
   const DURATIONS = [{label:'𝅗𝅥',d:2},{label:'♩',d:1},{label:'♪',d:0.5},{label:'♬',d:0.25}];
   const SHARP_NOTES = ['F','C','G','D','A','E','B'];
   const FLAT_NOTES  = ['B','E','A','D','G','C','F'];
-  // ABC ornament codes mapped to display labels
   const ORNAMENTS = [
     {code:'T', label:'tr'}, {code:'M', label:'~M'}, {code:'P', label:'pralle'},
     {code:'H', label:'fermata'}, {code:'L', label:'accent'}, {code:'.', label:'staccato'},
@@ -264,9 +267,7 @@
   }
 
   function rebalanceMeasure(m, anchorIdx, oldEffDur){
-    const meter = meterAt(m);
-    const {den} = parseMeter(meter);
-    const beat = 4/den;
+    const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
     const cap = measureCapacity(meter);
     const meas = state.measures[m];
     const anchor = meas[anchorIdx];
@@ -377,18 +378,9 @@
   }
   function slotStr(t){
     let s = '';
-    // Chord symbol comes BEFORE the note in ABC: "Cm7"C2
     if(t.chord) s += '"' + t.chord + '"';
-    // Ornaments come after chord, before pitch: e.g. "C"!trill!C
     if(t.orn && t.orn.length){
-      t.orn.forEach(o => {
-        // ABC supports both decorations like !trill! and shortcut letters T, M, etc.
-        // We'll use the !name! syntax for clarity — but simpler letter shortcuts are also fine.
-        // Use shortcut letters for the simple ones.
-        if('TMPHLRuv'.includes(o)) s += o;
-        else if(o === '.') s += '.';
-        else s += '!' + o + '!';
-      });
+      t.orn.forEach(o => { if('TMPHLRuv'.includes(o)) s += o; else if(o === '.') s += '.'; else s += '!' + o + '!'; });
     }
     if(t.type === 'note'){
       s += t.acc || '';
@@ -423,15 +415,29 @@
     });
   }
 
-  // ===== Transposition (semitones) =====
-  // Convert (note,octave,acc) → midi → back to (note,octave,acc) preserving as much as possible.
-  // For simplicity we use a fixed pitch class table.
+  // Désarmer: l'armure est traduite en altérations explicites
+  function disarmKey(){
+    state.measures.forEach((meas, mi)=>{
+      const sig = keyAt(mi);
+      meas.forEach(slot=>{
+        if(slot.type !== 'note') return;
+        // Si la note n'a pas d'altération explicite mais que l'armure en applique une, la rendre explicite
+        if(!slot.acc){
+          if(sig > 0 && SHARP_NOTES.slice(0, sig).includes(slot.note)) slot.acc = '^';
+          else if(sig < 0 && FLAT_NOTES.slice(0, -sig).includes(slot.note)) slot.acc = '_';
+        }
+      });
+    });
+    state.pieceKeySig = 0;
+    state.keyChanges = {};
+  }
+
   const NOTE_NAMES = ['C','C','D','D','E','F','F','G','G','A','A','B'];
   const NOTE_ACCS  = ['',  '^','',  '^','',  '',  '^','',  '^','',  '^','' ];
   const NOTE_NAMES_FLAT = ['C','D','D','E','E','F','G','G','A','A','B','B'];
   const NOTE_ACCS_FLAT  = ['',  '_','',  '_','',  '',  '_','',  '_','',  '_','' ];
   function midiToNote(midi, preferFlats){
-    const oct = Math.floor(midi/12) - 5; // C4 (midi 60) → octave 0 (since C4 = 60, 60/12=5, oct=0)
+    const oct = Math.floor(midi/12) - 5;
     const pc = ((midi % 12) + 12) % 12;
     const names = preferFlats ? NOTE_NAMES_FLAT : NOTE_NAMES;
     const accs  = preferFlats ? NOTE_ACCS_FLAT  : NOTE_ACCS;
@@ -442,7 +448,7 @@
     let midi = 60 + baseSemi + slot.octave * 12;
     if(slot.acc === '^') midi += 1;
     else if(slot.acc === '_') midi -= 1;
-    else if(slot.acc === '=') {/* natural, no change */}
+    else if(slot.acc === '=') {}
     else {
       if(sig > 0 && SHARP_NOTES.slice(0,sig).includes(slot.note)) midi += 1;
       else if(sig < 0 && FLAT_NOTES.slice(0,-sig).includes(slot.note)) midi -= 1;
@@ -450,7 +456,7 @@
     return midi;
   }
   function transposePiece(semitones){
-    const preferFlats = state.pieceKeySig < 0; // simple heuristic
+    const preferFlats = state.pieceKeySig < 0;
     state.measures.forEach((meas, mi)=>{
       const sig = keyAt(mi);
       meas.forEach(slot=>{
@@ -458,10 +464,7 @@
         const oldMidi = midiOfSlot(slot, sig);
         const newMidi = oldMidi + semitones;
         const out = midiToNote(newMidi, preferFlats);
-        slot.note = out.note;
-        slot.octave = out.octave;
-        // Set acc explicitly; but if it's already in the armure, cleanup will remove it
-        slot.acc = out.acc;
+        slot.note = out.note; slot.octave = out.octave; slot.acc = out.acc;
       });
     });
     cleanupAccidentals();
@@ -510,13 +513,13 @@
       const groups = computeBeamGroups(m, meterAt(mi));
       const groupOf = {};
       groups.forEach((g, gi)=>{ g.forEach((idx, k)=>{ groupOf[idx] = {gi, pos:k, len:g.length}; }); });
-      // tuplet rendering: emit (3 prefix on first triplet member
-      let tupletState = null;
+      let lastTuplet = null;
       m.forEach((t, si)=>{
-        if(t.tuplet && (!tupletState || tupletState.startIdx + tupletState.size <= si)){
-          tupletState = { startIdx: si, size: t.tuplet };
+        if(t.tuplet && t.tuplet !== lastTuplet){
           body += '(' + t.tuplet;
+          lastTuplet = t.tuplet;
         }
+        if(!t.tuplet) lastTuplet = null;
         const s = slotStr(t);
         const cell = (mi === state.sel.m && si === state.sel.s) ? '<span class="sel">' + s + '</span>' : s;
         body += cell;
@@ -533,6 +536,377 @@
     document.getElementById('abc-out').innerHTML = header + body;
   }
 
+  // ============================================================
+  // ====== ABC PARSER ==========================================
+  // ============================================================
+  // Parses an ABC text into our internal state. Handles:
+  // - Headers X T M L Q K (with clef= suffix)
+  // - Body: notes (CDEFGAB / cdefgab), octave marks ' and ,
+  // - Accidentals ^ _ = (and ^^ __)
+  // - Durations: numerator, /N, num/N, lone /
+  // - Rests z and Z (Z = whole-measure rest)
+  // - Bar lines | || :| |: :|: ::
+  // - Voltas [1, [2 or |1, |2
+  // - Inline headers [M:6/8] [K:G clef=bass] [L:1/8]
+  // - Chord symbols "Cm7"
+  // - Decorations !name! and shortcut letters T M P H L .
+  // - Ties -
+  // - Tuplets (3, (5:5:5, etc. (start of tuplet group with N notes)
+  // Ignores unknown tokens.
+  function parseAbcText(text){
+    // First clean the text: strip comments (% to end of line), join continuation lines
+    const cleaned = text.split(/\r?\n/).map(line => {
+      const m = line.match(/^(.*?)(?:%.*)?$/);
+      return m ? m[1] : line;
+    });
+    // Headers come first; body starts after K: header
+    const newState = {
+      headers: {X:'1', T:''},
+      pieceMeter: '4/4', pieceUnit: '1/4', pieceKeySig: 0, pieceClef: 'treble',
+      measures: [],
+      timeChanges: {}, keyChanges: {}, clefChanges: {}, repeats: {},
+      tempo: 100, sel: {m:0, s:0}, octave: 0,
+      volume: state.volume,
+    };
+    let inBody = false;
+    let bodyText = '';
+    for(const line of cleaned){
+      const trimmed = line.trim();
+      if(!inBody){
+        const m = trimmed.match(/^([A-Z]):\s*(.*)$/);
+        if(m){
+          const k = m[1]; const v = m[2].trim();
+          if(k === 'X') newState.headers.X = v;
+          else if(k === 'T') newState.headers.T = v;
+          else if(k === 'M') newState.pieceMeter = v;
+          else if(k === 'L') newState.pieceUnit = v;
+          else if(k === 'Q'){
+            const qm = v.match(/=(\d+)/);
+            if(qm) newState.tempo = parseInt(qm[1],10);
+          }
+          else if(k === 'K'){
+            const kkm = parseKeyDef(v);
+            newState.pieceKeySig = kkm.sig;
+            newState.pieceClef = kkm.clef;
+            inBody = true;
+          }
+          continue;
+        }
+        // Other header lines (e.g. C: composer) are ignored
+        continue;
+      }
+      bodyText += ' ' + trimmed;
+    }
+    if(!inBody) return null; // no K: found, abort
+    // Now parse the body
+    parseAbcBody(bodyText, newState);
+    return newState;
+  }
+
+  // Parse a key definition string like "G", "Cm", "Bbm", "G clef=bass", "F# minor"
+  function parseKeyDef(s){
+    s = s.trim();
+    let sig = 0; let clef = 'treble';
+    const clefMatch = s.match(/clef=(\S+)/);
+    if(clefMatch){
+      const c = clefMatch[1];
+      if(c === 'bass' || c === 'F') clef = 'bass';
+      else if(c === 'treble-8' || c === 'treble_8') clef = 'treble8';
+      s = s.replace(clefMatch[0],'').trim();
+    }
+    // Parse the key name
+    const km = s.match(/^([A-G])([#b]?)(.*)$/);
+    if(km){
+      const root = km[1]; const acc = km[2]; const mode = (km[3] || '').toLowerCase().trim();
+      // Major keys
+      const majorSig = {'C':0,'G':1,'D':2,'A':3,'E':4,'B':5,'F#':6,'C#':7,'F':-1,'Bb':-2,'Eb':-3,'Ab':-4,'Db':-5,'Gb':-6,'Cb':-7};
+      let baseSig = majorSig[root + acc];
+      if(baseSig === undefined){
+        // Try without accidental
+        baseSig = majorSig[root] || 0;
+        if(acc === '#') baseSig += 7;
+        else if(acc === 'b') baseSig -= 7;
+      }
+      sig = baseSig;
+      // Apply mode: minor = -3, dorian = -2, phrygian = -4, lydian = +1, mixolydian = -1, aeolian = -3, locrian = -5
+      if(mode.startsWith('m') && !mode.startsWith('maj') && !mode.startsWith('mix')) sig -= 3;
+      else if(mode.startsWith('dor')) sig -= 2;
+      else if(mode.startsWith('phr')) sig -= 4;
+      else if(mode.startsWith('lyd')) sig += 1;
+      else if(mode.startsWith('mix')) sig -= 1;
+      else if(mode.startsWith('aeo')) sig -= 3;
+      else if(mode.startsWith('loc')) sig -= 5;
+    } else if(s.toLowerCase().startsWith('none') || s.toLowerCase().startsWith('hp')){
+      sig = 0;
+    }
+    return {sig: Math.max(-7, Math.min(7, sig)), clef};
+  }
+
+  function parseAbcBody(body, ns){
+    // Tokenize the body
+    let i = 0;
+    let curMeasure = [];
+    let mIdx = 0;
+    let lastChord = null;
+    let pendingOrn = [];
+    let pendingTuplet = null; // {n, remaining}
+    let prevSlotForTie = null; // slot that has tieToNext set, awaiting partner
+    const measures = ns.measures;
+
+    function flushMeasure(){
+      if(curMeasure.length > 0){
+        measures.push(curMeasure);
+        // Pad/trim to capacity? Better: leave as-is, the import handler will normalize
+        curMeasure = [];
+        mIdx++;
+      }
+    }
+    function unitMult(){
+      const m = ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);
+      if(!m) return 1;
+      return parseInt(m[1],10) / 4;
+    }
+
+    while(i < body.length){
+      const c = body[i];
+      // Whitespace
+      if(/\s/.test(c)){ i++; continue; }
+      // Comments
+      if(c === '%'){ while(i < body.length && body[i] !== '\n') i++; continue; }
+      // Inline headers [M: [K: [L:
+      if(c === '[' && body[i+1] && body[i+1].match(/[A-Z]/) && body[i+2] === ':'){
+        const end = body.indexOf(']', i);
+        if(end < 0){ i++; continue; }
+        const inner = body.substring(i+1, end);
+        const m = inner.match(/^([A-Z]):\s*(.*)$/);
+        if(m){
+          const k = m[1]; const v = m[2].trim();
+          if(k === 'M') ns.timeChanges[mIdx + (curMeasure.length > 0 ? 1 : 0)] = v;
+          else if(k === 'L') ns.pieceUnit = v;
+          else if(k === 'K'){
+            const kdef = parseKeyDef(v);
+            const targetIdx = mIdx + (curMeasure.length > 0 ? 1 : 0);
+            ns.keyChanges[targetIdx] = kdef.sig;
+            if(kdef.clef !== 'treble') ns.clefChanges[targetIdx] = kdef.clef;
+          }
+        }
+        i = end + 1; continue;
+      }
+      // Voltas: [1 or [2 (and standalone "1." after a bar)
+      if(c === '[' && body[i+1] && /[1-9]/.test(body[i+1])){
+        const v = parseInt(body[i+1], 10);
+        if(!ns.repeats[mIdx + (curMeasure.length === 0 ? 0 : 1)]) ns.repeats[mIdx + (curMeasure.length === 0 ? 0 : 1)] = {};
+        ns.repeats[mIdx + (curMeasure.length === 0 ? 0 : 1)].volta = v;
+        i += 2; continue;
+      }
+      // Chord symbol
+      if(c === '"'){
+        const end = body.indexOf('"', i+1);
+        if(end < 0){ i++; continue; }
+        const ch = body.substring(i+1, end);
+        // Skip annotation prefixes ^ _ < > @
+        const cleanCh = ch.replace(/^[\^_<>@]/, '');
+        if(cleanCh && /^[A-G]/.test(cleanCh)) lastChord = cleanCh;
+        i = end + 1; continue;
+      }
+      // Decoration !name!
+      if(c === '!'){
+        const end = body.indexOf('!', i+1);
+        if(end < 0){ i++; continue; }
+        const name = body.substring(i+1, end);
+        // Map to ornament code
+        const knownMap = {'trill':'T','turn':'P','fermata':'H','accent':'L','staccato':'.','upbow':'u','downbow':'v','coda':'O'};
+        const code = knownMap[name] || name;
+        pendingOrn.push(code);
+        i = end + 1; continue;
+      }
+      // Shortcut decorations: . T M P H L u v
+      if('.TMHLuv'.includes(c) && (i === 0 || !/[A-Ga-gz0-9]/.test(body[i-1]))){
+        // Only treat as decoration if followed by a note-starting char
+        const next = body[i+1];
+        if(next && /[\^_=A-Ga-gz]/.test(next)){
+          pendingOrn.push(c);
+          i++; continue;
+        }
+      }
+      // Tuplet: (3 or (3:2:3 etc.
+      if(c === '(' && body[i+1] && /[2-9]/.test(body[i+1])){
+        const n = parseInt(body[i+1], 10);
+        // Skip optional ratio like (3:2:3
+        let j = i + 2;
+        let take = n;
+        if(body[j] === ':'){
+          j++;
+          const nm = body.substring(j).match(/^(\d+)?(?::(\d+))?/);
+          if(nm){
+            // nm[1] = ratio q, nm[2] = number of notes r
+            j += (nm[0] || '').length;
+            if(nm[2]) take = parseInt(nm[2],10);
+          }
+        }
+        pendingTuplet = { n: n, remaining: take };
+        i = j; continue;
+      }
+      // Bar lines: |: :| :|: || | (also handle .| for invisible bars but rare)
+      if(c === ':' || c === '|'){
+        // Try to match the longest barline construct
+        let j = i; let bar = '';
+        while(j < body.length && (body[j] === '|' || body[j] === ':')){ bar += body[j]; j++; }
+        // Determine repeat marks
+        // If bar contains ":|" → end repeat on current measure (mIdx)
+        // If bar contains "|:" → start repeat on next measure
+        const endRepeat = /:\|/.test(bar);
+        const startRepeat = /\|:/.test(bar);
+        if(curMeasure.length > 0){
+          if(endRepeat){ if(!ns.repeats[mIdx]) ns.repeats[mIdx] = {}; ns.repeats[mIdx].end = true; }
+          flushMeasure();
+        }
+        if(startRepeat){ if(!ns.repeats[mIdx]) ns.repeats[mIdx] = {}; ns.repeats[mIdx].start = true; }
+        // Volta marker after bar: |1 or |2 (already handled by [1)
+        if(j < body.length && /[1-9]/.test(body[j])){
+          const v = parseInt(body[j], 10);
+          if(!ns.repeats[mIdx]) ns.repeats[mIdx] = {};
+          ns.repeats[mIdx].volta = v;
+          j++;
+        }
+        i = j; continue;
+      }
+      // Note or rest
+      // Accidentals
+      let acc = '';
+      while(i < body.length && (body[i] === '^' || body[i] === '_' || body[i] === '=')){
+        if(body[i] === '^') acc = (acc === '^' ? '^^' : '^');
+        else if(body[i] === '_') acc = (acc === '_' ? '__' : '_');
+        else if(body[i] === '=') acc = '=';
+        i++;
+      }
+      if(i >= body.length) break;
+      const ch = body[i];
+      // Note pitch
+      if(/[A-Ga-g]/.test(ch)){
+        let note = ch.toUpperCase();
+        let octave = (ch === ch.toLowerCase()) ? 1 : 0;
+        i++;
+        while(i < body.length && (body[i] === "'" || body[i] === ',')){
+          if(body[i] === "'") octave++;
+          else octave--;
+          i++;
+        }
+        // Duration
+        let durSpec = '';
+        while(i < body.length && /[\d/]/.test(body[i])){ durSpec += body[i]; i++; }
+        // Tie
+        let tie = false;
+        if(body[i] === '-'){ tie = true; i++; }
+        // Convert duration spec → quarter units (relative to L:)
+        const factor = parseDurationSpec(durSpec); // multiplicateur de l'unité L:
+        // L: gives quarter units = factor / unitMult()
+        const quarterDur = factor / unitMult();
+        // Detect dot? In ABC, dotted notes use 3/2 or 3/4 etc., not a separate '.'.
+        // We attempt to detect "dotted" for nicer rendering: if quarterDur is 1.5x of a power of 2.
+        let dur = quarterDur, dot = false;
+        const trial = quarterDur * 2 / 3;
+        if(Math.abs(Math.round(Math.log2(trial)) - Math.log2(trial)) < 1e-6 && trial >= 0.125 && trial <= 4){
+          dur = trial; dot = true;
+        }
+        const slot = {type:'note', note, octave, dur, dot};
+        if(acc) slot.acc = acc.length > 1 ? acc[0] : acc;
+        if(tie) slot.tieToNext = true;
+        if(lastChord){ slot.chord = lastChord; lastChord = null; }
+        if(pendingOrn.length){ slot.orn = pendingOrn.slice(); pendingOrn = []; }
+        if(pendingTuplet && pendingTuplet.remaining > 0){
+          slot.tuplet = pendingTuplet.n;
+          pendingTuplet.remaining--;
+          if(pendingTuplet.remaining === 0) pendingTuplet = null;
+        }
+        curMeasure.push(slot);
+        continue;
+      }
+      // Rest
+      if(ch === 'z' || ch === 'Z'){
+        i++;
+        let durSpec = '';
+        while(i < body.length && /[\d/]/.test(body[i])){ durSpec += body[i]; i++; }
+        const factor = parseDurationSpec(durSpec);
+        const quarterDur = (ch === 'Z') ? measureCapacity(ns.pieceMeter) : (factor / unitMult());
+        let dur = quarterDur, dot = false;
+        const trial = quarterDur * 2 / 3;
+        if(Math.abs(Math.round(Math.log2(trial)) - Math.log2(trial)) < 1e-6 && trial >= 0.125 && trial <= 4){
+          dur = trial; dot = true;
+        }
+        const slot = {type:'rest', dur, dot};
+        if(pendingTuplet && pendingTuplet.remaining > 0){
+          slot.tuplet = pendingTuplet.n;
+          pendingTuplet.remaining--;
+          if(pendingTuplet.remaining === 0) pendingTuplet = null;
+        }
+        curMeasure.push(slot);
+        continue;
+      }
+      // Unknown character — skip
+      i++;
+    }
+    if(curMeasure.length > 0) measures.push(curMeasure);
+
+    // After parse: ensure each measure fits its capacity (truncate or pad)
+    // and recompute timeChanges so that referenced indices exist
+    measures.forEach((meas, mi) => {
+      // Compute used duration
+      let used = 0;
+      for(const s of meas) used += effDur(s);
+      // Determine local meter
+      let localMeter = ns.pieceMeter;
+      for(let k=0; k<=mi; k++){ if(ns.timeChanges[k]) localMeter = ns.timeChanges[k]; }
+      const cap = measureCapacity(localMeter);
+      if(used < cap - 1e-6){
+        // Pad with rests
+        const beat = 4 / parseMeter(localMeter).den;
+        const tail = splitDurationByBeat(used, cap - used, beat).map(p => ({type:'rest', dur:p.dur, dot:p.dot}));
+        meas.push(...tail);
+      } else if(used > cap + 1e-6){
+        // Truncate
+        let acc = 0; let cutAt = meas.length;
+        for(let k=0; k<meas.length; k++){
+          const d = effDur(meas[k]);
+          if(acc + d > cap + 1e-6){ cutAt = k; break; }
+          acc += d;
+        }
+        meas.splice(cutAt);
+      }
+    });
+
+    if(measures.length === 0){
+      // Empty body: add a default empty measure
+      measures.push(buildEmptyMeasure(ns.pieceMeter));
+    }
+  }
+
+  // Parse a duration spec like "2", "/2", "3/4", "3/", "/" → multiplier on L: unit
+  function parseDurationSpec(s){
+    if(s === '') return 1;
+    if(s === '/') return 0.5;
+    if(s === '//') return 0.25;
+    if(s === '///') return 0.125;
+    // Pattern: "/N" → 1/N
+    if(s.startsWith('/')){
+      const n = parseInt(s.substring(1), 10);
+      return 1 / (n || 2);
+    }
+    // Pattern: "N/M" or "N/" or "N"
+    if(s.includes('/')){
+      const [num, den] = s.split('/');
+      const n = parseInt(num, 10) || 1;
+      const d = parseInt(den, 10) || 2;
+      return n / d;
+    }
+    return parseInt(s, 10) || 1;
+  }
+
+  // ============================================================
+  // ====== END OF PARSER =======================================
+  // ============================================================
+
+  // ====== rendering ======
   const SCORE_W = 360;
   const STAFF_TOP_Y = 30, LINE_GAP = 7;
   const LEFT_PAD = 50, RIGHT_PAD = 6;
@@ -630,6 +1004,10 @@
     const ink = '#1a1a1a'; const sel = '#e24b4a'; const dim = '#888780';
     const scoreH = 30 + linesShown * 38 + 10;
     let svg = '<svg viewBox="0 0 '+SCORE_W+' '+scoreH+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">';
+
+    // Track end-of-measure tie points to draw cross-measure ties
+    const lineEndTie = {}; // lineEndTie[line] = {fromCx, fromY}
+
     for(let line=0; line<linesShown; line++){
       const staffTop = STAFF_TOP_Y + line * 38;
       const lineStartM = startM + line * MEASURES_PER_LINE;
@@ -645,21 +1023,15 @@
       for(let i=0;i<MEASURES_PER_LINE;i++){
         const mIdx = lineStartM + i;
         if(state.measures[mIdx] === undefined) continue;
-        let label = String(mIdx+1); const tags = [];
-        if(mIdx > lineStartM || (mIdx > 0 && line > 0 && mIdx === lineStartM)){
-          if(state.timeChanges[mIdx]) tags.push(state.timeChanges[mIdx]);
-          if(state.keyChanges[mIdx] !== undefined) tags.push('K' + (state.keyChanges[mIdx]>=0?'+'+state.keyChanges[mIdx]:state.keyChanges[mIdx]));
-          if(state.clefChanges[mIdx]) tags.push(clefHumanLabel(state.clefChanges[mIdx]));
-        }
-        if(tags.length) label += ' (' + tags.join(' ') + ')';
-        svg += '<text x="'+(LEFT_PAD + i*measureW + 2)+'" y="'+(staffTop-3)+'" font-size="8" fill="'+dim+'">'+label+'</text>';
         const xL = LEFT_PAD + i*measureW; const xR = LEFT_PAD + (i+1)*measureW;
+        // Repeats and voltas
         const r = state.repeats[mIdx];
         if(r){
           if(r.start){ svg += '<line x1="'+(xL+2)+'" y1="'+staffTop+'" x2="'+(xL+2)+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="2"/>'; svg += '<circle cx="'+(xL+6)+'" cy="'+(staffTop+1.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<circle cx="'+(xL+6)+'" cy="'+(staffTop+2.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; }
           if(r.end){ svg += '<circle cx="'+(xR-6)+'" cy="'+(staffTop+1.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<circle cx="'+(xR-6)+'" cy="'+(staffTop+2.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<line x1="'+(xR-2)+'" y1="'+staffTop+'" x2="'+(xR-2)+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="2"/>'; }
           if(r.volta){ const yV = staffTop - 11; svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xR-2)+'" y2="'+yV+'" stroke="'+ink+'" stroke-width="0.8"/>'; svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xL+2)+'" y2="'+(yV+4)+'" stroke="'+ink+'" stroke-width="0.8"/>'; svg += '<text x="'+(xL+5)+'" y="'+(yV+6)+'" font-size="8" fill="'+ink+'" font-weight="bold">'+r.volta+'.</text>'; }
         }
+
         const m = state.measures[mIdx];
         const x0 = LEFT_PAD + i*measureW + 10;
         const slotW = (measureW - 14) / Math.max(m.length, 1);
@@ -676,13 +1048,43 @@
           return { stemUp, beamY: extremeY, stems: stemXs };
         });
         const tiePoints = []; let prevSlot = null;
+
+        // If a previous measure's last slot has tieToNext (and we're picking up here), draw a tie
+        // We'll handle that at the start: check if the previous measure last slot has tieToNext
+        if(i > 0 || (line > 0 && i === 0)){
+          const prevMidx = mIdx - 1;
+          if(prevMidx >= 0 && state.measures[prevMidx]){
+            const prevMeas = state.measures[prevMidx];
+            const last = prevMeas[prevMeas.length-1];
+            if(last && last.tieToNext){
+              // We need the X,Y of that previous note. Approximate using its position.
+              // Same line if possible; otherwise just draw a small forward hook.
+              // Compute last slot center
+              const prevX0 = LEFT_PAD + (i === 0 ? (MEASURES_PER_LINE-1)*measureW : (i-1)*measureW) + 10;
+              const prevSlotW = (measureW - 14) / Math.max(prevMeas.length, 1);
+              const prevSlotIdx = prevMeas.length - 1;
+              const cxFrom = prevX0 + prevSlotIdx*prevSlotW + prevSlotW/2;
+              // assume same line (else skip)
+              if(i > 0){
+                const fromY = (last.type==='note') ? noteY(staffTop, stepIndex(last.note, last.octave), localClef) : staffTop + 2*LINE_GAP;
+                // tie goes to first note of current measure, if it's a note
+                const first = m[0];
+                if(first && first.type === 'note'){
+                  const cxTo = x0 + 0*slotW + slotW/2;
+                  const toY = noteY(staffTop, stepIndex(first.note, first.octave), localClef);
+                  const cy = ((fromY + toY)/2) + 6;
+                  svg += '<path d="M '+(cxFrom+3)+' '+(fromY+3)+' Q '+((cxFrom+cxTo)/2)+' '+cy+' '+(cxTo-3)+' '+(toY+3)+'" stroke="'+ink+'" stroke-width="0.9" fill="none"/>';
+                }
+              }
+            }
+          }
+        }
+
         m.forEach((t, si)=>{
           const cx = x0 + si*slotW + slotW/2;
           const isSel = (mIdx === selM && si === state.sel.s);
           const color = isSel ? sel : ink;
-          // Chord symbol above the note
           if(t.chord) svg += '<text x="'+cx+'" y="'+(staffTop - 16)+'" font-size="9" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+t.chord+'</text>';
-          // Ornament marks above the note
           if(t.orn && t.orn.length){
             const ornText = t.orn.map(o => { if(o==='T') return 'tr'; if(o==='M') return '∼'; if(o==='H') return '𝄐'; if(o==='.') return '·'; if(o==='L') return '>'; return o; }).join(' ');
             svg += '<text x="'+cx+'" y="'+(staffTop - 7)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+ornText+'</text>';
@@ -712,8 +1114,7 @@
             if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
             prevSlot = null;
           }
-          // tuplet indicator below: a small "3" centered under the start
-          if(t.tuplet && (si === 0 || !m[si-1].tuplet)){
+          if(t.tuplet && (si === 0 || !m[si-1] || !m[si-1].tuplet)){
             const groupSlots = [];
             for(let j=si; j<m.length && m[j].tuplet === t.tuplet && groupSlots.length < t.tuplet; j++) groupSlots.push(j);
             if(groupSlots.length > 0){
@@ -722,6 +1123,15 @@
               const cxMid = (cxFirst + cxLast)/2;
               svg += '<text x="'+cxMid+'" y="'+(staffTop + 5*LINE_GAP + 6)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+t.tuplet+'</text>';
             }
+          }
+          // mes label
+          if(si === 0){
+            let label = String(mIdx+1); const tags = [];
+            if(state.timeChanges[mIdx]) tags.push(state.timeChanges[mIdx]);
+            if(state.keyChanges[mIdx] !== undefined) tags.push('K' + (state.keyChanges[mIdx]>=0?'+'+state.keyChanges[mIdx]:state.keyChanges[mIdx]));
+            if(state.clefChanges[mIdx]) tags.push(clefHumanLabel(state.clefChanges[mIdx]));
+            if(tags.length) label += ' (' + tags.join(' ') + ')';
+            svg += '<text x="'+(LEFT_PAD + i*measureW + 2)+'" y="'+(staffTop-3)+'" font-size="8" fill="'+dim+'">'+label+'</text>';
           }
         });
         tiePoints.forEach(tp=>{ const cx = (tp.fromCx + tp.toCx) / 2; const cy = ((tp.fromY + tp.toY) / 2) + 6; svg += '<path d="M '+(tp.fromCx+3)+' '+(tp.fromY+3)+' Q '+cx+' '+cy+' '+(tp.toCx-3)+' '+(tp.toY+3)+'" stroke="'+ink+'" stroke-width="0.9" fill="none"/>'; });
@@ -748,7 +1158,7 @@
     document.getElementById('dot-btn').classList.toggle('active', !!(sl && sl.dot));
     const m = state.sel.m;
     const sigLabel = (s)=> s === 0 ? '0' : (s>0 ? '+'+s : ''+s);
-    document.getElementById('ctx-info').innerHTML = 'M:<b>' + meterAt(m) + '</b> · L:<b>' + state.pieceUnit + '</b> · K:<b>' + sigLabel(keyAt(m)) + '</b> · <b>' + clefHumanLabel(clefAt(m)) + '</b>';
+    document.getElementById('ctx-info').innerHTML = 'M:<b>' + meterAt(m) + '</b> L:<b>' + state.pieceUnit + '</b> K:<b>' + sigLabel(keyAt(m)) + '</b>';
     document.getElementById('tempo-v').textContent = state.tempo;
     document.getElementById('vol-v').textContent = state.volume;
     document.getElementById('btn-play').textContent = audio.playing ? '⏸' : '▶';
@@ -806,7 +1216,7 @@
       const sig = keyAt(mi);
       m.forEach((slot, si)=>{
         let dur = effDur(slot) * qDur;
-        if(slot.tuplet === 3) dur = dur * 2/3; // triolet plays at 2/3 of normal
+        if(slot.tuplet === 3) dur = dur * 2/3;
         if(slot.type === 'note'){
           const midi = midiOfNote(slot.note, slot.octave, slot.acc, sig);
           const osc = audio.ctx.createOscillator(); const gain = audio.ctx.createGain();
@@ -901,29 +1311,59 @@
   document.getElementById('btn-del').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
   document.getElementById('btn-undo').addEventListener('click', undo);
   document.getElementById('btn-redo').addEventListener('click', redo);
-
-  // Transposition
   document.getElementById('btn-trans-up').addEventListener('click', ()=>{ transposePiece(+1); pushHistory(); render(); });
   document.getElementById('btn-trans-down').addEventListener('click', ()=>{ transposePiece(-1); pushHistory(); render(); });
+  document.getElementById('btn-tie').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ sl.tieToNext = !sl.tieToNext; pushHistory(); render(); } });
+  document.getElementById('btn-disarm').addEventListener('click', ()=>{ disarmKey(); pushHistory(); render(); });
 
-  // Tie/lien
-  document.getElementById('btn-tie').addEventListener('click', ()=>{
-    const sl = selectedSlot();
-    if(sl){ sl.tieToNext = !sl.tieToNext; pushHistory(); render(); }
-  });
-
-  // Triolet sur la note active : groupe avec les 2 suivantes
-  document.getElementById('btn-triplet').addEventListener('click', ()=>{
+  // Tuplet button: panel pour choisir N
+  document.getElementById('btn-tuplet').addEventListener('click', ()=>{
     const sl = selectedSlot(); if(!sl) return;
     const meas = state.measures[state.sel.m];
     const idx = state.sel.s;
-    if(sl.tuplet === 3){
-      // remove triplet flag from this group
-      for(let i = idx; i < meas.length && meas[i].tuplet === 3; i++) delete meas[i].tuplet;
-    } else {
-      // mark this slot and the 2 next as triplet
-      for(let i = idx; i < Math.min(meas.length, idx + 3); i++) meas[i].tuplet = 3;
+    if(sl.tuplet){
+      // remove tuplet
+      const n = sl.tuplet;
+      for(let i = idx; i < meas.length && meas[i].tuplet === n; i++) delete meas[i].tuplet;
+      pushHistory(); render(); return;
     }
+    openPanel({
+      title:'N-uplet',
+      body:'<small>Choisir le type de N-uplet à appliquer aux notes suivantes</small>',
+      hideActions:true,
+      extraButtons:['Annuler','3 (triolet)','5','6','7'],
+      onExtra:(which)=>{
+        if(which === 'Annuler'){ closePanel(); return; }
+        const n = parseInt(which, 10) || 3;
+        for(let i = idx; i < Math.min(meas.length, idx + n); i++) meas[i].tuplet = n;
+        pushHistory(); closePanel(); render();
+      },
+    });
+  });
+
+  // Suppr / ajouter mesure
+  document.getElementById('meas-del').addEventListener('click', ()=>{
+    if(state.measures.length <= 1) return;
+    const m = state.sel.m;
+    state.measures.splice(m, 1);
+    function shiftKeys(map, threshold){ const out = {}; for(const k of Object.keys(map)){ const i = parseInt(k,10); if(i < threshold) out[i] = map[k]; else if(i > threshold) out[i-1] = map[k]; } return out; }
+    state.timeChanges = shiftKeys(state.timeChanges, m);
+    state.keyChanges  = shiftKeys(state.keyChanges,  m);
+    state.clefChanges = shiftKeys(state.clefChanges, m);
+    state.repeats     = shiftKeys(state.repeats,     m);
+    if(state.sel.m >= state.measures.length) state.sel.m = state.measures.length - 1;
+    state.sel.s = 0;
+    pushHistory(); render();
+  });
+  document.getElementById('meas-add').addEventListener('click', ()=>{
+    const m = state.sel.m;
+    state.measures.splice(m+1, 0, buildEmptyMeasure(meterAt(m)));
+    function shiftKeys(map, threshold){ const out = {}; for(const k of Object.keys(map)){ const i = parseInt(k,10); if(i <= threshold) out[i] = map[k]; else out[i+1] = map[k]; } return out; }
+    state.timeChanges = shiftKeys(state.timeChanges, m);
+    state.keyChanges  = shiftKeys(state.keyChanges,  m);
+    state.clefChanges = shiftKeys(state.clefChanges, m);
+    state.repeats     = shiftKeys(state.repeats,     m);
+    state.sel = {m: m+1, s: 0};
     pushHistory(); render();
   });
 
@@ -933,7 +1373,6 @@
   document.getElementById('btn-volta1').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 1) ? 0 : 1; pushHistory(); render(); });
   document.getElementById('btn-volta2').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 2) ? 0 : 2; pushHistory(); render(); });
 
-  // Bottom bar: vol + tempo + play
   document.getElementById('vol-u').addEventListener('click', ()=>{ state.volume = Math.min(100, state.volume + 10); ensureAudio(); render(); });
   document.getElementById('vol-d').addEventListener('click', ()=>{ state.volume = Math.max(0, state.volume - 10); ensureAudio(); render(); });
   document.getElementById('tempo-u').addEventListener('click', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
@@ -941,70 +1380,23 @@
   document.getElementById('btn-play').addEventListener('click', ()=>{ if(audio.playing) stopPlayback(true); else playSchedule(); });
   document.getElementById('btn-stop').addEventListener('click', ()=> stopPlayback(true));
   document.getElementById('btn-viewmode').addEventListener('click', ()=>{ state.viewmode = !state.viewmode; document.getElementById('app').classList.toggle('viewmode', state.viewmode); render(); });
+  document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶ ✕' : '⛶'; });
+  document.getElementById('abc-toggle').addEventListener('click', ()=>{ state.abcCollapsed = !state.abcCollapsed; document.getElementById('abc-out').classList.toggle('collapsed', state.abcCollapsed); document.getElementById('abc-toggle-icon').textContent = state.abcCollapsed ? '▶' : '▼'; });
 
-  document.getElementById('btn-fs').addEventListener('click', ()=>{
-    state.fullscreen = !state.fullscreen;
-    document.getElementById('app').classList.toggle('fullscreen', state.fullscreen);
-    document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶ ✕' : '⛶';
-  });
-  document.getElementById('abc-toggle').addEventListener('click', ()=>{
-    state.abcCollapsed = !state.abcCollapsed;
-    document.getElementById('abc-out').classList.toggle('collapsed', state.abcCollapsed);
-    document.getElementById('abc-toggle-icon').textContent = state.abcCollapsed ? '▶' : '▼';
-  });
-
-  document.getElementById('btn-add-meas').addEventListener('click', ()=>{
-    openPanel({
-      title:'Ajouter une mesure',
-      body: '<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small>',
-      hideActions:true,
-      extraButtons:['Annuler','À gauche','À droite'],
-      onExtra:(which)=>{
-        if(which === 'Annuler'){ closePanel(); return; }
-        function shiftKeys(map, threshold, inclusive){ const out = {}; for(const k of Object.keys(map)){ const i = parseInt(k,10); const shift = inclusive ? (i >= threshold) : (i > threshold); out[shift ? i+1 : i] = map[k]; } return out; }
-        if(which === 'À gauche'){
-          const meter = meterAt(state.sel.m);
-          state.measures.splice(state.sel.m, 0, buildEmptyMeasure(meter));
-          state.timeChanges = shiftKeys(state.timeChanges, state.sel.m, true);
-          state.keyChanges  = shiftKeys(state.keyChanges,  state.sel.m, true);
-          state.clefChanges = shiftKeys(state.clefChanges, state.sel.m, true);
-          state.repeats     = shiftKeys(state.repeats,     state.sel.m, true);
-          state.sel = {m: state.sel.m, s: 0};
-        } else {
-          const meter = meterAt(state.sel.m);
-          state.measures.splice(state.sel.m+1, 0, buildEmptyMeasure(meter));
-          state.timeChanges = shiftKeys(state.timeChanges, state.sel.m, false);
-          state.keyChanges  = shiftKeys(state.keyChanges,  state.sel.m, false);
-          state.clefChanges = shiftKeys(state.clefChanges, state.sel.m, false);
-          state.repeats     = shiftKeys(state.repeats,     state.sel.m, false);
-          state.sel = {m: state.sel.m+1, s: 0};
-        }
-        pushHistory(); closePanel(); render();
-      },
-    });
-  });
-
-  // ===== Chord panel =====
+  // Chord panel
   document.getElementById('btn-chord').addEventListener('click', ()=>{
     const sl = selectedSlot();
     if(!sl || sl.type !== 'note'){ alert('Sélectionnez une note'); return; }
     const roots = ['C','D','E','F','G','A','B'];
-    let root = (sl.chord && sl.chord.match(/^[A-G]/)) ? sl.chord[0] : sl.note;
-    let acc = '';
-    let qual = '';
-    if(sl.chord){
-      const m = sl.chord.match(/^([A-G])([#b]?)(.*)$/);
-      if(m){ root = m[1]; acc = m[2]; qual = m[3]; }
-    }
+    let root = sl.note, acc = '', qual = '';
+    if(sl.chord){ const m = sl.chord.match(/^([A-G])([#b]?)(.*)$/); if(m){ root = m[1]; acc = m[2]; qual = m[3]; } }
     function controls(){
       let html = '<small>Fondamentale</small><div class="root-grid">';
       roots.forEach(r => html += '<button class="k" data-root="'+r+'">'+r+'</button>');
-      html += '</div>';
-      html += '<small>Altération</small><div class="grid3" id="acc-grid"><button class="k symbol" data-acc="">♮</button><button class="k symbol" data-acc="#">♯</button><button class="k symbol" data-acc="b">♭</button></div>';
+      html += '</div><small>Altération</small><div class="grid3"><button class="k" data-acc="">♮</button><button class="k" data-acc="#">♯</button><button class="k" data-acc="b">♭</button></div>';
       html += '<small>Qualité</small><div class="chord-grid">';
       CHORD_QUALITIES.forEach(q => html += '<button class="k" data-qual="'+q+'">'+(q || 'maj')+'</button>');
-      html += '</div>';
-      html += '<small>Aperçu : <b id="chord-preview">'+root+acc+qual+'</b></small>';
+      html += '</div><small>Aperçu : <b id="chord-preview">'+root+acc+qual+'</b></small>';
       return html;
     }
     function refresh(){
@@ -1014,10 +1406,7 @@
       document.getElementById('chord-preview').textContent = root + acc + qual;
     }
     openPanel({
-      title:'Accord',
-      body: controls(),
-      hideActions:true,
-      extraButtons:['Annuler', 'Suppr', 'Appliquer'],
+      title:'Accord', body: controls(), hideActions:true, extraButtons:['Annuler','Suppr','Appliquer'],
       onMount: ()=>{
         document.querySelectorAll('[data-root]').forEach(b=> b.addEventListener('click', ()=>{ root = b.dataset.root; refresh(); }));
         document.querySelectorAll('[data-acc]').forEach(b=> b.addEventListener('click', ()=>{ acc = b.dataset.acc; refresh(); }));
@@ -1032,7 +1421,6 @@
     });
   });
 
-  // ===== Ornement panel =====
   document.getElementById('btn-orn').addEventListener('click', ()=>{
     const sl = selectedSlot();
     if(!sl || sl.type !== 'note'){ alert('Sélectionnez une note'); return; }
@@ -1040,36 +1428,27 @@
     function controls(){
       let html = '<small>Cliquez pour activer/désactiver</small><div class="grid3">';
       ORNAMENTS.forEach(o => html += '<button class="k tiny" data-orn="'+o.code+'">'+o.label+'</button>');
-      html += '</div>';
-      html += '<small>Actifs : <b id="orn-preview">'+(sl.orn.length ? sl.orn.join(' ') : '(aucun)')+'</b></small>';
+      html += '</div><small>Actifs : <b id="orn-preview">'+(sl.orn.length ? sl.orn.join(' ') : '(aucun)')+'</b></small>';
       return html;
     }
     function refresh(){
       document.querySelectorAll('[data-orn]').forEach(b=> b.classList.toggle('active', sl.orn.includes(b.dataset.orn)));
       document.getElementById('orn-preview').textContent = sl.orn.length ? sl.orn.join(' ') : '(aucun)';
     }
-    openPanel({
-      title:'Ornement',
-      body: controls(),
-      hideActions:true,
-      extraButtons:['Tout enlever', 'Fermer'],
+    openPanel({ title:'Ornement', body: controls(), hideActions:true, extraButtons:['Tout enlever','Fermer'],
       onMount:()=>{
         document.querySelectorAll('[data-orn]').forEach(b=> b.addEventListener('click', ()=>{
-          const code = b.dataset.orn;
-          const i = sl.orn.indexOf(code);
+          const code = b.dataset.orn; const i = sl.orn.indexOf(code);
           if(i >= 0) sl.orn.splice(i, 1); else sl.orn.push(code);
           render(); refresh();
         }));
         refresh();
       },
-      onExtra:(which)=>{
-        if(which === 'Tout enlever'){ sl.orn = []; pushHistory(); render(); refresh(); return; }
-        pushHistory(); closePanel();
-      },
+      onExtra:(which)=>{ if(which === 'Tout enlever'){ sl.orn = []; pushHistory(); render(); refresh(); return; } pushHistory(); closePanel(); },
     });
   });
 
-  // ===== File save / open ABC =====
+  // File save / open
   document.getElementById('btn-save-file').addEventListener('click', ()=>{
     const abc = document.getElementById('abc-out').textContent;
     const blob = new Blob([abc], {type:'text/plain;charset=utf-8'});
@@ -1087,76 +1466,24 @@
     const reader = new FileReader();
     reader.onload = (ev)=>{
       const text = ev.target.result;
-      const ok = importAbcText(text);
-      if(!ok) alert('Impossible de lire ce fichier ABC');
+      const ns = parseAbcText(text);
+      if(!ns){ alert('Impossible de lire ce fichier ABC (en-tête K: introuvable)'); fileInput.value=''; return; }
+      Object.assign(state, ns);
+      cleanupAccidentals();
+      state.sel = {m:0, s:0};
+      pushHistory();
+      render();
       fileInput.value = '';
     };
     reader.readAsText(f);
   });
 
-  // Very basic ABC importer — extracts headers and shows raw ABC under the score.
-  // For now we DON'T re-parse the body into our slot model (that's a substantial parser).
-  // Instead we replace headers and show the raw text in the code area as a fallback.
-  function importAbcText(text){
-    try {
-      // Extract simple headers
-      const lines = text.split(/\r?\n/);
-      const headers = {};
-      let body = '';
-      let inBody = false;
-      for(const line of lines){
-        const m = line.match(/^([A-Z]):\s*(.*)$/);
-        if(!inBody && m){
-          const k = m[1]; const v = m[2].trim();
-          headers[k] = v;
-          if(k === 'K') inBody = true;
-          continue;
-        }
-        if(inBody) body += line + '\n';
-      }
-      if(headers.X) state.headers.X = headers.X;
-      if(headers.T) state.headers.T = headers.T;
-      if(headers.M) state.pieceMeter = headers.M;
-      if(headers.L) state.pieceUnit = headers.L;
-      if(headers.Q){
-        const qm = headers.Q.match(/=(\d+)/);
-        if(qm) state.tempo = parseInt(qm[1],10);
-      }
-      if(headers.K){
-        // Try to parse the key
-        const km = headers.K.match(/^([A-G][#b]?)(m?)(\s+clef=(\S+))?/);
-        if(km){
-          const root = km[1];
-          const minor = km[2] === 'm';
-          // Map to keySig (major)
-          const sigMap = {'C':0,'G':1,'D':2,'A':3,'E':4,'B':5,'F#':6,'C#':7,'F':-1,'Bb':-2,'Eb':-3,'Ab':-4,'Db':-5,'Gb':-6,'Cb':-7};
-          let sig = sigMap[root] !== undefined ? sigMap[root] : 0;
-          if(minor) sig -= 3; // minor relatives
-          state.pieceKeySig = sig;
-          if(km[4] === 'bass') state.pieceClef = 'bass';
-          else if(km[4] === 'treble-8') state.pieceClef = 'treble8';
-          else state.pieceClef = 'treble';
-        }
-      }
-      // We rebuild empty measures (the user will see the imported headers but the body is shown raw).
-      rebuildMeasures();
-      pushHistory();
-      render();
-      // Show import message
-      alert('En-têtes importés. Le corps du morceau n\'est pas encore reconstruit (à venir). Voici l\'en-tête appliqué.');
-      return true;
-    } catch(e){
-      console.error(e);
-      return false;
-    }
-  }
-
-  // Local saves (memo)
+  // Local saves
   const STORAGE_KEY = 'abc-editor-saves';
   function getSaves(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(_){ return []; } }
   function setSaves(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
   function exportState(){ return JSON.stringify({ headers: state.headers, pieceMeter: state.pieceMeter, pieceUnit: state.pieceUnit, pieceKeySig: state.pieceKeySig, pieceClef: state.pieceClef, measures: state.measures, timeChanges: state.timeChanges, keyChanges: state.keyChanges, clefChanges: state.clefChanges, repeats: state.repeats, tempo: state.tempo }); }
-  function importState(json){ try { const o = JSON.parse(json); Object.assign(state, o); state.sel = {m:0, s:0}; state.octave = 0; pushHistory(); render(); return true; } catch(e){ return false; } }
+  function importStateJson(json){ try { const o = JSON.parse(json); Object.assign(state, o); state.sel = {m:0, s:0}; state.octave = 0; pushHistory(); render(); return true; } catch(e){ return false; } }
 
   document.getElementById('btn-saves').addEventListener('click', ()=>{
     const saves = getSaves();
@@ -1165,59 +1492,37 @@
     else saves.forEach((s, i)=> listHtml += '<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');
     listHtml += '</div>';
     listHtml += '<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';
-    openPanel({
-      title:'Mémoires locales',
-      body: listHtml,
-      hideActions:true,
-      extraButtons:['Annuler','Enregistrer ici'],
+    openPanel({ title:'Mémoires locales', body: listHtml, hideActions:true, extraButtons:['Annuler','Enregistrer ici'],
       onMount:()=>{
         document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{
           el.addEventListener('click', (ev)=>{
-            if(ev.target.dataset.del !== undefined){
-              const idx = parseInt(ev.target.dataset.del, 10); const saves = getSaves(); saves.splice(idx,1); setSaves(saves);
-              closePanel(); return;
-            }
+            if(ev.target.dataset.del !== undefined){ const idx = parseInt(ev.target.dataset.del, 10); const saves = getSaves(); saves.splice(idx,1); setSaves(saves); closePanel(); return; }
             const idx = parseInt(el.dataset.idx, 10); const saves = getSaves();
-            if(saves[idx] && importState(saves[idx].data)) closePanel();
+            if(saves[idx] && importStateJson(saves[idx].data)) closePanel();
           });
         });
       },
       onExtra:(which)=>{
         if(which === 'Annuler'){ closePanel(); return; }
         const name = document.getElementById('sn').value.trim() || 'Morceau';
-        const saves = getSaves();
-        const existing = saves.findIndex(s=> s.name === name);
+        const saves = getSaves(); const existing = saves.findIndex(s=> s.name === name);
         const entry = { name, data: exportState(), date: new Date().toISOString() };
         if(existing >= 0) saves[existing] = entry; else saves.push(entry);
         setSaves(saves); closePanel();
       },
     });
   });
-
   document.getElementById('btn-new').addEventListener('click', ()=>{
-    openPanel({
-      title:'Nouveau morceau',
-      body:'<small>Effacer le morceau actuel ?</small>',
-      hideActions:true,
-      extraButtons:['Annuler','Effacer'],
-      onExtra:(which)=>{
-        if(which === 'Effacer'){ state.headers = {X:'1', T:''}; state.pieceMeter='4/4'; state.pieceUnit='1/4'; state.pieceKeySig=0; state.pieceClef='treble'; rebuildMeasures(); pushHistory(); render(); }
-        closePanel();
-      },
-    });
+    openPanel({ title:'Nouveau morceau', body:'<small>Effacer le morceau actuel ?</small>', hideActions:true, extraButtons:['Annuler','Effacer'],
+      onExtra:(which)=>{ if(which === 'Effacer'){ state.headers = {X:'1', T:''}; state.pieceMeter='4/4'; state.pieceUnit='1/4'; state.pieceKeySig=0; state.pieceClef='treble'; rebuildMeasures(); pushHistory(); render(); } closePanel(); }, });
   });
   document.getElementById('btn-export').addEventListener('click', ()=>{
     const abc = document.getElementById('abc-out').textContent;
-    openPanel({
-      title:'Exporter ABC',
-      body:'<small>Copier le code ci-dessous :</small><textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>',
-      hideActions:true, extraButtons:['Fermer','Copier'],
+    openPanel({ title:'Exporter ABC', body:'<small>Copier le code ci-dessous :</small><textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>', hideActions:true, extraButtons:['Fermer','Copier'],
       onMount:()=>{ document.getElementById('exp').select(); },
-      onExtra:(which)=>{ if(which === 'Copier'){ const ta = document.getElementById('exp'); ta.select(); try { document.execCommand('copy'); } catch(_){} } closePanel(); },
-    });
+      onExtra:(which)=>{ if(which === 'Copier'){ const ta = document.getElementById('exp'); ta.select(); try { document.execCommand('copy'); } catch(_){} } closePanel(); }, });
   });
 
-  // Generic panel
   const panel = document.getElementById('panel');
   const panelTitle = document.getElementById('panel-title');
   const panelBody = document.getElementById('panel-body');
@@ -1242,18 +1547,13 @@
   panelOk.addEventListener('click', ()=>{ if(currentOnOk) currentOnOk(); closePanel(); render(); });
   panelCancel.addEventListener('click', closePanel);
 
-  document.querySelector('[data-hdr="X"]').addEventListener('click', ()=>{ openPanel({ title: 'Numéro X:', body: '<div class="row"><span class="field-label">X:</span><input id="hi" type="text" value="' + (state.headers.X||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.X = document.getElementById('hi').value.trim(); pushHistory(); } }); });
-  document.querySelector('[data-hdr="T"]').addEventListener('click', ()=>{ openPanel({ title: 'Titre', body: '<div class="row"><span class="field-label">T:</span><input id="hi" type="text" value="' + (state.headers.T||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.T = document.getElementById('hi').value.trim(); pushHistory(); } }); });
+  document.querySelector('[data-hdr="X"]').addEventListener('click', ()=>{ openPanel({ title: 'X:', body: '<div class="row"><input id="hi" type="text" value="' + (state.headers.X||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.X = document.getElementById('hi').value.trim(); pushHistory(); } }); });
+  document.querySelector('[data-hdr="T"]').addEventListener('click', ()=>{ openPanel({ title: 'Titre', body: '<div class="row"><input id="hi" type="text" value="' + (state.headers.T||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.T = document.getElementById('hi').value.trim(); pushHistory(); } }); });
 
-  function scopePanel({title, renderControls, applyPiece, applyHere, isMeter}){
-    // ⭐ Si on est sur la mesure 0 et c'est le rythme, l'option "À partir d'ici" est équivalente à "Tout"
+  function scopePanel({title, renderControls, applyPiece, applyHere}){
     const onFirstMeasure = (state.sel.m === 0);
-    const buttons = ['Annuler', onFirstMeasure ? 'Tout (1ère mesure)' : 'Tout', onFirstMeasure ? null : 'Mesure ' + (state.sel.m+1) + '+'].filter(Boolean);
-    openPanel({
-      title,
-      body: renderControls(),
-      hideActions:true,
-      extraButtons: buttons,
+    const buttons = ['Annuler', onFirstMeasure ? 'Tout' : 'Tout', onFirstMeasure ? null : 'Mes ' + (state.sel.m+1) + '+'].filter(Boolean);
+    openPanel({ title, body: renderControls(), hideActions:true, extraButtons: buttons,
       onMount: ()=>{ if(typeof renderControls.mount === 'function') renderControls.mount(); },
       onExtra:(which)=>{
         if(which === 'Annuler'){ closePanel(); return; }
@@ -1271,7 +1571,7 @@
     function controls(){
       return ('<div class="stepper"><button class="k" id="num-d">−</button><div class="val">Num: <b id="num-v">'+n+'</b></div><button class="k" id="num-u">+</button></div>'+
               '<div class="stepper"><button class="k" id="den-d">−</button><div class="val">Dén: <b id="den-v">'+d+'</b></div><button class="k" id="den-u">+</button></div>'+
-              '<small>Unité par défaut L: (tout le morceau)</small>'+
+              '<small>Unité L:</small>'+
               '<div class="stepper"><button class="k" id="L-d">−</button><div class="val">L: 1/<b id="L-v">'+unitDenom+'</b></div><button class="k" id="L-u">+</button></div>');
     }
     controls.mount = function(){
@@ -1283,31 +1583,20 @@
       document.getElementById('L-u').addEventListener('click', ()=>{ const i = unitDenoms.indexOf(unitDenom); if(i<unitDenoms.length-1){ unitDenom = unitDenoms[i+1]; upd(); } });
       document.getElementById('L-d').addEventListener('click', ()=>{ const i = unitDenoms.indexOf(unitDenom); if(i>0){ unitDenom = unitDenoms[i-1]; upd(); } });
     };
-    scopePanel({
-      title:'Rythme',
-      renderControls: controls,
+    scopePanel({ title:'Rythme', renderControls: controls,
       applyPiece: ()=>{
-        // ⭐ Si on est sur la mesure 0, supprimer aussi tous les changements inline
         state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom;
-        if(state.sel.m === 0){
-          // efface aussi un éventuel changement à l'index 0
-          delete state.timeChanges[0];
-        } else {
-          state.timeChanges = {};
-        }
+        if(state.sel.m === 0) delete state.timeChanges[0];
+        else state.timeChanges = {};
         rebuildMeasures();
       },
       applyHere: ()=>{
         if(state.sel.m === 0){
-          // C'est équivalent à "Tout"
           state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom;
-          delete state.timeChanges[0];
-          rebuildMeasures();
-          return;
+          delete state.timeChanges[0]; rebuildMeasures(); return;
         }
         state.pieceUnit = '1/' + unitDenom;
-        const newMeter = n + '/' + d;
-        state.timeChanges[state.sel.m] = newMeter;
+        state.timeChanges[state.sel.m] = n + '/' + d;
         for(let i = state.sel.m; i < state.measures.length; i++){ if(i > state.sel.m && state.timeChanges[i]) break; state.measures[i] = buildEmptyMeasure(meterAt(i)); }
         state.sel = {m: state.sel.m, s: 0};
       },
