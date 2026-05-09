@@ -1,8 +1,10 @@
 <style>
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
   .abc-app, .abc-app * { box-sizing: border-box; }
-  .abc-app { width: 100%; max-width: 100vw; padding: 6px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f5f4ef; border-radius: 10px; }
-  .abc-app.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 9999; overflow-y: auto; }
+  .abc-app { width: 100%; max-width: 100vw; padding: 6px 6px 90px 6px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f5f4ef; border-radius: 10px; position: relative; }
+  .abc-app.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 9999; overflow-y: auto; padding-bottom: 110px; }
+  .abc-app.viewmode .edit-only { display: none !important; }
+  .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
   .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 8px; padding: 6px; margin-bottom: 6px; }
   .abc-label { font-size: 10px; color: #888780; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
   .score-wrap { width: 100%; aspect-ratio: 360 / 200; max-height: 240px; }
@@ -21,14 +23,12 @@
   .abc-app button.k.tiny { height: 30px; line-height: 28px; font-size: 11px; }
   .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
+  .abc-app button.k.danger { background: #c34536; border-color: #c34536; color: #ffffff; }
   .header-row { display: grid; grid-template-columns: 36px 36px 1fr 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
-  .undo-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
-  .vol-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
-  .tempo-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
-  .play-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+  .file-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 6px; }
+  .undo-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 6px; }
   .repeat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px; }
-  .center-cell { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #5f5e5a; background: #ebe9e0; border-radius: 6px; padding: 0 4px; height: 30px; }
-  .center-cell b { color: #1a1a1a; margin-left: 4px; }
+  .extra-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 6px; }
   .keypad { display: grid; grid-template-columns: 56px 1fr 96px; gap: 6px; align-items: start; margin-bottom: 6px; }
   .col > .k { margin-bottom: 4px; }
   .col > .k:last-child { margin-bottom: 0; }
@@ -40,18 +40,31 @@
   .ctx-info b { color: #1a1a1a; font-weight: 500; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
-  .panel { background: #e6f1fb; border: 1px solid #378add; border-radius: 8px; padding: 8px; margin-bottom: 8px; display: none; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 4px; }
+  .bottom-bar { position: sticky; bottom: 0; left: 0; right: 0; background: #f5f4ef; border-top: 1px solid #d8d6ce; padding: 6px 4px; display: grid; grid-template-columns: auto auto 1fr 1fr 1fr 1fr 1fr 1fr auto; gap: 4px; align-items: center; margin: 6px -6px -90px -6px; z-index: 10; }
+  .bottom-bar .center-cell { display: flex; align-items: center; justify-content: center; font-size: 11px; color: #5f5e5a; background: #ebe9e0; border-radius: 6px; padding: 0 4px; height: 30px; }
+  .bottom-bar .center-cell b { color: #1a1a1a; margin-left: 4px; }
+  .bottom-bar button.k { height: 30px; line-height: 28px; font-size: 12px; padding: 0 6px; min-width: 32px; width: auto; }
+  .panel { background: #e6f1fb; border: 1px solid #378add; border-radius: 8px; padding: 8px; margin-bottom: 8px; display: none; max-height: 70vh; overflow-y: auto; }
   .panel.open { display: block; }
   .panel .title { font-size: 11px; color: #0c447c; font-weight: 500; margin-bottom: 6px; }
   .panel .row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-  .panel input { flex: 1; height: 36px; font-family: ui-monospace, monospace; font-size: 13px; padding: 0 8px; border: 1px solid #b4b2a9; border-radius: 6px; background: #ffffff; color: #1a1a1a; }
+  .panel input, .panel textarea { flex: 1; min-height: 36px; font-family: ui-monospace, monospace; font-size: 13px; padding: 4px 8px; border: 1px solid #b4b2a9; border-radius: 6px; background: #ffffff; color: #1a1a1a; }
+  .panel textarea { width: 100%; min-height: 120px; }
   .panel .field-label { font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; min-width: 24px; }
-  .panel .actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; }
+  .panel .actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; margin-top: 6px; }
   .panel .actions .k { width: auto; padding: 0 12px; height: 30px; line-height: 28px; font-size: 12px; }
   .panel .stepper { display: grid; grid-template-columns: 36px 1fr 36px; gap: 6px; align-items: center; margin-bottom: 6px; }
   .panel .stepper .val { text-align: center; font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; }
-  .panel .scope-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px; }
   .panel small { display: block; color: #5f5e5a; font-size: 10px; margin-bottom: 6px; }
+  .panel .save-list { max-height: 160px; overflow-y: auto; border: 1px solid #b4b2a9; border-radius: 6px; background: #ffffff; margin-bottom: 6px; }
+  .panel .save-list .item { padding: 6px 8px; border-bottom: 1px solid #ebe9e0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; cursor: pointer; }
+  .panel .save-list .item:hover { background: #f1efe8; }
+  .panel .save-list .item .del { color: #c34536; font-size: 14px; padding: 0 6px; cursor: pointer; }
+  .chord-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 6px; }
+  .chord-grid .k { font-size: 11px; height: 30px; line-height: 28px; }
+  .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 6px; }
+  .root-grid .k { font-size: 11px; height: 30px; line-height: 28px; }
 </style>
 
 <div class="abc-app" id="app">
@@ -65,12 +78,14 @@
     </div>
   </div>
 
+  <input type="file" id="file-input" accept=".abc,text/plain" style="display:none;"/>
+
   <div class="abc-card">
-    <div class="abc-label"><span>Partition · mes <span id="meas-num">1</span> · slot <span id="slot-num">1</span></span></div>
+    <div class="abc-label edit-only"><span>Mes <span id="meas-num">1</span> · slot <span id="slot-num">1</span></span></div>
     <div class="score-wrap" id="score"></div>
   </div>
 
-  <div class="header-row">
+  <div class="header-row edit-only">
     <button class="k tiny" id="btn-fs" title="plein écran">⛶</button>
     <button class="k tiny" data-hdr="X">X:</button>
     <button class="k tiny" data-hdr="T">Titre</button>
@@ -80,13 +95,30 @@
     <button class="k tiny" id="btn-add-meas">+ Mes</button>
   </div>
 
-  <div class="undo-row">
+  <div class="file-row edit-only">
+    <button class="k tiny" id="btn-new" title="nouveau">📄 Nouv</button>
+    <button class="k tiny" id="btn-open-file" title="ouvrir .abc">📂 Ouv</button>
+    <button class="k tiny" id="btn-save-file" title="sauver .abc">💾 Sauv</button>
+    <button class="k tiny" id="btn-saves" title="sauvegardes locales">⭐ Mémo</button>
+    <button class="k tiny" id="btn-export" title="exporter ABC">⇣ ABC</button>
+  </div>
+
+  <div class="undo-row edit-only">
     <button class="k tiny" id="btn-del" title="supprimer la note">⌫</button>
     <button class="k tiny" id="btn-undo" title="annuler">↶</button>
     <button class="k tiny" id="btn-redo" title="refaire">↷</button>
+    <button class="k tiny" id="btn-trans-down" title="transposer ½ ton ↓">−½</button>
+    <button class="k tiny" id="btn-trans-up" title="transposer ½ ton ↑">+½</button>
+    <button class="k tiny" id="btn-triplet" title="triolet sur note active">3:2</button>
   </div>
 
-  <div class="keypad">
+  <div class="extra-row edit-only">
+    <button class="k tiny" id="btn-chord" title="accord">"Cm"</button>
+    <button class="k tiny" id="btn-orn" title="ornement">~T.</button>
+    <button class="k tiny" id="btn-tie" title="lier à la note suivante">⌒</button>
+  </div>
+
+  <div class="keypad edit-only">
     <div class="col" id="notes-col">
       <button class="k" id="cur-prev" title="slot précédent">◀</button>
     </div>
@@ -108,20 +140,6 @@
         <button class="k tiny" id="btn-volta1" title="volta 1">|1</button>
         <button class="k tiny" id="btn-volta2" title="volta 2">|2</button>
       </div>
-      <div class="vol-row">
-        <button class="k tiny" id="vol-d">🔉−</button>
-        <div class="center-cell">Vol <b id="vol-v">60</b></div>
-        <button class="k tiny" id="vol-u">🔊+</button>
-      </div>
-      <div class="tempo-row">
-        <button class="k tiny" id="tempo-d">−</button>
-        <div class="center-cell">♩ <b id="tempo-v">100</b></div>
-        <button class="k tiny" id="tempo-u">+</button>
-      </div>
-      <div class="play-row">
-        <button class="k tiny primary" id="btn-play" style="grid-column: span 2;">▶ Play</button>
-        <button class="k tiny" id="btn-stop" style="grid-column: span 2;">■ Stop</button>
-      </div>
     </div>
     <div class="col">
       <button class="k" id="cur-next" title="slot suivant">▶</button>
@@ -132,12 +150,24 @@
     </div>
   </div>
 
-  <div class="abc-text-card">
+  <div class="abc-text-card edit-only">
     <div class="abc-text-head" id="abc-toggle">
       <span>Code ABC</span>
       <span class="toggle" id="abc-toggle-icon">▼</span>
     </div>
     <pre class="abc-text" id="abc-out"></pre>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="k" id="btn-play">▶</button>
+    <button class="k" id="btn-stop">■</button>
+    <button class="k" id="vol-d">🔉−</button>
+    <div class="center-cell">Vol <b id="vol-v">60</b></div>
+    <button class="k" id="vol-u">🔊+</button>
+    <button class="k" id="tempo-d">−</button>
+    <div class="center-cell">♩ <b id="tempo-v">100</b></div>
+    <button class="k" id="tempo-u">+</button>
+    <button class="k" id="btn-viewmode" title="affichage seul">👁</button>
   </div>
 </div>
 
@@ -150,6 +180,13 @@
   const DURATIONS = [{label:'𝅗𝅥',d:2},{label:'♩',d:1},{label:'♪',d:0.5},{label:'♬',d:0.25}];
   const SHARP_NOTES = ['F','C','G','D','A','E','B'];
   const FLAT_NOTES  = ['B','E','A','D','G','C','F'];
+  // ABC ornament codes mapped to display labels
+  const ORNAMENTS = [
+    {code:'T', label:'tr'}, {code:'M', label:'~M'}, {code:'P', label:'pralle'},
+    {code:'H', label:'fermata'}, {code:'L', label:'accent'}, {code:'.', label:'staccato'},
+    {code:'u', label:'up bow'}, {code:'v', label:'down bow'}, {code:'O', label:'coda'},
+  ];
+  const CHORD_QUALITIES = ['','m','7','m7','M7','6','m6','9','11','13','sus2','sus4','dim','dim7','aug','add9'];
 
   const state = {
     headers: { X:'1', T:'' },
@@ -157,47 +194,20 @@
     measures: [], sel: {m:0, s:0}, octave: 0,
     timeChanges: {}, keyChanges: {}, clefChanges: {}, repeats: {},
     tempo: 100, volume: 60,
-    abcCollapsed: false, fullscreen: false,
+    abcCollapsed: false, fullscreen: false, viewmode: false,
   };
 
-  // ===== history (undo/redo) =====
   const history = { stack: [], pos: -1, max: 100 };
-  function snapshot(){
-    return JSON.stringify({
-      headers: state.headers, pieceMeter: state.pieceMeter, pieceUnit: state.pieceUnit,
-      pieceKeySig: state.pieceKeySig, pieceClef: state.pieceClef,
-      measures: state.measures, sel: state.sel, octave: state.octave,
-      timeChanges: state.timeChanges, keyChanges: state.keyChanges,
-      clefChanges: state.clefChanges, repeats: state.repeats,
-      tempo: state.tempo, volume: state.volume,
-    });
-  }
+  function snapshot(){ return JSON.stringify(state); }
   function pushHistory(){
-    if(history.pos < history.stack.length - 1){
-      history.stack = history.stack.slice(0, history.pos + 1);
-    }
+    if(history.pos < history.stack.length - 1) history.stack = history.stack.slice(0, history.pos + 1);
     history.stack.push(snapshot());
     if(history.stack.length > history.max) history.stack.shift();
     history.pos = history.stack.length - 1;
   }
-  function loadFrom(snap){
-    const o = JSON.parse(snap);
-    Object.assign(state, o);
-  }
-  function undo(){
-    if(history.pos > 0){
-      history.pos--;
-      loadFrom(history.stack[history.pos]);
-      render();
-    }
-  }
-  function redo(){
-    if(history.pos < history.stack.length - 1){
-      history.pos++;
-      loadFrom(history.stack[history.pos]);
-      render();
-    }
-  }
+  function loadFrom(snap){ const o = JSON.parse(snap); Object.assign(state, o); }
+  function undo(){ if(history.pos > 0){ history.pos--; loadFrom(history.stack[history.pos]); render(); } }
+  function redo(){ if(history.pos < history.stack.length - 1){ history.pos++; loadFrom(history.stack[history.pos]); render(); } }
 
   function parseMeter(meter){
     if(!meter) return {num:4, den:4};
@@ -229,96 +239,30 @@
     state.sel = {m:0, s:0};
   }
 
-  // Decompose `amount` (in quarter units) into one or more "clean" durations as a sequence of {dur, dot}.
-  // Used to express a leftover duration as one or more displayable slots (with dots if helpful).
-  // Greedy with dotted values: try big-with-dot, then big plain, etc.
-  function splitDurationGreedy(amount){
-    const eps = 1e-6;
-    const candidates = [
-      // (value, base, dot)
-      {val:6, base:4, dot:true},
-      {val:4, base:4, dot:false},
-      {val:3, base:2, dot:true},
-      {val:2, base:2, dot:false},
-      {val:1.5, base:1, dot:true},
-      {val:1, base:1, dot:false},
-      {val:0.75, base:0.5, dot:true},
-      {val:0.5, base:0.5, dot:false},
-      {val:0.375, base:0.25, dot:true},
-      {val:0.25, base:0.25, dot:false},
-      {val:0.1875, base:0.125, dot:true},
-      {val:0.125, base:0.125, dot:false},
-    ];
-    const out = [];
-    let rem = +amount.toFixed(6);
-    while(rem > eps){
-      let picked = null;
-      for(const c of candidates){
-        if(c.val <= rem + eps){ picked = c; break; }
-      }
-      if(!picked) break;
-      out.push({ dur: picked.base, dot: picked.dot });
-      rem = +(rem - picked.val).toFixed(6);
-    }
-    return out;
-  }
-  // Same but biased to subdivisions of a beat to align cleanly within the meter
   function splitDurationByBeat(offset, amount, beat){
     const eps = 1e-6;
     const out = [];
     let cur = +offset.toFixed(6); let rem = +amount.toFixed(6);
-    // Step 1: align to the next beat boundary using small subdivisions (no dots in this fragment)
     const distToBeat = ((cur % beat) === 0) ? 0 : (beat - (cur % beat));
     if(distToBeat > eps && rem > eps){
       const toFill = Math.min(distToBeat, rem);
-      // Use the largest plain (non-dotted) sub-beat that fits, repeat
       const subs = [4,2,1,0.5,0.25,0.125].filter(u => u <= beat/2 + eps);
       let used = 0;
-      for(const u of subs){
-        while(toFill - used >= u - eps){
-          out.push({dur:u, dot:false});
-          used = +(used + u).toFixed(6);
-        }
-      }
+      for(const u of subs){ while(toFill - used >= u - eps){ out.push({dur:u, dot:false}); used = +(used + u).toFixed(6); } }
       cur = +(cur + used).toFixed(6); rem = +(rem - used).toFixed(6);
     }
-    // Step 2: aligned. Emit beat-rests for whole beats. Use beat itself; if beat = 1.5 (compound), allow dotted noires.
     while(rem >= beat - eps){
-      // Try a multi-beat group with dot if it cleanly fits, e.g. 3 beats → dotted half (val 3)
-      // Otherwise just one beat.
       out.push({dur: (beat === 1.5) ? 1 : beat, dot: (beat === 1.5)});
       rem = +(rem - beat).toFixed(6); cur = +(cur + beat).toFixed(6);
     }
-    // Step 3: leftover < beat
     if(rem > eps){
       const subs = [4,2,1,0.5,0.25,0.125].filter(u => u <= beat/2 + eps);
       let leftover = rem;
-      for(const u of subs){
-        while(leftover >= u - eps){
-          out.push({dur:u, dot:false});
-          leftover = +(leftover - u).toFixed(6);
-        }
-      }
+      for(const u of subs){ while(leftover >= u - eps){ out.push({dur:u, dot:false}); leftover = +(leftover - u).toFixed(6); } }
     }
     return out;
   }
 
-  // ===== Rebalance: NON-DESTRUCTIVE =====
-  // After modifying slot at (m, anchorIdx) — its NEW eff duration is sl.dur (with dot).
-  // Strategy:
-  //   newDur = effDur(slots[anchorIdx])
-  //   oldDur = previous eff duration of that same slot (passed in)
-  //   delta  = newDur - oldDur
-  //   - delta == 0: nothing to do
-  //   - delta < 0  (slot SHRUNK): we have |delta| of free time after the slot.
-  //                                Insert new slots after anchor whose total = |delta|,
-  //                                each is a COPY of the anchor (same type, same hauteur if note).
-  //                                Use splitDurationByBeat aligned with the new offset.
-  //   - delta > 0  (slot GREW):    consume `delta` from the slots after anchor.
-  //                                Walk forward: drop fully-eaten slots, partially-eaten slot keeps
-  //                                its hauteur but dur is reduced. Re-decompose the leftover with
-  //                                splitDurationByBeat.
-  //   Anything beyond the end of the measure is clamped (the slot extends but measure overflows → truncate).
   function rebalanceMeasure(m, anchorIdx, oldEffDur){
     const meter = meterAt(m);
     const {den} = parseMeter(meter);
@@ -326,76 +270,73 @@
     const cap = measureCapacity(meter);
     const meas = state.measures[m];
     const anchor = meas[anchorIdx];
-    const newDur = effDur(anchor);
-
-    // Compute used time before anchor
+    let newDur = effDur(anchor);
     let beforeUsed = 0;
     for(let i=0; i<anchorIdx; i++) beforeUsed += effDur(meas[i]);
-
-    // If anchor alone exceeds remaining capacity, truncate
-    if(beforeUsed + newDur >= cap - 1e-9){
-      // Anchor consumes everything to end. If anchor overflows, we still keep it as-is
-      state.measures[m] = meas.slice(0, anchorIdx + 1);
+    if(beforeUsed + newDur > cap + 1e-6){
+      const fits = cap - beforeUsed;
+      const overflow = newDur - fits;
+      anchor.tieToNext = true;
+      const fitsPieces = splitDurationByBeat(beforeUsed, fits, beat);
+      if(fitsPieces.length > 0){
+        anchor.dur = fitsPieces[0].dur; anchor.dot = fitsPieces[0].dot;
+        const extras = fitsPieces.slice(1).map((p) => { const c = Object.assign({}, anchor, {dur: p.dur, dot: p.dot}); c.tieToNext = true; return c; });
+        state.measures[m] = meas.slice(0, anchorIdx + 1).concat(extras);
+      }
+      const nextM = m + 1;
+      if(nextM >= state.measures.length){ state.measures.push(buildEmptyMeasure(meterAt(m))); }
+      const contPieces = splitDurationByBeat(0, overflow, 4/parseMeter(meterAt(nextM)).den);
+      const contSlots = contPieces.map((p, i) => { const c = Object.assign({}, anchor, {dur: p.dur, dot: p.dot}); delete c.tieToNext; if(i < contPieces.length - 1) c.tieToNext = true; return c; });
+      _consumeFromHead(nextM, overflow, contSlots);
       return;
     }
-
     const delta = +(newDur - oldEffDur).toFixed(6);
     const eps = 1e-6;
-
-    if(Math.abs(delta) < eps){
-      // No size change, but caller still asked for rebalance (e.g. just hauteur changed): nothing to do.
-      return;
-    }
-
+    if(Math.abs(delta) < eps) return;
     if(delta < 0){
-      // Slot SHRUNK by |delta|. Free time appears immediately after the anchor.
       const freeAmount = -delta;
-      // Build replacement slots, each being a COPY of anchor at the right durations.
       const offsetAfterAnchor = beforeUsed + newDur;
       const pieces = splitDurationByBeat(offsetAfterAnchor, freeAmount, beat);
-      const newSlots = pieces.map(p => {
-        const copy = Object.assign({}, anchor, {dur: p.dur, dot: p.dot});
-        return copy;
-      });
-      // Rebuild measure: [0..anchor] + newSlots + [anchorIdx+1 .. end]
+      const newSlots = pieces.map(p => { const copy = Object.assign({}, anchor, {dur: p.dur, dot: p.dot}); delete copy.tieToNext; return copy; });
       const tail = meas.slice(anchorIdx + 1);
       state.measures[m] = meas.slice(0, anchorIdx + 1).concat(newSlots, tail);
-      // Now total may exceed `cap` if the existing tail still fits, normally fine.
-      // But if total > cap, truncate from the right.
       truncateMeasureToCapacity(m, cap);
       return;
     }
-
-    // delta > 0: slot GREW by delta. Consume delta from slots to the right.
-    let need = delta;
-    let cursor = anchorIdx + 1;
+    let need = delta; let cursor = anchorIdx + 1;
     while(need > eps && cursor < meas.length){
-      const slot = meas[cursor];
-      const dur = effDur(slot);
-      if(dur <= need + eps){
-        // fully eaten
-        need = +(need - dur).toFixed(6);
-        meas.splice(cursor, 1);
-        // do not increment cursor (next slot took its place)
-      } else {
-        // partially eaten: keep hauteur (and dot? no — we'll re-decompose), reduce duration
+      const slot = meas[cursor]; const dur = effDur(slot);
+      if(dur <= need + eps){ need = +(need - dur).toFixed(6); meas.splice(cursor, 1); }
+      else {
         const remaining = +(dur - need).toFixed(6);
-        // Compute new offset for the partial slot
-        let off = 0;
-        for(let i=0; i<cursor; i++) off += effDur(meas[i]);
-        // Replace the partial slot with one or more slots (same hauteur) summing to `remaining`,
-        // aligned on beat using splitDurationByBeat.
+        let off = 0; for(let i=0; i<cursor; i++) off += effDur(meas[i]);
         const pieces = splitDurationByBeat(off + need, remaining, beat);
         const newCopies = pieces.map(p => Object.assign({}, slot, {dur: p.dur, dot: p.dot}));
         meas.splice(cursor, 1, ...newCopies);
         need = 0;
       }
     }
-
-    // If we still need time and ran out of slots, the anchor effectively overflows; clamp.
     truncateMeasureToCapacity(m, cap);
   }
-
+  function _consumeFromHead(m, amount, replacementSlots){
+    const meter = meterAt(m); const beat = 4/parseMeter(meter).den;
+    const meas = state.measures[m]; const eps = 1e-6;
+    let need = amount; let cursor = 0;
+    while(need > eps && cursor < meas.length){
+      const slot = meas[cursor]; const dur = effDur(slot);
+      if(dur <= need + eps){ need = +(need - dur).toFixed(6); meas.splice(cursor, 1); }
+      else {
+        const remaining = +(dur - need).toFixed(6);
+        const off = need;
+        const pieces = splitDurationByBeat(off, remaining, beat);
+        const newCopies = pieces.map(p => Object.assign({}, slot, {dur: p.dur, dot: p.dot}));
+        meas.splice(cursor, 1, ...newCopies);
+        need = 0;
+      }
+    }
+    state.measures[m] = replacementSlots.concat(state.measures[m]);
+    truncateMeasureToCapacity(m, measureCapacity(meter));
+  }
   function truncateMeasureToCapacity(m, cap){
     const eps = 1e-6;
     const meas = state.measures[m];
@@ -403,13 +344,14 @@
     for(let i=0; i<meas.length; i++){
       const d = effDur(meas[i]);
       if(used + d > cap + eps){
-        // truncate measure here; the i-th slot would overflow
         state.measures[m] = meas.slice(0, i);
+        const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
+        const tail = splitDurationByBeat(used, cap - used, beat).map(p=> ({type:'rest', dur:p.dur, dot:p.dot}));
+        state.measures[m] = state.measures[m].concat(tail);
         return;
       }
       used += d;
     }
-    // fill any slight underfill with a clean rest decomposition
     if(used < cap - eps){
       const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
       const tail = splitDurationByBeat(used, cap - used, beat).map(p=> ({type:'rest', dur:p.dur, dot:p.dot}));
@@ -420,35 +362,34 @@
   function unitMultiplier(){
     const m = state.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);
     if(!m) return 1;
-    const denom = parseInt(m[1],10);
-    return denom / 4;
+    const denom = parseInt(m[1],10); return denom / 4;
   }
   function effDToAbc(d){
-    const v = d * unitMultiplier();
-    const e = 1e-9;
-    if(Math.abs(v - 1) < e) return '';
-    if(Math.abs(v - 2) < e) return '2';
-    if(Math.abs(v - 3) < e) return '3';
-    if(Math.abs(v - 4) < e) return '4';
-    if(Math.abs(v - 6) < e) return '6';
-    if(Math.abs(v - 8) < e) return '8';
-    if(Math.abs(v - 0.5) < e) return '/2';
-    if(Math.abs(v - 0.25) < e) return '/4';
-    if(Math.abs(v - 0.125) < e) return '/8';
-    if(Math.abs(v - 1.5) < e) return '3/2';
-    if(Math.abs(v - 0.75) < e) return '3/4';
-    if(Math.abs(v - 0.375) < e) return '3/8';
-    const denom = 16;
-    const numer = Math.round(v * denom);
+    const v = d * unitMultiplier(); const e = 1e-9;
+    if(Math.abs(v-1)<e) return ''; if(Math.abs(v-2)<e) return '2'; if(Math.abs(v-3)<e) return '3';
+    if(Math.abs(v-4)<e) return '4'; if(Math.abs(v-6)<e) return '6'; if(Math.abs(v-8)<e) return '8';
+    if(Math.abs(v-0.5)<e) return '/2'; if(Math.abs(v-0.25)<e) return '/4'; if(Math.abs(v-0.125)<e) return '/8';
+    if(Math.abs(v-1.5)<e) return '3/2'; if(Math.abs(v-0.75)<e) return '3/4'; if(Math.abs(v-0.375)<e) return '3/8';
+    const denom = 16; const numer = Math.round(v * denom);
     function gcd(a,b){ return b?gcd(b,a%b):a; }
-    const g = gcd(numer, denom);
-    const a = numer/g, b = denom/g;
-    if(b === 1) return String(a);
-    if(a === 1) return '/' + b;
-    return a + '/' + b;
+    const g = gcd(numer, denom); const a = numer/g, b = denom/g;
+    if(b === 1) return String(a); if(a === 1) return '/' + b; return a + '/' + b;
   }
   function slotStr(t){
     let s = '';
+    // Chord symbol comes BEFORE the note in ABC: "Cm7"C2
+    if(t.chord) s += '"' + t.chord + '"';
+    // Ornaments come after chord, before pitch: e.g. "C"!trill!C
+    if(t.orn && t.orn.length){
+      t.orn.forEach(o => {
+        // ABC supports both decorations like !trill! and shortcut letters T, M, etc.
+        // We'll use the !name! syntax for clarity — but simpler letter shortcuts are also fine.
+        // Use shortcut letters for the simple ones.
+        if('TMPHLRuv'.includes(o)) s += o;
+        else if(o === '.') s += '.';
+        else s += '!' + o + '!';
+      });
+    }
     if(t.type === 'note'){
       s += t.acc || '';
       let n = t.note;
@@ -458,6 +399,7 @@
       else if(t.octave<=-1) s += ",".repeat(-t.octave);
     } else { s += 'z'; }
     s += effDToAbc(effDur(t));
+    if(t.tieToNext) s += '-';
     return s;
   }
 
@@ -468,6 +410,62 @@
   }
   function clefAbcSuffix(c){ if(c === 'bass') return ' clef=bass'; if(c === 'treble8') return ' clef=treble-8'; return ''; }
   function clefHumanLabel(c){ if(c === 'bass') return 'Fa'; if(c === 'treble8') return 'Sol-8'; return 'Sol'; }
+
+  function cleanupAccidentals(){
+    state.measures.forEach((meas, mi)=>{
+      const sig = keyAt(mi);
+      meas.forEach(slot=>{
+        if(slot.type !== 'note') return;
+        if(!slot.acc) return;
+        if(sig > 0 && slot.acc === '^' && SHARP_NOTES.slice(0, sig).includes(slot.note)){ delete slot.acc; }
+        else if(sig < 0 && slot.acc === '_' && FLAT_NOTES.slice(0, -sig).includes(slot.note)){ delete slot.acc; }
+      });
+    });
+  }
+
+  // ===== Transposition (semitones) =====
+  // Convert (note,octave,acc) → midi → back to (note,octave,acc) preserving as much as possible.
+  // For simplicity we use a fixed pitch class table.
+  const NOTE_NAMES = ['C','C','D','D','E','F','F','G','G','A','A','B'];
+  const NOTE_ACCS  = ['',  '^','',  '^','',  '',  '^','',  '^','',  '^','' ];
+  const NOTE_NAMES_FLAT = ['C','D','D','E','E','F','G','G','A','A','B','B'];
+  const NOTE_ACCS_FLAT  = ['',  '_','',  '_','',  '',  '_','',  '_','',  '_','' ];
+  function midiToNote(midi, preferFlats){
+    const oct = Math.floor(midi/12) - 5; // C4 (midi 60) → octave 0 (since C4 = 60, 60/12=5, oct=0)
+    const pc = ((midi % 12) + 12) % 12;
+    const names = preferFlats ? NOTE_NAMES_FLAT : NOTE_NAMES;
+    const accs  = preferFlats ? NOTE_ACCS_FLAT  : NOTE_ACCS;
+    return { note: names[pc], octave: oct, acc: accs[pc] };
+  }
+  function midiOfSlot(slot, sig){
+    const baseSemi = {C:0,D:2,E:4,F:5,G:7,A:9,B:11}[slot.note];
+    let midi = 60 + baseSemi + slot.octave * 12;
+    if(slot.acc === '^') midi += 1;
+    else if(slot.acc === '_') midi -= 1;
+    else if(slot.acc === '=') {/* natural, no change */}
+    else {
+      if(sig > 0 && SHARP_NOTES.slice(0,sig).includes(slot.note)) midi += 1;
+      else if(sig < 0 && FLAT_NOTES.slice(0,-sig).includes(slot.note)) midi -= 1;
+    }
+    return midi;
+  }
+  function transposePiece(semitones){
+    const preferFlats = state.pieceKeySig < 0; // simple heuristic
+    state.measures.forEach((meas, mi)=>{
+      const sig = keyAt(mi);
+      meas.forEach(slot=>{
+        if(slot.type !== 'note') return;
+        const oldMidi = midiOfSlot(slot, sig);
+        const newMidi = oldMidi + semitones;
+        const out = midiToNote(newMidi, preferFlats);
+        slot.note = out.note;
+        slot.octave = out.octave;
+        // Set acc explicitly; but if it's already in the armure, cleanup will remove it
+        slot.acc = out.acc;
+      });
+    });
+    cleanupAccidentals();
+  }
 
   function buildBarSeparator(prevMi, mi){
     const prevEnd = (prevMi >= 0) && state.repeats[prevMi]?.end;
@@ -512,7 +510,13 @@
       const groups = computeBeamGroups(m, meterAt(mi));
       const groupOf = {};
       groups.forEach((g, gi)=>{ g.forEach((idx, k)=>{ groupOf[idx] = {gi, pos:k, len:g.length}; }); });
+      // tuplet rendering: emit (3 prefix on first triplet member
+      let tupletState = null;
       m.forEach((t, si)=>{
+        if(t.tuplet && (!tupletState || tupletState.startIdx + tupletState.size <= si)){
+          tupletState = { startIdx: si, size: t.tuplet };
+          body += '(' + t.tuplet;
+        }
         const s = slotStr(t);
         const cell = (mi === state.sel.m && si === state.sel.s) ? '<span class="sel">' + s + '</span>' : s;
         body += cell;
@@ -529,12 +533,10 @@
     document.getElementById('abc-out').innerHTML = header + body;
   }
 
-  // ====== rendering (score) — TWO-LINE LAYOUT ======
-  const SCORE_W = 360, SCORE_H = 200;
-  const STAFF_TOP_Y = 30, LINE_GAP = 7, STAFF_GAP = 38;
+  const SCORE_W = 360;
+  const STAFF_TOP_Y = 30, LINE_GAP = 7;
   const LEFT_PAD = 50, RIGHT_PAD = 6;
   const MEASURES_PER_LINE = 3;
-  function staffTopOfLine(line){ return STAFF_TOP_Y + line * STAFF_GAP * 1.7; }
   function clefRefStep(c){ return c === 'bass' ? -12 : 2; }
   function noteY(staffTop, step, c){ const refStep = clefRefStep(c); const bottomLineY = staffTop + 4*LINE_GAP; return bottomLineY - (step - refStep) * (LINE_GAP/2); }
   function stepIndex(note, octave){ const map = {C:0,D:1,E:2,F:3,G:4,A:5,B:6}; return map[note] + 7*octave; }
@@ -555,9 +557,8 @@
     for(let i=0; i<meas.length; i++){
       const t = meas[i]; const eD = effDur(t);
       const groupIdx = Math.floor((offset + eps) / groupUnit);
-      const groupStart = groupIdx * groupUnit;
       const beamable = (t.type === 'note') && (eD <= 0.5 + eps);
-      const crosses = (offset + eD) > (groupStart + groupUnit + eps);
+      const crosses = (offset + eD) > (groupIdx*groupUnit + groupUnit + eps);
       if(beamable && !crosses){
         if(curGroup && curGroup.startGroup === groupIdx){ curGroup.push(i); }
         else { flush(); curGroup = [i]; curGroup.startGroup = groupIdx; }
@@ -620,16 +621,19 @@
     document.getElementById('meas-num').textContent = selM + 1;
     document.getElementById('meas-pos').textContent = selM + 1;
     document.getElementById('slot-num').textContent = state.sel.s + 1;
-    const measuresPerPage = MEASURES_PER_LINE * 2;
+    const linesShown = state.viewmode ? 6 : 2;
+    const measuresPerPage = MEASURES_PER_LINE * linesShown;
     const page = Math.floor(selM / measuresPerPage);
     const startM = page * measuresPerPage;
     const usable = SCORE_W - LEFT_PAD - RIGHT_PAD;
     const measureW = usable / MEASURES_PER_LINE;
     const ink = '#1a1a1a'; const sel = '#e24b4a'; const dim = '#888780';
-    let svg = '<svg viewBox="0 0 '+SCORE_W+' '+SCORE_H+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">';
-    for(let line=0; line<2; line++){
-      const staffTop = staffTopOfLine(line);
+    const scoreH = 30 + linesShown * 38 + 10;
+    let svg = '<svg viewBox="0 0 '+SCORE_W+' '+scoreH+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">';
+    for(let line=0; line<linesShown; line++){
+      const staffTop = STAFF_TOP_Y + line * 38;
       const lineStartM = startM + line * MEASURES_PER_LINE;
+      if(state.measures[lineStartM] === undefined) continue;
       for(let i=0;i<5;i++){ const y = staffTop + i*LINE_GAP; svg += '<line x1="'+(LEFT_PAD-25)+'" y1="'+y+'" x2="'+(SCORE_W-RIGHT_PAD)+'" y2="'+y+'" stroke="'+ink+'" stroke-width="0.55" opacity="0.55"/>'; }
       const headClef = clefAt(lineStartM); const headKey = keyAt(lineStartM); const headMtr = meterAt(lineStartM);
       if(headClef === 'bass'){ svg += '<text x="'+(LEFT_PAD-44)+'" y="'+(staffTop + LINE_GAP + 5)+'" font-size="32" font-family="serif" fill="'+ink+'" opacity="0.85">𝄢</text>'; }
@@ -671,10 +675,18 @@
           g.forEach(slotIdx=>{ const t = m[slotIdx]; const cx = x0 + slotIdx*slotW + slotW/2; const sx = stemUp ? cx+3.3 : cx-3.3; const headY = noteY(staffTop, stepIndex(t.note, t.octave), localClef); const naturalTip = stemUp ? headY - 19 : headY + 19; if(stemUp) extremeY = Math.min(extremeY, naturalTip); else extremeY = Math.max(extremeY, naturalTip); stemXs.push({slotIdx, sx, headY}); });
           return { stemUp, beamY: extremeY, stems: stemXs };
         });
+        const tiePoints = []; let prevSlot = null;
         m.forEach((t, si)=>{
           const cx = x0 + si*slotW + slotW/2;
           const isSel = (mIdx === selM && si === state.sel.s);
           const color = isSel ? sel : ink;
+          // Chord symbol above the note
+          if(t.chord) svg += '<text x="'+cx+'" y="'+(staffTop - 16)+'" font-size="9" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+t.chord+'</text>';
+          // Ornament marks above the note
+          if(t.orn && t.orn.length){
+            const ornText = t.orn.map(o => { if(o==='T') return 'tr'; if(o==='M') return '∼'; if(o==='H') return '𝄐'; if(o==='.') return '·'; if(o==='L') return '>'; return o; }).join(' ');
+            svg += '<text x="'+cx+'" y="'+(staffTop - 7)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+ornText+'</text>';
+          }
           if(t.type === 'note'){
             const grp = slotToGroup[si];
             if(grp){
@@ -684,18 +696,35 @@
               svg += drawn.svg;
               svg += '<line x1="'+sx+'" y1="'+headY+'" x2="'+sx+'" y2="'+beamY+'" stroke="'+color+'" stroke-width="0.8"/>';
               if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
+              if(prevSlot && prevSlot.t.tieToNext) tiePoints.push({fromCx: prevSlot.cx, fromY: prevSlot.y, toCx: cx, toY: drawn.headY});
+              prevSlot = {t, cx, y: drawn.headY};
             } else {
               const step = stepIndex(t.note, t.octave); const stemUp = step < middleStep;
               const drawn = drawNoteHead(t, cx, color, localClef, true, stemUp, staffTop);
               svg += drawn.svg;
               if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
+              if(prevSlot && prevSlot.t.tieToNext) tiePoints.push({fromCx: prevSlot.cx, fromY: prevSlot.y, toCx: cx, toY: drawn.headY});
+              prevSlot = {t, cx, y: drawn.headY};
             }
           } else {
             const drawn = drawRest(t, cx, color, staffTop);
             svg += drawn.svg;
             if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
+            prevSlot = null;
+          }
+          // tuplet indicator below: a small "3" centered under the start
+          if(t.tuplet && (si === 0 || !m[si-1].tuplet)){
+            const groupSlots = [];
+            for(let j=si; j<m.length && m[j].tuplet === t.tuplet && groupSlots.length < t.tuplet; j++) groupSlots.push(j);
+            if(groupSlots.length > 0){
+              const cxFirst = x0 + groupSlots[0]*slotW + slotW/2;
+              const cxLast = x0 + groupSlots[groupSlots.length-1]*slotW + slotW/2;
+              const cxMid = (cxFirst + cxLast)/2;
+              svg += '<text x="'+cxMid+'" y="'+(staffTop + 5*LINE_GAP + 6)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+t.tuplet+'</text>';
+            }
           }
         });
+        tiePoints.forEach(tp=>{ const cx = (tp.fromCx + tp.toCx) / 2; const cy = ((tp.fromY + tp.toY) / 2) + 6; svg += '<path d="M '+(tp.fromCx+3)+' '+(tp.fromY+3)+' Q '+cx+' '+cy+' '+(tp.toCx-3)+' '+(tp.toY+3)+'" stroke="'+ink+'" stroke-width="0.9" fill="none"/>'; });
         beamGroups.forEach((g, gIdx)=>{
           const data = groupBeamData[gIdx]; const stemUp = data.stemUp; const beamY = data.beamY; const stems = data.stems;
           const xStart = stems[0].sx; const xEnd = stems[stems.length-1].sx;
@@ -716,63 +745,41 @@
     const sl = selectedSlot();
     document.querySelectorAll('#dur-pad .k').forEach(b=>{ const activeD = sl ? sl.dur : 1; b.classList.toggle('active', parseFloat(b.dataset.dur) === activeD); });
     document.querySelectorAll('#alt-pad .k').forEach(b=>{ const activeAcc = (sl && sl.type==='note') ? (sl.acc || '') : ''; b.classList.toggle('active', activeAcc === b.dataset.acc && b.dataset.acc !== ''); });
+    document.getElementById('dot-btn').classList.toggle('active', !!(sl && sl.dot));
     const m = state.sel.m;
     const sigLabel = (s)=> s === 0 ? '0' : (s>0 ? '+'+s : ''+s);
     document.getElementById('ctx-info').innerHTML = 'M:<b>' + meterAt(m) + '</b> · L:<b>' + state.pieceUnit + '</b> · K:<b>' + sigLabel(keyAt(m)) + '</b> · <b>' + clefHumanLabel(clefAt(m)) + '</b>';
     document.getElementById('tempo-v').textContent = state.tempo;
     document.getElementById('vol-v').textContent = state.volume;
-    document.getElementById('btn-play').textContent = audio.playing ? '⏸ Pause' : '▶ Play';
+    document.getElementById('btn-play').textContent = audio.playing ? '⏸' : '▶';
     document.getElementById('btn-undo').disabled = (history.pos <= 0);
     document.getElementById('btn-redo').disabled = (history.pos >= history.stack.length - 1);
+    document.getElementById('btn-viewmode').textContent = state.viewmode ? '✎' : '👁';
   }
   function render(){ renderScore(); renderAbc(); renderState(); }
 
-  function selectNext(){
-    let {m, s} = state.sel;
-    if(s + 1 < state.measures[m].length){ state.sel = {m, s:s+1}; render(); return; }
-    if(m + 1 < state.measures.length){ state.sel = {m:m+1, s:0}; render(); return; }
-    // beyond last measure: create one and move into it
-    state.measures.push(buildEmptyMeasure(meterAt(m)));
-    state.sel = {m: state.measures.length - 1, s: 0};
-    pushHistory();
-    render();
-  }
+  function selectNext(){ let {m, s} = state.sel; if(s + 1 < state.measures[m].length){ state.sel = {m, s:s+1}; render(); return; } if(m + 1 < state.measures.length){ state.sel = {m:m+1, s:0}; render(); return; } state.measures.push(buildEmptyMeasure(meterAt(m))); state.sel = {m: state.measures.length - 1, s: 0}; pushHistory(); render(); }
   function selectPrev(){ let {m, s} = state.sel; if(s > 0){ state.sel = {m, s:s-1}; render(); return; } if(m > 0){ state.sel = {m:m-1, s: state.measures[m-1].length - 1}; render(); return; } }
   function jumpMeasure(delta){
     const cur = state.sel.m;
-    if(delta > 0 && cur === state.measures.length - 1){
-      state.measures.push(buildEmptyMeasure(meterAt(cur)));
-      state.sel = {m: state.measures.length - 1, s: 0};
-      pushHistory();
-      render(); return;
-    }
+    if(delta > 0 && cur === state.measures.length - 1){ state.measures.push(buildEmptyMeasure(meterAt(cur))); state.sel = {m: state.measures.length - 1, s: 0}; pushHistory(); render(); return; }
     const target = cur + delta;
     if(target < 0 || target >= state.measures.length) return;
     state.sel = {m:target, s:0}; render();
   }
 
-  // ====== Audio ======
   const audio = { ctx: null, master: null, playing: false, scheduled: [], stopAt: 0, raf: null };
   function ensureAudio(){
-    if(!audio.ctx){
-      audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
-      audio.master = audio.ctx.createGain();
-      audio.master.connect(audio.ctx.destination);
-    }
+    if(!audio.ctx){ audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); audio.master = audio.ctx.createGain(); audio.master.connect(audio.ctx.destination); }
     audio.master.gain.value = state.volume / 200;
     if(audio.ctx.state === 'suspended') audio.ctx.resume();
   }
   function midiOfNote(note, octave, acc, keySig){
     const baseSemi = {C:0, D:2, E:4, F:5, G:7, A:9, B:11}[note];
-    let midi = 60 + baseSemi + octave * 12;
-    let alteration = 0;
-    if(acc === '^') alteration = 1;
-    else if(acc === '_') alteration = -1;
+    let midi = 60 + baseSemi + octave * 12; let alteration = 0;
+    if(acc === '^') alteration = 1; else if(acc === '_') alteration = -1;
     else if(acc === '=') alteration = 0;
-    else {
-      if(keySig > 0 && SHARP_NOTES.slice(0, keySig).includes(note)) alteration = 1;
-      else if(keySig < 0 && FLAT_NOTES.slice(0, -keySig).includes(note)) alteration = -1;
-    }
+    else { if(keySig > 0 && SHARP_NOTES.slice(0, keySig).includes(note)) alteration = 1; else if(keySig < 0 && FLAT_NOTES.slice(0, -keySig).includes(note)) alteration = -1; }
     return midi + alteration;
   }
   function freqOfMidi(m){ return 440 * Math.pow(2, (m - 69)/12); }
@@ -780,47 +787,35 @@
     ensureAudio();
     const t = audio.ctx.currentTime + 0.005;
     const freq = freqOfMidi(midi);
-    const osc = audio.ctx.createOscillator();
-    const gain = audio.ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.value = freq;
-    const peak = 0.5;
-    const a = 0.005;
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(peak, t + a);
+    const osc = audio.ctx.createOscillator(); const gain = audio.ctx.createGain();
+    osc.type = 'triangle'; osc.frequency.value = freq;
+    const peak = 0.5; const a = 0.005;
+    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(peak, t + a);
     gain.gain.setValueAtTime(peak, t + Math.max(durSec - 0.06, a));
     gain.gain.linearRampToValueAtTime(0, t + durSec);
     osc.connect(gain); gain.connect(audio.master);
-    osc.start(t);
-    osc.stop(t + durSec + 0.03);
+    osc.start(t); osc.stop(t + durSec + 0.03);
   }
   function playSchedule(){
-    ensureAudio();
-    stopPlayback(false);
+    ensureAudio(); stopPlayback(false);
     audio.playing = true;
-    document.getElementById('btn-play').textContent = '⏸ Pause';
+    document.getElementById('btn-play').textContent = '⏸';
     const startTime = audio.ctx.currentTime + 0.05;
-    let t = startTime;
-    const qDur = 60 / state.tempo;
+    let t = startTime; const qDur = 60 / state.tempo;
     state.measures.forEach((m, mi)=>{
       const sig = keyAt(mi);
       m.forEach((slot, si)=>{
-        const dur = effDur(slot) * qDur;
+        let dur = effDur(slot) * qDur;
+        if(slot.tuplet === 3) dur = dur * 2/3; // triolet plays at 2/3 of normal
         if(slot.type === 'note'){
           const midi = midiOfNote(slot.note, slot.octave, slot.acc, sig);
-          const freq = freqOfMidi(midi);
-          const osc = audio.ctx.createOscillator();
-          const gain = audio.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.value = freq;
+          const osc = audio.ctx.createOscillator(); const gain = audio.ctx.createGain();
+          osc.type = 'triangle'; osc.frequency.value = freqOfMidi(midi);
           const a = 0.005, r = Math.min(0.05, dur * 0.3);
-          gain.gain.setValueAtTime(0, t);
-          gain.gain.linearRampToValueAtTime(0.5, t + a);
-          gain.gain.setValueAtTime(0.5, t + dur - r);
-          gain.gain.linearRampToValueAtTime(0, t + dur);
+          gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.5, t + a);
+          gain.gain.setValueAtTime(0.5, t + dur - r); gain.gain.linearRampToValueAtTime(0, t + dur);
           osc.connect(gain); gain.connect(audio.master);
-          osc.start(t);
-          osc.stop(t + dur + 0.02);
+          osc.start(t); osc.stop(t + dur + 0.02);
           audio.scheduled.push(osc);
         }
         audio.scheduled.push({ updateAt: t, measureIdx: mi, slotIdx: si });
@@ -832,29 +827,15 @@
       if(!audio.playing) return;
       const now = audio.ctx.currentTime;
       let last = null;
-      for(const ev of audio.scheduled){
-        if(ev.updateAt !== undefined && ev.updateAt <= now) last = ev;
-        if(ev.updateAt !== undefined && ev.updateAt > now) break;
-      }
-      if(last && (state.sel.m !== last.measureIdx || state.sel.s !== last.slotIdx)){
-        state.sel = { m: last.measureIdx, s: last.slotIdx };
-        renderScore(); renderState();
-      }
+      for(const ev of audio.scheduled){ if(ev.updateAt !== undefined && ev.updateAt <= now) last = ev; if(ev.updateAt !== undefined && ev.updateAt > now) break; }
+      if(last && (state.sel.m !== last.measureIdx || state.sel.s !== last.slotIdx)){ state.sel = { m: last.measureIdx, s: last.slotIdx }; renderScore(); renderState(); }
       if(now >= audio.stopAt){ stopPlayback(true); return; }
       audio.raf = requestAnimationFrame(tick);
     }
     audio.raf = requestAnimationFrame(tick);
   }
-  function stopPlayback(refresh){
-    if(audio.raf){ cancelAnimationFrame(audio.raf); audio.raf = null; }
-    audio.scheduled.forEach(ev=>{ if(ev.stop) try{ev.stop();}catch(_){} });
-    audio.scheduled = [];
-    audio.playing = false;
-    document.getElementById('btn-play').textContent = '▶ Play';
-    if(refresh) render();
-  }
+  function stopPlayback(refresh){ if(audio.raf){ cancelAnimationFrame(audio.raf); audio.raf = null; } audio.scheduled.forEach(ev=>{ if(ev.stop) try{ev.stop();}catch(_){} }); audio.scheduled = []; audio.playing = false; document.getElementById('btn-play').textContent = '▶'; if(refresh) render(); }
 
-  // ====== editing actions ======
   function setNoteAtSelection(noteName){
     const sl = selectedSlot(); if(!sl) return;
     const dur = sl.dur, dot = sl.dot;
@@ -862,44 +843,29 @@
     state.measures[state.sel.m][state.sel.s] = { type:'note', note: noteName, octave: state.octave, dur, dot, acc };
     pushHistory();
     const midi = midiOfNote(noteName, state.octave, acc, keyAt(state.sel.m));
-    previewNote(midi);
-    render();
+    previewNote(midi); render();
   }
-  function setRestAtSelection(){
-    const sl = selectedSlot(); if(!sl) return;
-    state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot};
-    pushHistory();
-    render();
-  }
+  function setRestAtSelection(){ const sl = selectedSlot(); if(!sl) return; state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); }
   function setDurAtSelection(d){
     const sl = selectedSlot(); if(!sl) return;
-    const oldEff = effDur(sl);
-    sl.dur = d;
-    // dot stays as-is (separate button)
+    const oldEff = effDur(sl); sl.dur = d;
     rebalanceMeasure(state.sel.m, state.sel.s, oldEff);
     const newLen = state.measures[state.sel.m].length;
     if(state.sel.s >= newLen) state.sel.s = newLen - 1;
     pushHistory();
     const cur = selectedSlot();
-    if(cur && cur.type === 'note'){
-      const midi = midiOfNote(cur.note, cur.octave, cur.acc, keyAt(state.sel.m));
-      previewNote(midi, Math.min(0.4, effDur(cur) * 60 / state.tempo));
-    }
+    if(cur && cur.type === 'note'){ const midi = midiOfNote(cur.note, cur.octave, cur.acc, keyAt(state.sel.m)); previewNote(midi, Math.min(0.4, effDur(cur) * 60 / state.tempo)); }
     render();
   }
   function toggleDotAtSelection(){
     const sl = selectedSlot(); if(!sl) return;
-    const oldEff = effDur(sl);
-    sl.dot = !sl.dot;
+    const oldEff = effDur(sl); sl.dot = !sl.dot;
     rebalanceMeasure(state.sel.m, state.sel.s, oldEff);
     const newLen = state.measures[state.sel.m].length;
     if(state.sel.s >= newLen) state.sel.s = newLen - 1;
     pushHistory();
     const cur = selectedSlot();
-    if(cur && cur.type === 'note'){
-      const midi = midiOfNote(cur.note, cur.octave, cur.acc, keyAt(state.sel.m));
-      previewNote(midi);
-    }
+    if(cur && cur.type === 'note'){ const midi = midiOfNote(cur.note, cur.octave, cur.acc, keyAt(state.sel.m)); previewNote(midi); }
     render();
   }
   function toggleAccAtSelection(acc){
@@ -908,23 +874,16 @@
       sl.acc = (sl.acc === acc) ? '' : acc;
       pushHistory();
       const midi = midiOfNote(sl.note, sl.octave, sl.acc, keyAt(state.sel.m));
-      previewNote(midi);
-      render();
+      previewNote(midi); render();
     }
   }
   function changeOctave(delta){
     state.octave = Math.max(-2, Math.min(3, state.octave + delta));
     const sl = selectedSlot();
-    if(sl && sl.type === 'note'){
-      sl.octave = Math.max(-2, Math.min(3, sl.octave + delta));
-      const midi = midiOfNote(sl.note, sl.octave, sl.acc, keyAt(state.sel.m));
-      previewNote(midi);
-    }
-    pushHistory();
-    render();
+    if(sl && sl.type === 'note'){ sl.octave = Math.max(-2, Math.min(3, sl.octave + delta)); const midi = midiOfNote(sl.note, sl.octave, sl.acc, keyAt(state.sel.m)); previewNote(midi); }
+    pushHistory(); render();
   }
 
-  // wire UI
   const notesCol = document.getElementById('notes-col');
   NOTES.forEach(n=>{ const b = document.createElement('button'); b.className = 'k'; b.innerHTML = n.label + '<span class="sub">' + n.sub + '</span>'; b.addEventListener('click', ()=> setNoteAtSelection(n.n)); notesCol.appendChild(b); });
   const durPad = document.getElementById('dur-pad');
@@ -939,17 +898,34 @@
   document.getElementById('meas-prev').addEventListener('click', ()=> jumpMeasure(-1));
   document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
   document.getElementById('btn-rest').addEventListener('click', setRestAtSelection);
-
-  document.getElementById('btn-del').addEventListener('click', ()=>{
-    const sl = selectedSlot();
-    if(sl){
-      state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot};
-      pushHistory();
-      render();
-    }
-  });
+  document.getElementById('btn-del').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
   document.getElementById('btn-undo').addEventListener('click', undo);
   document.getElementById('btn-redo').addEventListener('click', redo);
+
+  // Transposition
+  document.getElementById('btn-trans-up').addEventListener('click', ()=>{ transposePiece(+1); pushHistory(); render(); });
+  document.getElementById('btn-trans-down').addEventListener('click', ()=>{ transposePiece(-1); pushHistory(); render(); });
+
+  // Tie/lien
+  document.getElementById('btn-tie').addEventListener('click', ()=>{
+    const sl = selectedSlot();
+    if(sl){ sl.tieToNext = !sl.tieToNext; pushHistory(); render(); }
+  });
+
+  // Triolet sur la note active : groupe avec les 2 suivantes
+  document.getElementById('btn-triplet').addEventListener('click', ()=>{
+    const sl = selectedSlot(); if(!sl) return;
+    const meas = state.measures[state.sel.m];
+    const idx = state.sel.s;
+    if(sl.tuplet === 3){
+      // remove triplet flag from this group
+      for(let i = idx; i < meas.length && meas[i].tuplet === 3; i++) delete meas[i].tuplet;
+    } else {
+      // mark this slot and the 2 next as triplet
+      for(let i = idx; i < Math.min(meas.length, idx + 3); i++) meas[i].tuplet = 3;
+    }
+    pushHistory(); render();
+  });
 
   function ensureRepeat(m){ if(!state.repeats[m]) state.repeats[m] = {}; return state.repeats[m]; }
   document.getElementById('btn-rep-start').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.start = !r.start; pushHistory(); render(); });
@@ -957,20 +933,20 @@
   document.getElementById('btn-volta1').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 1) ? 0 : 1; pushHistory(); render(); });
   document.getElementById('btn-volta2').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 2) ? 0 : 2; pushHistory(); render(); });
 
-  document.getElementById('tempo-u').addEventListener('click', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
-  document.getElementById('tempo-d').addEventListener('click', ()=>{ state.tempo = Math.max(30, state.tempo - 5); render(); });
+  // Bottom bar: vol + tempo + play
   document.getElementById('vol-u').addEventListener('click', ()=>{ state.volume = Math.min(100, state.volume + 10); ensureAudio(); render(); });
   document.getElementById('vol-d').addEventListener('click', ()=>{ state.volume = Math.max(0, state.volume - 10); ensureAudio(); render(); });
-
+  document.getElementById('tempo-u').addEventListener('click', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
+  document.getElementById('tempo-d').addEventListener('click', ()=>{ state.tempo = Math.max(30, state.tempo - 5); render(); });
   document.getElementById('btn-play').addEventListener('click', ()=>{ if(audio.playing) stopPlayback(true); else playSchedule(); });
   document.getElementById('btn-stop').addEventListener('click', ()=> stopPlayback(true));
+  document.getElementById('btn-viewmode').addEventListener('click', ()=>{ state.viewmode = !state.viewmode; document.getElementById('app').classList.toggle('viewmode', state.viewmode); render(); });
 
   document.getElementById('btn-fs').addEventListener('click', ()=>{
     state.fullscreen = !state.fullscreen;
     document.getElementById('app').classList.toggle('fullscreen', state.fullscreen);
     document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶ ✕' : '⛶';
   });
-
   document.getElementById('abc-toggle').addEventListener('click', ()=>{
     state.abcCollapsed = !state.abcCollapsed;
     document.getElementById('abc-out').classList.toggle('collapsed', state.abcCollapsed);
@@ -979,57 +955,310 @@
 
   document.getElementById('btn-add-meas').addEventListener('click', ()=>{
     openPanel({
-      title: 'Ajouter une mesure',
-      body: '<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small><div class="scope-row" style="grid-template-columns: 1fr 1fr;"><button class="k" id="addleft">À gauche</button><button class="k primary" id="addright">À droite</button></div>',
-      hideActions: true,
-      onMount: ()=>{
+      title:'Ajouter une mesure',
+      body: '<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small>',
+      hideActions:true,
+      extraButtons:['Annuler','À gauche','À droite'],
+      onExtra:(which)=>{
+        if(which === 'Annuler'){ closePanel(); return; }
         function shiftKeys(map, threshold, inclusive){ const out = {}; for(const k of Object.keys(map)){ const i = parseInt(k,10); const shift = inclusive ? (i >= threshold) : (i > threshold); out[shift ? i+1 : i] = map[k]; } return out; }
-        document.getElementById('addleft').addEventListener('click', ()=>{
+        if(which === 'À gauche'){
           const meter = meterAt(state.sel.m);
           state.measures.splice(state.sel.m, 0, buildEmptyMeasure(meter));
           state.timeChanges = shiftKeys(state.timeChanges, state.sel.m, true);
           state.keyChanges  = shiftKeys(state.keyChanges,  state.sel.m, true);
           state.clefChanges = shiftKeys(state.clefChanges, state.sel.m, true);
           state.repeats     = shiftKeys(state.repeats,     state.sel.m, true);
-          state.sel = {m: state.sel.m, s: 0}; pushHistory(); closePanel(); render();
-        });
-        document.getElementById('addright').addEventListener('click', ()=>{
+          state.sel = {m: state.sel.m, s: 0};
+        } else {
           const meter = meterAt(state.sel.m);
           state.measures.splice(state.sel.m+1, 0, buildEmptyMeasure(meter));
           state.timeChanges = shiftKeys(state.timeChanges, state.sel.m, false);
           state.keyChanges  = shiftKeys(state.keyChanges,  state.sel.m, false);
           state.clefChanges = shiftKeys(state.clefChanges, state.sel.m, false);
           state.repeats     = shiftKeys(state.repeats,     state.sel.m, false);
-          state.sel = {m: state.sel.m+1, s: 0}; pushHistory(); closePanel(); render();
-        });
+          state.sel = {m: state.sel.m+1, s: 0};
+        }
+        pushHistory(); closePanel(); render();
       },
     });
   });
 
+  // ===== Chord panel =====
+  document.getElementById('btn-chord').addEventListener('click', ()=>{
+    const sl = selectedSlot();
+    if(!sl || sl.type !== 'note'){ alert('Sélectionnez une note'); return; }
+    const roots = ['C','D','E','F','G','A','B'];
+    let root = (sl.chord && sl.chord.match(/^[A-G]/)) ? sl.chord[0] : sl.note;
+    let acc = '';
+    let qual = '';
+    if(sl.chord){
+      const m = sl.chord.match(/^([A-G])([#b]?)(.*)$/);
+      if(m){ root = m[1]; acc = m[2]; qual = m[3]; }
+    }
+    function controls(){
+      let html = '<small>Fondamentale</small><div class="root-grid">';
+      roots.forEach(r => html += '<button class="k" data-root="'+r+'">'+r+'</button>');
+      html += '</div>';
+      html += '<small>Altération</small><div class="grid3" id="acc-grid"><button class="k symbol" data-acc="">♮</button><button class="k symbol" data-acc="#">♯</button><button class="k symbol" data-acc="b">♭</button></div>';
+      html += '<small>Qualité</small><div class="chord-grid">';
+      CHORD_QUALITIES.forEach(q => html += '<button class="k" data-qual="'+q+'">'+(q || 'maj')+'</button>');
+      html += '</div>';
+      html += '<small>Aperçu : <b id="chord-preview">'+root+acc+qual+'</b></small>';
+      return html;
+    }
+    function refresh(){
+      document.querySelectorAll('[data-root]').forEach(b=> b.classList.toggle('active', b.dataset.root === root));
+      document.querySelectorAll('[data-acc]').forEach(b=> b.classList.toggle('active', b.dataset.acc === acc));
+      document.querySelectorAll('[data-qual]').forEach(b=> b.classList.toggle('active', b.dataset.qual === qual));
+      document.getElementById('chord-preview').textContent = root + acc + qual;
+    }
+    openPanel({
+      title:'Accord',
+      body: controls(),
+      hideActions:true,
+      extraButtons:['Annuler', 'Suppr', 'Appliquer'],
+      onMount: ()=>{
+        document.querySelectorAll('[data-root]').forEach(b=> b.addEventListener('click', ()=>{ root = b.dataset.root; refresh(); }));
+        document.querySelectorAll('[data-acc]').forEach(b=> b.addEventListener('click', ()=>{ acc = b.dataset.acc; refresh(); }));
+        document.querySelectorAll('[data-qual]').forEach(b=> b.addEventListener('click', ()=>{ qual = b.dataset.qual; refresh(); }));
+        refresh();
+      },
+      onExtra:(which)=>{
+        if(which === 'Annuler'){ closePanel(); return; }
+        if(which === 'Suppr'){ delete sl.chord; pushHistory(); closePanel(); render(); return; }
+        sl.chord = root + acc + qual; pushHistory(); closePanel(); render();
+      },
+    });
+  });
+
+  // ===== Ornement panel =====
+  document.getElementById('btn-orn').addEventListener('click', ()=>{
+    const sl = selectedSlot();
+    if(!sl || sl.type !== 'note'){ alert('Sélectionnez une note'); return; }
+    sl.orn = sl.orn || [];
+    function controls(){
+      let html = '<small>Cliquez pour activer/désactiver</small><div class="grid3">';
+      ORNAMENTS.forEach(o => html += '<button class="k tiny" data-orn="'+o.code+'">'+o.label+'</button>');
+      html += '</div>';
+      html += '<small>Actifs : <b id="orn-preview">'+(sl.orn.length ? sl.orn.join(' ') : '(aucun)')+'</b></small>';
+      return html;
+    }
+    function refresh(){
+      document.querySelectorAll('[data-orn]').forEach(b=> b.classList.toggle('active', sl.orn.includes(b.dataset.orn)));
+      document.getElementById('orn-preview').textContent = sl.orn.length ? sl.orn.join(' ') : '(aucun)';
+    }
+    openPanel({
+      title:'Ornement',
+      body: controls(),
+      hideActions:true,
+      extraButtons:['Tout enlever', 'Fermer'],
+      onMount:()=>{
+        document.querySelectorAll('[data-orn]').forEach(b=> b.addEventListener('click', ()=>{
+          const code = b.dataset.orn;
+          const i = sl.orn.indexOf(code);
+          if(i >= 0) sl.orn.splice(i, 1); else sl.orn.push(code);
+          render(); refresh();
+        }));
+        refresh();
+      },
+      onExtra:(which)=>{
+        if(which === 'Tout enlever'){ sl.orn = []; pushHistory(); render(); refresh(); return; }
+        pushHistory(); closePanel();
+      },
+    });
+  });
+
+  // ===== File save / open ABC =====
+  document.getElementById('btn-save-file').addEventListener('click', ()=>{
+    const abc = document.getElementById('abc-out').textContent;
+    const blob = new Blob([abc], {type:'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const filename = (state.headers.T || 'morceau').replace(/[^a-zA-Z0-9_\-]/g,'_') + '.abc';
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+  const fileInput = document.getElementById('file-input');
+  document.getElementById('btn-open-file').addEventListener('click', ()=>{ fileInput.click(); });
+  fileInput.addEventListener('change', (e)=>{
+    const f = e.target.files[0]; if(!f) return;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      const text = ev.target.result;
+      const ok = importAbcText(text);
+      if(!ok) alert('Impossible de lire ce fichier ABC');
+      fileInput.value = '';
+    };
+    reader.readAsText(f);
+  });
+
+  // Very basic ABC importer — extracts headers and shows raw ABC under the score.
+  // For now we DON'T re-parse the body into our slot model (that's a substantial parser).
+  // Instead we replace headers and show the raw text in the code area as a fallback.
+  function importAbcText(text){
+    try {
+      // Extract simple headers
+      const lines = text.split(/\r?\n/);
+      const headers = {};
+      let body = '';
+      let inBody = false;
+      for(const line of lines){
+        const m = line.match(/^([A-Z]):\s*(.*)$/);
+        if(!inBody && m){
+          const k = m[1]; const v = m[2].trim();
+          headers[k] = v;
+          if(k === 'K') inBody = true;
+          continue;
+        }
+        if(inBody) body += line + '\n';
+      }
+      if(headers.X) state.headers.X = headers.X;
+      if(headers.T) state.headers.T = headers.T;
+      if(headers.M) state.pieceMeter = headers.M;
+      if(headers.L) state.pieceUnit = headers.L;
+      if(headers.Q){
+        const qm = headers.Q.match(/=(\d+)/);
+        if(qm) state.tempo = parseInt(qm[1],10);
+      }
+      if(headers.K){
+        // Try to parse the key
+        const km = headers.K.match(/^([A-G][#b]?)(m?)(\s+clef=(\S+))?/);
+        if(km){
+          const root = km[1];
+          const minor = km[2] === 'm';
+          // Map to keySig (major)
+          const sigMap = {'C':0,'G':1,'D':2,'A':3,'E':4,'B':5,'F#':6,'C#':7,'F':-1,'Bb':-2,'Eb':-3,'Ab':-4,'Db':-5,'Gb':-6,'Cb':-7};
+          let sig = sigMap[root] !== undefined ? sigMap[root] : 0;
+          if(minor) sig -= 3; // minor relatives
+          state.pieceKeySig = sig;
+          if(km[4] === 'bass') state.pieceClef = 'bass';
+          else if(km[4] === 'treble-8') state.pieceClef = 'treble8';
+          else state.pieceClef = 'treble';
+        }
+      }
+      // We rebuild empty measures (the user will see the imported headers but the body is shown raw).
+      rebuildMeasures();
+      pushHistory();
+      render();
+      // Show import message
+      alert('En-têtes importés. Le corps du morceau n\'est pas encore reconstruit (à venir). Voici l\'en-tête appliqué.');
+      return true;
+    } catch(e){
+      console.error(e);
+      return false;
+    }
+  }
+
+  // Local saves (memo)
+  const STORAGE_KEY = 'abc-editor-saves';
+  function getSaves(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(_){ return []; } }
+  function setSaves(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+  function exportState(){ return JSON.stringify({ headers: state.headers, pieceMeter: state.pieceMeter, pieceUnit: state.pieceUnit, pieceKeySig: state.pieceKeySig, pieceClef: state.pieceClef, measures: state.measures, timeChanges: state.timeChanges, keyChanges: state.keyChanges, clefChanges: state.clefChanges, repeats: state.repeats, tempo: state.tempo }); }
+  function importState(json){ try { const o = JSON.parse(json); Object.assign(state, o); state.sel = {m:0, s:0}; state.octave = 0; pushHistory(); render(); return true; } catch(e){ return false; } }
+
+  document.getElementById('btn-saves').addEventListener('click', ()=>{
+    const saves = getSaves();
+    let listHtml = '<div class="save-list">';
+    if(saves.length === 0) listHtml += '<div class="item" style="color:#888780; cursor:default;">Aucune sauvegarde</div>';
+    else saves.forEach((s, i)=> listHtml += '<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');
+    listHtml += '</div>';
+    listHtml += '<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';
+    openPanel({
+      title:'Mémoires locales',
+      body: listHtml,
+      hideActions:true,
+      extraButtons:['Annuler','Enregistrer ici'],
+      onMount:()=>{
+        document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{
+          el.addEventListener('click', (ev)=>{
+            if(ev.target.dataset.del !== undefined){
+              const idx = parseInt(ev.target.dataset.del, 10); const saves = getSaves(); saves.splice(idx,1); setSaves(saves);
+              closePanel(); return;
+            }
+            const idx = parseInt(el.dataset.idx, 10); const saves = getSaves();
+            if(saves[idx] && importState(saves[idx].data)) closePanel();
+          });
+        });
+      },
+      onExtra:(which)=>{
+        if(which === 'Annuler'){ closePanel(); return; }
+        const name = document.getElementById('sn').value.trim() || 'Morceau';
+        const saves = getSaves();
+        const existing = saves.findIndex(s=> s.name === name);
+        const entry = { name, data: exportState(), date: new Date().toISOString() };
+        if(existing >= 0) saves[existing] = entry; else saves.push(entry);
+        setSaves(saves); closePanel();
+      },
+    });
+  });
+
+  document.getElementById('btn-new').addEventListener('click', ()=>{
+    openPanel({
+      title:'Nouveau morceau',
+      body:'<small>Effacer le morceau actuel ?</small>',
+      hideActions:true,
+      extraButtons:['Annuler','Effacer'],
+      onExtra:(which)=>{
+        if(which === 'Effacer'){ state.headers = {X:'1', T:''}; state.pieceMeter='4/4'; state.pieceUnit='1/4'; state.pieceKeySig=0; state.pieceClef='treble'; rebuildMeasures(); pushHistory(); render(); }
+        closePanel();
+      },
+    });
+  });
+  document.getElementById('btn-export').addEventListener('click', ()=>{
+    const abc = document.getElementById('abc-out').textContent;
+    openPanel({
+      title:'Exporter ABC',
+      body:'<small>Copier le code ci-dessous :</small><textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>',
+      hideActions:true, extraButtons:['Fermer','Copier'],
+      onMount:()=>{ document.getElementById('exp').select(); },
+      onExtra:(which)=>{ if(which === 'Copier'){ const ta = document.getElementById('exp'); ta.select(); try { document.execCommand('copy'); } catch(_){} } closePanel(); },
+    });
+  });
+
+  // Generic panel
   const panel = document.getElementById('panel');
   const panelTitle = document.getElementById('panel-title');
   const panelBody = document.getElementById('panel-body');
   const panelOk = document.getElementById('panel-ok');
   const panelCancel = document.getElementById('panel-cancel');
-  let currentOnOk = null;
-  function openPanel({title, body, onMount, onOk, hideActions}){ panelTitle.textContent = title; panelBody.innerHTML = body; currentOnOk = onOk || null; panelOk.style.display = hideActions ? 'none' : ''; panelCancel.style.display = hideActions ? 'none' : ''; panel.classList.add('open'); if(onMount) setTimeout(onMount, 50); }
-  function closePanel(){ panel.classList.remove('open'); currentOnOk = null; }
+  let currentOnOk = null; let currentOnExtra = null;
+  function openPanel({title, body, onMount, onOk, hideActions, extraButtons, onExtra}){
+    panelTitle.textContent = title;
+    let extraHtml = '';
+    if(extraButtons && extraButtons.length){
+      extraHtml = '<div class="actions" style="margin-top:6px;">' + extraButtons.map((b,i)=> '<button class="k '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('') + '</div>';
+    }
+    panelBody.innerHTML = body + extraHtml;
+    currentOnOk = onOk || null; currentOnExtra = onExtra || null;
+    panelOk.style.display = (hideActions || extraButtons) ? 'none' : '';
+    panelCancel.style.display = (hideActions || extraButtons) ? 'none' : '';
+    panel.classList.add('open');
+    if(onMount) setTimeout(onMount, 50);
+    if(extraButtons) setTimeout(()=>{ panelBody.querySelectorAll('[data-extra]').forEach(b=>{ b.addEventListener('click', ()=>{ if(currentOnExtra) currentOnExtra(b.dataset.extra); }); }); }, 50);
+  }
+  function closePanel(){ panel.classList.remove('open'); currentOnOk = null; currentOnExtra = null; }
   panelOk.addEventListener('click', ()=>{ if(currentOnOk) currentOnOk(); closePanel(); render(); });
   panelCancel.addEventListener('click', closePanel);
 
   document.querySelector('[data-hdr="X"]').addEventListener('click', ()=>{ openPanel({ title: 'Numéro X:', body: '<div class="row"><span class="field-label">X:</span><input id="hi" type="text" value="' + (state.headers.X||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.X = document.getElementById('hi').value.trim(); pushHistory(); } }); });
   document.querySelector('[data-hdr="T"]').addEventListener('click', ()=>{ openPanel({ title: 'Titre', body: '<div class="row"><span class="field-label">T:</span><input id="hi" type="text" value="' + (state.headers.T||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.T = document.getElementById('hi').value.trim(); pushHistory(); } }); });
 
-  function scopePanel({title, renderControls, applyPiece, applyHere}){
+  function scopePanel({title, renderControls, applyPiece, applyHere, isMeter}){
+    // ⭐ Si on est sur la mesure 0 et c'est le rythme, l'option "À partir d'ici" est équivalente à "Tout"
+    const onFirstMeasure = (state.sel.m === 0);
+    const buttons = ['Annuler', onFirstMeasure ? 'Tout (1ère mesure)' : 'Tout', onFirstMeasure ? null : 'Mesure ' + (state.sel.m+1) + '+'].filter(Boolean);
     openPanel({
       title,
-      body: renderControls() + '<small>Appliquer à :</small><div class="scope-row"><button class="k" id="scope-cancel">Annuler</button><button class="k" id="scope-piece">Tout</button><button class="k primary" id="scope-here">Mesure ' + (state.sel.m+1) + '+</button></div>',
-      hideActions: true,
-      onMount: ()=>{
-        if(typeof renderControls.mount === 'function') renderControls.mount();
-        document.getElementById('scope-cancel').addEventListener('click', ()=>{ closePanel(); });
-        document.getElementById('scope-piece').addEventListener('click', ()=>{ applyPiece(); pushHistory(); closePanel(); render(); });
-        document.getElementById('scope-here').addEventListener('click', ()=>{ applyHere(); pushHistory(); closePanel(); render(); });
+      body: renderControls(),
+      hideActions:true,
+      extraButtons: buttons,
+      onMount: ()=>{ if(typeof renderControls.mount === 'function') renderControls.mount(); },
+      onExtra:(which)=>{
+        if(which === 'Annuler'){ closePanel(); return; }
+        if(which.startsWith('Tout')){ applyPiece(); cleanupAccidentals(); pushHistory(); closePanel(); render(); return; }
+        applyHere(); cleanupAccidentals(); pushHistory(); closePanel(); render();
       },
     });
   }
@@ -1057,8 +1286,25 @@
     scopePanel({
       title:'Rythme',
       renderControls: controls,
-      applyPiece: ()=>{ state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom; state.timeChanges = {}; rebuildMeasures(); },
+      applyPiece: ()=>{
+        // ⭐ Si on est sur la mesure 0, supprimer aussi tous les changements inline
+        state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom;
+        if(state.sel.m === 0){
+          // efface aussi un éventuel changement à l'index 0
+          delete state.timeChanges[0];
+        } else {
+          state.timeChanges = {};
+        }
+        rebuildMeasures();
+      },
       applyHere: ()=>{
+        if(state.sel.m === 0){
+          // C'est équivalent à "Tout"
+          state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom;
+          delete state.timeChanges[0];
+          rebuildMeasures();
+          return;
+        }
         state.pieceUnit = '1/' + unitDenom;
         const newMeter = n + '/' + d;
         state.timeChanges[state.sel.m] = newMeter;
@@ -1073,14 +1319,18 @@
     const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + (s === 1 ? ' dièse' : ' dièses'); return Math.abs(s) + (Math.abs(s) === 1 ? ' bémol' : ' bémols'); };
     function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭ −</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯ +</button></div>'); }
     controls.mount = function(){ const upd = ()=>{ document.getElementById('sig-v').textContent = labelOf(sig); }; document.getElementById('sig-u').addEventListener('click', ()=>{ sig = Math.min(7, sig+1); upd(); }); document.getElementById('sig-d').addEventListener('click', ()=>{ sig = Math.max(-7, sig-1); upd(); }); };
-    scopePanel({ title:'Armure', renderControls: controls, applyPiece: ()=>{ state.pieceKeySig = sig; state.keyChanges = {}; }, applyHere: ()=>{ state.keyChanges[state.sel.m] = sig; }, });
+    scopePanel({ title:'Armure', renderControls: controls,
+      applyPiece: ()=>{ state.pieceKeySig = sig; if(state.sel.m === 0) delete state.keyChanges[0]; else state.keyChanges = {}; },
+      applyHere: ()=>{ if(state.sel.m === 0){ state.pieceKeySig = sig; delete state.keyChanges[0]; } else state.keyChanges[state.sel.m] = sig; }, });
   });
 
   document.querySelector('[data-hdr="CLEF"]').addEventListener('click', ()=>{
     let pick = clefAt(state.sel.m);
     function controls(){ return ('<div class="grid3" id="clef-pick"><button class="k symbol" data-clef="treble">𝄞</button><button class="k" data-clef="treble8" style="font-size:11px;">Sol-8</button><button class="k symbol" data-clef="bass">𝄢</button></div>'); }
     controls.mount = function(){ const refresh = ()=>{ document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.classList.toggle('active', b.dataset.clef === pick); }); }; refresh(); document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.addEventListener('click', ()=>{ pick = b.dataset.clef; refresh(); }); }); };
-    scopePanel({ title:'Clé', renderControls: controls, applyPiece: ()=>{ state.pieceClef = pick; state.clefChanges = {}; }, applyHere: ()=>{ state.clefChanges[state.sel.m] = pick; }, });
+    scopePanel({ title:'Clé', renderControls: controls,
+      applyPiece: ()=>{ state.pieceClef = pick; if(state.sel.m === 0) delete state.clefChanges[0]; else state.clefChanges = {}; },
+      applyHere: ()=>{ if(state.sel.m === 0){ state.pieceClef = pick; delete state.clefChanges[0]; } else state.clefChanges[state.sel.m] = pick; }, });
   });
 
   rebuildMeasures();
