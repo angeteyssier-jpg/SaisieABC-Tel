@@ -1,74 +1,145 @@
 <style>
   .abc-app, .abc-app * { box-sizing: border-box; min-width: 0; }
-  .abc-app { width: 100%; max-width: 100%; padding: 4px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1a1a1a; background: #f5f4ef; border-radius: 8px; position: relative; overflow-x: hidden; }
+  .abc-app {
+    width: 100%; max-width: 100%; padding: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    color: #1a1a1a; background: #f5f4ef; border-radius: 8px;
+    position: relative; overflow-x: hidden;
+  }
   .abc-app.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 9999; overflow-y: auto; }
   .abc-app.viewmode .edit-only { display: none !important; }
-  .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
+
   .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 4px; }
   .abc-label { font-size: 9px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
   .score-wrap { width: 100%; aspect-ratio: 360 / 200; max-height: 240px; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
+
+  .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
+
   .abc-text-card { background: #f1efe8; border: 1px solid #d8d6ce; border-radius: 6px; padding: 0; margin-bottom: 4px; overflow: hidden; }
   .abc-text-head { padding: 3px 6px; font-size: 9px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-  .abc-text { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 11px; padding: 4px 6px; max-height: 110px; overflow: auto; white-space: pre; color: #1a1a1a; line-height: 1.4; border-top: 1px solid #d8d6ce; }
+  .abc-text { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; padding: 4px 6px; max-height: 110px; overflow: auto; white-space: pre; color: #1a1a1a; line-height: 1.4; border-top: 1px solid #d8d6ce; }
   .abc-text.collapsed { display: none; }
   .abc-text .sel { background: #fcebeb; color: #791f1f; padding: 0 1px; border-radius: 2px; }
-  .abc-app button.k { display: block; width: 100%; height: 32px; padding: 0 2px; background: #ffffff; border: 1px solid #b4b2a9; border-radius: 5px; font-family: inherit; font-size: 11px; font-weight: 500; color: #1a1a1a; cursor: pointer; text-align: center; line-height: 30px; -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .abc-app button.k {
+    display: block; width: 100%; height: 36px; padding: 0 4px;
+    background: #ffffff; border: 1px solid #b4b2a9; border-radius: 6px;
+    font-family: inherit; font-size: 13px; font-weight: 500; color: #1a1a1a;
+    cursor: pointer; text-align: center; line-height: 34px;
+    -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
   .abc-app button.k:active { background: #e8e6df; }
   .abc-app button.k:disabled { color: #bbb8a8; background: #f3f1ea; cursor: not-allowed; }
   .abc-app button.k.active { background: #e6f1fb; border-color: #378add; color: #0c447c; }
-  .abc-app button.k.symbol { font-size: 16px; font-family: "Times New Roman", serif; }
-  .abc-app button.k.tiny { height: 26px; line-height: 24px; font-size: 10px; }
-  .abc-app button.k .sub { font-size: 8px; color: #888780; font-weight: 400; margin-left: 2px; }
+  .abc-app button.k.symbol { font-size: 18px; font-family: "Times New Roman", serif; }
+  .abc-app button.k.tiny { height: 32px; line-height: 30px; font-size: 12px; }
+  .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
-  .row-grid { display: grid; gap: 3px; margin-bottom: 4px; }
-  .header-row { grid-template-columns: 32px repeat(6, 1fr); }
-  .file-row { grid-template-columns: repeat(5, 1fr); }
-  .undo-row { grid-template-columns: repeat(6, 1fr); }
-  .extra-row { grid-template-columns: repeat(4, 1fr); }
+
+  /* Default narrow layout (mobile-first). Will be overridden by JS for medium/wide. */
+  .row-grid { display: grid; gap: 4px; margin-bottom: 4px; }
+  /* narrow defaults */
+  .header-row { grid-template-columns: repeat(3, 1fr); }
+  .file-row { grid-template-columns: repeat(3, 1fr); }
+  .undo-row { grid-template-columns: repeat(3, 1fr); }
+  .extra-row { grid-template-columns: repeat(2, 1fr); }
   .repeat-row { grid-template-columns: repeat(4, 1fr); }
-  .bottom-bar { position: sticky; bottom: 0; background: #f5f4ef; border-top: 1px solid #d8d6ce; padding: 4px 0 0 0; display: grid; grid-template-columns: 1fr 1fr 1fr 28px 1fr 1fr 28px 1fr 1fr; gap: 2px; align-items: center; z-index: 10; margin-top: 6px; }
-  .bottom-bar button.k { height: 28px; line-height: 26px; font-size: 11px; padding: 0 2px; }
-  .bottom-bar .center-cell { display: flex; align-items: center; justify-content: center; font-size: 10px; color: #5f5e5a; background: #ebe9e0; border-radius: 4px; padding: 0 2px; height: 28px; }
-  .bottom-bar .center-cell b { color: #1a1a1a; margin-left: 2px; font-size: 11px; }
-  .keypad { display: grid; grid-template-columns: 44px 1fr 70px; gap: 4px; align-items: start; margin-bottom: 4px; }
-  .col > .k { margin-bottom: 3px; }
+  /* medium overrides */
+  .abc-app[data-mode="medium"] .header-row { grid-template-columns: 36px repeat(6, 1fr); }
+  .abc-app[data-mode="medium"] .file-row { grid-template-columns: repeat(5, 1fr); }
+  .abc-app[data-mode="medium"] .undo-row { grid-template-columns: repeat(6, 1fr); }
+  .abc-app[data-mode="medium"] .extra-row { grid-template-columns: repeat(4, 1fr); }
+  /* wide overrides — same as medium for now */
+  .abc-app[data-mode="wide"] .header-row { grid-template-columns: 40px repeat(6, 1fr); }
+  .abc-app[data-mode="wide"] .file-row { grid-template-columns: repeat(5, 1fr); }
+  .abc-app[data-mode="wide"] .undo-row { grid-template-columns: repeat(6, 1fr); }
+  .abc-app[data-mode="wide"] .extra-row { grid-template-columns: repeat(4, 1fr); }
+
+  /* Bottom bar — narrow stacks vol/tempo, medium and wide on one line */
+  .bottom-bar {
+    position: sticky; bottom: 0; background: #f5f4ef;
+    border-top: 1px solid #d8d6ce; padding: 5px 0 0 0;
+    display: grid; gap: 3px; align-items: center; z-index: 10; margin-top: 6px;
+  }
+  /* narrow: 3 lignes */
+  .abc-app[data-mode="narrow"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; }
+  /* medium and wide: 1 ligne */
+  .abc-app[data-mode="medium"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr auto 1fr 1fr auto 1fr 1fr; }
+  .abc-app[data-mode="wide"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr auto 1fr 1fr auto 1fr 1fr; }
+  .bottom-bar button.k { height: 32px; line-height: 30px; font-size: 12px; padding: 0 4px; }
+  .bottom-bar .center-cell {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #5f5e5a; background: #ebe9e0;
+    border-radius: 5px; padding: 0 6px; height: 32px; min-width: 50px;
+  }
+  .bottom-bar .center-cell b { color: #1a1a1a; margin-left: 3px; font-size: 12px; }
+
+  /* Keypad: in narrow mode, becomes a single column stack */
+  .keypad { display: grid; gap: 4px; align-items: start; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .keypad { grid-template-columns: 1fr; }
+  .abc-app[data-mode="medium"] .keypad { grid-template-columns: 56px 1fr 96px; }
+  .abc-app[data-mode="wide"]   .keypad { grid-template-columns: 70px 1fr 110px; }
+
+  .col > .k { margin-bottom: 4px; }
   .col > .k:last-child { margin-bottom: 0; }
   .center-pad > * { margin-bottom: 4px; }
-  .meas-ctrl { display: grid; grid-template-columns: 28px 28px 1fr 28px 28px; gap: 2px; align-items: center; background: #ebe9e0; padding: 3px; border-radius: 5px; }
-  .meas-ctrl .label { font-size: 9px; color: #5f5e5a; text-align: center; line-height: 1.1; padding: 0 2px; }
+
+  /* In narrow mode, notes-col becomes a 7-column horizontal grid */
+  .abc-app[data-mode="narrow"] #notes-col { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+  .abc-app[data-mode="narrow"] #notes-col > .k { margin-bottom: 0; }
+  /* In narrow mode, the right column (durées + altérations) becomes 2 horizontal grids */
+  .abc-app[data-mode="narrow"] .col-right { display: grid; gap: 4px; }
+  .abc-app[data-mode="narrow"] .col-right .grid2 { grid-template-columns: repeat(4, 1fr); }
+  .abc-app[data-mode="narrow"] .col-right .grid3 { grid-template-columns: repeat(4, 1fr); }
+  .abc-app[data-mode="narrow"] .col-right > * { margin-bottom: 0 !important; }
+
+  .meas-ctrl {
+    display: grid;
+    grid-template-columns: 36px 36px 1fr 36px 36px;
+    gap: 4px; align-items: center; background: #ebe9e0;
+    padding: 4px; border-radius: 6px;
+  }
+  .meas-ctrl .label { font-size: 10px; color: #5f5e5a; text-align: center; line-height: 1.1; padding: 0 2px; }
   .meas-ctrl b { font-weight: 500; color: #1a1a1a; }
   .meas-ctrl .k.tiny { padding: 0; }
-  .oct-ctrl { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; align-items: center; background: #ebe9e0; padding: 3px; border-radius: 5px; }
-  .oct-ctrl .label { font-size: 9px; color: #5f5e5a; text-align: center; line-height: 1.1; }
+  .oct-ctrl {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px; align-items: center; background: #ebe9e0;
+    padding: 4px; border-radius: 6px;
+  }
+  .oct-ctrl .label { font-size: 10px; color: #5f5e5a; text-align: center; line-height: 1.1; }
   .oct-ctrl b { font-weight: 500; color: #1a1a1a; }
-  .ctx-info { background: #f3f1ea; border: 1px solid #d8d6ce; border-radius: 5px; padding: 2px 4px; font-size: 9px; color: #5f5e5a; line-height: 1.2; text-align: center; }
+  .ctx-info { background: #f3f1ea; border: 1px solid #d8d6ce; border-radius: 5px; padding: 3px 4px; font-size: 10px; color: #5f5e5a; line-height: 1.3; text-align: center; }
   .ctx-info b { color: #1a1a1a; font-weight: 500; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 3px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; margin-bottom: 3px; }
-  .panel { background: #e6f1fb; border: 1px solid #378add; border-radius: 6px; padding: 6px; margin-bottom: 6px; display: none; max-height: 60vh; overflow-y: auto; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
+
+  .panel { background: #e6f1fb; border: 1px solid #378add; border-radius: 6px; padding: 8px; margin-bottom: 6px; display: none; max-height: 70vh; overflow-y: auto; }
   .panel.open { display: block; }
-  .panel .title { font-size: 11px; color: #0c447c; font-weight: 500; margin-bottom: 5px; }
+  .panel .title { font-size: 11px; color: #0c447c; font-weight: 500; margin-bottom: 6px; }
   .panel .row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
   .panel input, .panel textarea { flex: 1; min-height: 32px; font-family: ui-monospace, monospace; font-size: 12px; padding: 4px 6px; border: 1px solid #b4b2a9; border-radius: 5px; background: #ffffff; color: #1a1a1a; }
   .panel textarea { width: 100%; min-height: 100px; }
   .panel .field-label { font-family: ui-monospace, monospace; font-size: 12px; color: #0c447c; font-weight: 500; min-width: 24px; }
   .panel .actions { display: flex; gap: 4px; justify-content: flex-end; flex-wrap: wrap; margin-top: 4px; }
-  .panel .actions .k { width: auto; padding: 0 10px; height: 28px; line-height: 26px; font-size: 11px; min-width: 0; }
-  .panel .stepper { display: grid; grid-template-columns: 32px 1fr 32px; gap: 4px; align-items: center; margin-bottom: 4px; }
+  .panel .actions .k { width: auto; padding: 0 12px; height: 30px; line-height: 28px; font-size: 12px; }
+  .panel .stepper { display: grid; grid-template-columns: 36px 1fr 36px; gap: 6px; align-items: center; margin-bottom: 4px; }
   .panel .stepper .val { text-align: center; font-family: ui-monospace, monospace; font-size: 12px; color: #0c447c; font-weight: 500; }
-  .panel small { display: block; color: #5f5e5a; font-size: 9px; margin-bottom: 4px; }
+  .panel small { display: block; color: #5f5e5a; font-size: 10px; margin-bottom: 4px; }
   .panel .save-list { max-height: 140px; overflow-y: auto; border: 1px solid #b4b2a9; border-radius: 5px; background: #ffffff; margin-bottom: 4px; }
   .panel .save-list .item { padding: 5px 6px; border-bottom: 1px solid #ebe9e0; display: flex; justify-content: space-between; align-items: center; font-size: 11px; cursor: pointer; }
   .panel .save-list .item:hover { background: #f1efe8; }
-  .panel .save-list .item .del { color: #c34536; font-size: 13px; padding: 0 4px; cursor: pointer; }
+  .panel .save-list .item .del { color: #c34536; font-size: 14px; padding: 0 4px; cursor: pointer; }
   .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 4px; }
-  .chord-grid .k { font-size: 10px; height: 26px; line-height: 24px; }
+  .chord-grid .k { font-size: 11px; height: 28px; line-height: 26px; }
   .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 4px; }
-  .root-grid .k { font-size: 11px; height: 26px; line-height: 24px; }
+  .root-grid .k { font-size: 11px; height: 28px; line-height: 26px; }
 </style>
 
-<div class="abc-app" id="app">
+<div class="abc-app" id="app" data-mode="medium">
   <div class="panel" id="panel">
     <div class="title" id="panel-title">Édition</div>
     <div id="panel-body"></div>
@@ -143,7 +214,7 @@
         <button class="k tiny" id="btn-volta2">|2</button>
       </div>
     </div>
-    <div class="col">
+    <div class="col col-right">
       <button class="k" id="cur-next">▶</button>
       <div class="grid2" id="dur-pad"></div>
       <div class="grid3" id="alt-pad"></div>
@@ -184,7 +255,7 @@
   const ORNAMENTS = [
     {code:'T', label:'tr'}, {code:'M', label:'~M'}, {code:'P', label:'pralle'},
     {code:'H', label:'fermata'}, {code:'L', label:'accent'}, {code:'.', label:'staccato'},
-    {code:'u', label:'up bow'}, {code:'v', label:'down bow'}, {code:'O', label:'coda'},
+    {code:'u', label:'up'}, {code:'v', label:'down'}, {code:'O', label:'coda'},
   ];
   const CHORD_QUALITIES = ['','m','7','m7','M7','6','m6','9','11','13','sus2','sus4','dim','dim7','aug','add9'];
 
@@ -240,8 +311,7 @@
   }
 
   function splitDurationByBeat(offset, amount, beat){
-    const eps = 1e-6;
-    const out = [];
+    const eps = 1e-6; const out = [];
     let cur = +offset.toFixed(6); let rem = +amount.toFixed(6);
     const distToBeat = ((cur % beat) === 0) ? 0 : (beat - (cur % beat));
     if(distToBeat > eps && rem > eps){
@@ -262,7 +332,6 @@
     }
     return out;
   }
-
   function rebalanceMeasure(m, anchorIdx, oldEffDur){
     const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
     const cap = measureCapacity(meter);
@@ -272,8 +341,7 @@
     let beforeUsed = 0;
     for(let i=0; i<anchorIdx; i++) beforeUsed += effDur(meas[i]);
     if(beforeUsed + newDur > cap + 1e-6){
-      const fits = cap - beforeUsed;
-      const overflow = newDur - fits;
+      const fits = cap - beforeUsed; const overflow = newDur - fits;
       anchor.tieToNext = true;
       const fitsPieces = splitDurationByBeat(beforeUsed, fits, beat);
       if(fitsPieces.length > 0){
@@ -376,9 +444,7 @@
   function slotStr(t){
     let s = '';
     if(t.chord) s += '"' + t.chord + '"';
-    if(t.orn && t.orn.length){
-      t.orn.forEach(o => { if('TMPHLRuv'.includes(o)) s += o; else if(o === '.') s += '.'; else s += '!' + o + '!'; });
-    }
+    if(t.orn && t.orn.length){ t.orn.forEach(o => { if('TMPHLRuv'.includes(o)) s += o; else if(o === '.') s += '.'; else s += '!' + o + '!'; }); }
     if(t.type === 'note'){
       s += t.acc || '';
       let n = t.note;
@@ -391,7 +457,6 @@
     if(t.tieToNext) s += '-';
     return s;
   }
-
   function keyAbc(sig){
     if(sig === 0) return 'C';
     if(sig > 0) return ['C','G','D','A','E','B','F#','C#'][sig];
@@ -399,7 +464,6 @@
   }
   function clefAbcSuffix(c){ if(c === 'bass') return ' clef=bass'; if(c === 'treble8') return ' clef=treble-8'; return ''; }
   function clefHumanLabel(c){ if(c === 'bass') return 'Fa'; if(c === 'treble8') return 'Sol-8'; return 'Sol'; }
-
   function cleanupAccidentals(){
     state.measures.forEach((meas, mi)=>{
       const sig = keyAt(mi);
@@ -552,7 +616,6 @@
     }
     return {sig: Math.max(-7, Math.min(7, sig)), clef};
   }
-
   function parseAbcText(text){
     const cleaned = text.split(/\r?\n/).map(line => { const m = line.match(/^(.*?)(?:%.*)?$/); return m ? m[1] : line; });
     const newState = {
@@ -713,43 +776,19 @@
     return parseInt(s, 10) || 1;
   }
 
-  // ===== Expand for playback (reprises + voltas) =====
-  // Returns an array of measure indices in playback order.
   function expandForPlayback(){
-    const out = [];
-    const N = state.measures.length;
-    if(N === 0) return out;
-    let i = 0;
-    let lastStart = 0; // most recent |: (or 0 if none)
-    let pass = 1; // 1st or 2nd time through current segment
+    const out = []; const N = state.measures.length; if(N === 0) return out;
+    let i = 0; let lastStart = 0; let pass = 1;
     while(i < N){
       const r = state.repeats[i] || {};
-      // If this measure starts a repeat
       if(r.start){ lastStart = i; pass = 1; }
-      // Skip volta 1 on second pass; skip volta 2+ on first pass
       if(r.volta){
-        if(pass === 1 && r.volta !== 1){ // first pass: only volta 1 plays
-          // skip this measure and following measures until next bar/no volta
-          // (we approximate by skipping just this measure until volta changes)
-          // Find end of this volta block: next measure with a different volta or no volta
-          let j = i;
-          while(j < N){ const rj = state.repeats[j] || {}; if(j > i && rj.volta !== r.volta) break; j++; }
-          i = j; continue;
-        }
-        if(pass === 2 && r.volta === 1){
-          let j = i;
-          while(j < N){ const rj = state.repeats[j] || {}; if(j > i && rj.volta !== 1) break; j++; }
-          i = j; continue;
-        }
+        if(pass === 1 && r.volta !== 1){ let j = i; while(j < N){ const rj = state.repeats[j] || {}; if(j > i && rj.volta !== r.volta) break; j++; } i = j; continue; }
+        if(pass === 2 && r.volta === 1){ let j = i; while(j < N){ const rj = state.repeats[j] || {}; if(j > i && rj.volta !== 1) break; j++; } i = j; continue; }
       }
       out.push(i);
-      // If this measure ends a repeat AND we're on first pass, jump back to lastStart
-      if(r.end){
-        if(pass === 1){ i = lastStart; pass = 2; continue; }
-        pass = 1; // reset for next section
-      }
+      if(r.end){ if(pass === 1){ i = lastStart; pass = 2; continue; } pass = 1; }
       i++;
-      // safety: avoid infinite loops
       if(out.length > 1000) break;
     }
     return out;
@@ -791,7 +830,6 @@
     flush();
     return groups;
   }
-
   function drawNoteHead(t, cx, color, c, drawFlag, stemUp, staffTop){
     let svg = '';
     const step = stepIndex(t.note, t.octave);
@@ -1155,22 +1193,16 @@
     pushHistory(); render();
   });
 
-  // ===== +Mes panel: gauche/droite + nombre + annuler =====
   document.getElementById('meas-add').addEventListener('click', ()=>{
-    let count = 1;
-    let side = 'right'; // right by default
+    let count = 1; let side = 'right';
     function controls(){
       return ('<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small>' +
               '<div class="grid2" id="side-pick"><button class="k" data-side="left">À gauche</button><button class="k" data-side="right">À droite</button></div>' +
-              '<small>Nombre de mesures</small>' +
+              '<small>Nombre</small>' +
               '<div class="stepper"><button class="k" id="cnt-d">−</button><div class="val"><b id="cnt-v">'+count+'</b></div><button class="k" id="cnt-u">+</button></div>');
     }
     function refreshSide(){ document.querySelectorAll('#side-pick .k').forEach(b=> b.classList.toggle('active', b.dataset.side === side)); }
-    openPanel({
-      title: 'Ajouter mesure(s)',
-      body: controls(),
-      hideActions: true,
-      extraButtons: ['Annuler', 'Ajouter'],
+    openPanel({ title: 'Ajouter mesure(s)', body: controls(), hideActions: true, extraButtons: ['Annuler', 'Ajouter'],
       onMount: ()=>{
         document.querySelectorAll('#side-pick .k').forEach(b=> b.addEventListener('click', ()=>{ side = b.dataset.side; refreshSide(); }));
         refreshSide();
@@ -1184,7 +1216,7 @@
         const meter = meterAt(state.sel.m);
         for(let k=0; k<count; k++) state.measures.splice(insertAt, 0, buildEmptyMeasure(meter));
         const inclusive = (side === 'left');
-        const threshold = (side === 'left') ? state.sel.m : state.sel.m;
+        const threshold = state.sel.m;
         state.timeChanges = shiftKeys(state.timeChanges, threshold, inclusive);
         state.keyChanges  = shiftKeys(state.keyChanges,  threshold, inclusive);
         state.clefChanges = shiftKeys(state.clefChanges, threshold, inclusive);
@@ -1425,7 +1457,7 @@
 
   document.querySelector('[data-hdr="K"]').addEventListener('click', ()=>{
     let sig = keyAt(state.sel.m);
-    const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + (s === 1 ? '#' : '#'); return Math.abs(s) + 'b'; };
+    const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + '#'; return Math.abs(s) + 'b'; };
     function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭−</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯+</button></div>'); }
     controls.mount = function(){ const upd = ()=>{ document.getElementById('sig-v').textContent = labelOf(sig); }; document.getElementById('sig-u').addEventListener('click', ()=>{ sig = Math.min(7, sig+1); upd(); }); document.getElementById('sig-d').addEventListener('click', ()=>{ sig = Math.max(-7, sig-1); upd(); }); };
     scopePanel({ title:'Armure', renderControls: controls,
@@ -1441,6 +1473,27 @@
       applyPiece: ()=>{ state.pieceClef = pick; if(state.sel.m === 0) delete state.clefChanges[0]; else state.clefChanges = {}; },
       applyHere: ()=>{ if(state.sel.m === 0){ state.pieceClef = pick; delete state.clefChanges[0]; } else state.clefChanges[state.sel.m] = pick; }, });
   });
+
+  // ⭐ ResizeObserver pour adapter le layout à la largeur du conteneur
+  const app = document.getElementById('app');
+  function setMode(width){
+    let mode;
+    if(width < 480) mode = 'narrow';
+    else if(width < 700) mode = 'medium';
+    else mode = 'wide';
+    if(app.dataset.mode !== mode){ app.dataset.mode = mode; }
+  }
+  if(typeof ResizeObserver !== 'undefined'){
+    const ro = new ResizeObserver((entries)=>{
+      for(const e of entries) setMode(e.contentRect.width);
+    });
+    ro.observe(app);
+  } else {
+    // Fallback : utiliser window resize
+    function checkW(){ setMode(app.getBoundingClientRect().width); }
+    window.addEventListener('resize', checkW);
+    checkW();
+  }
 
   rebuildMeasures();
   pushHistory();
