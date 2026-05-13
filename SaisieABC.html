@@ -1,20 +1,20 @@
 <style>
   .abc-app, .abc-app * { box-sizing: border-box; min-width: 0; }
   .abc-app {
-    width: 100%; max-width: 100%; padding: 4px;
+    width: 100%; max-width: 900px; margin: 0 auto;
+    padding: 4px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     color: #1a1a1a; background: #f5f4ef; border-radius: 8px;
     position: relative; overflow-x: hidden;
   }
   .abc-app.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 9999; overflow-y: auto; }
   .abc-app.viewmode .edit-only { display: none !important; }
+  .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
 
   .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 4px; }
   .abc-label { font-size: 9px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
   .score-wrap { width: 100%; aspect-ratio: 360 / 200; max-height: 240px; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
-
-  .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
 
   .abc-text-card { background: #f1efe8; border: 1px solid #d8d6ce; border-radius: 6px; padding: 0; margin-bottom: 4px; overflow: hidden; }
   .abc-text-head { padding: 3px 6px; font-size: 9px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
@@ -38,45 +38,70 @@
   .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
 
-  /* Default narrow layout (mobile-first). Will be overridden by JS for medium/wide. */
-  .row-grid { display: grid; gap: 4px; margin-bottom: 4px; }
-  /* narrow defaults */
-  .header-row { grid-template-columns: repeat(3, 1fr); }
-  .file-row { grid-template-columns: repeat(3, 1fr); }
-  .undo-row { grid-template-columns: repeat(3, 1fr); }
-  .extra-row { grid-template-columns: repeat(2, 1fr); }
-  .repeat-row { grid-template-columns: repeat(4, 1fr); }
-  /* medium overrides */
-  .abc-app[data-mode="medium"] .header-row { grid-template-columns: 36px repeat(6, 1fr); }
-  .abc-app[data-mode="medium"] .file-row { grid-template-columns: repeat(5, 1fr); }
-  .abc-app[data-mode="medium"] .undo-row { grid-template-columns: repeat(6, 1fr); }
-  .abc-app[data-mode="medium"] .extra-row { grid-template-columns: repeat(4, 1fr); }
-  /* wide overrides — same as medium for now */
-  .abc-app[data-mode="wide"] .header-row { grid-template-columns: 40px repeat(6, 1fr); }
-  .abc-app[data-mode="wide"] .file-row { grid-template-columns: repeat(5, 1fr); }
-  .abc-app[data-mode="wide"] .undo-row { grid-template-columns: repeat(6, 1fr); }
-  .abc-app[data-mode="wide"] .extra-row { grid-template-columns: repeat(4, 1fr); }
+  /* compact: réduit la hauteur de tous les boutons */
+  .abc-app.compact button.k { height: 30px; line-height: 28px; font-size: 11px; }
+  .abc-app.compact button.k.tiny { height: 26px; line-height: 24px; font-size: 10px; }
+  .abc-app.compact .abc-card { padding: 3px; margin-bottom: 3px; }
+  .abc-app.compact .row-grid { gap: 3px; margin-bottom: 3px; }
+  .abc-app.compact .keypad { gap: 3px; margin-bottom: 3px; }
 
-  /* Bottom bar — narrow stacks vol/tempo, medium and wide on one line */
+  .row-grid { display: grid; gap: 4px; margin-bottom: 4px; }
+
+  /* narrow (téléphone portrait) — disposition compacte sur plusieurs lignes */
+  .abc-app[data-mode="narrow"] .header-row { grid-template-columns: repeat(4, 1fr); }
+  .abc-app[data-mode="narrow"] .header-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 4px; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .file-row { grid-template-columns: repeat(3, 1fr); }
+  .abc-app[data-mode="narrow"] .file-row-2 { grid-template-columns: repeat(2, 1fr); display: grid; gap: 4px; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .undo-row { grid-template-columns: repeat(3, 1fr); }
+  .abc-app[data-mode="narrow"] .undo-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 4px; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .extra-row { grid-template-columns: repeat(2, 1fr); }
+  .abc-app[data-mode="narrow"] .extra-row-2 { grid-template-columns: repeat(2, 1fr); display: grid; gap: 4px; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .repeat-row { grid-template-columns: repeat(4, 1fr); }
+
+  /* medium / wide: rows on a single line */
+  .abc-app[data-mode="medium"] .header-row,
+  .abc-app[data-mode="wide"] .header-row { grid-template-columns: 38px repeat(6, 1fr); }
+  .abc-app[data-mode="medium"] .file-row,
+  .abc-app[data-mode="wide"] .file-row { grid-template-columns: repeat(5, 1fr); }
+  .abc-app[data-mode="medium"] .undo-row,
+  .abc-app[data-mode="wide"] .undo-row { grid-template-columns: repeat(6, 1fr); }
+  .abc-app[data-mode="medium"] .extra-row,
+  .abc-app[data-mode="wide"] .extra-row { grid-template-columns: repeat(4, 1fr); }
+  .abc-app[data-mode="medium"] .repeat-row,
+  .abc-app[data-mode="wide"] .repeat-row { grid-template-columns: repeat(4, 1fr); }
+  .abc-app[data-mode="medium"] .header-row-2,
+  .abc-app[data-mode="medium"] .file-row-2,
+  .abc-app[data-mode="medium"] .undo-row-2,
+  .abc-app[data-mode="medium"] .extra-row-2,
+  .abc-app[data-mode="wide"] .header-row-2,
+  .abc-app[data-mode="wide"] .file-row-2,
+  .abc-app[data-mode="wide"] .undo-row-2,
+  .abc-app[data-mode="wide"] .extra-row-2 { display: none; }
+
+  /* Bottom bar : narrow utilise 2 lignes, autres 1 ligne */
   .bottom-bar {
     position: sticky; bottom: 0; background: #f5f4ef;
     border-top: 1px solid #d8d6ce; padding: 5px 0 0 0;
     display: grid; gap: 3px; align-items: center; z-index: 10; margin-top: 6px;
   }
-  /* narrow: 3 lignes */
-  .abc-app[data-mode="narrow"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; }
-  /* medium and wide: 1 ligne */
-  .abc-app[data-mode="medium"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr auto 1fr 1fr auto 1fr 1fr; }
+  .abc-app[data-mode="narrow"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr; }
+  .abc-app[data-mode="medium"] .bottom-bar,
   .abc-app[data-mode="wide"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr auto 1fr 1fr auto 1fr 1fr; }
-  .bottom-bar button.k { height: 32px; line-height: 30px; font-size: 12px; padding: 0 4px; }
-  .bottom-bar .center-cell {
+  .bottom-bar-2 {
+    display: none;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 3px; margin-top: 3px;
+  }
+  .abc-app[data-mode="narrow"] .bottom-bar-2 { display: grid; }
+  .bottom-bar button.k, .bottom-bar-2 button.k { height: 30px; line-height: 28px; font-size: 12px; padding: 0 4px; }
+  .bottom-bar .center-cell, .bottom-bar-2 .center-cell {
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; color: #5f5e5a; background: #ebe9e0;
-    border-radius: 5px; padding: 0 6px; height: 32px; min-width: 50px;
+    border-radius: 5px; padding: 0 4px; height: 30px; min-width: 48px;
   }
-  .bottom-bar .center-cell b { color: #1a1a1a; margin-left: 3px; font-size: 12px; }
+  .bottom-bar .center-cell b, .bottom-bar-2 .center-cell b { color: #1a1a1a; margin-left: 3px; font-size: 12px; }
 
-  /* Keypad: in narrow mode, becomes a single column stack */
+  /* Keypad */
   .keypad { display: grid; gap: 4px; align-items: start; margin-bottom: 4px; }
   .abc-app[data-mode="narrow"] .keypad { grid-template-columns: 1fr; }
   .abc-app[data-mode="medium"] .keypad { grid-template-columns: 56px 1fr 96px; }
@@ -86,18 +111,22 @@
   .col > .k:last-child { margin-bottom: 0; }
   .center-pad > * { margin-bottom: 4px; }
 
-  /* In narrow mode, notes-col becomes a 7-column horizontal grid */
-  .abc-app[data-mode="narrow"] #notes-col { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+  /* narrow: notes en grille horizontale, durées+altérations idem */
+  .abc-app[data-mode="narrow"] #notes-col {
+    display: grid; grid-template-columns: 36px repeat(7, 1fr);
+    gap: 4px; align-items: center;
+  }
   .abc-app[data-mode="narrow"] #notes-col > .k { margin-bottom: 0; }
-  /* In narrow mode, the right column (durées + altérations) becomes 2 horizontal grids */
-  .abc-app[data-mode="narrow"] .col-right { display: grid; gap: 4px; }
-  .abc-app[data-mode="narrow"] .col-right .grid2 { grid-template-columns: repeat(4, 1fr); }
-  .abc-app[data-mode="narrow"] .col-right .grid3 { grid-template-columns: repeat(4, 1fr); }
+  .abc-app[data-mode="narrow"] .col-right {
+    display: grid; grid-template-columns: 36px repeat(4, 1fr) 36px 36px 36px 1fr;
+    gap: 4px; align-items: center;
+  }
   .abc-app[data-mode="narrow"] .col-right > * { margin-bottom: 0 !important; }
+  .abc-app[data-mode="narrow"] .col-right .grid2,
+  .abc-app[data-mode="narrow"] .col-right .grid3 { display: contents; }
 
   .meas-ctrl {
-    display: grid;
-    grid-template-columns: 36px 36px 1fr 36px 36px;
+    display: grid; grid-template-columns: 32px 32px 1fr 32px 32px;
     gap: 4px; align-items: center; background: #ebe9e0;
     padding: 4px; border-radius: 6px;
   }
@@ -155,38 +184,61 @@
     <div class="score-wrap" id="score"></div>
   </div>
 
+  <!-- HEADER : 7 boutons. narrow → 4 + 3. medium/wide → 7 sur une ligne -->
   <div class="row-grid header-row edit-only">
     <button class="k tiny" id="btn-fs">⛶</button>
     <button class="k tiny" data-hdr="X">X:</button>
     <button class="k tiny" data-hdr="T">Titre</button>
     <button class="k tiny" data-hdr="M">Rythme</button>
+    <!-- en narrow ces 3 derniers passent dans la ligne suivante -->
+    <button class="k tiny narrow-skip" data-hdr="K">Armure</button>
+    <button class="k tiny narrow-skip" data-hdr="CLEF">Clé</button>
+    <button class="k tiny narrow-skip" id="btn-disarm">K→♯</button>
+  </div>
+  <div class="header-row-2 edit-only">
     <button class="k tiny" data-hdr="K">Armure</button>
     <button class="k tiny" data-hdr="CLEF">Clé</button>
-    <button class="k tiny" id="btn-disarm">K→♯</button>
+    <button class="k tiny" id="btn-disarm-2">K→♯</button>
   </div>
 
+  <!-- FILE : 5 boutons. narrow → 3 + 2 -->
   <div class="row-grid file-row edit-only">
     <button class="k tiny" id="btn-new">📄 Nouv</button>
     <button class="k tiny" id="btn-open-file">📂 Ouv</button>
     <button class="k tiny" id="btn-save-file">💾 Sauv</button>
-    <button class="k tiny" id="btn-saves">⭐ Mémo</button>
-    <button class="k tiny" id="btn-export">⇣ ABC</button>
+    <button class="k tiny narrow-skip" id="btn-saves">⭐ Mémo</button>
+    <button class="k tiny narrow-skip" id="btn-export">⇣ ABC</button>
+  </div>
+  <div class="file-row-2 edit-only">
+    <button class="k tiny" id="btn-saves-2">⭐ Mémo</button>
+    <button class="k tiny" id="btn-export-2">⇣ ABC</button>
   </div>
 
+  <!-- UNDO : 6 boutons. narrow → 3 + 3 -->
   <div class="row-grid undo-row edit-only">
     <button class="k tiny" id="btn-del">⌫</button>
     <button class="k tiny" id="btn-undo">↶</button>
     <button class="k tiny" id="btn-redo">↷</button>
-    <button class="k tiny" id="btn-trans-down">−½</button>
-    <button class="k tiny" id="btn-trans-up">+½</button>
-    <button class="k tiny" id="btn-tuplet">3:2</button>
+    <button class="k tiny narrow-skip" id="btn-trans-down">−½</button>
+    <button class="k tiny narrow-skip" id="btn-trans-up">+½</button>
+    <button class="k tiny narrow-skip" id="btn-tuplet">3:2</button>
+  </div>
+  <div class="undo-row-2 edit-only">
+    <button class="k tiny" id="btn-trans-down-2">−½</button>
+    <button class="k tiny" id="btn-trans-up-2">+½</button>
+    <button class="k tiny" id="btn-tuplet-2">3:2</button>
   </div>
 
+  <!-- EXTRA : 4 boutons. narrow → 2 + 2 -->
   <div class="row-grid extra-row edit-only">
     <button class="k tiny" id="btn-chord">"Cm"</button>
     <button class="k tiny" id="btn-orn">~T.</button>
-    <button class="k tiny" id="btn-tie">⌒</button>
-    <button class="k tiny" id="btn-rest">→ Sil.</button>
+    <button class="k tiny narrow-skip" id="btn-tie">⌒</button>
+    <button class="k tiny narrow-skip" id="btn-rest">→ Sil.</button>
+  </div>
+  <div class="extra-row-2 edit-only">
+    <button class="k tiny" id="btn-tie-2">⌒</button>
+    <button class="k tiny" id="btn-rest-2">→ Sil.</button>
   </div>
 
   <div class="keypad edit-only">
@@ -230,16 +282,25 @@
     <pre class="abc-text" id="abc-out"></pre>
   </div>
 
+  <!-- Bottom bar : narrow = 1ère ligne (Play Stop Vue) + 2e ligne (vol/tempo) -->
   <div class="bottom-bar">
     <button class="k" id="btn-play">▶</button>
     <button class="k" id="btn-stop">■</button>
-    <button class="k" id="vol-d">−</button>
-    <div class="center-cell">V<b id="vol-v">60</b></div>
-    <button class="k" id="vol-u">+</button>
-    <button class="k" id="tempo-d">−</button>
-    <div class="center-cell">♩<b id="tempo-v">100</b></div>
-    <button class="k" id="tempo-u">+</button>
+    <button class="k narrow-skip" id="vol-d">🔉−</button>
+    <div class="center-cell narrow-skip">Vol<b id="vol-v">60</b></div>
+    <button class="k narrow-skip" id="vol-u">🔊+</button>
+    <button class="k narrow-skip" id="tempo-d">−</button>
+    <div class="center-cell narrow-skip">♩<b id="tempo-v">100</b></div>
+    <button class="k narrow-skip" id="tempo-u">+</button>
     <button class="k" id="btn-viewmode">👁</button>
+  </div>
+  <div class="bottom-bar-2">
+    <button class="k" id="vol-d-2">🔉−</button>
+    <div class="center-cell">Vol<b id="vol-v-2">60</b></div>
+    <button class="k" id="vol-u-2">🔊+</button>
+    <button class="k" id="tempo-d-2">−</button>
+    <div class="center-cell">♩<b id="tempo-v-2">100</b></div>
+    <button class="k" id="tempo-u-2">+</button>
   </div>
 </div>
 
@@ -794,7 +855,6 @@
     return out;
   }
 
-  // ====== rendering ======
   const SCORE_W = 360;
   const STAFF_TOP_Y = 30, LINE_GAP = 7;
   const LEFT_PAD = 50, RIGHT_PAD = 6;
@@ -1002,7 +1062,9 @@
     const sigLabel = (s)=> s === 0 ? '0' : (s>0 ? '+'+s : ''+s);
     document.getElementById('ctx-info').innerHTML = 'M:<b>' + meterAt(m) + '</b> L:<b>' + state.pieceUnit + '</b> K:<b>' + sigLabel(keyAt(m)) + '</b>';
     document.getElementById('tempo-v').textContent = state.tempo;
+    document.getElementById('tempo-v-2').textContent = state.tempo;
     document.getElementById('vol-v').textContent = state.volume;
+    document.getElementById('vol-v-2').textContent = state.volume;
     document.getElementById('btn-play').textContent = audio.playing ? '⏸' : '▶';
     document.getElementById('btn-undo').disabled = (history.pos <= 0);
     document.getElementById('btn-redo').disabled = (history.pos >= history.stack.length - 1);
@@ -1151,16 +1213,24 @@
   document.getElementById('cur-next').addEventListener('click', selectNext);
   document.getElementById('meas-prev').addEventListener('click', ()=> jumpMeasure(-1));
   document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
-  document.getElementById('btn-rest').addEventListener('click', setRestAtSelection);
-  document.getElementById('btn-del').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
+
+  // Helper to attach the same handler to two ids (main + narrow-row-2)
+  function bindBoth(id1, id2, handler){
+    const el1 = document.getElementById(id1);
+    const el2 = document.getElementById(id2);
+    if(el1) el1.addEventListener('click', handler);
+    if(el2) el2.addEventListener('click', handler);
+  }
+  bindBoth('btn-rest', 'btn-rest-2', setRestAtSelection);
+  bindBoth('btn-del', null, ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
   document.getElementById('btn-undo').addEventListener('click', undo);
   document.getElementById('btn-redo').addEventListener('click', redo);
-  document.getElementById('btn-trans-up').addEventListener('click', ()=>{ transposePiece(+1); pushHistory(); render(); });
-  document.getElementById('btn-trans-down').addEventListener('click', ()=>{ transposePiece(-1); pushHistory(); render(); });
-  document.getElementById('btn-tie').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ sl.tieToNext = !sl.tieToNext; pushHistory(); render(); } });
-  document.getElementById('btn-disarm').addEventListener('click', ()=>{ disarmKey(); pushHistory(); render(); });
+  bindBoth('btn-trans-up', 'btn-trans-up-2', ()=>{ transposePiece(+1); pushHistory(); render(); });
+  bindBoth('btn-trans-down', 'btn-trans-down-2', ()=>{ transposePiece(-1); pushHistory(); render(); });
+  bindBoth('btn-tie', 'btn-tie-2', ()=>{ const sl = selectedSlot(); if(sl){ sl.tieToNext = !sl.tieToNext; pushHistory(); render(); } });
+  bindBoth('btn-disarm', 'btn-disarm-2', ()=>{ disarmKey(); pushHistory(); render(); });
 
-  document.getElementById('btn-tuplet').addEventListener('click', ()=>{
+  bindBoth('btn-tuplet', 'btn-tuplet-2', ()=>{
     const sl = selectedSlot(); if(!sl) return;
     const meas = state.measures[state.sel.m]; const idx = state.sel.s;
     if(sl.tuplet){
@@ -1192,7 +1262,6 @@
     state.sel.s = 0;
     pushHistory(); render();
   });
-
   document.getElementById('meas-add').addEventListener('click', ()=>{
     let count = 1; let side = 'right';
     function controls(){
@@ -1233,15 +1302,49 @@
   document.getElementById('btn-volta1').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 1) ? 0 : 1; pushHistory(); render(); });
   document.getElementById('btn-volta2').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 2) ? 0 : 2; pushHistory(); render(); });
 
-  document.getElementById('vol-u').addEventListener('click', ()=>{ state.volume = Math.min(100, state.volume + 10); ensureAudio(); render(); });
-  document.getElementById('vol-d').addEventListener('click', ()=>{ state.volume = Math.max(0, state.volume - 10); ensureAudio(); render(); });
-  document.getElementById('tempo-u').addEventListener('click', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
-  document.getElementById('tempo-d').addEventListener('click', ()=>{ state.tempo = Math.max(30, state.tempo - 5); render(); });
+  bindBoth('vol-u', 'vol-u-2', ()=>{ state.volume = Math.min(100, state.volume + 10); ensureAudio(); render(); });
+  bindBoth('vol-d', 'vol-d-2', ()=>{ state.volume = Math.max(0, state.volume - 10); ensureAudio(); render(); });
+  bindBoth('tempo-u', 'tempo-u-2', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
+  bindBoth('tempo-d', 'tempo-d-2', ()=>{ state.tempo = Math.max(30, state.tempo - 5); render(); });
   document.getElementById('btn-play').addEventListener('click', ()=>{ if(audio.playing) stopPlayback(true); else playSchedule(); });
   document.getElementById('btn-stop').addEventListener('click', ()=> stopPlayback(true));
   document.getElementById('btn-viewmode').addEventListener('click', ()=>{ state.viewmode = !state.viewmode; document.getElementById('app').classList.toggle('viewmode', state.viewmode); render(); });
   document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶✕' : '⛶'; });
   document.getElementById('abc-toggle').addEventListener('click', ()=>{ state.abcCollapsed = !state.abcCollapsed; document.getElementById('abc-out').classList.toggle('collapsed', state.abcCollapsed); document.getElementById('abc-toggle-icon').textContent = state.abcCollapsed ? '▶' : '▼'; });
+
+  bindBoth('btn-saves', 'btn-saves-2', ()=>{ /* saves panel */
+    const saves = getSaves();
+    let listHtml = '<div class="save-list">';
+    if(saves.length === 0) listHtml += '<div class="item" style="color:#888780; cursor:default;">Aucune sauvegarde</div>';
+    else saves.forEach((s, i)=> listHtml += '<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');
+    listHtml += '</div>';
+    listHtml += '<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';
+    openPanel({ title:'Mémoires', body: listHtml, hideActions:true, extraButtons:['Annuler','Enregistrer'],
+      onMount:()=>{
+        document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{
+          el.addEventListener('click', (ev)=>{
+            if(ev.target.dataset.del !== undefined){ const idx = parseInt(ev.target.dataset.del, 10); const saves = getSaves(); saves.splice(idx,1); setSaves(saves); closePanel(); return; }
+            const idx = parseInt(el.dataset.idx, 10); const saves = getSaves();
+            if(saves[idx] && importStateJson(saves[idx].data)) closePanel();
+          });
+        });
+      },
+      onExtra:(which)=>{
+        if(which === 'Annuler'){ closePanel(); return; }
+        const name = document.getElementById('sn').value.trim() || 'Morceau';
+        const saves = getSaves(); const existing = saves.findIndex(s=> s.name === name);
+        const entry = { name, data: exportState(), date: new Date().toISOString() };
+        if(existing >= 0) saves[existing] = entry; else saves.push(entry);
+        setSaves(saves); closePanel();
+      },
+    });
+  });
+  bindBoth('btn-export', 'btn-export-2', ()=>{
+    const abc = document.getElementById('abc-out').textContent;
+    openPanel({ title:'Code ABC', body:'<textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>', hideActions:true, extraButtons:['Fermer','Copier'],
+      onMount:()=>{ document.getElementById('exp').select(); },
+      onExtra:(which)=>{ if(which === 'Copier'){ const ta = document.getElementById('exp'); ta.select(); try { document.execCommand('copy'); } catch(_){} } closePanel(); }, });
+  });
 
   document.getElementById('btn-chord').addEventListener('click', ()=>{
     const sl = selectedSlot();
@@ -1340,42 +1443,9 @@
   function exportState(){ return JSON.stringify({ headers: state.headers, pieceMeter: state.pieceMeter, pieceUnit: state.pieceUnit, pieceKeySig: state.pieceKeySig, pieceClef: state.pieceClef, measures: state.measures, timeChanges: state.timeChanges, keyChanges: state.keyChanges, clefChanges: state.clefChanges, repeats: state.repeats, tempo: state.tempo }); }
   function importStateJson(json){ try { const o = JSON.parse(json); Object.assign(state, o); state.sel = {m:0, s:0}; state.octave = 0; pushHistory(); render(); return true; } catch(e){ return false; } }
 
-  document.getElementById('btn-saves').addEventListener('click', ()=>{
-    const saves = getSaves();
-    let listHtml = '<div class="save-list">';
-    if(saves.length === 0) listHtml += '<div class="item" style="color:#888780; cursor:default;">Aucune sauvegarde</div>';
-    else saves.forEach((s, i)=> listHtml += '<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');
-    listHtml += '</div>';
-    listHtml += '<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';
-    openPanel({ title:'Mémoires', body: listHtml, hideActions:true, extraButtons:['Annuler','Enregistrer'],
-      onMount:()=>{
-        document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{
-          el.addEventListener('click', (ev)=>{
-            if(ev.target.dataset.del !== undefined){ const idx = parseInt(ev.target.dataset.del, 10); const saves = getSaves(); saves.splice(idx,1); setSaves(saves); closePanel(); return; }
-            const idx = parseInt(el.dataset.idx, 10); const saves = getSaves();
-            if(saves[idx] && importStateJson(saves[idx].data)) closePanel();
-          });
-        });
-      },
-      onExtra:(which)=>{
-        if(which === 'Annuler'){ closePanel(); return; }
-        const name = document.getElementById('sn').value.trim() || 'Morceau';
-        const saves = getSaves(); const existing = saves.findIndex(s=> s.name === name);
-        const entry = { name, data: exportState(), date: new Date().toISOString() };
-        if(existing >= 0) saves[existing] = entry; else saves.push(entry);
-        setSaves(saves); closePanel();
-      },
-    });
-  });
   document.getElementById('btn-new').addEventListener('click', ()=>{
     openPanel({ title:'Nouveau', body:'<small>Effacer le morceau ?</small>', hideActions:true, extraButtons:['Annuler','Effacer'],
       onExtra:(which)=>{ if(which === 'Effacer'){ state.headers = {X:'1', T:''}; state.pieceMeter='4/4'; state.pieceUnit='1/4'; state.pieceKeySig=0; state.pieceClef='treble'; rebuildMeasures(); pushHistory(); render(); } closePanel(); }, });
-  });
-  document.getElementById('btn-export').addEventListener('click', ()=>{
-    const abc = document.getElementById('abc-out').textContent;
-    openPanel({ title:'Code ABC', body:'<textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>', hideActions:true, extraButtons:['Fermer','Copier'],
-      onMount:()=>{ document.getElementById('exp').select(); },
-      onExtra:(which)=>{ if(which === 'Copier'){ const ta = document.getElementById('exp'); ta.select(); try { document.execCommand('copy'); } catch(_){} } closePanel(); }, });
   });
 
   const panel = document.getElementById('panel');
@@ -1418,7 +1488,8 @@
     });
   }
 
-  document.querySelector('[data-hdr="M"]').addEventListener('click', ()=>{
+  // bind both Armure/Clé buttons (header row 1 + header row 2)
+  document.querySelectorAll('[data-hdr="M"]').forEach(el => el.addEventListener('click', ()=>{
     const cur = meterAt(state.sel.m); const {num, den} = parseMeter(cur);
     let n = num, d = den; const denValues = [1,2,4,8,16];
     let unitDenom = parseInt(state.pieceUnit.split('/')[1], 10);
@@ -1453,9 +1524,9 @@
         state.sel = {m: state.sel.m, s: 0};
       },
     });
-  });
+  }));
 
-  document.querySelector('[data-hdr="K"]').addEventListener('click', ()=>{
+  document.querySelectorAll('[data-hdr="K"]').forEach(el => el.addEventListener('click', ()=>{
     let sig = keyAt(state.sel.m);
     const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + '#'; return Math.abs(s) + 'b'; };
     function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭−</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯+</button></div>'); }
@@ -1463,37 +1534,44 @@
     scopePanel({ title:'Armure', renderControls: controls,
       applyPiece: ()=>{ state.pieceKeySig = sig; if(state.sel.m === 0) delete state.keyChanges[0]; else state.keyChanges = {}; },
       applyHere: ()=>{ if(state.sel.m === 0){ state.pieceKeySig = sig; delete state.keyChanges[0]; } else state.keyChanges[state.sel.m] = sig; }, });
-  });
+  }));
 
-  document.querySelector('[data-hdr="CLEF"]').addEventListener('click', ()=>{
+  document.querySelectorAll('[data-hdr="CLEF"]').forEach(el => el.addEventListener('click', ()=>{
     let pick = clefAt(state.sel.m);
     function controls(){ return ('<div class="grid3" id="clef-pick"><button class="k symbol" data-clef="treble">𝄞</button><button class="k" data-clef="treble8" style="font-size:10px;">Sol-8</button><button class="k symbol" data-clef="bass">𝄢</button></div>'); }
     controls.mount = function(){ const refresh = ()=>{ document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.classList.toggle('active', b.dataset.clef === pick); }); }; refresh(); document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.addEventListener('click', ()=>{ pick = b.dataset.clef; refresh(); }); }); };
     scopePanel({ title:'Clé', renderControls: controls,
       applyPiece: ()=>{ state.pieceClef = pick; if(state.sel.m === 0) delete state.clefChanges[0]; else state.clefChanges = {}; },
       applyHere: ()=>{ if(state.sel.m === 0){ state.pieceClef = pick; delete state.clefChanges[0]; } else state.clefChanges[state.sel.m] = pick; }, });
-  });
+  }));
 
-  // ⭐ ResizeObserver pour adapter le layout à la largeur du conteneur
+  // ⭐ Layout adaptatif
   const app = document.getElementById('app');
-  function setMode(width){
+  function setMode(width, height){
     let mode;
-    if(width < 480) mode = 'narrow';
-    else if(width < 700) mode = 'medium';
-    else mode = 'wide';
-    if(app.dataset.mode !== mode){ app.dataset.mode = mode; }
+    if(width < 500) mode = 'narrow';       // téléphone portrait (360) et téléphone paysage (692 < 500? non)
+    else if(width < 900) mode = 'medium';  // tablette portrait (800), téléphone paysage (692)
+    else mode = 'wide';                    // tablette paysage (1280), PC (1920)
+    // override : si la hauteur est très petite (< 450), activer compact
+    if(app.dataset.mode !== mode) app.dataset.mode = mode;
+    app.classList.toggle('compact', height && height < 450);
   }
   if(typeof ResizeObserver !== 'undefined'){
     const ro = new ResizeObserver((entries)=>{
-      for(const e of entries) setMode(e.contentRect.width);
+      for(const e of entries){
+        const w = e.contentRect.width;
+        const h = window.innerHeight; // hauteur du viewport
+        setMode(w, h);
+      }
     });
     ro.observe(app);
   } else {
-    // Fallback : utiliser window resize
-    function checkW(){ setMode(app.getBoundingClientRect().width); }
+    function checkW(){ setMode(app.getBoundingClientRect().width, window.innerHeight); }
     window.addEventListener('resize', checkW);
     checkW();
   }
+  // Also re-check on viewport resize (rotations)
+  window.addEventListener('resize', ()=>{ setMode(app.getBoundingClientRect().width, window.innerHeight); });
 
   rebuildMeasures();
   pushHistory();
