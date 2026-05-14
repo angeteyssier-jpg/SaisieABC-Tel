@@ -22,6 +22,7 @@
   .abc-text.collapsed { display: none; }
   .abc-text .sel { background: #fcebeb; color: #791f1f; padding: 0 1px; border-radius: 2px; }
 
+  /* Default buttons (medium/wide) */
   .abc-app button.k {
     display: block; width: 100%; height: 36px; padding: 0 4px;
     background: #ffffff; border: 1px solid #b4b2a9; border-radius: 6px;
@@ -38,27 +39,32 @@
   .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
 
-  /* compact: réduit la hauteur de tous les boutons */
-  .abc-app.compact button.k { height: 30px; line-height: 28px; font-size: 11px; }
-  .abc-app.compact button.k.tiny { height: 26px; line-height: 24px; font-size: 10px; }
-  .abc-app.compact .abc-card { padding: 3px; margin-bottom: 3px; }
-  .abc-app.compact .row-grid { gap: 3px; margin-bottom: 3px; }
-  .abc-app.compact .keypad { gap: 3px; margin-bottom: 3px; }
+  /* ⭐ NARROW = grands boutons et grosse police pour mobile */
+  .abc-app[data-mode="narrow"] button.k { height: 54px; line-height: 50px; font-size: 18px; padding: 0 4px; border-radius: 8px; border-width: 1.5px; }
+  .abc-app[data-mode="narrow"] button.k.tiny { height: 48px; line-height: 46px; font-size: 15px; }
+  .abc-app[data-mode="narrow"] button.k.symbol { font-size: 26px; }
+  .abc-app[data-mode="narrow"] button.k .sub { font-size: 12px; margin-left: 4px; }
+  .abc-app[data-mode="narrow"] .row-grid { gap: 5px; margin-bottom: 5px; }
+  .abc-app[data-mode="narrow"] .keypad { gap: 5px; margin-bottom: 5px; }
+
+  /* compact pour écrans plats (téléphone paysage) - ne s'applique qu'en mode narrow ou medium */
+  .abc-app.compact:not([data-mode="wide"]) button.k { height: 36px; line-height: 32px; font-size: 13px; }
+  .abc-app.compact:not([data-mode="wide"]) button.k.tiny { height: 32px; line-height: 28px; font-size: 12px; }
+  .abc-app.compact:not([data-mode="wide"]) button.k.symbol { font-size: 18px; }
 
   .row-grid { display: grid; gap: 4px; margin-bottom: 4px; }
 
   /* narrow (téléphone portrait) — disposition compacte sur plusieurs lignes */
   .abc-app[data-mode="narrow"] .header-row { grid-template-columns: repeat(4, 1fr); }
-  .abc-app[data-mode="narrow"] .header-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 4px; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .header-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 5px; margin-bottom: 5px; }
   .abc-app[data-mode="narrow"] .file-row { grid-template-columns: repeat(3, 1fr); }
-  .abc-app[data-mode="narrow"] .file-row-2 { grid-template-columns: repeat(2, 1fr); display: grid; gap: 4px; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .file-row-2 { grid-template-columns: repeat(2, 1fr); display: grid; gap: 5px; margin-bottom: 5px; }
   .abc-app[data-mode="narrow"] .undo-row { grid-template-columns: repeat(3, 1fr); }
-  .abc-app[data-mode="narrow"] .undo-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 4px; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .undo-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 5px; margin-bottom: 5px; }
   .abc-app[data-mode="narrow"] .extra-row { grid-template-columns: repeat(2, 1fr); }
-  .abc-app[data-mode="narrow"] .extra-row-2 { grid-template-columns: repeat(2, 1fr); display: grid; gap: 4px; margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .extra-row-2 { grid-template-columns: repeat(2, 1fr); display: grid; gap: 5px; margin-bottom: 5px; }
   .abc-app[data-mode="narrow"] .repeat-row { grid-template-columns: repeat(4, 1fr); }
 
-  /* medium / wide: rows on a single line */
   .abc-app[data-mode="medium"] .header-row,
   .abc-app[data-mode="wide"] .header-row { grid-template-columns: 38px repeat(6, 1fr); }
   .abc-app[data-mode="medium"] .file-row,
@@ -78,11 +84,11 @@
   .abc-app[data-mode="wide"] .undo-row-2,
   .abc-app[data-mode="wide"] .extra-row-2 { display: none; }
 
-  /* Bottom bar : narrow utilise 2 lignes, autres 1 ligne */
+  /* Bottom bar */
   .bottom-bar {
     position: sticky; bottom: 0; background: #f5f4ef;
     border-top: 1px solid #d8d6ce; padding: 5px 0 0 0;
-    display: grid; gap: 3px; align-items: center; z-index: 10; margin-top: 6px;
+    display: grid; gap: 4px; align-items: center; z-index: 10; margin-top: 6px;
   }
   .abc-app[data-mode="narrow"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr; }
   .abc-app[data-mode="medium"] .bottom-bar,
@@ -90,16 +96,19 @@
   .bottom-bar-2 {
     display: none;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 3px; margin-top: 3px;
+    gap: 4px; margin-top: 4px;
   }
   .abc-app[data-mode="narrow"] .bottom-bar-2 { display: grid; }
-  .bottom-bar button.k, .bottom-bar-2 button.k { height: 30px; line-height: 28px; font-size: 12px; padding: 0 4px; }
   .bottom-bar .center-cell, .bottom-bar-2 .center-cell {
     display: flex; align-items: center; justify-content: center;
-    font-size: 11px; color: #5f5e5a; background: #ebe9e0;
-    border-radius: 5px; padding: 0 4px; height: 30px; min-width: 48px;
+    font-size: 12px; color: #5f5e5a; background: #ebe9e0;
+    border-radius: 5px; padding: 0 4px; height: 36px; min-width: 48px;
   }
-  .bottom-bar .center-cell b, .bottom-bar-2 .center-cell b { color: #1a1a1a; margin-left: 3px; font-size: 12px; }
+  .bottom-bar .center-cell b, .bottom-bar-2 .center-cell b { color: #1a1a1a; margin-left: 4px; font-size: 13px; }
+  .abc-app[data-mode="narrow"] .bottom-bar .center-cell,
+  .abc-app[data-mode="narrow"] .bottom-bar-2 .center-cell { height: 54px; font-size: 16px; }
+  .abc-app[data-mode="narrow"] .bottom-bar .center-cell b,
+  .abc-app[data-mode="narrow"] .bottom-bar-2 .center-cell b { font-size: 18px; }
 
   /* Keypad */
   .keypad { display: grid; gap: 4px; align-items: start; margin-bottom: 4px; }
@@ -110,62 +119,83 @@
   .col > .k { margin-bottom: 4px; }
   .col > .k:last-child { margin-bottom: 0; }
   .center-pad > * { margin-bottom: 4px; }
+  .abc-app[data-mode="narrow"] .col > .k { margin-bottom: 5px; }
+  .abc-app[data-mode="narrow"] .center-pad > * { margin-bottom: 5px; }
 
   /* narrow: notes en grille horizontale, durées+altérations idem */
   .abc-app[data-mode="narrow"] #notes-col {
-    display: grid; grid-template-columns: 36px repeat(7, 1fr);
-    gap: 4px; align-items: center;
+    display: grid; grid-template-columns: repeat(8, 1fr);
+    gap: 5px; align-items: center;
   }
   .abc-app[data-mode="narrow"] #notes-col > .k { margin-bottom: 0; }
   .abc-app[data-mode="narrow"] .col-right {
-    display: grid; grid-template-columns: 36px repeat(4, 1fr) 36px 36px 36px 1fr;
-    gap: 4px; align-items: center;
+    display: grid; grid-template-columns: repeat(8, 1fr);
+    gap: 5px; align-items: center;
   }
   .abc-app[data-mode="narrow"] .col-right > * { margin-bottom: 0 !important; }
   .abc-app[data-mode="narrow"] .col-right .grid2,
   .abc-app[data-mode="narrow"] .col-right .grid3 { display: contents; }
 
+  /* ⭐ Mes-ctrl revu : numéro en haut, boutons grands */
   .meas-ctrl {
-    display: grid; grid-template-columns: 32px 32px 1fr 32px 32px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 4px; align-items: center; background: #ebe9e0;
     padding: 4px; border-radius: 6px;
+    position: relative;
   }
-  .meas-ctrl .label { font-size: 10px; color: #5f5e5a; text-align: center; line-height: 1.1; padding: 0 2px; }
+  .meas-ctrl .label {
+    grid-column: 1 / -1; font-size: 11px; color: #5f5e5a;
+    text-align: center; line-height: 1; padding: 0; margin-bottom: 2px;
+  }
   .meas-ctrl b { font-weight: 500; color: #1a1a1a; }
   .meas-ctrl .k.tiny { padding: 0; }
+  .abc-app[data-mode="narrow"] .meas-ctrl { padding: 6px; gap: 6px; }
+  .abc-app[data-mode="narrow"] .meas-ctrl .label { font-size: 14px; margin-bottom: 4px; }
+
   .oct-ctrl {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    display: grid; grid-template-columns: 1fr auto 1fr;
     gap: 4px; align-items: center; background: #ebe9e0;
     padding: 4px; border-radius: 6px;
   }
-  .oct-ctrl .label { font-size: 10px; color: #5f5e5a; text-align: center; line-height: 1.1; }
+  .oct-ctrl .label { font-size: 11px; color: #5f5e5a; text-align: center; line-height: 1.1; min-width: 40px; }
   .oct-ctrl b { font-weight: 500; color: #1a1a1a; }
+  .abc-app[data-mode="narrow"] .oct-ctrl { padding: 6px; gap: 8px; }
+  .abc-app[data-mode="narrow"] .oct-ctrl .label { font-size: 14px; min-width: 50px; }
+  .abc-app[data-mode="narrow"] .oct-ctrl .label b { font-size: 18px; }
+
   .ctx-info { background: #f3f1ea; border: 1px solid #d8d6ce; border-radius: 5px; padding: 3px 4px; font-size: 10px; color: #5f5e5a; line-height: 1.3; text-align: center; }
   .ctx-info b { color: #1a1a1a; font-weight: 500; }
+  .abc-app[data-mode="narrow"] .ctx-info { font-size: 13px; padding: 5px; }
 
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
 
   .panel { background: #e6f1fb; border: 1px solid #378add; border-radius: 6px; padding: 8px; margin-bottom: 6px; display: none; max-height: 70vh; overflow-y: auto; }
   .panel.open { display: block; }
-  .panel .title { font-size: 11px; color: #0c447c; font-weight: 500; margin-bottom: 6px; }
-  .panel .row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
-  .panel input, .panel textarea { flex: 1; min-height: 32px; font-family: ui-monospace, monospace; font-size: 12px; padding: 4px 6px; border: 1px solid #b4b2a9; border-radius: 5px; background: #ffffff; color: #1a1a1a; }
+  .panel .title { font-size: 13px; color: #0c447c; font-weight: 500; margin-bottom: 6px; }
+  .abc-app[data-mode="narrow"] .panel .title { font-size: 16px; }
+  .panel .row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .panel input, .panel textarea { flex: 1; min-height: 36px; font-family: ui-monospace, monospace; font-size: 14px; padding: 5px 8px; border: 1px solid #b4b2a9; border-radius: 5px; background: #ffffff; color: #1a1a1a; }
   .panel textarea { width: 100%; min-height: 100px; }
-  .panel .field-label { font-family: ui-monospace, monospace; font-size: 12px; color: #0c447c; font-weight: 500; min-width: 24px; }
-  .panel .actions { display: flex; gap: 4px; justify-content: flex-end; flex-wrap: wrap; margin-top: 4px; }
-  .panel .actions .k { width: auto; padding: 0 12px; height: 30px; line-height: 28px; font-size: 12px; }
-  .panel .stepper { display: grid; grid-template-columns: 36px 1fr 36px; gap: 6px; align-items: center; margin-bottom: 4px; }
-  .panel .stepper .val { text-align: center; font-family: ui-monospace, monospace; font-size: 12px; color: #0c447c; font-weight: 500; }
-  .panel small { display: block; color: #5f5e5a; font-size: 10px; margin-bottom: 4px; }
-  .panel .save-list { max-height: 140px; overflow-y: auto; border: 1px solid #b4b2a9; border-radius: 5px; background: #ffffff; margin-bottom: 4px; }
-  .panel .save-list .item { padding: 5px 6px; border-bottom: 1px solid #ebe9e0; display: flex; justify-content: space-between; align-items: center; font-size: 11px; cursor: pointer; }
+  .panel .field-label { font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; min-width: 28px; }
+  .panel .actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; margin-top: 6px; }
+  .panel .actions .k { width: auto !important; padding: 0 14px !important; height: 36px !important; line-height: 34px !important; font-size: 13px !important; }
+  .abc-app[data-mode="narrow"] .panel .actions .k { height: 44px !important; line-height: 42px !important; font-size: 15px !important; }
+  .panel .stepper { display: grid; grid-template-columns: 44px 1fr 44px; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .panel .stepper .val { text-align: center; font-family: ui-monospace, monospace; font-size: 14px; color: #0c447c; font-weight: 500; }
+  .panel small { display: block; color: #5f5e5a; font-size: 11px; margin-bottom: 6px; }
+  .abc-app[data-mode="narrow"] .panel small { font-size: 13px; }
+  .panel .save-list { max-height: 160px; overflow-y: auto; border: 1px solid #b4b2a9; border-radius: 5px; background: #ffffff; margin-bottom: 6px; }
+  .panel .save-list .item { padding: 6px 8px; border-bottom: 1px solid #ebe9e0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; cursor: pointer; }
+  .abc-app[data-mode="narrow"] .panel .save-list .item { font-size: 15px; padding: 10px 10px; }
   .panel .save-list .item:hover { background: #f1efe8; }
-  .panel .save-list .item .del { color: #c34536; font-size: 14px; padding: 0 4px; cursor: pointer; }
-  .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 4px; }
-  .chord-grid .k { font-size: 11px; height: 28px; line-height: 26px; }
-  .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 4px; }
-  .root-grid .k { font-size: 11px; height: 28px; line-height: 26px; }
+  .panel .save-list .item .del { color: #c34536; font-size: 16px; padding: 0 6px; cursor: pointer; }
+  .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px; }
+  .chord-grid .k { font-size: 12px; height: 32px; line-height: 30px; }
+  .abc-app[data-mode="narrow"] .chord-grid .k { height: 44px !important; line-height: 42px !important; font-size: 14px !important; }
+  .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 6px; }
+  .root-grid .k { font-size: 12px; height: 32px; line-height: 30px; }
+  .abc-app[data-mode="narrow"] .root-grid .k { height: 44px !important; line-height: 42px !important; font-size: 14px !important; }
 </style>
 
 <div class="abc-app" id="app" data-mode="medium">
@@ -184,13 +214,11 @@
     <div class="score-wrap" id="score"></div>
   </div>
 
-  <!-- HEADER : 7 boutons. narrow → 4 + 3. medium/wide → 7 sur une ligne -->
   <div class="row-grid header-row edit-only">
     <button class="k tiny" id="btn-fs">⛶</button>
     <button class="k tiny" data-hdr="X">X:</button>
     <button class="k tiny" data-hdr="T">Titre</button>
     <button class="k tiny" data-hdr="M">Rythme</button>
-    <!-- en narrow ces 3 derniers passent dans la ligne suivante -->
     <button class="k tiny narrow-skip" data-hdr="K">Armure</button>
     <button class="k tiny narrow-skip" data-hdr="CLEF">Clé</button>
     <button class="k tiny narrow-skip" id="btn-disarm">K→♯</button>
@@ -201,7 +229,6 @@
     <button class="k tiny" id="btn-disarm-2">K→♯</button>
   </div>
 
-  <!-- FILE : 5 boutons. narrow → 3 + 2 -->
   <div class="row-grid file-row edit-only">
     <button class="k tiny" id="btn-new">📄 Nouv</button>
     <button class="k tiny" id="btn-open-file">📂 Ouv</button>
@@ -214,7 +241,6 @@
     <button class="k tiny" id="btn-export-2">⇣ ABC</button>
   </div>
 
-  <!-- UNDO : 6 boutons. narrow → 3 + 3 -->
   <div class="row-grid undo-row edit-only">
     <button class="k tiny" id="btn-del">⌫</button>
     <button class="k tiny" id="btn-undo">↶</button>
@@ -229,7 +255,6 @@
     <button class="k tiny" id="btn-tuplet-2">3:2</button>
   </div>
 
-  <!-- EXTRA : 4 boutons. narrow → 2 + 2 -->
   <div class="row-grid extra-row edit-only">
     <button class="k tiny" id="btn-chord">"Cm"</button>
     <button class="k tiny" id="btn-orn">~T.</button>
@@ -248,13 +273,13 @@
     <div class="col center-pad">
       <div class="oct-ctrl">
         <button class="k tiny" id="oct-down">▽</button>
-        <div class="label">Oct<br><b id="oct-val">0</b></div>
+        <div class="label">Oct <b id="oct-val">0</b></div>
         <button class="k tiny" id="oct-up">△</button>
       </div>
       <div class="meas-ctrl">
+        <div class="label">Mes <b id="meas-pos">1</b></div>
         <button class="k tiny" id="meas-del">⊟</button>
         <button class="k tiny" id="meas-prev">◀</button>
-        <div class="label">Mes<br><b id="meas-pos">1</b></div>
         <button class="k tiny" id="meas-next">▶</button>
         <button class="k tiny" id="meas-add">⊞</button>
       </div>
@@ -282,7 +307,6 @@
     <pre class="abc-text" id="abc-out"></pre>
   </div>
 
-  <!-- Bottom bar : narrow = 1ère ligne (Play Stop Vue) + 2e ligne (vol/tempo) -->
   <div class="bottom-bar">
     <button class="k" id="btn-play">▶</button>
     <button class="k" id="btn-stop">■</button>
@@ -1214,15 +1238,14 @@
   document.getElementById('meas-prev').addEventListener('click', ()=> jumpMeasure(-1));
   document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
 
-  // Helper to attach the same handler to two ids (main + narrow-row-2)
   function bindBoth(id1, id2, handler){
     const el1 = document.getElementById(id1);
-    const el2 = document.getElementById(id2);
+    const el2 = id2 ? document.getElementById(id2) : null;
     if(el1) el1.addEventListener('click', handler);
     if(el2) el2.addEventListener('click', handler);
   }
   bindBoth('btn-rest', 'btn-rest-2', setRestAtSelection);
-  bindBoth('btn-del', null, ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
+  document.getElementById('btn-del').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
   document.getElementById('btn-undo').addEventListener('click', undo);
   document.getElementById('btn-redo').addEventListener('click', redo);
   bindBoth('btn-trans-up', 'btn-trans-up-2', ()=>{ transposePiece(+1); pushHistory(); render(); });
@@ -1312,7 +1335,7 @@
   document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶✕' : '⛶'; });
   document.getElementById('abc-toggle').addEventListener('click', ()=>{ state.abcCollapsed = !state.abcCollapsed; document.getElementById('abc-out').classList.toggle('collapsed', state.abcCollapsed); document.getElementById('abc-toggle-icon').textContent = state.abcCollapsed ? '▶' : '▼'; });
 
-  bindBoth('btn-saves', 'btn-saves-2', ()=>{ /* saves panel */
+  bindBoth('btn-saves', 'btn-saves-2', ()=>{
     const saves = getSaves();
     let listHtml = '<div class="save-list">';
     if(saves.length === 0) listHtml += '<div class="item" style="color:#888780; cursor:default;">Aucune sauvegarde</div>';
@@ -1488,7 +1511,6 @@
     });
   }
 
-  // bind both Armure/Clé buttons (header row 1 + header row 2)
   document.querySelectorAll('[data-hdr="M"]').forEach(el => el.addEventListener('click', ()=>{
     const cur = meterAt(state.sel.m); const {num, den} = parseMeter(cur);
     let n = num, d = den; const denValues = [1,2,4,8,16];
@@ -1545,24 +1567,18 @@
       applyHere: ()=>{ if(state.sel.m === 0){ state.pieceClef = pick; delete state.clefChanges[0]; } else state.clefChanges[state.sel.m] = pick; }, });
   }));
 
-  // ⭐ Layout adaptatif
   const app = document.getElementById('app');
   function setMode(width, height){
     let mode;
-    if(width < 500) mode = 'narrow';       // téléphone portrait (360) et téléphone paysage (692 < 500? non)
-    else if(width < 900) mode = 'medium';  // tablette portrait (800), téléphone paysage (692)
-    else mode = 'wide';                    // tablette paysage (1280), PC (1920)
-    // override : si la hauteur est très petite (< 450), activer compact
+    if(width < 500) mode = 'narrow';
+    else if(width < 900) mode = 'medium';
+    else mode = 'wide';
     if(app.dataset.mode !== mode) app.dataset.mode = mode;
     app.classList.toggle('compact', height && height < 450);
   }
   if(typeof ResizeObserver !== 'undefined'){
     const ro = new ResizeObserver((entries)=>{
-      for(const e of entries){
-        const w = e.contentRect.width;
-        const h = window.innerHeight; // hauteur du viewport
-        setMode(w, h);
-      }
+      for(const e of entries){ setMode(e.contentRect.width, window.innerHeight); }
     });
     ro.observe(app);
   } else {
@@ -1570,7 +1586,6 @@
     window.addEventListener('resize', checkW);
     checkW();
   }
-  // Also re-check on viewport resize (rotations)
   window.addEventListener('resize', ()=>{ setMode(app.getBoundingClientRect().width, window.innerHeight); });
 
   rebuildMeasures();
