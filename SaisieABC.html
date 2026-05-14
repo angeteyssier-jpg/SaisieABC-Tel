@@ -1,8 +1,8 @@
 <style>
   .abc-app, .abc-app * { box-sizing: border-box; min-width: 0; }
   .abc-app {
-    width: 100%; max-width: 900px; margin: 0 auto;
-    padding: 4px;
+    width: 100%; max-width: 100%;
+    padding: 5px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     color: #1a1a1a; background: #f5f4ef; border-radius: 8px;
     position: relative; overflow-x: hidden;
@@ -12,208 +12,186 @@
   .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
 
   .ver-badge {
-    position: sticky; top: 0; z-index: 5;
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 11px; color: #5f5e5a;
-    background: #ebe9e0; padding: 4px 8px; border-radius: 5px;
-    margin-bottom: 4px; gap: 6px;
+    font-size: 13px; color: #5f5e5a;
+    background: #ebe9e0; padding: 5px 10px; border-radius: 6px;
+    margin-bottom: 6px;
   }
   .ver-badge b { color: #1a1a1a; font-weight: 600; }
-  .ver-badge .force-btn {
-    background: #185fa5; color: white; border: none;
-    border-radius: 4px; padding: 4px 10px; font-size: 11px;
-    cursor: pointer; -webkit-tap-highlight-color: transparent;
-    flex-shrink: 0;
-  }
-  .ver-badge .info { flex: 1; overflow: hidden; text-overflow: ellipsis; }
 
-  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 4px; }
-  .abc-label { font-size: 9px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 6px; }
+  .abc-label { font-size: 11px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
   .score-wrap { width: 100%; aspect-ratio: 360 / 200; max-height: 240px; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
 
-  .abc-text-card { background: #f1efe8; border: 1px solid #d8d6ce; border-radius: 6px; padding: 0; margin-bottom: 4px; overflow: hidden; }
-  .abc-text-head { padding: 3px 6px; font-size: 9px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-  .abc-text { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; padding: 4px 6px; max-height: 110px; overflow: auto; white-space: pre; color: #1a1a1a; line-height: 1.4; border-top: 1px solid #d8d6ce; }
-  .abc-text.collapsed { display: none; }
-  .abc-text .sel { background: #fcebeb; color: #791f1f; padding: 0 1px; border-radius: 2px; }
-
   .abc-app button.k {
-    display: block; width: 100%; height: 36px; padding: 0 4px;
-    background: #ffffff; border: 1px solid #b4b2a9; border-radius: 6px;
-    font-family: inherit; font-size: 13px; font-weight: 500; color: #1a1a1a;
-    cursor: pointer; text-align: center; line-height: 34px;
+    display: block; width: 100%; height: 70px; padding: 0 4px;
+    background: #ffffff; border: 2px solid #b4b2a9; border-radius: 10px;
+    font-family: inherit; font-size: 24px; font-weight: 600; color: #1a1a1a;
+    cursor: pointer; text-align: center; line-height: 1;
     -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
     min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
   }
   .abc-app button.k:active { background: #e8e6df; }
   .abc-app button.k:disabled { color: #bbb8a8; background: #f3f1ea; cursor: not-allowed; }
-  .abc-app button.k.active { background: #e6f1fb; border-color: #378add; color: #0c447c; }
-  .abc-app button.k.symbol { font-size: 18px; font-family: "Times New Roman", serif; }
-  .abc-app button.k.tiny { height: 32px; line-height: 30px; font-size: 12px; }
-  .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
+  .abc-app button.k.active { background: #cfe5fa; border-color: #185fa5; color: #0c447c; }
+  .abc-app button.k.symbol { font-size: 34px; font-family: "Times New Roman", serif; }
+  .abc-app button.k.tiny { height: 60px; font-size: 19px; }
+  .abc-app button.k .sub { font-size: 16px; color: #888780; font-weight: 500; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
 
-  /* ⭐ NARROW = boutons agrandis pour compenser le zoom navigateur */
-  .abc-app[data-mode="narrow"] button.k { height: 64px; line-height: 60px; font-size: 22px; padding: 0 6px; border-radius: 10px; border-width: 1.5px; font-weight: 600; }
-  .abc-app[data-mode="narrow"] button.k.tiny { height: 56px; line-height: 54px; font-size: 18px; font-weight: 600; }
-  .abc-app[data-mode="narrow"] button.k.symbol { font-size: 30px; }
-  .abc-app[data-mode="narrow"] button.k .sub { font-size: 14px; margin-left: 4px; }
-  .abc-app[data-mode="narrow"] .row-grid { gap: 6px; margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .keypad { gap: 6px; margin-bottom: 6px; }
+  .row-grid { display: grid; gap: 6px; margin-bottom: 6px; }
 
-  .abc-app.compact:not([data-mode="wide"]) button.k { height: 36px; line-height: 32px; font-size: 13px; }
-  .abc-app.compact:not([data-mode="wide"]) button.k.tiny { height: 32px; line-height: 28px; font-size: 12px; }
-  .abc-app.compact:not([data-mode="wide"]) button.k.symbol { font-size: 18px; }
+  /* Ligne 1 : Plein écran, X:, Titre */
+  .header-row { grid-template-columns: 1fr 1fr 1fr; }
+  /* Ligne 2 : Rythme, Armure, Clé */
+  .header-row-2 { grid-template-columns: 1fr 1fr 1fr; }
+  /* Ligne 3 : Désarmer K→# */
+  .header-row-3 { grid-template-columns: 1fr; }
+  /* Fichier : Nouv, Ouv, Sauv */
+  .file-row { grid-template-columns: 1fr 1fr 1fr; }
+  /* Mémo + ABC */
+  .file-row-2 { grid-template-columns: 1fr 1fr; }
+  /* Édition : Suppr, Annul, Refaire */
+  .undo-row { grid-template-columns: 1fr 1fr 1fr; }
+  /* Transp -, +, 3:2 */
+  .undo-row-2 { grid-template-columns: 1fr 1fr 1fr; }
+  /* Accord, Ornement */
+  .extra-row { grid-template-columns: 1fr 1fr; }
+  /* Liaison, Silence */
+  .extra-row-2 { grid-template-columns: 1fr 1fr; }
+  /* Reprises 𝄆 𝄇 |1 |2 */
+  .repeat-row { grid-template-columns: 1fr 1fr 1fr 1fr; }
 
-  .row-grid { display: grid; gap: 4px; margin-bottom: 4px; }
-
-  .abc-app[data-mode="narrow"] .header-row { grid-template-columns: repeat(4, 1fr); }
-  .abc-app[data-mode="narrow"] .header-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 6px; margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .file-row { grid-template-columns: repeat(3, 1fr); }
-  .abc-app[data-mode="narrow"] .file-row-2 { grid-template-columns: repeat(2, 1fr); display: grid; gap: 6px; margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .undo-row { grid-template-columns: repeat(3, 1fr); }
-  .abc-app[data-mode="narrow"] .undo-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 6px; margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .extra-row { grid-template-columns: repeat(2, 1fr); }
-  .abc-app[data-mode="narrow"] .extra-row-2 { grid-template-columns: repeat(2, 1fr); display: grid; gap: 6px; margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .repeat-row { grid-template-columns: repeat(4, 1fr); }
-
-  .abc-app[data-mode="medium"] .header-row,
-  .abc-app[data-mode="wide"] .header-row { grid-template-columns: 38px repeat(6, 1fr); }
-  .abc-app[data-mode="medium"] .file-row,
-  .abc-app[data-mode="wide"] .file-row { grid-template-columns: repeat(5, 1fr); }
-  .abc-app[data-mode="medium"] .undo-row,
-  .abc-app[data-mode="wide"] .undo-row { grid-template-columns: repeat(6, 1fr); }
-  .abc-app[data-mode="medium"] .extra-row,
-  .abc-app[data-mode="wide"] .extra-row { grid-template-columns: repeat(4, 1fr); }
-  .abc-app[data-mode="medium"] .repeat-row,
-  .abc-app[data-mode="wide"] .repeat-row { grid-template-columns: repeat(4, 1fr); }
-  .abc-app[data-mode="medium"] .header-row-2,
-  .abc-app[data-mode="medium"] .file-row-2,
-  .abc-app[data-mode="medium"] .undo-row-2,
-  .abc-app[data-mode="medium"] .extra-row-2,
-  .abc-app[data-mode="wide"] .header-row-2,
-  .abc-app[data-mode="wide"] .file-row-2,
-  .abc-app[data-mode="wide"] .undo-row-2,
-  .abc-app[data-mode="wide"] .extra-row-2 { display: none; }
-
-  .bottom-bar {
-    position: sticky; bottom: 0; background: #f5f4ef;
-    border-top: 1px solid #d8d6ce; padding: 5px 0 0 0;
-    display: grid; gap: 4px; align-items: center; z-index: 10; margin-top: 6px;
+  /* Bandes infos contextuelles */
+  .ctx-card {
+    background: #ebe9e0; border: 1px solid #d8d6ce; border-radius: 8px;
+    padding: 8px 10px; margin-bottom: 6px;
+    font-size: 18px; color: #1a1a1a; line-height: 1.4;
   }
-  .abc-app[data-mode="narrow"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-  .abc-app[data-mode="medium"] .bottom-bar,
-  .abc-app[data-mode="wide"] .bottom-bar { grid-template-columns: 1fr 1fr 1fr auto 1fr 1fr auto 1fr 1fr; }
-  .bottom-bar-2 {
-    display: none;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 4px; margin-top: 4px;
-  }
-  .abc-app[data-mode="narrow"] .bottom-bar-2 { display: grid; gap: 6px; margin-top: 6px; }
-  .bottom-bar .center-cell, .bottom-bar-2 .center-cell {
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; color: #5f5e5a; background: #ebe9e0;
-    border-radius: 5px; padding: 0 4px; height: 36px; min-width: 48px;
-  }
-  .bottom-bar .center-cell b, .bottom-bar-2 .center-cell b { color: #1a1a1a; margin-left: 4px; font-size: 13px; }
-  .abc-app[data-mode="narrow"] .bottom-bar .center-cell,
-  .abc-app[data-mode="narrow"] .bottom-bar-2 .center-cell { height: 64px; font-size: 20px; border-radius: 10px; }
-  .abc-app[data-mode="narrow"] .bottom-bar .center-cell b,
-  .abc-app[data-mode="narrow"] .bottom-bar-2 .center-cell b { font-size: 22px; }
+  .ctx-card b { color: #185fa5; font-weight: 700; }
 
-  .keypad { display: grid; gap: 4px; align-items: start; margin-bottom: 4px; }
-  .abc-app[data-mode="narrow"] .keypad { grid-template-columns: 1fr; }
-  .abc-app[data-mode="medium"] .keypad { grid-template-columns: 56px 1fr 96px; }
-  .abc-app[data-mode="wide"]   .keypad { grid-template-columns: 70px 1fr 110px; }
-
-  .col > .k { margin-bottom: 4px; }
-  .col > .k:last-child { margin-bottom: 0; }
-  .center-pad > * { margin-bottom: 4px; }
-  .abc-app[data-mode="narrow"] .col > .k { margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .center-pad > * { margin-bottom: 6px; }
-
-  .abc-app[data-mode="narrow"] #notes-col {
-    display: grid; grid-template-columns: repeat(8, 1fr);
-    gap: 6px; align-items: center;
+  /* Octave : -, val, + */
+  .oct-row {
+    display: grid; grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 6px; margin-bottom: 6px;
+    background: #ebe9e0; padding: 6px; border-radius: 10px;
+    align-items: center;
   }
-  .abc-app[data-mode="narrow"] #notes-col > .k { margin-bottom: 0; }
-  .abc-app[data-mode="narrow"] .col-right {
-    display: grid; grid-template-columns: repeat(8, 1fr);
-    gap: 6px; align-items: center;
+  .oct-row .label {
+    font-size: 20px; color: #1a1a1a; text-align: center; font-weight: 600;
   }
-  .abc-app[data-mode="narrow"] .col-right > * { margin-bottom: 0 !important; }
-  .abc-app[data-mode="narrow"] .col-right .grid2,
-  .abc-app[data-mode="narrow"] .col-right .grid3 { display: contents; }
+  .oct-row .label b { color: #185fa5; font-size: 28px; margin-left: 4px; }
 
-  .meas-ctrl {
+  /* Mesure : -, ◀, ▶, + tous même largeur */
+  .meas-row {
     display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 4px; align-items: center; background: #ebe9e0;
-    padding: 4px; border-radius: 6px;
+    gap: 6px; margin-bottom: 6px;
+    background: #ebe9e0; padding: 6px; border-radius: 10px;
   }
-  .meas-ctrl .label {
-    grid-column: 1 / -1; font-size: 11px; color: #5f5e5a;
-    text-align: center; line-height: 1; padding: 0; margin-bottom: 2px;
+
+  /* Notes : flèche gauche, 7 notes, flèche droite (9 colonnes) */
+  .notes-row {
+    display: grid; grid-template-columns: 0.8fr repeat(7, 1fr) 0.8fr;
+    gap: 4px; margin-bottom: 6px;
   }
-  .meas-ctrl b { font-weight: 500; color: #1a1a1a; }
-  .meas-ctrl .k.tiny { padding: 0; }
-  .abc-app[data-mode="narrow"] .meas-ctrl { padding: 8px; gap: 8px; border-radius: 10px; }
-  .abc-app[data-mode="narrow"] .meas-ctrl .label { font-size: 18px; margin-bottom: 4px; }
-  .abc-app[data-mode="narrow"] .meas-ctrl .label b { font-size: 22px; }
-
-  .oct-ctrl {
-    display: grid; grid-template-columns: 1fr auto 1fr;
-    gap: 4px; align-items: center; background: #ebe9e0;
-    padding: 4px; border-radius: 6px;
+  .notes-row .k {
+    flex-direction: column; gap: 0; font-size: 22px;
   }
-  .oct-ctrl .label { font-size: 11px; color: #5f5e5a; text-align: center; line-height: 1.1; min-width: 40px; }
-  .oct-ctrl b { font-weight: 500; color: #1a1a1a; }
-  .abc-app[data-mode="narrow"] .oct-ctrl { padding: 8px; gap: 12px; border-radius: 10px; }
-  .abc-app[data-mode="narrow"] .oct-ctrl .label { font-size: 18px; min-width: 70px; }
-  .abc-app[data-mode="narrow"] .oct-ctrl .label b { font-size: 24px; }
+  .notes-row .k .sub { font-size: 13px; margin: 0; }
 
-  .ctx-info { background: #f3f1ea; border: 1px solid #d8d6ce; border-radius: 5px; padding: 3px 4px; font-size: 10px; color: #5f5e5a; line-height: 1.3; text-align: center; }
-  .ctx-info b { color: #1a1a1a; font-weight: 500; }
-  .abc-app[data-mode="narrow"] .ctx-info { font-size: 16px; padding: 8px; border-radius: 10px; }
+  /* Durées + altérations + point sur une seule ligne (8 colonnes) */
+  .dur-row {
+    display: grid; grid-template-columns: repeat(8, 1fr);
+    gap: 4px; margin-bottom: 6px;
+  }
+  .dur-row .k.symbol { font-size: 30px; }
 
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
+  /* Lecture en bas : Play, Stop, Vue, Vol-, val, Vol+, Tempo-, val, Tempo+ */
+  .play-row {
+    position: sticky; bottom: 0; background: #f5f4ef;
+    border-top: 2px solid #d8d6ce; padding: 6px 0 0 0;
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px; align-items: center; z-index: 10; margin-top: 8px;
+  }
+  .volume-row, .tempo-row {
+    display: grid; grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 6px; margin-top: 6px;
+    background: #ebe9e0; padding: 6px; border-radius: 10px;
+    align-items: center;
+  }
+  .volume-row .label, .tempo-row .label {
+    font-size: 18px; color: #1a1a1a; text-align: center; font-weight: 600;
+  }
+  .volume-row .label b, .tempo-row .label b {
+    color: #185fa5; font-size: 26px; margin-left: 4px;
+  }
 
-  .panel { background: #e6f1fb; border: 1px solid #378add; border-radius: 6px; padding: 8px; margin-bottom: 6px; display: none; max-height: 70vh; overflow-y: auto; }
+  .panel {
+    background: #e6f1fb; border: 2px solid #378add; border-radius: 10px;
+    padding: 10px; margin-bottom: 8px; display: none;
+    max-height: 75vh; overflow-y: auto;
+  }
   .panel.open { display: block; }
-  .panel .title { font-size: 13px; color: #0c447c; font-weight: 500; margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .panel .title { font-size: 20px; margin-bottom: 10px; }
-  .panel .row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-  .panel input, .panel textarea { flex: 1; min-height: 36px; font-family: ui-monospace, monospace; font-size: 14px; padding: 5px 8px; border: 1px solid #b4b2a9; border-radius: 5px; background: #ffffff; color: #1a1a1a; }
-  .abc-app[data-mode="narrow"] .panel input { font-size: 18px; min-height: 48px; }
-  .panel textarea { width: 100%; min-height: 100px; }
-  .panel .field-label { font-family: ui-monospace, monospace; font-size: 13px; color: #0c447c; font-weight: 500; min-width: 28px; }
-  .panel .actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; margin-top: 6px; }
-  .panel .actions .k { width: auto !important; padding: 0 14px !important; height: 36px !important; line-height: 34px !important; font-size: 13px !important; }
-  .abc-app[data-mode="narrow"] .panel .actions .k { height: 52px !important; line-height: 50px !important; font-size: 18px !important; padding: 0 20px !important; }
-  .panel .stepper { display: grid; grid-template-columns: 44px 1fr 44px; gap: 6px; align-items: center; margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .panel .stepper { grid-template-columns: 64px 1fr 64px; gap: 10px; margin-bottom: 10px; }
-  .panel .stepper .val { text-align: center; font-family: ui-monospace, monospace; font-size: 14px; color: #0c447c; font-weight: 500; }
-  .abc-app[data-mode="narrow"] .panel .stepper .val { font-size: 20px; }
-  .panel small { display: block; color: #5f5e5a; font-size: 11px; margin-bottom: 6px; }
-  .abc-app[data-mode="narrow"] .panel small { font-size: 15px; margin-bottom: 8px; }
-  .panel .save-list { max-height: 160px; overflow-y: auto; border: 1px solid #b4b2a9; border-radius: 5px; background: #ffffff; margin-bottom: 6px; }
-  .panel .save-list .item { padding: 6px 8px; border-bottom: 1px solid #ebe9e0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; cursor: pointer; }
-  .abc-app[data-mode="narrow"] .panel .save-list .item { font-size: 18px; padding: 14px 12px; }
+  .panel .title {
+    font-size: 22px; color: #0c447c; font-weight: 700; margin-bottom: 10px;
+  }
+  .panel .row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .panel input, .panel textarea {
+    flex: 1; min-height: 50px; font-family: ui-monospace, monospace;
+    font-size: 20px; padding: 8px 10px; border: 2px solid #b4b2a9;
+    border-radius: 8px; background: #ffffff; color: #1a1a1a;
+  }
+  .panel textarea { width: 100%; min-height: 150px; }
+  .panel .field-label {
+    font-family: ui-monospace, monospace; font-size: 18px;
+    color: #0c447c; font-weight: 700; min-width: 40px;
+  }
+  .panel .actions {
+    display: flex; gap: 8px; justify-content: flex-end;
+    flex-wrap: wrap; margin-top: 8px;
+  }
+  .panel .actions .k {
+    width: auto !important; padding: 0 20px !important;
+    height: 56px !important; font-size: 20px !important;
+  }
+  .panel .stepper {
+    display: grid; grid-template-columns: 70px 1fr 70px;
+    gap: 10px; align-items: center; margin-bottom: 10px;
+  }
+  .panel .stepper .val {
+    text-align: center; font-family: ui-monospace, monospace;
+    font-size: 22px; color: #0c447c; font-weight: 700;
+  }
+  .panel small {
+    display: block; color: #5f5e5a; font-size: 16px;
+    margin-bottom: 8px; font-style: italic;
+  }
+  .panel .save-list {
+    max-height: 200px; overflow-y: auto;
+    border: 2px solid #b4b2a9; border-radius: 8px;
+    background: #ffffff; margin-bottom: 8px;
+  }
+  .panel .save-list .item {
+    padding: 14px 12px; border-bottom: 1px solid #ebe9e0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 18px; cursor: pointer;
+  }
   .panel .save-list .item:hover { background: #f1efe8; }
-  .panel .save-list .item .del { color: #c34536; font-size: 16px; padding: 0 6px; cursor: pointer; }
-  .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 6px; }
-  .chord-grid .k { font-size: 12px; height: 32px; line-height: 30px; }
-  .abc-app[data-mode="narrow"] .chord-grid .k { height: 52px !important; line-height: 50px !important; font-size: 18px !important; }
-  .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 6px; }
-  .root-grid .k { font-size: 12px; height: 32px; line-height: 30px; }
-  .abc-app[data-mode="narrow"] .root-grid .k { height: 52px !important; line-height: 50px !important; font-size: 18px !important; }
+  .panel .save-list .item .del {
+    color: #c34536; font-size: 22px; padding: 0 10px; cursor: pointer;
+  }
+  .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
+  .chord-grid .k { height: 54px !important; font-size: 18px !important; }
+  .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px; }
+  .root-grid .k { height: 54px !important; font-size: 20px !important; }
 </style>
 
-<div class="abc-app" id="app" data-mode="medium">
+<div class="abc-app" id="app">
   <div class="ver-badge">
-    <span class="info">v<b>28</b> · mode <b id="mode-tag">…</b> · win <b id="ww-tag">0</b>×<b id="wh-tag">0</b> · widget <b id="aw-tag">0</b></span>
-    <button class="force-btn" id="force-mode">auto</button>
+    <span>Éditeur ABC <b>v29</b></span>
+    <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
   <div class="panel" id="panel">
@@ -227,121 +205,109 @@
   <input type="file" id="file-input" accept=".abc,text/plain" style="display:none;"/>
 
   <div class="abc-card">
-    <div class="abc-label edit-only"><span>Mes <span id="meas-num">1</span> · slot <span id="slot-num">1</span></span></div>
     <div class="score-wrap" id="score"></div>
   </div>
 
+  <!-- Bandeau contextuel info-->
+  <div class="ctx-card edit-only">
+    <div>Mesure <b id="meas-pos">1</b> · slot <b id="slot-pos">1</b></div>
+    <div>Rythmique : <b id="info-meter">4/4</b> · Armure : <b id="info-key">0</b> · Clé : <b id="info-clef">Sol</b></div>
+  </div>
+
+  <!-- Ligne 1: Plein écran, X, Titre -->
   <div class="row-grid header-row edit-only">
     <button class="k tiny" id="btn-fs">⛶</button>
     <button class="k tiny" data-hdr="X">X:</button>
     <button class="k tiny" data-hdr="T">Titre</button>
-    <button class="k tiny" data-hdr="M">Rythme</button>
-    <button class="k tiny narrow-skip" data-hdr="K">Armure</button>
-    <button class="k tiny narrow-skip" data-hdr="CLEF">Clé</button>
-    <button class="k tiny narrow-skip" id="btn-disarm">K→♯</button>
   </div>
-  <div class="header-row-2 edit-only">
+  <!-- Ligne 2: Rythme, Armure, Clé -->
+  <div class="row-grid header-row-2 edit-only">
+    <button class="k tiny" data-hdr="M">Rythme</button>
     <button class="k tiny" data-hdr="K">Armure</button>
     <button class="k tiny" data-hdr="CLEF">Clé</button>
-    <button class="k tiny" id="btn-disarm-2">K→♯</button>
+  </div>
+  <!-- Ligne 3: Désarmer -->
+  <div class="row-grid header-row-3 edit-only">
+    <button class="k tiny" id="btn-disarm">K→♯ désarmer</button>
   </div>
 
+  <!-- Fichier : 3 + 2 -->
   <div class="row-grid file-row edit-only">
     <button class="k tiny" id="btn-new">📄 Nouv</button>
     <button class="k tiny" id="btn-open-file">📂 Ouv</button>
     <button class="k tiny" id="btn-save-file">💾 Sauv</button>
-    <button class="k tiny narrow-skip" id="btn-saves">⭐ Mémo</button>
-    <button class="k tiny narrow-skip" id="btn-export">⇣ ABC</button>
   </div>
-  <div class="file-row-2 edit-only">
-    <button class="k tiny" id="btn-saves-2">⭐ Mémo</button>
-    <button class="k tiny" id="btn-export-2">⇣ ABC</button>
+  <div class="row-grid file-row-2 edit-only">
+    <button class="k tiny" id="btn-saves">⭐ Mémo</button>
+    <button class="k tiny" id="btn-export">⇣ Voir ABC</button>
   </div>
 
+  <!-- Édition : Suppr, Annul, Refaire | Trans-, Trans+, N-uplet -->
   <div class="row-grid undo-row edit-only">
-    <button class="k tiny" id="btn-del">⌫</button>
-    <button class="k tiny" id="btn-undo">↶</button>
-    <button class="k tiny" id="btn-redo">↷</button>
-    <button class="k tiny narrow-skip" id="btn-trans-down">−½</button>
-    <button class="k tiny narrow-skip" id="btn-trans-up">+½</button>
-    <button class="k tiny narrow-skip" id="btn-tuplet">3:2</button>
+    <button class="k tiny" id="btn-del">⌫ Suppr</button>
+    <button class="k tiny" id="btn-undo">↶ Annul</button>
+    <button class="k tiny" id="btn-redo">↷ Refaire</button>
   </div>
-  <div class="undo-row-2 edit-only">
-    <button class="k tiny" id="btn-trans-down-2">−½</button>
-    <button class="k tiny" id="btn-trans-up-2">+½</button>
-    <button class="k tiny" id="btn-tuplet-2">3:2</button>
+  <div class="row-grid undo-row-2 edit-only">
+    <button class="k tiny" id="btn-trans-down">−½ ton</button>
+    <button class="k tiny" id="btn-trans-up">+½ ton</button>
+    <button class="k tiny" id="btn-tuplet">3:2</button>
   </div>
 
+  <!-- Accord, Ornement | Liaison, Silence -->
   <div class="row-grid extra-row edit-only">
-    <button class="k tiny" id="btn-chord">"Cm"</button>
-    <button class="k tiny" id="btn-orn">~T.</button>
-    <button class="k tiny narrow-skip" id="btn-tie">⌒</button>
-    <button class="k tiny narrow-skip" id="btn-rest">→ Sil.</button>
+    <button class="k tiny" id="btn-chord">"Cm" Accord</button>
+    <button class="k tiny" id="btn-orn">~T. Ornement</button>
   </div>
-  <div class="extra-row-2 edit-only">
-    <button class="k tiny" id="btn-tie-2">⌒</button>
-    <button class="k tiny" id="btn-rest-2">→ Sil.</button>
+  <div class="row-grid extra-row-2 edit-only">
+    <button class="k tiny" id="btn-tie">⌒ Liaison</button>
+    <button class="k tiny" id="btn-rest">→ Silence</button>
   </div>
 
-  <div class="keypad edit-only">
-    <div class="col" id="notes-col">
-      <button class="k" id="cur-prev">◀</button>
-    </div>
-    <div class="col center-pad">
-      <div class="oct-ctrl">
-        <button class="k tiny" id="oct-down">▽</button>
-        <div class="label">Oct <b id="oct-val">0</b></div>
-        <button class="k tiny" id="oct-up">△</button>
-      </div>
-      <div class="meas-ctrl">
-        <div class="label">Mes <b id="meas-pos">1</b></div>
-        <button class="k tiny" id="meas-del">⊟</button>
-        <button class="k tiny" id="meas-prev">◀</button>
-        <button class="k tiny" id="meas-next">▶</button>
-        <button class="k tiny" id="meas-add">⊞</button>
-      </div>
-      <div class="ctx-info" id="ctx-info">M:<b>4/4</b></div>
-      <div class="row-grid repeat-row" style="margin-bottom:0;">
-        <button class="k tiny" id="btn-rep-start">𝄆</button>
-        <button class="k tiny" id="btn-rep-end">𝄇</button>
-        <button class="k tiny" id="btn-volta1">|1</button>
-        <button class="k tiny" id="btn-volta2">|2</button>
-      </div>
-    </div>
-    <div class="col col-right">
-      <button class="k" id="cur-next">▶</button>
-      <div class="grid2" id="dur-pad"></div>
-      <div class="grid3" id="alt-pad"></div>
-      <button class="k symbol" id="dot-btn">♩·</button>
-    </div>
+  <!-- Octave -->
+  <div class="oct-row edit-only">
+    <button class="k tiny" id="oct-down">▽ Oct−</button>
+    <div class="label">Octave <b id="oct-val">0</b></div>
+    <button class="k tiny" id="oct-up">△ Oct+</button>
   </div>
 
-  <div class="abc-text-card edit-only">
-    <div class="abc-text-head" id="abc-toggle">
-      <span>Code ABC</span>
-      <span id="abc-toggle-icon">▼</span>
-    </div>
-    <pre class="abc-text" id="abc-out"></pre>
+  <!-- Durées + altérations + point sur une ligne sous octave -->
+  <div class="row-grid dur-row edit-only" id="dur-alt-row"></div>
+
+  <!-- Notes : ◀ Do Ré Mi Fa Sol La Si ▶ -->
+  <div class="notes-row edit-only" id="notes-row"></div>
+
+  <!-- Mesure : -, ◀, ▶, + (toutes même largeur) -->
+  <div class="meas-row edit-only">
+    <button class="k tiny" id="meas-del">⊟ Suppr</button>
+    <button class="k tiny" id="meas-prev">◀ Préc.</button>
+    <button class="k tiny" id="meas-next">Suiv. ▶</button>
+    <button class="k tiny" id="meas-add">⊞ Ajout</button>
   </div>
 
-  <div class="bottom-bar">
-    <button class="k" id="btn-play">▶</button>
-    <button class="k" id="btn-stop">■</button>
-    <button class="k narrow-skip" id="vol-d">🔉−</button>
-    <div class="center-cell narrow-skip">Vol<b id="vol-v">60</b></div>
-    <button class="k narrow-skip" id="vol-u">🔊+</button>
-    <button class="k narrow-skip" id="tempo-d">−</button>
-    <div class="center-cell narrow-skip">♩<b id="tempo-v">100</b></div>
-    <button class="k narrow-skip" id="tempo-u">+</button>
-    <button class="k" id="btn-viewmode">👁</button>
+  <!-- Reprises -->
+  <div class="row-grid repeat-row edit-only">
+    <button class="k tiny" id="btn-rep-start">𝄆 Début</button>
+    <button class="k tiny" id="btn-rep-end">𝄇 Fin</button>
+    <button class="k tiny" id="btn-volta1">|1 Volta</button>
+    <button class="k tiny" id="btn-volta2">|2 Volta</button>
   </div>
-  <div class="bottom-bar-2">
-    <button class="k" id="vol-d-2">🔉−</button>
-    <div class="center-cell">Vol<b id="vol-v-2">60</b></div>
-    <button class="k" id="vol-u-2">🔊+</button>
-    <button class="k" id="tempo-d-2">−</button>
-    <div class="center-cell">♩<b id="tempo-v-2">100</b></div>
-    <button class="k" id="tempo-u-2">+</button>
+
+  <!-- Lecture : Play, Stop, Vue -->
+  <div class="play-row">
+    <button class="k" id="btn-play">▶ Play</button>
+    <button class="k" id="btn-stop">■ Stop</button>
+    <button class="k" id="btn-viewmode">👁 Vue</button>
+  </div>
+  <div class="volume-row">
+    <button class="k tiny" id="vol-d">🔉 −</button>
+    <div class="label">Vol <b id="vol-v">60</b></div>
+    <button class="k tiny" id="vol-u">🔊 +</button>
+  </div>
+  <div class="tempo-row">
+    <button class="k tiny" id="tempo-d">♩ −</button>
+    <div class="label">Tempo <b id="tempo-v">100</b></div>
+    <button class="k tiny" id="tempo-u">♩ +</button>
   </div>
 </div>
 
@@ -367,8 +333,7 @@
     measures: [], sel: {m:0, s:0}, octave: 0,
     timeChanges: {}, keyChanges: {}, clefChanges: {}, repeats: {},
     tempo: 100, volume: 60,
-    abcCollapsed: false, fullscreen: false, viewmode: false,
-    forcedMode: null,
+    fullscreen: false, viewmode: false,
   };
 
   const history = { stack: [], pos: -1, max: 100 };
@@ -567,6 +532,11 @@
   }
   function clefAbcSuffix(c){ if(c === 'bass') return ' clef=bass'; if(c === 'treble8') return ' clef=treble-8'; return ''; }
   function clefHumanLabel(c){ if(c === 'bass') return 'Fa'; if(c === 'treble8') return 'Sol-8'; return 'Sol'; }
+  function keyHumanLabel(sig){
+    if(sig === 0) return '0';
+    if(sig > 0) return sig + ' ♯';
+    return Math.abs(sig) + ' ♭';
+  }
   function cleanupAccidentals(){
     state.measures.forEach((meas, mi)=>{
       const sig = keyAt(mi);
@@ -656,7 +626,8 @@
   }
   function buildVoltaFor(mi){ const r = state.repeats[mi]; if(!r || !r.volta) return ''; return '[' + r.volta; }
 
-  function renderAbc(){
+  // Builds the ABC text on demand (no permanent on-screen display)
+  function buildAbcText(){
     let header = '';
     if(state.headers.X) header += 'X:' + state.headers.X + '\n';
     if(state.headers.T) header += 'T:' + state.headers.T + '\n';
@@ -671,14 +642,12 @@
       body += buildVoltaFor(mi);
       const groups = computeBeamGroups(m, meterAt(mi));
       const groupOf = {};
-      groups.forEach((g, gi)=>{ g.forEach((idx, k)=>{ groupOf[idx] = {gi, pos:k, len:g.length}; }); });
+      groups.forEach((g, gi)=>{ g.forEach((idx, k)=>{ groupOf[idx] = {gi}; }); });
       let lastTuplet = null;
       m.forEach((t, si)=>{
         if(t.tuplet && t.tuplet !== lastTuplet){ body += '(' + t.tuplet; lastTuplet = t.tuplet; }
         if(!t.tuplet) lastTuplet = null;
-        const s = slotStr(t);
-        const cell = (mi === state.sel.m && si === state.sel.s) ? '<span class="sel">' + s + '</span>' : s;
-        body += cell;
+        body += slotStr(t);
         const isLast = (si === m.length - 1);
         if(isLast) return;
         const here = groupOf[si]; const next = groupOf[si+1];
@@ -689,7 +658,7 @@
     const lastIdx = state.measures.length - 1;
     if(state.repeats[lastIdx]?.end) body += ':|';
     else body += '|';
-    document.getElementById('abc-out').innerHTML = header + body;
+    return header + body;
   }
 
   function parseKeyDef(s){
@@ -980,9 +949,6 @@
   }
   function renderScore(){
     const selM = state.sel.m;
-    document.getElementById('meas-num').textContent = selM + 1;
-    document.getElementById('meas-pos').textContent = selM + 1;
-    document.getElementById('slot-num').textContent = state.sel.s + 1;
     const linesShown = state.viewmode ? 6 : 2;
     const measuresPerPage = MEASURES_PER_LINE * linesShown;
     const page = Math.floor(selM / measuresPerPage);
@@ -1095,24 +1061,25 @@
   }
   function selectedSlot(){ const m = state.measures[state.sel.m]; return m ? (m[state.sel.s] || null) : null; }
   function renderState(){
+    document.getElementById('meas-pos').textContent = state.sel.m + 1;
+    document.getElementById('slot-pos').textContent = state.sel.s + 1;
+    document.getElementById('info-meter').textContent = meterAt(state.sel.m);
+    document.getElementById('info-key').textContent = keyHumanLabel(keyAt(state.sel.m));
+    document.getElementById('info-clef').textContent = clefHumanLabel(clefAt(state.sel.m));
     document.getElementById('oct-val').textContent = state.octave > 0 ? '+'+state.octave : state.octave;
     const sl = selectedSlot();
-    document.querySelectorAll('#dur-pad .k').forEach(b=>{ const activeD = sl ? sl.dur : 1; b.classList.toggle('active', parseFloat(b.dataset.dur) === activeD); });
-    document.querySelectorAll('#alt-pad .k').forEach(b=>{ const activeAcc = (sl && sl.type==='note') ? (sl.acc || '') : ''; b.classList.toggle('active', activeAcc === b.dataset.acc && b.dataset.acc !== ''); });
-    document.getElementById('dot-btn').classList.toggle('active', !!(sl && sl.dot));
-    const m = state.sel.m;
-    const sigLabel = (s)=> s === 0 ? '0' : (s>0 ? '+'+s : ''+s);
-    document.getElementById('ctx-info').innerHTML = 'M:<b>' + meterAt(m) + '</b> L:<b>' + state.pieceUnit + '</b> K:<b>' + sigLabel(keyAt(m)) + '</b>';
+    document.querySelectorAll('[data-dur]').forEach(b=>{ const activeD = sl ? sl.dur : 1; b.classList.toggle('active', parseFloat(b.dataset.dur) === activeD); });
+    document.querySelectorAll('[data-acc]').forEach(b=>{ const activeAcc = (sl && sl.type==='note') ? (sl.acc || '') : ''; b.classList.toggle('active', activeAcc === b.dataset.acc && b.dataset.acc !== ''); });
+    const dotBtn = document.getElementById('dot-btn');
+    if(dotBtn) dotBtn.classList.toggle('active', !!(sl && sl.dot));
     document.getElementById('tempo-v').textContent = state.tempo;
-    document.getElementById('tempo-v-2').textContent = state.tempo;
     document.getElementById('vol-v').textContent = state.volume;
-    document.getElementById('vol-v-2').textContent = state.volume;
-    document.getElementById('btn-play').textContent = audio.playing ? '⏸' : '▶';
+    document.getElementById('btn-play').textContent = audio.playing ? '⏸ Pause' : '▶ Play';
     document.getElementById('btn-undo').disabled = (history.pos <= 0);
     document.getElementById('btn-redo').disabled = (history.pos >= history.stack.length - 1);
-    document.getElementById('btn-viewmode').textContent = state.viewmode ? '✎' : '👁';
+    document.getElementById('btn-viewmode').textContent = state.viewmode ? '✎ Édit' : '👁 Vue';
   }
-  function render(){ renderScore(); renderAbc(); renderState(); }
+  function render(){ renderScore(); renderState(); }
 
   function selectNext(){ let {m, s} = state.sel; if(s + 1 < state.measures[m].length){ state.sel = {m, s:s+1}; render(); return; } if(m + 1 < state.measures.length){ state.sel = {m:m+1, s:0}; render(); return; } state.measures.push(buildEmptyMeasure(meterAt(m))); state.sel = {m: state.measures.length - 1, s: 0}; pushHistory(); render(); }
   function selectPrev(){ let {m, s} = state.sel; if(s > 0){ state.sel = {m, s:s-1}; render(); return; } if(m > 0){ state.sel = {m:m-1, s: state.measures[m-1].length - 1}; render(); return; } }
@@ -1155,7 +1122,7 @@
   function playSchedule(){
     ensureAudio(); stopPlayback(false);
     audio.playing = true;
-    document.getElementById('btn-play').textContent = '⏸';
+    document.getElementById('btn-play').textContent = '⏸ Pause';
     const startTime = audio.ctx.currentTime + 0.05;
     let t = startTime; const qDur = 60 / state.tempo;
     const order = expandForPlayback();
@@ -1192,7 +1159,7 @@
     }
     audio.raf = requestAnimationFrame(tick);
   }
-  function stopPlayback(refresh){ if(audio.raf){ cancelAnimationFrame(audio.raf); audio.raf = null; } audio.scheduled.forEach(ev=>{ if(ev.stop) try{ev.stop();}catch(_){} }); audio.scheduled = []; audio.playing = false; document.getElementById('btn-play').textContent = '▶'; if(refresh) render(); }
+  function stopPlayback(refresh){ if(audio.raf){ cancelAnimationFrame(audio.raf); audio.raf = null; } audio.scheduled.forEach(ev=>{ if(ev.stop) try{ev.stop();}catch(_){} }); audio.scheduled = []; audio.playing = false; document.getElementById('btn-play').textContent = '▶ Play'; if(refresh) render(); }
 
   function setNoteAtSelection(noteName){
     const sl = selectedSlot(); if(!sl) return;
@@ -1242,36 +1209,58 @@
     pushHistory(); render();
   }
 
-  const notesCol = document.getElementById('notes-col');
-  NOTES.forEach(n=>{ const b = document.createElement('button'); b.className = 'k'; b.innerHTML = n.label + '<span class="sub">' + n.sub + '</span>'; b.addEventListener('click', ()=> setNoteAtSelection(n.n)); notesCol.appendChild(b); });
-  const durPad = document.getElementById('dur-pad');
-  DURATIONS.forEach(d=>{ const b = document.createElement('button'); b.className = 'k symbol'; b.dataset.dur = d.d; b.textContent = d.label; b.addEventListener('click', ()=> setDurAtSelection(d.d)); durPad.appendChild(b); });
-  const altPad = document.getElementById('alt-pad');
-  [{label:'♯',acc:'^'},{label:'♭',acc:'_'},{label:'♮',acc:'='}].forEach(a=>{ const b = document.createElement('button'); b.className = 'k symbol'; b.dataset.acc = a.acc; b.textContent = a.label; b.addEventListener('click', ()=> toggleAccAtSelection(a.acc)); altPad.appendChild(b); });
-  document.getElementById('dot-btn').addEventListener('click', toggleDotAtSelection);
+  // --- Construction des boutons dynamiques ---
+  // Ligne notes : ◀ Do Ré Mi Fa Sol La Si ▶
+  const notesRow = document.getElementById('notes-row');
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'k'; prevBtn.id = 'cur-prev'; prevBtn.textContent = '◀';
+  prevBtn.addEventListener('click', selectPrev);
+  notesRow.appendChild(prevBtn);
+  NOTES.forEach(n=>{
+    const b = document.createElement('button');
+    b.className = 'k';
+    b.innerHTML = n.label + '<span class="sub">' + n.sub + '</span>';
+    b.addEventListener('click', ()=> setNoteAtSelection(n.n));
+    notesRow.appendChild(b);
+  });
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'k'; nextBtn.id = 'cur-next'; nextBtn.textContent = '▶';
+  nextBtn.addEventListener('click', selectNext);
+  notesRow.appendChild(nextBtn);
+
+  // Ligne durées + altérations + point (8 boutons sur une ligne)
+  const durAltRow = document.getElementById('dur-alt-row');
+  DURATIONS.forEach(d=>{
+    const b = document.createElement('button');
+    b.className = 'k symbol'; b.dataset.dur = d.d; b.textContent = d.label;
+    b.addEventListener('click', ()=> setDurAtSelection(d.d));
+    durAltRow.appendChild(b);
+  });
+  [{label:'♯',acc:'^'},{label:'♭',acc:'_'},{label:'♮',acc:'='}].forEach(a=>{
+    const b = document.createElement('button');
+    b.className = 'k symbol'; b.dataset.acc = a.acc; b.textContent = a.label;
+    b.addEventListener('click', ()=> toggleAccAtSelection(a.acc));
+    durAltRow.appendChild(b);
+  });
+  const dotBtn = document.createElement('button');
+  dotBtn.className = 'k symbol'; dotBtn.id = 'dot-btn'; dotBtn.textContent = '♩·';
+  dotBtn.addEventListener('click', toggleDotAtSelection);
+  durAltRow.appendChild(dotBtn);
+
   document.getElementById('oct-up').addEventListener('click', ()=> changeOctave(+1));
   document.getElementById('oct-down').addEventListener('click', ()=> changeOctave(-1));
-  document.getElementById('cur-prev').addEventListener('click', selectPrev);
-  document.getElementById('cur-next').addEventListener('click', selectNext);
   document.getElementById('meas-prev').addEventListener('click', ()=> jumpMeasure(-1));
   document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
-
-  function bindBoth(id1, id2, handler){
-    const el1 = document.getElementById(id1);
-    const el2 = id2 ? document.getElementById(id2) : null;
-    if(el1) el1.addEventListener('click', handler);
-    if(el2) el2.addEventListener('click', handler);
-  }
-  bindBoth('btn-rest', 'btn-rest-2', setRestAtSelection);
+  document.getElementById('btn-rest').addEventListener('click', setRestAtSelection);
   document.getElementById('btn-del').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
   document.getElementById('btn-undo').addEventListener('click', undo);
   document.getElementById('btn-redo').addEventListener('click', redo);
-  bindBoth('btn-trans-up', 'btn-trans-up-2', ()=>{ transposePiece(+1); pushHistory(); render(); });
-  bindBoth('btn-trans-down', 'btn-trans-down-2', ()=>{ transposePiece(-1); pushHistory(); render(); });
-  bindBoth('btn-tie', 'btn-tie-2', ()=>{ const sl = selectedSlot(); if(sl){ sl.tieToNext = !sl.tieToNext; pushHistory(); render(); } });
-  bindBoth('btn-disarm', 'btn-disarm-2', ()=>{ disarmKey(); pushHistory(); render(); });
+  document.getElementById('btn-trans-up').addEventListener('click', ()=>{ transposePiece(+1); pushHistory(); render(); });
+  document.getElementById('btn-trans-down').addEventListener('click', ()=>{ transposePiece(-1); pushHistory(); render(); });
+  document.getElementById('btn-tie').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ sl.tieToNext = !sl.tieToNext; pushHistory(); render(); } });
+  document.getElementById('btn-disarm').addEventListener('click', ()=>{ disarmKey(); pushHistory(); render(); });
 
-  bindBoth('btn-tuplet', 'btn-tuplet-2', ()=>{
+  document.getElementById('btn-tuplet').addEventListener('click', ()=>{
     const sl = selectedSlot(); if(!sl) return;
     const meas = state.measures[state.sel.m]; const idx = state.sel.s;
     if(sl.tuplet){
@@ -1307,7 +1296,7 @@
     let count = 1; let side = 'right';
     function controls(){
       return ('<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small>' +
-              '<div class="grid2" id="side-pick"><button class="k" data-side="left">À gauche</button><button class="k" data-side="right">À droite</button></div>' +
+              '<div class="row-grid" style="grid-template-columns: 1fr 1fr;" id="side-pick"><button class="k" data-side="left">À gauche</button><button class="k" data-side="right">À droite</button></div>' +
               '<small>Nombre</small>' +
               '<div class="stepper"><button class="k" id="cnt-d">−</button><div class="val"><b id="cnt-v">'+count+'</b></div><button class="k" id="cnt-u">+</button></div>');
     }
@@ -1343,49 +1332,14 @@
   document.getElementById('btn-volta1').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 1) ? 0 : 1; pushHistory(); render(); });
   document.getElementById('btn-volta2').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 2) ? 0 : 2; pushHistory(); render(); });
 
-  bindBoth('vol-u', 'vol-u-2', ()=>{ state.volume = Math.min(100, state.volume + 10); ensureAudio(); render(); });
-  bindBoth('vol-d', 'vol-d-2', ()=>{ state.volume = Math.max(0, state.volume - 10); ensureAudio(); render(); });
-  bindBoth('tempo-u', 'tempo-u-2', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
-  bindBoth('tempo-d', 'tempo-d-2', ()=>{ state.tempo = Math.max(30, state.tempo - 5); render(); });
+  document.getElementById('vol-u').addEventListener('click', ()=>{ state.volume = Math.min(100, state.volume + 10); ensureAudio(); render(); });
+  document.getElementById('vol-d').addEventListener('click', ()=>{ state.volume = Math.max(0, state.volume - 10); ensureAudio(); render(); });
+  document.getElementById('tempo-u').addEventListener('click', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
+  document.getElementById('tempo-d').addEventListener('click', ()=>{ state.tempo = Math.max(30, state.tempo - 5); render(); });
   document.getElementById('btn-play').addEventListener('click', ()=>{ if(audio.playing) stopPlayback(true); else playSchedule(); });
   document.getElementById('btn-stop').addEventListener('click', ()=> stopPlayback(true));
   document.getElementById('btn-viewmode').addEventListener('click', ()=>{ state.viewmode = !state.viewmode; document.getElementById('app').classList.toggle('viewmode', state.viewmode); render(); });
   document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶✕' : '⛶'; });
-  document.getElementById('abc-toggle').addEventListener('click', ()=>{ state.abcCollapsed = !state.abcCollapsed; document.getElementById('abc-out').classList.toggle('collapsed', state.abcCollapsed); document.getElementById('abc-toggle-icon').textContent = state.abcCollapsed ? '▶' : '▼'; });
-
-  bindBoth('btn-saves', 'btn-saves-2', ()=>{
-    const saves = getSaves();
-    let listHtml = '<div class="save-list">';
-    if(saves.length === 0) listHtml += '<div class="item" style="color:#888780; cursor:default;">Aucune sauvegarde</div>';
-    else saves.forEach((s, i)=> listHtml += '<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');
-    listHtml += '</div>';
-    listHtml += '<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';
-    openPanel({ title:'Mémoires', body: listHtml, hideActions:true, extraButtons:['Annuler','Enregistrer'],
-      onMount:()=>{
-        document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{
-          el.addEventListener('click', (ev)=>{
-            if(ev.target.dataset.del !== undefined){ const idx = parseInt(ev.target.dataset.del, 10); const saves = getSaves(); saves.splice(idx,1); setSaves(saves); closePanel(); return; }
-            const idx = parseInt(el.dataset.idx, 10); const saves = getSaves();
-            if(saves[idx] && importStateJson(saves[idx].data)) closePanel();
-          });
-        });
-      },
-      onExtra:(which)=>{
-        if(which === 'Annuler'){ closePanel(); return; }
-        const name = document.getElementById('sn').value.trim() || 'Morceau';
-        const saves = getSaves(); const existing = saves.findIndex(s=> s.name === name);
-        const entry = { name, data: exportState(), date: new Date().toISOString() };
-        if(existing >= 0) saves[existing] = entry; else saves.push(entry);
-        setSaves(saves); closePanel();
-      },
-    });
-  });
-  bindBoth('btn-export', 'btn-export-2', ()=>{
-    const abc = document.getElementById('abc-out').textContent;
-    openPanel({ title:'Code ABC', body:'<textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>', hideActions:true, extraButtons:['Fermer','Copier'],
-      onMount:()=>{ document.getElementById('exp').select(); },
-      onExtra:(which)=>{ if(which === 'Copier'){ const ta = document.getElementById('exp'); ta.select(); try { document.execCommand('copy'); } catch(_){} } closePanel(); }, });
-  });
 
   document.getElementById('btn-chord').addEventListener('click', ()=>{
     const sl = selectedSlot();
@@ -1396,7 +1350,7 @@
     function controls(){
       let html = '<small>Fondamentale</small><div class="root-grid">';
       roots.forEach(r => html += '<button class="k" data-root="'+r+'">'+r+'</button>');
-      html += '</div><small>Altération</small><div class="grid3"><button class="k" data-acc="">♮</button><button class="k" data-acc="#">♯</button><button class="k" data-acc="b">♭</button></div>';
+      html += '</div><small>Altération</small><div class="row-grid" style="grid-template-columns: 1fr 1fr 1fr;"><button class="k" data-acc="">♮</button><button class="k" data-acc="#">♯</button><button class="k" data-acc="b">♭</button></div>';
       html += '<small>Qualité</small><div class="chord-grid">';
       CHORD_QUALITIES.forEach(q => html += '<button class="k" data-qual="'+q+'">'+(q || 'maj')+'</button>');
       html += '</div><small>Aperçu : <b id="chord-preview">'+root+acc+qual+'</b></small>';
@@ -1428,7 +1382,7 @@
     if(!sl || sl.type !== 'note'){ alert('Sélectionnez une note'); return; }
     sl.orn = sl.orn || [];
     function controls(){
-      let html = '<small>Cliquez pour activer/désactiver</small><div class="grid3">';
+      let html = '<small>Cliquez pour activer/désactiver</small><div class="row-grid" style="grid-template-columns: 1fr 1fr 1fr;">';
       ORNAMENTS.forEach(o => html += '<button class="k tiny" data-orn="'+o.code+'">'+o.label+'</button>');
       html += '</div><small>Actifs : <b id="orn-preview">'+(sl.orn.length ? sl.orn.join(' ') : '(aucun)')+'</b></small>';
       return html;
@@ -1451,7 +1405,7 @@
   });
 
   document.getElementById('btn-save-file').addEventListener('click', ()=>{
-    const abc = document.getElementById('abc-out').textContent;
+    const abc = buildAbcText();
     const blob = new Blob([abc], {type:'text/plain;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1484,6 +1438,39 @@
   function exportState(){ return JSON.stringify({ headers: state.headers, pieceMeter: state.pieceMeter, pieceUnit: state.pieceUnit, pieceKeySig: state.pieceKeySig, pieceClef: state.pieceClef, measures: state.measures, timeChanges: state.timeChanges, keyChanges: state.keyChanges, clefChanges: state.clefChanges, repeats: state.repeats, tempo: state.tempo }); }
   function importStateJson(json){ try { const o = JSON.parse(json); Object.assign(state, o); state.sel = {m:0, s:0}; state.octave = 0; pushHistory(); render(); return true; } catch(e){ return false; } }
 
+  document.getElementById('btn-saves').addEventListener('click', ()=>{
+    const saves = getSaves();
+    let listHtml = '<div class="save-list">';
+    if(saves.length === 0) listHtml += '<div class="item" style="color:#888780; cursor:default;">Aucune sauvegarde</div>';
+    else saves.forEach((s, i)=> listHtml += '<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');
+    listHtml += '</div>';
+    listHtml += '<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';
+    openPanel({ title:'Mémoires', body: listHtml, hideActions:true, extraButtons:['Annuler','Enregistrer'],
+      onMount:()=>{
+        document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{
+          el.addEventListener('click', (ev)=>{
+            if(ev.target.dataset.del !== undefined){ const idx = parseInt(ev.target.dataset.del, 10); const saves = getSaves(); saves.splice(idx,1); setSaves(saves); closePanel(); return; }
+            const idx = parseInt(el.dataset.idx, 10); const saves = getSaves();
+            if(saves[idx] && importStateJson(saves[idx].data)) closePanel();
+          });
+        });
+      },
+      onExtra:(which)=>{
+        if(which === 'Annuler'){ closePanel(); return; }
+        const name = document.getElementById('sn').value.trim() || 'Morceau';
+        const saves = getSaves(); const existing = saves.findIndex(s=> s.name === name);
+        const entry = { name, data: exportState(), date: new Date().toISOString() };
+        if(existing >= 0) saves[existing] = entry; else saves.push(entry);
+        setSaves(saves); closePanel();
+      },
+    });
+  });
+  document.getElementById('btn-export').addEventListener('click', ()=>{
+    const abc = buildAbcText();
+    openPanel({ title:'Code ABC', body:'<textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>', hideActions:true, extraButtons:['Fermer','Copier'],
+      onMount:()=>{ document.getElementById('exp').select(); },
+      onExtra:(which)=>{ if(which === 'Copier'){ const ta = document.getElementById('exp'); ta.select(); try { document.execCommand('copy'); } catch(_){} } closePanel(); }, });
+  });
   document.getElementById('btn-new').addEventListener('click', ()=>{
     openPanel({ title:'Nouveau', body:'<small>Effacer le morceau ?</small>', hideActions:true, extraButtons:['Annuler','Effacer'],
       onExtra:(which)=>{ if(which === 'Effacer'){ state.headers = {X:'1', T:''}; state.pieceMeter='4/4'; state.pieceUnit='1/4'; state.pieceKeySig=0; state.pieceClef='treble'; rebuildMeasures(); pushHistory(); render(); } closePanel(); }, });
@@ -1499,7 +1486,7 @@
     panelTitle.textContent = title;
     let extraHtml = '';
     if(extraButtons && extraButtons.length){
-      extraHtml = '<div class="actions" style="margin-top:6px;">' + extraButtons.map((b,i)=> '<button class="k '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('') + '</div>';
+      extraHtml = '<div class="actions" style="margin-top:8px;">' + extraButtons.map((b,i)=> '<button class="k '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('') + '</div>';
     }
     panelBody.innerHTML = body + extraHtml;
     currentOnOk = onOk || null; currentOnExtra = onExtra || null;
@@ -1529,7 +1516,7 @@
     });
   }
 
-  document.querySelectorAll('[data-hdr="M"]').forEach(el => el.addEventListener('click', ()=>{
+  document.querySelector('[data-hdr="M"]').addEventListener('click', ()=>{
     const cur = meterAt(state.sel.m); const {num, den} = parseMeter(cur);
     let n = num, d = den; const denValues = [1,2,4,8,16];
     let unitDenom = parseInt(state.pieceUnit.split('/')[1], 10);
@@ -1564,72 +1551,33 @@
         state.sel = {m: state.sel.m, s: 0};
       },
     });
-  }));
+  });
 
-  document.querySelectorAll('[data-hdr="K"]').forEach(el => el.addEventListener('click', ()=>{
+  document.querySelector('[data-hdr="K"]').addEventListener('click', ()=>{
     let sig = keyAt(state.sel.m);
-    const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + '#'; return Math.abs(s) + 'b'; };
-    function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭−</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯+</button></div>'); }
+    const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + ' ♯'; return Math.abs(s) + ' ♭'; };
+    function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭ −</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯ +</button></div>'); }
     controls.mount = function(){ const upd = ()=>{ document.getElementById('sig-v').textContent = labelOf(sig); }; document.getElementById('sig-u').addEventListener('click', ()=>{ sig = Math.min(7, sig+1); upd(); }); document.getElementById('sig-d').addEventListener('click', ()=>{ sig = Math.max(-7, sig-1); upd(); }); };
     scopePanel({ title:'Armure', renderControls: controls,
       applyPiece: ()=>{ state.pieceKeySig = sig; if(state.sel.m === 0) delete state.keyChanges[0]; else state.keyChanges = {}; },
       applyHere: ()=>{ if(state.sel.m === 0){ state.pieceKeySig = sig; delete state.keyChanges[0]; } else state.keyChanges[state.sel.m] = sig; }, });
-  }));
+  });
 
-  document.querySelectorAll('[data-hdr="CLEF"]').forEach(el => el.addEventListener('click', ()=>{
+  document.querySelector('[data-hdr="CLEF"]').addEventListener('click', ()=>{
     let pick = clefAt(state.sel.m);
-    function controls(){ return ('<div class="grid3" id="clef-pick"><button class="k symbol" data-clef="treble">𝄞</button><button class="k" data-clef="treble8" style="font-size:10px;">Sol-8</button><button class="k symbol" data-clef="bass">𝄢</button></div>'); }
+    function controls(){ return ('<div class="row-grid" style="grid-template-columns: 1fr 1fr 1fr;" id="clef-pick"><button class="k symbol" data-clef="treble">𝄞</button><button class="k" data-clef="treble8">Sol-8</button><button class="k symbol" data-clef="bass">𝄢</button></div>'); }
     controls.mount = function(){ const refresh = ()=>{ document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.classList.toggle('active', b.dataset.clef === pick); }); }; refresh(); document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.addEventListener('click', ()=>{ pick = b.dataset.clef; refresh(); }); }); };
     scopePanel({ title:'Clé', renderControls: controls,
       applyPiece: ()=>{ state.pieceClef = pick; if(state.sel.m === 0) delete state.clefChanges[0]; else state.clefChanges = {}; },
       applyHere: ()=>{ if(state.sel.m === 0){ state.pieceClef = pick; delete state.clefChanges[0]; } else state.clefChanges[state.sel.m] = pick; }, });
-  }));
-
-  // ⭐ Détection mode basée sur window.innerWidth (la vraie largeur du device)
-  const app = document.getElementById('app');
-  const modeTag = document.getElementById('mode-tag');
-  const wwTag = document.getElementById('ww-tag');
-  const whTag = document.getElementById('wh-tag');
-  const awTag = document.getElementById('aw-tag');
-
-  function applyMode(){
-    const ww = window.innerWidth || document.documentElement.clientWidth;
-    const wh = window.innerHeight || document.documentElement.clientHeight;
-    const aw = Math.round(app.getBoundingClientRect().width);
-    wwTag.textContent = ww;
-    whTag.textContent = wh;
-    awTag.textContent = aw;
-    let mode;
-    if(state.forcedMode){
-      mode = state.forcedMode;
-    } else {
-      // On utilise window.innerWidth (l'écran réel) plutôt que la largeur du widget
-      // car sur mobile l'iframe Claude peut faire 900 px même sur un écran de 360 px
-      if(ww < 500) mode = 'narrow';
-      else if(ww < 900) mode = 'medium';
-      else mode = 'wide';
-    }
-    app.dataset.mode = mode;
-    app.classList.toggle('compact', wh && wh < 450);
-    modeTag.innerHTML = mode + (state.forcedMode ? ' <span style="color:#c34536;">(forcé)</span>' : '');
-  }
-
-  document.getElementById('force-mode').addEventListener('click', (e)=>{
-    const modes = [null, 'narrow', 'medium', 'wide'];
-    const idx = modes.indexOf(state.forcedMode);
-    state.forcedMode = modes[(idx + 1) % modes.length];
-    e.target.textContent = state.forcedMode ? state.forcedMode : 'auto';
-    applyMode();
-    render();
   });
 
-  if(typeof ResizeObserver !== 'undefined'){
-    const ro = new ResizeObserver(()=>{ applyMode(); });
-    ro.observe(app);
+  function updateBadge(){
+    document.getElementById('ww-tag').textContent = window.innerWidth || 0;
+    document.getElementById('wh-tag').textContent = window.innerHeight || 0;
   }
-  window.addEventListener('resize', applyMode);
-  window.addEventListener('orientationchange', applyMode);
-  applyMode();
+  window.addEventListener('resize', updateBadge);
+  updateBadge();
 
   rebuildMeasures();
   pushHistory();
