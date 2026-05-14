@@ -11,6 +11,21 @@
   .abc-app.viewmode .edit-only { display: none !important; }
   .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
 
+  /* ⭐ Badge version + témoin largeur */
+  .ver-badge {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: #5f5e5a;
+    background: #ebe9e0; padding: 4px 8px; border-radius: 5px;
+    margin-bottom: 4px;
+  }
+  .ver-badge b { color: #1a1a1a; font-weight: 600; }
+  .ver-badge .force-btn {
+    background: #185fa5; color: white; border: none;
+    border-radius: 4px; padding: 3px 8px; font-size: 11px;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+
   .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 4px; }
   .abc-label { font-size: 9px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
   .score-wrap { width: 100%; aspect-ratio: 360 / 200; max-height: 240px; }
@@ -22,7 +37,6 @@
   .abc-text.collapsed { display: none; }
   .abc-text .sel { background: #fcebeb; color: #791f1f; padding: 0 1px; border-radius: 2px; }
 
-  /* Default buttons (medium/wide) */
   .abc-app button.k {
     display: block; width: 100%; height: 36px; padding: 0 4px;
     background: #ffffff; border: 1px solid #b4b2a9; border-radius: 6px;
@@ -39,7 +53,6 @@
   .abc-app button.k .sub { font-size: 9px; color: #888780; font-weight: 400; margin-left: 2px; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
 
-  /* ⭐ NARROW = grands boutons et grosse police pour mobile */
   .abc-app[data-mode="narrow"] button.k { height: 54px; line-height: 50px; font-size: 18px; padding: 0 4px; border-radius: 8px; border-width: 1.5px; }
   .abc-app[data-mode="narrow"] button.k.tiny { height: 48px; line-height: 46px; font-size: 15px; }
   .abc-app[data-mode="narrow"] button.k.symbol { font-size: 26px; }
@@ -47,14 +60,12 @@
   .abc-app[data-mode="narrow"] .row-grid { gap: 5px; margin-bottom: 5px; }
   .abc-app[data-mode="narrow"] .keypad { gap: 5px; margin-bottom: 5px; }
 
-  /* compact pour écrans plats (téléphone paysage) - ne s'applique qu'en mode narrow ou medium */
   .abc-app.compact:not([data-mode="wide"]) button.k { height: 36px; line-height: 32px; font-size: 13px; }
   .abc-app.compact:not([data-mode="wide"]) button.k.tiny { height: 32px; line-height: 28px; font-size: 12px; }
   .abc-app.compact:not([data-mode="wide"]) button.k.symbol { font-size: 18px; }
 
   .row-grid { display: grid; gap: 4px; margin-bottom: 4px; }
 
-  /* narrow (téléphone portrait) — disposition compacte sur plusieurs lignes */
   .abc-app[data-mode="narrow"] .header-row { grid-template-columns: repeat(4, 1fr); }
   .abc-app[data-mode="narrow"] .header-row-2 { grid-template-columns: repeat(3, 1fr); display: grid; gap: 5px; margin-bottom: 5px; }
   .abc-app[data-mode="narrow"] .file-row { grid-template-columns: repeat(3, 1fr); }
@@ -84,7 +95,6 @@
   .abc-app[data-mode="wide"] .undo-row-2,
   .abc-app[data-mode="wide"] .extra-row-2 { display: none; }
 
-  /* Bottom bar */
   .bottom-bar {
     position: sticky; bottom: 0; background: #f5f4ef;
     border-top: 1px solid #d8d6ce; padding: 5px 0 0 0;
@@ -110,7 +120,6 @@
   .abc-app[data-mode="narrow"] .bottom-bar .center-cell b,
   .abc-app[data-mode="narrow"] .bottom-bar-2 .center-cell b { font-size: 18px; }
 
-  /* Keypad */
   .keypad { display: grid; gap: 4px; align-items: start; margin-bottom: 4px; }
   .abc-app[data-mode="narrow"] .keypad { grid-template-columns: 1fr; }
   .abc-app[data-mode="medium"] .keypad { grid-template-columns: 56px 1fr 96px; }
@@ -122,7 +131,6 @@
   .abc-app[data-mode="narrow"] .col > .k { margin-bottom: 5px; }
   .abc-app[data-mode="narrow"] .center-pad > * { margin-bottom: 5px; }
 
-  /* narrow: notes en grille horizontale, durées+altérations idem */
   .abc-app[data-mode="narrow"] #notes-col {
     display: grid; grid-template-columns: repeat(8, 1fr);
     gap: 5px; align-items: center;
@@ -136,12 +144,10 @@
   .abc-app[data-mode="narrow"] .col-right .grid2,
   .abc-app[data-mode="narrow"] .col-right .grid3 { display: contents; }
 
-  /* ⭐ Mes-ctrl revu : numéro en haut, boutons grands */
   .meas-ctrl {
     display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 4px; align-items: center; background: #ebe9e0;
     padding: 4px; border-radius: 6px;
-    position: relative;
   }
   .meas-ctrl .label {
     grid-column: 1 / -1; font-size: 11px; color: #5f5e5a;
@@ -199,6 +205,12 @@
 </style>
 
 <div class="abc-app" id="app" data-mode="medium">
+  <!-- Badge version + témoin -->
+  <div class="ver-badge">
+    <span>v<b>27</b> · mode <b id="mode-tag">…</b> · L=<b id="w-tag">0</b> H=<b id="h-tag">0</b></span>
+    <button class="force-btn" id="force-mode">narrow</button>
+  </div>
+
   <div class="panel" id="panel">
     <div class="title" id="panel-title">Édition</div>
     <div id="panel-body"></div>
@@ -351,6 +363,7 @@
     timeChanges: {}, keyChanges: {}, clefChanges: {}, repeats: {},
     tempo: 100, volume: 60,
     abcCollapsed: false, fullscreen: false, viewmode: false,
+    forcedMode: null,
   };
 
   const history = { stack: [], pos: -1, max: 100 };
@@ -1567,26 +1580,45 @@
       applyHere: ()=>{ if(state.sel.m === 0){ state.pieceClef = pick; delete state.clefChanges[0]; } else state.clefChanges[state.sel.m] = pick; }, });
   }));
 
+  // ⭐ Détection mode avec témoins + bouton force
   const app = document.getElementById('app');
-  function setMode(width, height){
+  const modeTag = document.getElementById('mode-tag');
+  const wTag = document.getElementById('w-tag');
+  const hTag = document.getElementById('h-tag');
+
+  function applyMode(){
+    const w = Math.round(app.getBoundingClientRect().width);
+    const h = window.innerHeight;
+    wTag.textContent = w;
+    hTag.textContent = h;
     let mode;
-    if(width < 500) mode = 'narrow';
-    else if(width < 900) mode = 'medium';
-    else mode = 'wide';
-    if(app.dataset.mode !== mode) app.dataset.mode = mode;
-    app.classList.toggle('compact', height && height < 450);
+    if(state.forcedMode){
+      mode = state.forcedMode;
+    } else {
+      if(w < 500) mode = 'narrow';
+      else if(w < 900) mode = 'medium';
+      else mode = 'wide';
+    }
+    app.dataset.mode = mode;
+    app.classList.toggle('compact', h && h < 450);
+    modeTag.innerHTML = mode + (state.forcedMode ? ' <span style="color:#c34536;">(forcé)</span>' : '');
   }
+
+  document.getElementById('force-mode').addEventListener('click', (e)=>{
+    const modes = [null, 'narrow', 'medium', 'wide'];
+    const idx = modes.indexOf(state.forcedMode);
+    state.forcedMode = modes[(idx + 1) % modes.length];
+    e.target.textContent = state.forcedMode ? state.forcedMode : 'auto';
+    applyMode();
+    render();
+  });
+
   if(typeof ResizeObserver !== 'undefined'){
-    const ro = new ResizeObserver((entries)=>{
-      for(const e of entries){ setMode(e.contentRect.width, window.innerHeight); }
-    });
+    const ro = new ResizeObserver(()=>{ applyMode(); });
     ro.observe(app);
-  } else {
-    function checkW(){ setMode(app.getBoundingClientRect().width, window.innerHeight); }
-    window.addEventListener('resize', checkW);
-    checkW();
   }
-  window.addEventListener('resize', ()=>{ setMode(app.getBoundingClientRect().width, window.innerHeight); });
+  window.addEventListener('resize', applyMode);
+  applyMode();
 
   rebuildMeasures();
   pushHistory();
