@@ -8,128 +8,116 @@
     position: relative; overflow-x: hidden;
   }
   .abc-app.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 9999; overflow-y: auto; }
-  .abc-app.viewmode .edit-only { display: none !important; }
-  .abc-app.viewmode .score-wrap { aspect-ratio: 360 / 320; max-height: none; }
 
   .ver-badge {
     display: flex; justify-content: space-between; align-items: center;
     font-size: 13px; color: #5f5e5a;
     background: #ebe9e0; padding: 5px 10px; border-radius: 6px;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
   }
-  .ver-badge b { color: #1a1a1a; font-weight: 600; }
+  .ver-badge b { color: #1a1a1a; font-weight: 700; }
 
-  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 6px; }
-  .abc-label { font-size: 11px; color: #888780; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 3px; }
+  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 5px; }
   .score-wrap { width: 100%; aspect-ratio: 360 / 200; max-height: 240px; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
 
-  .abc-app button.k {
-    display: block; width: 100%; height: 70px; padding: 0 4px;
-    background: #ffffff; border: 2px solid #b4b2a9; border-radius: 10px;
-    font-family: inherit; font-size: 24px; font-weight: 600; color: #1a1a1a;
-    cursor: pointer; text-align: center; line-height: 1;
-    -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
-    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    display: flex; align-items: center; justify-content: center; gap: 4px;
-  }
-  .abc-app button.k:active { background: #e8e6df; }
-  .abc-app button.k:disabled { color: #bbb8a8; background: #f3f1ea; cursor: not-allowed; }
-  .abc-app button.k.active { background: #cfe5fa; border-color: #185fa5; color: #0c447c; }
-  .abc-app button.k.symbol { font-size: 34px; font-family: "Times New Roman", serif; }
-  .abc-app button.k.tiny { height: 60px; font-size: 19px; }
-  .abc-app button.k .sub { font-size: 16px; color: #888780; font-weight: 500; }
-  .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
-
-  .row-grid { display: grid; gap: 6px; margin-bottom: 6px; }
-
-  /* Ligne 1 : Plein écran, X:, Titre */
-  .header-row { grid-template-columns: 1fr 1fr 1fr; }
-  /* Ligne 2 : Rythme, Armure, Clé */
-  .header-row-2 { grid-template-columns: 1fr 1fr 1fr; }
-  /* Ligne 3 : Désarmer K→# */
-  .header-row-3 { grid-template-columns: 1fr; }
-  /* Fichier : Nouv, Ouv, Sauv */
-  .file-row { grid-template-columns: 1fr 1fr 1fr; }
-  /* Mémo + ABC */
-  .file-row-2 { grid-template-columns: 1fr 1fr; }
-  /* Édition : Suppr, Annul, Refaire */
-  .undo-row { grid-template-columns: 1fr 1fr 1fr; }
-  /* Transp -, +, 3:2 */
-  .undo-row-2 { grid-template-columns: 1fr 1fr 1fr; }
-  /* Accord, Ornement */
-  .extra-row { grid-template-columns: 1fr 1fr; }
-  /* Liaison, Silence */
-  .extra-row-2 { grid-template-columns: 1fr 1fr; }
-  /* Reprises 𝄆 𝄇 |1 |2 */
-  .repeat-row { grid-template-columns: 1fr 1fr 1fr 1fr; }
-
-  /* Bandes infos contextuelles */
   .ctx-card {
     background: #ebe9e0; border: 1px solid #d8d6ce; border-radius: 8px;
-    padding: 8px 10px; margin-bottom: 6px;
+    padding: 7px 10px; margin-bottom: 6px;
     font-size: 18px; color: #1a1a1a; line-height: 1.4;
   }
   .ctx-card b { color: #185fa5; font-weight: 700; }
 
-  /* Octave : -, val, + */
+  /* === Bouton générique (GROS) === */
+  .abc-app button.k {
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+    width: 100%; height: 78px; padding: 0 4px;
+    background: #ffffff; border: 2px solid #b4b2a9; border-radius: 12px;
+    font-family: inherit; font-size: 28px; font-weight: 700; color: #1a1a1a;
+    cursor: pointer; text-align: center; line-height: 1;
+    -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
+    min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .abc-app button.k:active { background: #e8e6df; }
+  .abc-app button.k:disabled { color: #bbb8a8; background: #f3f1ea; cursor: not-allowed; }
+  .abc-app button.k.active { background: #cfe5fa; border-color: #185fa5; color: #0c447c; }
+  .abc-app button.k.symbol { font-size: 42px; font-family: "Times New Roman", serif; }
+  .abc-app button.k .sub { font-size: 18px; color: #888780; font-weight: 600; }
+  .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
+  .abc-app button.k.small { height: 58px; font-size: 20px; font-weight: 600; border-radius: 10px; }
+
+  .row-grid { display: grid; gap: 6px; margin-bottom: 6px; }
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  /* === Barre de navigation persistante === */
+  .nav-bar {
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 6px; margin-bottom: 6px;
+    background: #fdf1d8; border: 2px solid #e2b840; padding: 6px;
+    border-radius: 12px;
+  }
+  .nav-bar .k {
+    background: #fffaee; border-color: #e2b840;
+    font-size: 26px; height: 78px;
+  }
+  .nav-bar .k:active { background: #f5e2a8; }
+
+  /* === Onglets === */
+  .tabs {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 3px; margin-bottom: 6px;
+    border-bottom: 2px solid #b4b2a9; padding-bottom: 0;
+  }
+  .tab {
+    height: 54px;
+    background: #ebe9e0; border: 1.5px solid #b4b2a9; border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    font-family: inherit; font-size: 16px; font-weight: 700; color: #5f5e5a;
+    cursor: pointer; padding: 0 4px;
+    -webkit-tap-highlight-color: transparent;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tab.active {
+    background: #ffffff; color: #0c447c; border-color: #185fa5;
+    margin-bottom: -2px; padding-bottom: 2px; font-weight: 700;
+  }
+  .tab:active { background: #d6d4cb; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* === Octave row (utilisé dans onglet Notes) === */
   .oct-row {
     display: grid; grid-template-columns: 1fr 1.4fr 1fr;
     gap: 6px; margin-bottom: 6px;
-    background: #ebe9e0; padding: 6px; border-radius: 10px;
+    background: #ebe9e0; padding: 6px; border-radius: 12px;
     align-items: center;
   }
   .oct-row .label {
-    font-size: 20px; color: #1a1a1a; text-align: center; font-weight: 600;
+    font-size: 22px; color: #1a1a1a; text-align: center; font-weight: 700;
   }
-  .oct-row .label b { color: #185fa5; font-size: 28px; margin-left: 4px; }
+  .oct-row .label b { color: #185fa5; font-size: 32px; margin-left: 6px; }
 
-  /* Mesure : -, ◀, ▶, + tous même largeur */
-  .meas-row {
-    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 6px; margin-bottom: 6px;
-    background: #ebe9e0; padding: 6px; border-radius: 10px;
-  }
-
-  /* Notes : flèche gauche, 7 notes, flèche droite (9 colonnes) */
-  .notes-row {
-    display: grid; grid-template-columns: 0.8fr repeat(7, 1fr) 0.8fr;
-    gap: 4px; margin-bottom: 6px;
-  }
-  .notes-row .k {
-    flex-direction: column; gap: 0; font-size: 22px;
-  }
-  .notes-row .k .sub { font-size: 13px; margin: 0; }
-
-  /* Durées + altérations + point sur une seule ligne (8 colonnes) */
-  .dur-row {
-    display: grid; grid-template-columns: repeat(8, 1fr);
-    gap: 4px; margin-bottom: 6px;
-  }
-  .dur-row .k.symbol { font-size: 30px; }
-
-  /* Lecture en bas : Play, Stop, Vue, Vol-, val, Vol+, Tempo-, val, Tempo+ */
-  .play-row {
-    position: sticky; bottom: 0; background: #f5f4ef;
-    border-top: 2px solid #d8d6ce; padding: 6px 0 0 0;
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px; align-items: center; z-index: 10; margin-top: 8px;
-  }
-  .volume-row, .tempo-row {
+  /* === Volume / Tempo combinés (onglet Play) === */
+  .control-row {
     display: grid; grid-template-columns: 1fr 1.4fr 1fr;
-    gap: 6px; margin-top: 6px;
-    background: #ebe9e0; padding: 6px; border-radius: 10px;
+    gap: 6px; margin-bottom: 6px;
+    background: #ebe9e0; padding: 6px; border-radius: 12px;
     align-items: center;
   }
-  .volume-row .label, .tempo-row .label {
-    font-size: 18px; color: #1a1a1a; text-align: center; font-weight: 600;
+  .control-row .label {
+    font-size: 22px; color: #1a1a1a; text-align: center; font-weight: 700;
   }
-  .volume-row .label b, .tempo-row .label b {
-    color: #185fa5; font-size: 26px; margin-left: 4px;
+  .control-row .label b {
+    color: #185fa5; font-size: 30px; margin-left: 4px;
   }
 
+  /* === Panel modal === */
   .panel {
-    background: #e6f1fb; border: 2px solid #378add; border-radius: 10px;
+    background: #e6f1fb; border: 2px solid #378add; border-radius: 12px;
     padding: 10px; margin-bottom: 8px; display: none;
     max-height: 75vh; overflow-y: auto;
   }
@@ -178,7 +166,6 @@
     display: flex; justify-content: space-between; align-items: center;
     font-size: 18px; cursor: pointer;
   }
-  .panel .save-list .item:hover { background: #f1efe8; }
   .panel .save-list .item .del {
     color: #c34536; font-size: 22px; padding: 0 10px; cursor: pointer;
   }
@@ -190,7 +177,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v29</b></span>
+    <span>Éditeur ABC <b>v30</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -198,8 +185,8 @@
     <div class="title" id="panel-title">Édition</div>
     <div id="panel-body"></div>
     <div class="actions">
-      <button class="k" id="panel-cancel">Annuler</button>
-      <button class="k primary" id="panel-ok">OK</button>
+      <button class="k small" id="panel-cancel">Annuler</button>
+      <button class="k small primary" id="panel-ok">OK</button>
     </div>
   </div>
   <input type="file" id="file-input" accept=".abc,text/plain" style="display:none;"/>
@@ -208,106 +195,138 @@
     <div class="score-wrap" id="score"></div>
   </div>
 
-  <!-- Bandeau contextuel info-->
-  <div class="ctx-card edit-only">
+  <!-- Bandeau infos contextuelles -->
+  <div class="ctx-card">
     <div>Mesure <b id="meas-pos">1</b> · slot <b id="slot-pos">1</b></div>
     <div>Rythmique : <b id="info-meter">4/4</b> · Armure : <b id="info-key">0</b> · Clé : <b id="info-clef">Sol</b></div>
   </div>
 
-  <!-- Ligne 1: Plein écran, X, Titre -->
-  <div class="row-grid header-row edit-only">
-    <button class="k tiny" id="btn-fs">⛶</button>
-    <button class="k tiny" data-hdr="X">X:</button>
-    <button class="k tiny" data-hdr="T">Titre</button>
-  </div>
-  <!-- Ligne 2: Rythme, Armure, Clé -->
-  <div class="row-grid header-row-2 edit-only">
-    <button class="k tiny" data-hdr="M">Rythme</button>
-    <button class="k tiny" data-hdr="K">Armure</button>
-    <button class="k tiny" data-hdr="CLEF">Clé</button>
-  </div>
-  <!-- Ligne 3: Désarmer -->
-  <div class="row-grid header-row-3 edit-only">
-    <button class="k tiny" id="btn-disarm">K→♯ désarmer</button>
+  <!-- ⭐ Barre de navigation persistante (sous partition) -->
+  <div class="nav-bar">
+    <button class="k" id="cur-prev">◀</button>
+    <button class="k" id="meas-prev">◀ Mes</button>
+    <button class="k" id="meas-next">Mes ▶</button>
+    <button class="k" id="cur-next">▶</button>
   </div>
 
-  <!-- Fichier : 3 + 2 -->
-  <div class="row-grid file-row edit-only">
-    <button class="k tiny" id="btn-new">📄 Nouv</button>
-    <button class="k tiny" id="btn-open-file">📂 Ouv</button>
-    <button class="k tiny" id="btn-save-file">💾 Sauv</button>
-  </div>
-  <div class="row-grid file-row-2 edit-only">
-    <button class="k tiny" id="btn-saves">⭐ Mémo</button>
-    <button class="k tiny" id="btn-export">⇣ Voir ABC</button>
+  <!-- ⭐ Onglets -->
+  <div class="tabs">
+    <button class="tab active" data-tab="notes">Notes</button>
+    <button class="tab" data-tab="mesure">Mesure</button>
+    <button class="tab" data-tab="play">Play</button>
+    <button class="tab" data-tab="titre">Titre</button>
+    <button class="tab" data-tab="fichier">Fichier</button>
   </div>
 
-  <!-- Édition : Suppr, Annul, Refaire | Trans-, Trans+, N-uplet -->
-  <div class="row-grid undo-row edit-only">
-    <button class="k tiny" id="btn-del">⌫ Suppr</button>
-    <button class="k tiny" id="btn-undo">↶ Annul</button>
-    <button class="k tiny" id="btn-redo">↷ Refaire</button>
-  </div>
-  <div class="row-grid undo-row-2 edit-only">
-    <button class="k tiny" id="btn-trans-down">−½ ton</button>
-    <button class="k tiny" id="btn-trans-up">+½ ton</button>
-    <button class="k tiny" id="btn-tuplet">3:2</button>
+  <!-- === ONGLET NOTES === -->
+  <div class="tab-panel active" data-panel="notes">
+    <!-- Octave -->
+    <div class="oct-row">
+      <button class="k" id="oct-down">▽</button>
+      <div class="label">Oct <b id="oct-val">0</b></div>
+      <button class="k" id="oct-up">△</button>
+    </div>
+
+    <!-- 7 notes pleine largeur -->
+    <div class="row-grid" id="notes-row" style="grid-template-columns: repeat(7, 1fr);"></div>
+
+    <!-- Durées 4 + Altérations 3 + Point sur 2 lignes ou 1 ligne -->
+    <div class="row-grid row-4" id="dur-row"></div>
+    <div class="row-grid row-4" id="alt-row"></div>
+
+    <!-- Actions sur la sélection -->
+    <div class="row-grid row-3">
+      <button class="k small" id="btn-rest">→ Silence</button>
+      <button class="k small" id="btn-tie">⌒ Liaison</button>
+      <button class="k small" id="btn-del">⌫ Suppr</button>
+    </div>
+    <div class="row-grid row-3">
+      <button class="k small" id="btn-trans-down">−½ ton</button>
+      <button class="k small" id="btn-trans-up">+½ ton</button>
+      <button class="k small" id="btn-tuplet">3:2</button>
+    </div>
+    <div class="row-grid row-2">
+      <button class="k small" id="btn-chord">"Cm" Accord</button>
+      <button class="k small" id="btn-orn">~T Ornement</button>
+    </div>
+    <div class="row-grid row-2">
+      <button class="k small" id="btn-undo">↶ Annul</button>
+      <button class="k small" id="btn-redo">↷ Refaire</button>
+    </div>
   </div>
 
-  <!-- Accord, Ornement | Liaison, Silence -->
-  <div class="row-grid extra-row edit-only">
-    <button class="k tiny" id="btn-chord">"Cm" Accord</button>
-    <button class="k tiny" id="btn-orn">~T. Ornement</button>
-  </div>
-  <div class="row-grid extra-row-2 edit-only">
-    <button class="k tiny" id="btn-tie">⌒ Liaison</button>
-    <button class="k tiny" id="btn-rest">→ Silence</button>
-  </div>
-
-  <!-- Octave -->
-  <div class="oct-row edit-only">
-    <button class="k tiny" id="oct-down">▽ Oct−</button>
-    <div class="label">Octave <b id="oct-val">0</b></div>
-    <button class="k tiny" id="oct-up">△ Oct+</button>
-  </div>
-
-  <!-- Durées + altérations + point sur une ligne sous octave -->
-  <div class="row-grid dur-row edit-only" id="dur-alt-row"></div>
-
-  <!-- Notes : ◀ Do Ré Mi Fa Sol La Si ▶ -->
-  <div class="notes-row edit-only" id="notes-row"></div>
-
-  <!-- Mesure : -, ◀, ▶, + (toutes même largeur) -->
-  <div class="meas-row edit-only">
-    <button class="k tiny" id="meas-del">⊟ Suppr</button>
-    <button class="k tiny" id="meas-prev">◀ Préc.</button>
-    <button class="k tiny" id="meas-next">Suiv. ▶</button>
-    <button class="k tiny" id="meas-add">⊞ Ajout</button>
+  <!-- === ONGLET MESURE === -->
+  <div class="tab-panel" data-panel="mesure">
+    <!-- 4 boutons gestion mesures -->
+    <div class="row-grid row-2">
+      <button class="k" id="meas-del">⊟ Suppr<br>mesure</button>
+      <button class="k" id="meas-add">⊞ Ajouter<br>mesure</button>
+    </div>
+    <!-- Métrique / Armure / Clé -->
+    <div class="row-grid row-3">
+      <button class="k small" data-hdr="M">Rythme</button>
+      <button class="k small" data-hdr="K">Armure</button>
+      <button class="k small" data-hdr="CLEF">Clé</button>
+    </div>
+    <div class="row-grid">
+      <button class="k small" id="btn-disarm">K → ♯ désarmer (mettre les altérations explicitement)</button>
+    </div>
+    <!-- Reprises et voltas -->
+    <div class="row-grid row-2">
+      <button class="k" id="btn-rep-start">𝄆 Début reprise</button>
+      <button class="k" id="btn-rep-end">𝄇 Fin reprise</button>
+    </div>
+    <div class="row-grid row-2">
+      <button class="k" id="btn-volta1">|1 Volta 1</button>
+      <button class="k" id="btn-volta2">|2 Volta 2</button>
+    </div>
   </div>
 
-  <!-- Reprises -->
-  <div class="row-grid repeat-row edit-only">
-    <button class="k tiny" id="btn-rep-start">𝄆 Début</button>
-    <button class="k tiny" id="btn-rep-end">𝄇 Fin</button>
-    <button class="k tiny" id="btn-volta1">|1 Volta</button>
-    <button class="k tiny" id="btn-volta2">|2 Volta</button>
+  <!-- === ONGLET PLAY === -->
+  <div class="tab-panel" data-panel="play">
+    <div class="row-grid row-3">
+      <button class="k" id="btn-play">▶ Play</button>
+      <button class="k" id="btn-stop">■ Stop</button>
+      <button class="k" id="btn-viewmode">👁 Vue</button>
+    </div>
+    <div class="control-row">
+      <button class="k" id="vol-d">🔉 −</button>
+      <div class="label">Vol <b id="vol-v">60</b></div>
+      <button class="k" id="vol-u">🔊 +</button>
+    </div>
+    <div class="control-row">
+      <button class="k" id="tempo-d">♩ −</button>
+      <div class="label">♩ <b id="tempo-v">100</b></div>
+      <button class="k" id="tempo-u">♩ +</button>
+    </div>
+    <div class="row-grid">
+      <button class="k small" id="btn-fs">⛶ Plein écran</button>
+    </div>
   </div>
 
-  <!-- Lecture : Play, Stop, Vue -->
-  <div class="play-row">
-    <button class="k" id="btn-play">▶ Play</button>
-    <button class="k" id="btn-stop">■ Stop</button>
-    <button class="k" id="btn-viewmode">👁 Vue</button>
+  <!-- === ONGLET TITRE === -->
+  <div class="tab-panel" data-panel="titre">
+    <div class="row-grid">
+      <button class="k" data-hdr="X">X: <b id="hdr-x-val" style="margin-left:8px; color:#185fa5;">1</b></button>
+    </div>
+    <div class="row-grid">
+      <button class="k" data-hdr="T">Titre <b id="hdr-t-val" style="margin-left:8px; color:#185fa5; font-size:20px;">(vide)</b></button>
+    </div>
   </div>
-  <div class="volume-row">
-    <button class="k tiny" id="vol-d">🔉 −</button>
-    <div class="label">Vol <b id="vol-v">60</b></div>
-    <button class="k tiny" id="vol-u">🔊 +</button>
-  </div>
-  <div class="tempo-row">
-    <button class="k tiny" id="tempo-d">♩ −</button>
-    <div class="label">Tempo <b id="tempo-v">100</b></div>
-    <button class="k tiny" id="tempo-u">♩ +</button>
+
+  <!-- === ONGLET FICHIER === -->
+  <div class="tab-panel" data-panel="fichier">
+    <div class="row-grid">
+      <button class="k" id="btn-new">📄 Nouveau</button>
+    </div>
+    <div class="row-grid row-2">
+      <button class="k" id="btn-open-file">📂 Ouvrir .abc</button>
+      <button class="k" id="btn-save-file">💾 Sauver .abc</button>
+    </div>
+    <div class="row-grid row-2">
+      <button class="k" id="btn-saves">⭐ Mémoires</button>
+      <button class="k" id="btn-export">⇣ Voir ABC</button>
+    </div>
   </div>
 </div>
 
@@ -334,6 +353,7 @@
     timeChanges: {}, keyChanges: {}, clefChanges: {}, repeats: {},
     tempo: 100, volume: 60,
     fullscreen: false, viewmode: false,
+    activeTab: 'notes',
   };
 
   const history = { stack: [], pos: -1, max: 100 };
@@ -626,7 +646,6 @@
   }
   function buildVoltaFor(mi){ const r = state.repeats[mi]; if(!r || !r.volta) return ''; return '[' + r.volta; }
 
-  // Builds the ABC text on demand (no permanent on-screen display)
   function buildAbcText(){
     let header = '';
     if(state.headers.X) header += 'X:' + state.headers.X + '\n';
@@ -1078,6 +1097,8 @@
     document.getElementById('btn-undo').disabled = (history.pos <= 0);
     document.getElementById('btn-redo').disabled = (history.pos >= history.stack.length - 1);
     document.getElementById('btn-viewmode').textContent = state.viewmode ? '✎ Édit' : '👁 Vue';
+    document.getElementById('hdr-x-val').textContent = state.headers.X || '1';
+    document.getElementById('hdr-t-val').textContent = state.headers.T || '(vide)';
   }
   function render(){ renderScore(); renderState(); }
 
@@ -1209,46 +1230,55 @@
     pushHistory(); render();
   }
 
+  // --- Onglets ---
+  function setActiveTab(name){
+    state.activeTab = name;
+    document.querySelectorAll('.tab').forEach(t=> t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.tab-panel').forEach(p=> p.classList.toggle('active', p.dataset.panel === name));
+  }
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click', ()=> setActiveTab(t.dataset.tab));
+  });
+
   // --- Construction des boutons dynamiques ---
-  // Ligne notes : ◀ Do Ré Mi Fa Sol La Si ▶
+  // Notes : 7 boutons pleine largeur
   const notesRow = document.getElementById('notes-row');
-  const prevBtn = document.createElement('button');
-  prevBtn.className = 'k'; prevBtn.id = 'cur-prev'; prevBtn.textContent = '◀';
-  prevBtn.addEventListener('click', selectPrev);
-  notesRow.appendChild(prevBtn);
   NOTES.forEach(n=>{
     const b = document.createElement('button');
     b.className = 'k';
-    b.innerHTML = n.label + '<span class="sub">' + n.sub + '</span>';
+    b.style.flexDirection = 'column';
+    b.style.gap = '2px';
+    b.innerHTML = '<span style="font-size:30px;">' + n.label + '</span><span class="sub">' + n.sub + '</span>';
     b.addEventListener('click', ()=> setNoteAtSelection(n.n));
     notesRow.appendChild(b);
   });
-  const nextBtn = document.createElement('button');
-  nextBtn.className = 'k'; nextBtn.id = 'cur-next'; nextBtn.textContent = '▶';
-  nextBtn.addEventListener('click', selectNext);
-  notesRow.appendChild(nextBtn);
 
-  // Ligne durées + altérations + point (8 boutons sur une ligne)
-  const durAltRow = document.getElementById('dur-alt-row');
+  // Durées : 4 boutons (𝅗𝅥 ♩ ♪ ♬)
+  const durRow = document.getElementById('dur-row');
   DURATIONS.forEach(d=>{
     const b = document.createElement('button');
     b.className = 'k symbol'; b.dataset.dur = d.d; b.textContent = d.label;
     b.addEventListener('click', ()=> setDurAtSelection(d.d));
-    durAltRow.appendChild(b);
+    durRow.appendChild(b);
   });
+
+  // Altérations + point : 4 boutons (♯ ♭ ♮ ♩·)
+  const altRow = document.getElementById('alt-row');
   [{label:'♯',acc:'^'},{label:'♭',acc:'_'},{label:'♮',acc:'='}].forEach(a=>{
     const b = document.createElement('button');
     b.className = 'k symbol'; b.dataset.acc = a.acc; b.textContent = a.label;
     b.addEventListener('click', ()=> toggleAccAtSelection(a.acc));
-    durAltRow.appendChild(b);
+    altRow.appendChild(b);
   });
   const dotBtn = document.createElement('button');
   dotBtn.className = 'k symbol'; dotBtn.id = 'dot-btn'; dotBtn.textContent = '♩·';
   dotBtn.addEventListener('click', toggleDotAtSelection);
-  durAltRow.appendChild(dotBtn);
+  altRow.appendChild(dotBtn);
 
   document.getElementById('oct-up').addEventListener('click', ()=> changeOctave(+1));
   document.getElementById('oct-down').addEventListener('click', ()=> changeOctave(-1));
+  document.getElementById('cur-prev').addEventListener('click', selectPrev);
+  document.getElementById('cur-next').addEventListener('click', selectNext);
   document.getElementById('meas-prev').addEventListener('click', ()=> jumpMeasure(-1));
   document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
   document.getElementById('btn-rest').addEventListener('click', setRestAtSelection);
@@ -1296,9 +1326,9 @@
     let count = 1; let side = 'right';
     function controls(){
       return ('<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small>' +
-              '<div class="row-grid" style="grid-template-columns: 1fr 1fr;" id="side-pick"><button class="k" data-side="left">À gauche</button><button class="k" data-side="right">À droite</button></div>' +
+              '<div class="row-grid row-2" id="side-pick"><button class="k small" data-side="left">À gauche</button><button class="k small" data-side="right">À droite</button></div>' +
               '<small>Nombre</small>' +
-              '<div class="stepper"><button class="k" id="cnt-d">−</button><div class="val"><b id="cnt-v">'+count+'</b></div><button class="k" id="cnt-u">+</button></div>');
+              '<div class="stepper"><button class="k small" id="cnt-d">−</button><div class="val"><b id="cnt-v">'+count+'</b></div><button class="k small" id="cnt-u">+</button></div>');
     }
     function refreshSide(){ document.querySelectorAll('#side-pick .k').forEach(b=> b.classList.toggle('active', b.dataset.side === side)); }
     openPanel({ title: 'Ajouter mesure(s)', body: controls(), hideActions: true, extraButtons: ['Annuler', 'Ajouter'],
@@ -1339,7 +1369,7 @@
   document.getElementById('btn-play').addEventListener('click', ()=>{ if(audio.playing) stopPlayback(true); else playSchedule(); });
   document.getElementById('btn-stop').addEventListener('click', ()=> stopPlayback(true));
   document.getElementById('btn-viewmode').addEventListener('click', ()=>{ state.viewmode = !state.viewmode; document.getElementById('app').classList.toggle('viewmode', state.viewmode); render(); });
-  document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶✕' : '⛶'; });
+  document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶ Quitter plein écran' : '⛶ Plein écran'; });
 
   document.getElementById('btn-chord').addEventListener('click', ()=>{
     const sl = selectedSlot();
@@ -1349,10 +1379,10 @@
     if(sl.chord){ const m = sl.chord.match(/^([A-G])([#b]?)(.*)$/); if(m){ root = m[1]; acc = m[2]; qual = m[3]; } }
     function controls(){
       let html = '<small>Fondamentale</small><div class="root-grid">';
-      roots.forEach(r => html += '<button class="k" data-root="'+r+'">'+r+'</button>');
-      html += '</div><small>Altération</small><div class="row-grid" style="grid-template-columns: 1fr 1fr 1fr;"><button class="k" data-acc="">♮</button><button class="k" data-acc="#">♯</button><button class="k" data-acc="b">♭</button></div>';
+      roots.forEach(r => html += '<button class="k small" data-root="'+r+'">'+r+'</button>');
+      html += '</div><small>Altération</small><div class="row-grid row-3"><button class="k small" data-acc="">♮</button><button class="k small" data-acc="#">♯</button><button class="k small" data-acc="b">♭</button></div>';
       html += '<small>Qualité</small><div class="chord-grid">';
-      CHORD_QUALITIES.forEach(q => html += '<button class="k" data-qual="'+q+'">'+(q || 'maj')+'</button>');
+      CHORD_QUALITIES.forEach(q => html += '<button class="k small" data-qual="'+q+'">'+(q || 'maj')+'</button>');
       html += '</div><small>Aperçu : <b id="chord-preview">'+root+acc+qual+'</b></small>';
       return html;
     }
@@ -1382,8 +1412,8 @@
     if(!sl || sl.type !== 'note'){ alert('Sélectionnez une note'); return; }
     sl.orn = sl.orn || [];
     function controls(){
-      let html = '<small>Cliquez pour activer/désactiver</small><div class="row-grid" style="grid-template-columns: 1fr 1fr 1fr;">';
-      ORNAMENTS.forEach(o => html += '<button class="k tiny" data-orn="'+o.code+'">'+o.label+'</button>');
+      let html = '<small>Cliquez pour activer/désactiver</small><div class="row-grid row-3">';
+      ORNAMENTS.forEach(o => html += '<button class="k small" data-orn="'+o.code+'">'+o.label+'</button>');
       html += '</div><small>Actifs : <b id="orn-preview">'+(sl.orn.length ? sl.orn.join(' ') : '(aucun)')+'</b></small>';
       return html;
     }
@@ -1486,7 +1516,7 @@
     panelTitle.textContent = title;
     let extraHtml = '';
     if(extraButtons && extraButtons.length){
-      extraHtml = '<div class="actions" style="margin-top:8px;">' + extraButtons.map((b,i)=> '<button class="k '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('') + '</div>';
+      extraHtml = '<div class="actions" style="margin-top:8px;">' + extraButtons.map((b,i)=> '<button class="k small '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('') + '</div>';
     }
     panelBody.innerHTML = body + extraHtml;
     currentOnOk = onOk || null; currentOnExtra = onExtra || null;
@@ -1522,10 +1552,10 @@
     let unitDenom = parseInt(state.pieceUnit.split('/')[1], 10);
     const unitDenoms = [1,2,4,8,16,32];
     function controls(){
-      return ('<div class="stepper"><button class="k" id="num-d">−</button><div class="val">N: <b id="num-v">'+n+'</b></div><button class="k" id="num-u">+</button></div>'+
-              '<div class="stepper"><button class="k" id="den-d">−</button><div class="val">D: <b id="den-v">'+d+'</b></div><button class="k" id="den-u">+</button></div>'+
+      return ('<div class="stepper"><button class="k small" id="num-d">−</button><div class="val">N: <b id="num-v">'+n+'</b></div><button class="k small" id="num-u">+</button></div>'+
+              '<div class="stepper"><button class="k small" id="den-d">−</button><div class="val">D: <b id="den-v">'+d+'</b></div><button class="k small" id="den-u">+</button></div>'+
               '<small>Unité L:</small>'+
-              '<div class="stepper"><button class="k" id="L-d">−</button><div class="val">L:1/<b id="L-v">'+unitDenom+'</b></div><button class="k" id="L-u">+</button></div>');
+              '<div class="stepper"><button class="k small" id="L-d">−</button><div class="val">L:1/<b id="L-v">'+unitDenom+'</b></div><button class="k small" id="L-u">+</button></div>');
     }
     controls.mount = function(){
       const upd = ()=>{ document.getElementById('num-v').textContent = n; document.getElementById('den-v').textContent = d; document.getElementById('L-v').textContent = unitDenom; };
@@ -1556,7 +1586,7 @@
   document.querySelector('[data-hdr="K"]').addEventListener('click', ()=>{
     let sig = keyAt(state.sel.m);
     const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + ' ♯'; return Math.abs(s) + ' ♭'; };
-    function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭ −</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯ +</button></div>'); }
+    function controls(){ return ('<div class="stepper"><button class="k small" id="sig-d">♭ −</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k small" id="sig-u">♯ +</button></div>'); }
     controls.mount = function(){ const upd = ()=>{ document.getElementById('sig-v').textContent = labelOf(sig); }; document.getElementById('sig-u').addEventListener('click', ()=>{ sig = Math.min(7, sig+1); upd(); }); document.getElementById('sig-d').addEventListener('click', ()=>{ sig = Math.max(-7, sig-1); upd(); }); };
     scopePanel({ title:'Armure', renderControls: controls,
       applyPiece: ()=>{ state.pieceKeySig = sig; if(state.sel.m === 0) delete state.keyChanges[0]; else state.keyChanges = {}; },
@@ -1565,7 +1595,7 @@
 
   document.querySelector('[data-hdr="CLEF"]').addEventListener('click', ()=>{
     let pick = clefAt(state.sel.m);
-    function controls(){ return ('<div class="row-grid" style="grid-template-columns: 1fr 1fr 1fr;" id="clef-pick"><button class="k symbol" data-clef="treble">𝄞</button><button class="k" data-clef="treble8">Sol-8</button><button class="k symbol" data-clef="bass">𝄢</button></div>'); }
+    function controls(){ return ('<div class="row-grid row-3" id="clef-pick"><button class="k small symbol" data-clef="treble">𝄞</button><button class="k small" data-clef="treble8">Sol-8</button><button class="k small symbol" data-clef="bass">𝄢</button></div>'); }
     controls.mount = function(){ const refresh = ()=>{ document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.classList.toggle('active', b.dataset.clef === pick); }); }; refresh(); document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.addEventListener('click', ()=>{ pick = b.dataset.clef; refresh(); }); }); };
     scopePanel({ title:'Clé', renderControls: controls,
       applyPiece: ()=>{ state.pieceClef = pick; if(state.sel.m === 0) delete state.clefChanges[0]; else state.clefChanges = {}; },
