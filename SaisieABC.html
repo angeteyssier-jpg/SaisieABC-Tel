@@ -1,8 +1,7 @@
 <style>
   .abc-app, .abc-app * { box-sizing: border-box; min-width: 0; }
   .abc-app {
-    width: 100%; max-width: 100%;
-    padding: 5px;
+    width: 100%; max-width: 100%; padding: 5px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     color: #1a1a1a; background: #f5f4ef; border-radius: 8px;
     position: relative; overflow-x: hidden;
@@ -18,7 +17,6 @@
   .ver-badge b { color: #1a1a1a; font-weight: 700; }
 
   .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 6px; }
-  /* Partition 3 lignes au lieu de 2 → ratio plus haut */
   .score-wrap { width: 100%; aspect-ratio: 360 / 280; max-height: 320px; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
 
@@ -30,7 +28,6 @@
   .ctx-card .line-small { font-size: 28px; font-weight: 700; margin-top: 6px; }
   .ctx-card b { color: #185fa5; font-weight: 700; }
 
-  /* === Bouton générique TOUT en taille 50 === */
   .abc-app button.k {
     display: flex; align-items: center; justify-content: center; gap: 6px;
     width: 100%; height: 96px; padding: 0 4px;
@@ -45,14 +42,11 @@
   .abc-app button.k.active { background: #cfe5fa; border-color: #185fa5; color: #0c447c; }
   .abc-app button.k.symbol { font-size: 50px; font-family: "Times New Roman", serif; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
+  .abc-app button.k.clef-small { font-size: 36px; }
 
-  /* Note button : Do en gras 50, sub C non gras 50 */
   .note-btn { flex-direction: column !important; gap: 0 !important; height: 130px !important; }
   .note-btn .lbl { font-size: 50px; font-weight: 700; line-height: 1; }
   .note-btn .sub { font-size: 50px; font-weight: 400; color: #5f5e5a; line-height: 1; }
-
-  /* Variante slim pour les boutons avec beaucoup de texte (Plein écran, Sauver .abc...) */
-  .abc-app button.k.text-long { font-size: 50px; }
 
   .row-grid { display: grid; gap: 6px; margin-bottom: 6px; }
   .row-2 { grid-template-columns: 1fr 1fr; }
@@ -61,7 +55,6 @@
   .row-6 { grid-template-columns: repeat(6, 1fr); }
   .row-7 { grid-template-columns: repeat(7, 1fr); }
 
-  /* === Barre de navigation 6 flèches égales === */
   .nav-bar {
     display: grid; grid-template-columns: repeat(6, 1fr);
     gap: 5px; margin-bottom: 8px;
@@ -74,17 +67,17 @@
   }
   .nav-bar .k:active { background: #f5e2a8; }
 
-  /* Onglets gros */
+  /* Onglets en taille 50 */
   .tabs {
     display: grid; grid-template-columns: repeat(5, 1fr);
     gap: 3px; margin-bottom: 8px;
     border-bottom: 2px solid #b4b2a9;
   }
   .tab {
-    height: 68px;
+    height: 96px;
     background: #ebe9e0; border: 2px solid #b4b2a9; border-bottom: none;
     border-radius: 10px 10px 0 0;
-    font-family: inherit; font-size: 22px; font-weight: 700; color: #5f5e5a;
+    font-family: inherit; font-size: 32px; font-weight: 700; color: #5f5e5a;
     cursor: pointer; padding: 0 2px;
     -webkit-tap-highlight-color: transparent;
     display: flex; align-items: center; justify-content: center;
@@ -99,96 +92,85 @@
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  /* === Octave row === */
-  .oct-row {
+  .oct-row, .control-row {
     display: grid; grid-template-columns: 1fr 1.4fr 1fr;
     gap: 6px; margin-bottom: 8px;
     background: #ebe9e0; padding: 6px; border-radius: 12px;
     align-items: center;
   }
-  .oct-row .label {
+  .oct-row .label, .control-row .label {
     font-size: 50px; color: #1a1a1a; text-align: center; font-weight: 700;
   }
-  .oct-row .label b { color: #185fa5; font-size: 50px; margin-left: 6px; }
-
-  /* === Volume / Tempo === */
-  .control-row {
-    display: grid; grid-template-columns: 1fr 1.4fr 1fr;
-    gap: 6px; margin-bottom: 8px;
-    background: #ebe9e0; padding: 6px; border-radius: 12px;
-    align-items: center;
-  }
-  .control-row .label {
-    font-size: 50px; color: #1a1a1a; text-align: center; font-weight: 700;
-  }
-  .control-row .label b {
+  .oct-row .label b, .control-row .label b {
     color: #185fa5; font-size: 50px; margin-left: 6px;
   }
 
-  /* Panel modal (laissé en tailles raisonnables) */
+  /* === Panneaux modaux TOUT en 50 === */
   .panel {
     background: #e6f1fb; border: 2px solid #378add; border-radius: 12px;
-    padding: 10px; margin-bottom: 8px; display: none;
-    max-height: 75vh; overflow-y: auto;
+    padding: 12px; margin-bottom: 8px; display: none;
+    max-height: 80vh; overflow-y: auto;
   }
   .panel.open { display: block; }
   .panel .title {
-    font-size: 28px; color: #0c447c; font-weight: 700; margin-bottom: 12px;
+    font-size: 50px; color: #0c447c; font-weight: 700; margin-bottom: 14px;
   }
-  .panel .row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .panel .row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .panel input, .panel textarea {
-    flex: 1; min-height: 60px; font-family: ui-monospace, monospace;
-    font-size: 24px; padding: 10px 12px; border: 2px solid #b4b2a9;
-    border-radius: 8px; background: #ffffff; color: #1a1a1a;
+    flex: 1; min-height: 96px; font-family: inherit;
+    font-size: 50px; padding: 10px 14px; border: 2px solid #b4b2a9;
+    border-radius: 10px; background: #ffffff; color: #1a1a1a; font-weight: 700;
   }
-  .panel textarea { width: 100%; min-height: 180px; }
+  .panel textarea { width: 100%; min-height: 200px; line-height: 1.2; }
   .panel .field-label {
-    font-family: ui-monospace, monospace; font-size: 22px;
-    color: #0c447c; font-weight: 700; min-width: 50px;
+    font-family: inherit; font-size: 50px;
+    color: #0c447c; font-weight: 700; min-width: 80px;
   }
   .panel .actions {
-    display: flex; gap: 8px; justify-content: flex-end;
-    flex-wrap: wrap; margin-top: 10px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;
   }
+  .panel .actions.three { grid-template-columns: 1fr 1fr 1fr; }
   .panel .actions .k {
-    width: auto !important; padding: 0 24px !important;
-    height: 70px !important; font-size: 24px !important;
+    width: 100% !important; padding: 0 8px !important;
+    height: 96px !important; font-size: 36px !important;
   }
   .panel .stepper {
-    display: grid; grid-template-columns: 80px 1fr 80px;
-    gap: 12px; align-items: center; margin-bottom: 12px;
+    display: grid; grid-template-columns: 96px 1fr 96px;
+    gap: 10px; align-items: center; margin-bottom: 10px;
   }
-  .panel .stepper .k { height: 70px !important; font-size: 32px !important; padding: 0 !important; }
+  .panel .stepper .k {
+    height: 96px !important; font-size: 50px !important; padding: 0 !important;
+  }
   .panel .stepper .val {
-    text-align: center; font-family: ui-monospace, monospace;
-    font-size: 28px; color: #0c447c; font-weight: 700;
+    text-align: center; font-family: inherit;
+    font-size: 50px; color: #0c447c; font-weight: 700;
   }
   .panel small {
-    display: block; color: #5f5e5a; font-size: 18px;
-    margin-bottom: 8px; font-style: italic;
+    display: block; color: #5f5e5a; font-size: 24px;
+    margin-bottom: 10px; font-style: italic; font-weight: 600;
   }
   .panel .save-list {
-    max-height: 240px; overflow-y: auto;
-    border: 2px solid #b4b2a9; border-radius: 8px;
-    background: #ffffff; margin-bottom: 8px;
+    max-height: 320px; overflow-y: auto;
+    border: 2px solid #b4b2a9; border-radius: 10px;
+    background: #ffffff; margin-bottom: 10px;
   }
   .panel .save-list .item {
     padding: 16px 14px; border-bottom: 1px solid #ebe9e0;
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 22px; cursor: pointer;
+    font-size: 32px; cursor: pointer; font-weight: 700;
   }
   .panel .save-list .item .del {
-    color: #c34536; font-size: 28px; padding: 0 12px; cursor: pointer;
+    color: #c34536; font-size: 40px; padding: 0 12px; cursor: pointer; font-weight: 700;
   }
-  .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
-  .chord-grid .k { height: 64px !important; font-size: 22px !important; padding: 0 !important; }
-  .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px; }
-  .root-grid .k { height: 64px !important; font-size: 24px !important; padding: 0 !important; }
+  .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+  .chord-grid .k { height: 78px !important; font-size: 28px !important; padding: 0 !important; }
+  .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 10px; }
+  .root-grid .k { height: 78px !important; font-size: 32px !important; padding: 0 !important; }
 </style>
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v31</b></span>
+    <span>Éditeur ABC <b>v32</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -202,23 +184,20 @@
   </div>
   <input type="file" id="file-input" accept=".abc,text/plain" style="display:none;"/>
 
-  <div class="abc-card">
-    <div class="score-wrap" id="score"></div>
-  </div>
+  <div class="abc-card"><div class="score-wrap" id="score"></div></div>
 
   <div class="ctx-card">
     <div>Mes <b id="meas-pos">1</b> · slot <b id="slot-pos">1</b></div>
-    <div class="line-small">Rythmique : <b id="info-meter">4/4</b> · Armure : <b id="info-key">0</b> · Clé : <b id="info-clef">Sol</b></div>
+    <div class="line-small">Rythmique : <b id="info-meter">4/4</b> · Armure : <b id="info-key">C maj</b> · Clé : <b id="info-clef">Sol</b></div>
   </div>
 
-  <!-- Barre de navigation : ← ↓ ⟪ ⟫ ↑ → -->
   <div class="nav-bar">
-    <button class="k" id="cur-prev" title="Note précédente">←</button>
-    <button class="k" id="btn-trans-down" title="-1/2 ton">↓</button>
-    <button class="k" id="meas-prev" title="Mesure précédente">⟪</button>
-    <button class="k" id="meas-next" title="Mesure suivante">⟫</button>
-    <button class="k" id="btn-trans-up" title="+1/2 ton">↑</button>
-    <button class="k" id="cur-next" title="Note suivante">→</button>
+    <button class="k" id="cur-prev">←</button>
+    <button class="k" id="btn-trans-down">↓</button>
+    <button class="k" id="meas-prev">⟪</button>
+    <button class="k" id="meas-next">⟫</button>
+    <button class="k" id="btn-trans-up">↑</button>
+    <button class="k" id="cur-next">→</button>
   </div>
 
   <div class="tabs">
@@ -229,23 +208,16 @@
     <button class="tab" data-tab="fichier">Fichier</button>
   </div>
 
-  <!-- === ONGLET NOTES === -->
+  <!-- NOTES -->
   <div class="tab-panel active" data-panel="notes">
     <div class="oct-row">
       <button class="k" id="oct-down">▽</button>
       <div class="label">Oct <b id="oct-val">0</b></div>
       <button class="k" id="oct-up">△</button>
     </div>
-
-    <!-- 7 notes : Do Ré Mi Fa Sol La Si -->
     <div class="row-grid row-7" id="notes-row"></div>
-
-    <!-- 6 durées sur une ligne : ronde, blanche, noire, croche, double, triple -->
     <div class="row-grid row-6" id="dur-row"></div>
-
-    <!-- Altérations + point + silence : ♯ ♭ ♮ ♩· 𝄽 -->
     <div class="row-grid" id="alt-row" style="grid-template-columns: repeat(5, 1fr);"></div>
-
     <div class="row-grid row-2">
       <button class="k" id="btn-tie">⌒</button>
       <button class="k" id="btn-del">⌫</button>
@@ -261,19 +233,23 @@
     </div>
   </div>
 
-  <!-- === ONGLET MESURE === -->
+  <!-- MESURE -->
   <div class="tab-panel" data-panel="mesure">
     <div class="row-grid row-2">
-      <button class="k" id="meas-del">⊟ Mes</button>
-      <button class="k" id="meas-add">⊞ Mes</button>
+      <button class="k" id="meas-del">− Mes</button>
+      <button class="k" id="meas-add">+ Mes</button>
     </div>
-    <div class="row-grid row-3">
-      <button class="k" data-hdr="M">M</button>
-      <button class="k" data-hdr="K">K</button>
+    <div class="row-grid">
+      <button class="k" data-hdr="M">Rythme</button>
+    </div>
+    <div class="row-grid">
+      <button class="k" data-hdr="K">Armure</button>
+    </div>
+    <div class="row-grid">
       <button class="k" data-hdr="CLEF">Clé</button>
     </div>
     <div class="row-grid">
-      <button class="k" id="btn-disarm">K→♯</button>
+      <button class="k" id="btn-disarm" style="font-size:34px;">Armure → C majeur</button>
     </div>
     <div class="row-grid row-2">
       <button class="k" id="btn-rep-start">𝄆</button>
@@ -285,7 +261,7 @@
     </div>
   </div>
 
-  <!-- === ONGLET PLAY === -->
+  <!-- PLAY -->
   <div class="tab-panel" data-panel="play">
     <div class="row-grid row-3">
       <button class="k" id="btn-play">▶</button>
@@ -307,21 +283,18 @@
     </div>
   </div>
 
-  <!-- === ONGLET TITRE === -->
+  <!-- TITRE -->
   <div class="tab-panel" data-panel="titre">
-    <div class="row-grid">
-      <button class="k" data-hdr="X">X: <span style="color:#185fa5;" id="hdr-x-val">1</span></button>
-    </div>
-    <div class="row-grid">
-      <button class="k" data-hdr="T"><span id="hdr-t-val">Titre</span></button>
-    </div>
+    <div class="row-grid"><button class="k" data-hdr="X" style="font-size:36px;">X: <span style="color:#185fa5;" id="hdr-x-val">1</span></button></div>
+    <div class="row-grid"><button class="k" data-hdr="T" style="font-size:36px;">Titre : <span id="hdr-t-val">—</span></button></div>
+    <div class="row-grid"><button class="k" data-hdr="ST" style="font-size:28px;">Sous-titre : <span id="hdr-st-val">—</span></button></div>
+    <div class="row-grid"><button class="k" data-hdr="C" style="font-size:28px;">Compositeur : <span id="hdr-c-val">—</span></button></div>
+    <div class="row-grid"><button class="k" data-hdr="N" style="font-size:30px;">Commentaire : <span id="hdr-n-val">—</span></button></div>
   </div>
 
-  <!-- === ONGLET FICHIER === -->
+  <!-- FICHIER -->
   <div class="tab-panel" data-panel="fichier">
-    <div class="row-grid">
-      <button class="k" id="btn-new">📄</button>
-    </div>
+    <div class="row-grid"><button class="k" id="btn-new">📄</button></div>
     <div class="row-grid row-2">
       <button class="k" id="btn-open-file">📂</button>
       <button class="k" id="btn-save-file">💾</button>
@@ -335,1290 +308,231 @@
 
 <script>
 (function(){
-  const NOTES = [
-    {label:'Do',sub:'C',n:'C'},{label:'Ré',sub:'D',n:'D'},{label:'Mi',sub:'E',n:'E'},
-    {label:'Fa',sub:'F',n:'F'},{label:'Sol',sub:'G',n:'G'},{label:'La',sub:'A',n:'A'},{label:'Si',sub:'B',n:'B'},
-  ];
-  // ronde 4, blanche 2, noire 1, croche 0.5, double 0.25, triple 0.125
-  const DURATIONS = [
-    {label:'𝅝',d:4}, {label:'𝅗𝅥',d:2}, {label:'♩',d:1},
-    {label:'♪',d:0.5}, {label:'♬',d:0.25}, {label:'𝅘𝅥𝅰',d:0.125}
-  ];
-  const SHARP_NOTES = ['F','C','G','D','A','E','B'];
-  const FLAT_NOTES  = ['B','E','A','D','G','C','F'];
-  const ORNAMENTS = [
-    {code:'T', label:'tr'}, {code:'M', label:'~M'}, {code:'P', label:'pralle'},
-    {code:'H', label:'fermata'}, {code:'L', label:'accent'}, {code:'.', label:'staccato'},
-    {code:'u', label:'up'}, {code:'v', label:'down'}, {code:'O', label:'coda'},
-  ];
-  const CHORD_QUALITIES = ['','m','7','m7','M7','6','m6','9','11','13','sus2','sus4','dim','dim7','aug','add9'];
+  const NOTES=[{label:'Do',sub:'C',n:'C'},{label:'Ré',sub:'D',n:'D'},{label:'Mi',sub:'E',n:'E'},{label:'Fa',sub:'F',n:'F'},{label:'Sol',sub:'G',n:'G'},{label:'La',sub:'A',n:'A'},{label:'Si',sub:'B',n:'B'}];
+  const DURATIONS=[{label:'𝅝',d:4},{label:'𝅗𝅥',d:2},{label:'♩',d:1},{label:'♪',d:0.5},{label:'♬',d:0.25},{label:'𝅘𝅥𝅰',d:0.125}];
+  const SHARP_NOTES=['F','C','G','D','A','E','B'];
+  const FLAT_NOTES=['B','E','A','D','G','C','F'];
+  const ORNAMENTS=[{code:'T',label:'tr'},{code:'M',label:'~M'},{code:'P',label:'pralle'},{code:'H',label:'fermata'},{code:'L',label:'accent'},{code:'.',label:'staccato'},{code:'u',label:'up'},{code:'v',label:'down'},{code:'O',label:'coda'}];
+  const CHORD_QUALITIES=['','m','7','m7','M7','6','m6','9','11','13','sus2','sus4','dim','dim7','aug','add9'];
+  const KEY_NAMES_MAJOR=['C','G','D','A','E','B','F♯','C♯'];
+  const KEY_NAMES_MAJOR_FLAT=['C','F','B♭','E♭','A♭','D♭','G♭','C♭'];
 
-  const state = {
-    headers: { X:'1', T:'' },
-    pieceMeter: '4/4', pieceUnit: '1/4', pieceKeySig: 0, pieceClef: 'treble',
-    measures: [], sel: {m:0, s:0}, octave: 0,
-    timeChanges: {}, keyChanges: {}, clefChanges: {}, repeats: {},
-    tempo: 100, volume: 60,
-    fullscreen: false, viewmode: false,
-    activeTab: 'notes',
-  };
+  const state={headers:{X:'1',T:'',ST:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],sel:{m:0,s:0},octave:0,timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:100,volume:60,fullscreen:false,viewmode:false,activeTab:'notes'};
 
-  const history = { stack: [], pos: -1, max: 100 };
-  function snapshot(){ return JSON.stringify(state); }
-  function pushHistory(){
-    if(history.pos < history.stack.length - 1) history.stack = history.stack.slice(0, history.pos + 1);
-    history.stack.push(snapshot());
-    if(history.stack.length > history.max) history.stack.shift();
-    history.pos = history.stack.length - 1;
-  }
-  function loadFrom(snap){ const o = JSON.parse(snap); Object.assign(state, o); }
-  function undo(){ if(history.pos > 0){ history.pos--; loadFrom(history.stack[history.pos]); render(); } }
-  function redo(){ if(history.pos < history.stack.length - 1){ history.pos++; loadFrom(history.stack[history.pos]); render(); } }
+  const history={stack:[],pos:-1,max:100};
+  function snapshot(){return JSON.stringify(state)}
+  function pushHistory(){if(history.pos<history.stack.length-1)history.stack=history.stack.slice(0,history.pos+1);history.stack.push(snapshot());if(history.stack.length>history.max)history.stack.shift();history.pos=history.stack.length-1}
+  function loadFrom(snap){const o=JSON.parse(snap);Object.assign(state,o)}
+  function undo(){if(history.pos>0){history.pos--;loadFrom(history.stack[history.pos]);render()}}
+  function redo(){if(history.pos<history.stack.length-1){history.pos++;loadFrom(history.stack[history.pos]);render()}}
 
-  function parseMeter(meter){
-    if(!meter) return {num:4, den:4};
-    if(meter === 'C') return {num:4, den:4};
-    if(meter === 'C|') return {num:2, den:2};
-    const m = meter.match(/^\s*(\d+)\s*\/\s*(\d+)\s*$/);
-    if(m) return {num:parseInt(m[1],10), den:parseInt(m[2],10)};
-    return {num:4, den:4};
-  }
-  function meterAt(idx){ let cur = state.pieceMeter; for(let i=0; i<=idx; i++){ if(state.timeChanges[i]) cur = state.timeChanges[i]; } return cur; }
-  function keyAt(idx){ let cur = state.pieceKeySig; for(let i=0; i<=idx; i++){ if(state.keyChanges[i] !== undefined) cur = state.keyChanges[i]; } return cur; }
-  function clefAt(idx){ let cur = state.pieceClef; for(let i=0; i<=idx; i++){ if(state.clefChanges[i]) cur = state.clefChanges[i]; } return cur; }
-  function measureCapacity(meter){ const {num, den} = parseMeter(meter); return num * (4/den); }
-  function effDur(t){ return t.dot ? t.dur*1.5 : t.dur; }
-  function beamGroupUnit(meter){ const {num, den} = parseMeter(meter); if(den === 8 && num % 3 === 0 && num >= 6) return 1.5; return 4/den; }
+  function parseMeter(meter){if(!meter)return{num:4,den:4};if(meter==='C')return{num:4,den:4};if(meter==='C|')return{num:2,den:2};const m=meter.match(/^\s*(\d+)\s*\/\s*(\d+)\s*$/);if(m)return{num:parseInt(m[1],10),den:parseInt(m[2],10)};return{num:4,den:4}}
+  function meterAt(idx){let cur=state.pieceMeter;for(let i=0;i<=idx;i++)if(state.timeChanges[i])cur=state.timeChanges[i];return cur}
+  function keyAt(idx){let cur=state.pieceKeySig;for(let i=0;i<=idx;i++)if(state.keyChanges[i]!==undefined)cur=state.keyChanges[i];return cur}
+  function clefAt(idx){let cur=state.pieceClef;for(let i=0;i<=idx;i++)if(state.clefChanges[i])cur=state.clefChanges[i];return cur}
+  function measureCapacity(meter){const{num,den}=parseMeter(meter);return num*(4/den)}
+  function effDur(t){return t.dot?t.dur*1.5:t.dur}
+  function beamGroupUnit(meter){const{num,den}=parseMeter(meter);if(den===8&&num%3===0&&num>=6)return 1.5;return 4/den}
 
-  function buildEmptyMeasure(meter){
-    const {num, den} = parseMeter(meter);
-    const beatDur = 4 / den;
-    const slots = [];
-    for(let i=0; i<num; i++) slots.push({type:'rest', dur:beatDur, dot:false});
-    return slots;
-  }
-  function rebuildMeasures(){
-    const count = Math.max(state.measures.length, 9);
-    state.measures = [];
-    state.timeChanges = {}; state.keyChanges = {}; state.clefChanges = {}; state.repeats = {};
-    for(let i=0; i<count; i++) state.measures.push(buildEmptyMeasure(state.pieceMeter));
-    state.sel = {m:0, s:0};
-  }
+  function buildEmptyMeasure(meter){const{num,den}=parseMeter(meter);const beatDur=4/den;const slots=[];for(let i=0;i<num;i++)slots.push({type:'rest',dur:beatDur,dot:false});return slots}
+  function rebuildMeasures(){const count=Math.max(state.measures.length,9);state.measures=[];state.timeChanges={};state.keyChanges={};state.clefChanges={};state.repeats={};for(let i=0;i<count;i++)state.measures.push(buildEmptyMeasure(state.pieceMeter));state.sel={m:0,s:0}}
 
-  function splitDurationByBeat(offset, amount, beat){
-    const eps = 1e-6; const out = [];
-    let cur = +offset.toFixed(6); let rem = +amount.toFixed(6);
-    const distToBeat = ((cur % beat) === 0) ? 0 : (beat - (cur % beat));
-    if(distToBeat > eps && rem > eps){
-      const toFill = Math.min(distToBeat, rem);
-      const subs = [4,2,1,0.5,0.25,0.125].filter(u => u <= beat/2 + eps);
-      let used = 0;
-      for(const u of subs){ while(toFill - used >= u - eps){ out.push({dur:u, dot:false}); used = +(used + u).toFixed(6); } }
-      cur = +(cur + used).toFixed(6); rem = +(rem - used).toFixed(6);
-    }
-    while(rem >= beat - eps){
-      out.push({dur: (beat === 1.5) ? 1 : beat, dot: (beat === 1.5)});
-      rem = +(rem - beat).toFixed(6); cur = +(cur + beat).toFixed(6);
-    }
-    if(rem > eps){
-      const subs = [4,2,1,0.5,0.25,0.125].filter(u => u <= beat/2 + eps);
-      let leftover = rem;
-      for(const u of subs){ while(leftover >= u - eps){ out.push({dur:u, dot:false}); leftover = +(leftover - u).toFixed(6); } }
-    }
-    return out;
-  }
-  function rebalanceMeasure(m, anchorIdx, oldEffDur){
-    const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
-    const cap = measureCapacity(meter);
-    const meas = state.measures[m];
-    const anchor = meas[anchorIdx];
-    let newDur = effDur(anchor);
-    let beforeUsed = 0;
-    for(let i=0; i<anchorIdx; i++) beforeUsed += effDur(meas[i]);
-    if(beforeUsed + newDur > cap + 1e-6){
-      const fits = cap - beforeUsed; const overflow = newDur - fits;
-      anchor.tieToNext = true;
-      const fitsPieces = splitDurationByBeat(beforeUsed, fits, beat);
-      if(fitsPieces.length > 0){
-        anchor.dur = fitsPieces[0].dur; anchor.dot = fitsPieces[0].dot;
-        const extras = fitsPieces.slice(1).map((p) => { const c = Object.assign({}, anchor, {dur: p.dur, dot: p.dot}); c.tieToNext = true; return c; });
-        state.measures[m] = meas.slice(0, anchorIdx + 1).concat(extras);
-      }
-      const nextM = m + 1;
-      if(nextM >= state.measures.length){ state.measures.push(buildEmptyMeasure(meterAt(m))); }
-      const contPieces = splitDurationByBeat(0, overflow, 4/parseMeter(meterAt(nextM)).den);
-      const contSlots = contPieces.map((p, i) => { const c = Object.assign({}, anchor, {dur: p.dur, dot: p.dot}); delete c.tieToNext; if(i < contPieces.length - 1) c.tieToNext = true; return c; });
-      _consumeFromHead(nextM, overflow, contSlots);
-      return;
-    }
-    const delta = +(newDur - oldEffDur).toFixed(6);
-    const eps = 1e-6;
-    if(Math.abs(delta) < eps) return;
-    if(delta < 0){
-      const freeAmount = -delta;
-      const offsetAfterAnchor = beforeUsed + newDur;
-      const pieces = splitDurationByBeat(offsetAfterAnchor, freeAmount, beat);
-      const newSlots = pieces.map(p => { const copy = Object.assign({}, anchor, {dur: p.dur, dot: p.dot}); delete copy.tieToNext; return copy; });
-      const tail = meas.slice(anchorIdx + 1);
-      state.measures[m] = meas.slice(0, anchorIdx + 1).concat(newSlots, tail);
-      truncateMeasureToCapacity(m, cap);
-      return;
-    }
-    let need = delta; let cursor = anchorIdx + 1;
-    while(need > eps && cursor < meas.length){
-      const slot = meas[cursor]; const dur = effDur(slot);
-      if(dur <= need + eps){ need = +(need - dur).toFixed(6); meas.splice(cursor, 1); }
-      else {
-        const remaining = +(dur - need).toFixed(6);
-        let off = 0; for(let i=0; i<cursor; i++) off += effDur(meas[i]);
-        const pieces = splitDurationByBeat(off + need, remaining, beat);
-        const newCopies = pieces.map(p => Object.assign({}, slot, {dur: p.dur, dot: p.dot}));
-        meas.splice(cursor, 1, ...newCopies);
-        need = 0;
-      }
-    }
-    truncateMeasureToCapacity(m, cap);
-  }
-  function _consumeFromHead(m, amount, replacementSlots){
-    const meter = meterAt(m); const beat = 4/parseMeter(meter).den;
-    const meas = state.measures[m]; const eps = 1e-6;
-    let need = amount; let cursor = 0;
-    while(need > eps && cursor < meas.length){
-      const slot = meas[cursor]; const dur = effDur(slot);
-      if(dur <= need + eps){ need = +(need - dur).toFixed(6); meas.splice(cursor, 1); }
-      else {
-        const remaining = +(dur - need).toFixed(6);
-        const off = need;
-        const pieces = splitDurationByBeat(off, remaining, beat);
-        const newCopies = pieces.map(p => Object.assign({}, slot, {dur: p.dur, dot: p.dot}));
-        meas.splice(cursor, 1, ...newCopies);
-        need = 0;
-      }
-    }
-    state.measures[m] = replacementSlots.concat(state.measures[m]);
-    truncateMeasureToCapacity(m, measureCapacity(meter));
-  }
-  function truncateMeasureToCapacity(m, cap){
-    const eps = 1e-6;
-    const meas = state.measures[m];
-    let used = 0;
-    for(let i=0; i<meas.length; i++){
-      const d = effDur(meas[i]);
-      if(used + d > cap + eps){
-        state.measures[m] = meas.slice(0, i);
-        const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
-        const tail = splitDurationByBeat(used, cap - used, beat).map(p=> ({type:'rest', dur:p.dur, dot:p.dot}));
-        state.measures[m] = state.measures[m].concat(tail);
-        return;
-      }
-      used += d;
-    }
-    if(used < cap - eps){
-      const meter = meterAt(m); const {den} = parseMeter(meter); const beat = 4/den;
-      const tail = splitDurationByBeat(used, cap - used, beat).map(p=> ({type:'rest', dur:p.dur, dot:p.dot}));
-      state.measures[m] = meas.concat(tail);
-    }
-  }
+  function splitDurationByBeat(offset,amount,beat){const eps=1e-6;const out=[];let cur=+offset.toFixed(6);let rem=+amount.toFixed(6);const distToBeat=((cur%beat)===0)?0:(beat-(cur%beat));if(distToBeat>eps&&rem>eps){const toFill=Math.min(distToBeat,rem);const subs=[4,2,1,0.5,0.25,0.125].filter(u=>u<=beat/2+eps);let used=0;for(const u of subs)while(toFill-used>=u-eps){out.push({dur:u,dot:false});used=+(used+u).toFixed(6)}cur=+(cur+used).toFixed(6);rem=+(rem-used).toFixed(6)}while(rem>=beat-eps){out.push({dur:(beat===1.5)?1:beat,dot:(beat===1.5)});rem=+(rem-beat).toFixed(6);cur=+(cur+beat).toFixed(6)}if(rem>eps){const subs=[4,2,1,0.5,0.25,0.125].filter(u=>u<=beat/2+eps);let leftover=rem;for(const u of subs)while(leftover>=u-eps){out.push({dur:u,dot:false});leftover=+(leftover-u).toFixed(6)}}return out}
+  function rebalanceMeasure(m,anchorIdx,oldEffDur){const meter=meterAt(m);const{den}=parseMeter(meter);const beat=4/den;const cap=measureCapacity(meter);const meas=state.measures[m];const anchor=meas[anchorIdx];let newDur=effDur(anchor);let beforeUsed=0;for(let i=0;i<anchorIdx;i++)beforeUsed+=effDur(meas[i]);if(beforeUsed+newDur>cap+1e-6){const fits=cap-beforeUsed;const overflow=newDur-fits;anchor.tieToNext=true;const fitsPieces=splitDurationByBeat(beforeUsed,fits,beat);if(fitsPieces.length>0){anchor.dur=fitsPieces[0].dur;anchor.dot=fitsPieces[0].dot;const extras=fitsPieces.slice(1).map(p=>{const c=Object.assign({},anchor,{dur:p.dur,dot:p.dot});c.tieToNext=true;return c});state.measures[m]=meas.slice(0,anchorIdx+1).concat(extras)}const nextM=m+1;if(nextM>=state.measures.length)state.measures.push(buildEmptyMeasure(meterAt(m)));const contPieces=splitDurationByBeat(0,overflow,4/parseMeter(meterAt(nextM)).den);const contSlots=contPieces.map((p,i)=>{const c=Object.assign({},anchor,{dur:p.dur,dot:p.dot});delete c.tieToNext;if(i<contPieces.length-1)c.tieToNext=true;return c});_consumeFromHead(nextM,overflow,contSlots);return}const delta=+(newDur-oldEffDur).toFixed(6);const eps=1e-6;if(Math.abs(delta)<eps)return;if(delta<0){const freeAmount=-delta;const offsetAfterAnchor=beforeUsed+newDur;const pieces=splitDurationByBeat(offsetAfterAnchor,freeAmount,beat);const newSlots=pieces.map(p=>{const copy=Object.assign({},anchor,{dur:p.dur,dot:p.dot});delete copy.tieToNext;return copy});const tail=meas.slice(anchorIdx+1);state.measures[m]=meas.slice(0,anchorIdx+1).concat(newSlots,tail);truncateMeasureToCapacity(m,cap);return}let need=delta;let cursor=anchorIdx+1;while(need>eps&&cursor<meas.length){const slot=meas[cursor];const dur=effDur(slot);if(dur<=need+eps){need=+(need-dur).toFixed(6);meas.splice(cursor,1)}else{const remaining=+(dur-need).toFixed(6);let off=0;for(let i=0;i<cursor;i++)off+=effDur(meas[i]);const pieces=splitDurationByBeat(off+need,remaining,beat);const newCopies=pieces.map(p=>Object.assign({},slot,{dur:p.dur,dot:p.dot}));meas.splice(cursor,1,...newCopies);need=0}}truncateMeasureToCapacity(m,cap)}
+  function _consumeFromHead(m,amount,replacementSlots){const meter=meterAt(m);const beat=4/parseMeter(meter).den;const meas=state.measures[m];const eps=1e-6;let need=amount;let cursor=0;while(need>eps&&cursor<meas.length){const slot=meas[cursor];const dur=effDur(slot);if(dur<=need+eps){need=+(need-dur).toFixed(6);meas.splice(cursor,1)}else{const remaining=+(dur-need).toFixed(6);const off=need;const pieces=splitDurationByBeat(off,remaining,beat);const newCopies=pieces.map(p=>Object.assign({},slot,{dur:p.dur,dot:p.dot}));meas.splice(cursor,1,...newCopies);need=0}}state.measures[m]=replacementSlots.concat(state.measures[m]);truncateMeasureToCapacity(m,measureCapacity(meter))}
+  function truncateMeasureToCapacity(m,cap){const eps=1e-6;const meas=state.measures[m];let used=0;for(let i=0;i<meas.length;i++){const d=effDur(meas[i]);if(used+d>cap+eps){state.measures[m]=meas.slice(0,i);const meter=meterAt(m);const{den}=parseMeter(meter);const beat=4/den;const tail=splitDurationByBeat(used,cap-used,beat).map(p=>({type:'rest',dur:p.dur,dot:p.dot}));state.measures[m]=state.measures[m].concat(tail);return}used+=d}if(used<cap-eps){const meter=meterAt(m);const{den}=parseMeter(meter);const beat=4/den;const tail=splitDurationByBeat(used,cap-used,beat).map(p=>({type:'rest',dur:p.dur,dot:p.dot}));state.measures[m]=meas.concat(tail)}}
 
-  function unitMultiplier(){
-    const m = state.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);
-    if(!m) return 1;
-    const denom = parseInt(m[1],10); return denom / 4;
-  }
-  function effDToAbc(d){
-    const v = d * unitMultiplier(); const e = 1e-9;
-    if(Math.abs(v-1)<e) return ''; if(Math.abs(v-2)<e) return '2'; if(Math.abs(v-3)<e) return '3';
-    if(Math.abs(v-4)<e) return '4'; if(Math.abs(v-6)<e) return '6'; if(Math.abs(v-8)<e) return '8';
-    if(Math.abs(v-0.5)<e) return '/2'; if(Math.abs(v-0.25)<e) return '/4'; if(Math.abs(v-0.125)<e) return '/8';
-    if(Math.abs(v-1.5)<e) return '3/2'; if(Math.abs(v-0.75)<e) return '3/4'; if(Math.abs(v-0.375)<e) return '3/8';
-    const denom = 16; const numer = Math.round(v * denom);
-    function gcd(a,b){ return b?gcd(b,a%b):a; }
-    const g = gcd(numer, denom); const a = numer/g, b = denom/g;
-    if(b === 1) return String(a); if(a === 1) return '/' + b; return a + '/' + b;
-  }
-  function slotStr(t){
-    let s = '';
-    if(t.chord) s += '"' + t.chord + '"';
-    if(t.orn && t.orn.length){ t.orn.forEach(o => { if('TMPHLRuv'.includes(o)) s += o; else if(o === '.') s += '.'; else s += '!' + o + '!'; }); }
-    if(t.type === 'note'){
-      s += t.acc || '';
-      let n = t.note;
-      if(t.octave>=1) n = n.toLowerCase();
-      s += n;
-      if(t.octave>=2) s += "'".repeat(t.octave-1);
-      else if(t.octave<=-1) s += ",".repeat(-t.octave);
-    } else { s += 'z'; }
-    s += effDToAbc(effDur(t));
-    if(t.tieToNext) s += '-';
-    return s;
-  }
-  function keyAbc(sig){
-    if(sig === 0) return 'C';
-    if(sig > 0) return ['C','G','D','A','E','B','F#','C#'][sig];
-    return ['C','F','Bb','Eb','Ab','Db','Gb','Cb'][-sig];
-  }
-  function clefAbcSuffix(c){ if(c === 'bass') return ' clef=bass'; if(c === 'treble8') return ' clef=treble-8'; return ''; }
-  function clefHumanLabel(c){ if(c === 'bass') return 'Fa'; if(c === 'treble8') return 'Sol-8'; return 'Sol'; }
-  function keyHumanLabel(sig){
-    if(sig === 0) return '0';
-    if(sig > 0) return sig + ' ♯';
-    return Math.abs(sig) + ' ♭';
-  }
-  function cleanupAccidentals(){
-    state.measures.forEach((meas, mi)=>{
-      const sig = keyAt(mi);
-      meas.forEach(slot=>{
-        if(slot.type !== 'note') return;
-        if(!slot.acc) return;
-        if(sig > 0 && slot.acc === '^' && SHARP_NOTES.slice(0, sig).includes(slot.note)){ delete slot.acc; }
-        else if(sig < 0 && slot.acc === '_' && FLAT_NOTES.slice(0, -sig).includes(slot.note)){ delete slot.acc; }
-      });
-    });
-  }
-  function disarmKey(){
-    state.measures.forEach((meas, mi)=>{
-      const sig = keyAt(mi);
-      meas.forEach(slot=>{
-        if(slot.type !== 'note') return;
-        if(!slot.acc){
-          if(sig > 0 && SHARP_NOTES.slice(0, sig).includes(slot.note)) slot.acc = '^';
-          else if(sig < 0 && FLAT_NOTES.slice(0, -sig).includes(slot.note)) slot.acc = '_';
-        }
-      });
-    });
-    state.pieceKeySig = 0; state.keyChanges = {};
-  }
+  function unitMultiplier(){const m=state.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);if(!m)return 1;const denom=parseInt(m[1],10);return denom/4}
+  function effDToAbc(d){const v=d*unitMultiplier();const e=1e-9;if(Math.abs(v-1)<e)return'';if(Math.abs(v-2)<e)return'2';if(Math.abs(v-3)<e)return'3';if(Math.abs(v-4)<e)return'4';if(Math.abs(v-6)<e)return'6';if(Math.abs(v-8)<e)return'8';if(Math.abs(v-0.5)<e)return'/2';if(Math.abs(v-0.25)<e)return'/4';if(Math.abs(v-0.125)<e)return'/8';if(Math.abs(v-1.5)<e)return'3/2';if(Math.abs(v-0.75)<e)return'3/4';if(Math.abs(v-0.375)<e)return'3/8';const denom=16;const numer=Math.round(v*denom);function gcd(a,b){return b?gcd(b,a%b):a}const g=gcd(numer,denom);const a=numer/g,b=denom/g;if(b===1)return String(a);if(a===1)return'/'+b;return a+'/'+b}
+  function slotStr(t){let s='';if(t.chord)s+='"'+t.chord+'"';if(t.orn&&t.orn.length)t.orn.forEach(o=>{if('TMPHLRuv'.includes(o))s+=o;else if(o==='.')s+='.';else s+='!'+o+'!'});if(t.type==='note'){s+=t.acc||'';let n=t.note;if(t.octave>=1)n=n.toLowerCase();s+=n;if(t.octave>=2)s+="'".repeat(t.octave-1);else if(t.octave<=-1)s+=",".repeat(-t.octave)}else s+='z';s+=effDToAbc(effDur(t));if(t.tieToNext)s+='-';return s}
+  function keyAbc(sig){if(sig===0)return'C';if(sig>0)return['C','G','D','A','E','B','F#','C#'][sig];return['C','F','Bb','Eb','Ab','Db','Gb','Cb'][-sig]}
+  function clefAbcSuffix(c){if(c==='bass')return' clef=bass';if(c==='treble8')return' clef=treble-8';return''}
+  function clefHumanLabel(c){if(c==='bass')return'Fa';if(c==='treble8')return'Sol-8';return'Sol'}
+  function keyHumanLabel(sig){if(sig===0)return'C maj';if(sig>0)return KEY_NAMES_MAJOR[sig]+' maj';return KEY_NAMES_MAJOR_FLAT[-sig]+' maj'}
+  function cleanupAccidentals(){state.measures.forEach((meas,mi)=>{const sig=keyAt(mi);meas.forEach(slot=>{if(slot.type!=='note')return;if(!slot.acc)return;if(sig>0&&slot.acc==='^'&&SHARP_NOTES.slice(0,sig).includes(slot.note))delete slot.acc;else if(sig<0&&slot.acc==='_'&&FLAT_NOTES.slice(0,-sig).includes(slot.note))delete slot.acc})})}
+  function disarmKey(){state.measures.forEach((meas,mi)=>{const sig=keyAt(mi);meas.forEach(slot=>{if(slot.type!=='note')return;if(!slot.acc){if(sig>0&&SHARP_NOTES.slice(0,sig).includes(slot.note))slot.acc='^';else if(sig<0&&FLAT_NOTES.slice(0,-sig).includes(slot.note))slot.acc='_'}})});state.pieceKeySig=0;state.keyChanges={}}
 
-  const NOTE_NAMES = ['C','C','D','D','E','F','F','G','G','A','A','B'];
-  const NOTE_ACCS  = ['',  '^','',  '^','',  '',  '^','',  '^','',  '^','' ];
-  const NOTE_NAMES_FLAT = ['C','D','D','E','E','F','G','G','A','A','B','B'];
-  const NOTE_ACCS_FLAT  = ['',  '_','',  '_','',  '',  '_','',  '_','',  '_','' ];
-  function midiToNote(midi, preferFlats){
-    const oct = Math.floor(midi/12) - 5;
-    const pc = ((midi % 12) + 12) % 12;
-    const names = preferFlats ? NOTE_NAMES_FLAT : NOTE_NAMES;
-    const accs  = preferFlats ? NOTE_ACCS_FLAT  : NOTE_ACCS;
-    return { note: names[pc], octave: oct, acc: accs[pc] };
-  }
-  function midiOfSlot(slot, sig){
-    const baseSemi = {C:0,D:2,E:4,F:5,G:7,A:9,B:11}[slot.note];
-    let midi = 60 + baseSemi + slot.octave * 12;
-    if(slot.acc === '^') midi += 1;
-    else if(slot.acc === '_') midi -= 1;
-    else if(slot.acc === '=') {}
-    else {
-      if(sig > 0 && SHARP_NOTES.slice(0,sig).includes(slot.note)) midi += 1;
-      else if(sig < 0 && FLAT_NOTES.slice(0,-sig).includes(slot.note)) midi -= 1;
-    }
-    return midi;
-  }
-  function transposePiece(semitones){
-    const preferFlats = state.pieceKeySig < 0;
-    state.measures.forEach((meas, mi)=>{
-      const sig = keyAt(mi);
-      meas.forEach(slot=>{
-        if(slot.type !== 'note') return;
-        const oldMidi = midiOfSlot(slot, sig);
-        const newMidi = oldMidi + semitones;
-        const out = midiToNote(newMidi, preferFlats);
-        slot.note = out.note; slot.octave = out.octave; slot.acc = out.acc;
-      });
-    });
-    cleanupAccidentals();
-  }
+  const NOTE_NAMES=['C','C','D','D','E','F','F','G','G','A','A','B'];
+  const NOTE_ACCS=['','^','','^','','','^','','^','','^',''];
+  const NOTE_NAMES_FLAT=['C','D','D','E','E','F','G','G','A','A','B','B'];
+  const NOTE_ACCS_FLAT=['','_','','_','','','_','','_','','_',''];
+  function midiToNote(midi,preferFlats){const oct=Math.floor(midi/12)-5;const pc=((midi%12)+12)%12;const names=preferFlats?NOTE_NAMES_FLAT:NOTE_NAMES;const accs=preferFlats?NOTE_ACCS_FLAT:NOTE_ACCS;return{note:names[pc],octave:oct,acc:accs[pc]}}
+  function midiOfSlot(slot,sig){const baseSemi={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[slot.note];let midi=60+baseSemi+slot.octave*12;if(slot.acc==='^')midi+=1;else if(slot.acc==='_')midi-=1;else if(slot.acc==='='){}else{if(sig>0&&SHARP_NOTES.slice(0,sig).includes(slot.note))midi+=1;else if(sig<0&&FLAT_NOTES.slice(0,-sig).includes(slot.note))midi-=1}return midi}
+  function transposePiece(semitones){const preferFlats=state.pieceKeySig<0;state.measures.forEach((meas,mi)=>{const sig=keyAt(mi);meas.forEach(slot=>{if(slot.type!=='note')return;const oldMidi=midiOfSlot(slot,sig);const newMidi=oldMidi+semitones;const out=midiToNote(newMidi,preferFlats);slot.note=out.note;slot.octave=out.octave;slot.acc=out.acc})});cleanupAccidentals()}
 
-  function buildBarSeparator(prevMi, mi){
-    const prevEnd = (prevMi >= 0) && state.repeats[prevMi]?.end;
-    const thisStart = state.repeats[mi]?.start;
-    if(prevEnd && thisStart) return ':|:';
-    if(prevEnd) return ':|';
-    if(thisStart) return '|:';
-    if(mi === 0) return '';
-    return '|';
-  }
-  function buildInlineFor(mi){
-    const parts = [];
-    if(mi === 0) return '';
-    if(state.timeChanges[mi]) parts.push('[M:' + state.timeChanges[mi] + ']');
-    const keyChange = state.keyChanges[mi];
-    const clefChange = state.clefChanges[mi];
-    if(keyChange !== undefined || clefChange){
-      const sig = keyChange !== undefined ? keyChange : keyAt(mi);
-      const cl  = clefChange ? clefChange : clefAt(mi);
-      let inner = 'K:' + keyAbc(sig);
-      if(cl && cl !== 'treble') inner += clefAbcSuffix(cl);
-      parts.push('[' + inner + ']');
-    }
-    return parts.join('');
-  }
-  function buildVoltaFor(mi){ const r = state.repeats[mi]; if(!r || !r.volta) return ''; return '[' + r.volta; }
+  function buildBarSeparator(prevMi,mi){const prevEnd=(prevMi>=0)&&state.repeats[prevMi]?.end;const thisStart=state.repeats[mi]?.start;if(prevEnd&&thisStart)return':|:';if(prevEnd)return':|';if(thisStart)return'|:';if(mi===0)return'';return'|'}
+  function buildInlineFor(mi){const parts=[];if(mi===0)return'';if(state.timeChanges[mi])parts.push('[M:'+state.timeChanges[mi]+']');const keyChange=state.keyChanges[mi];const clefChange=state.clefChanges[mi];if(keyChange!==undefined||clefChange){const sig=keyChange!==undefined?keyChange:keyAt(mi);const cl=clefChange?clefChange:clefAt(mi);let inner='K:'+keyAbc(sig);if(cl&&cl!=='treble')inner+=clefAbcSuffix(cl);parts.push('['+inner+']')}return parts.join('')}
+  function buildVoltaFor(mi){const r=state.repeats[mi];if(!r||!r.volta)return'';return'['+r.volta}
 
-  function buildAbcText(){
-    let header = '';
-    if(state.headers.X) header += 'X:' + state.headers.X + '\n';
-    if(state.headers.T) header += 'T:' + state.headers.T + '\n';
-    header += 'M:' + state.pieceMeter + '\n';
-    header += 'L:' + state.pieceUnit + '\n';
-    header += 'Q:1/4=' + state.tempo + '\n';
-    header += 'K:' + keyAbc(state.pieceKeySig) + clefAbcSuffix(state.pieceClef) + '\n';
-    let body = '';
-    state.measures.forEach((m, mi)=>{
-      body += buildBarSeparator(mi - 1, mi);
-      body += buildInlineFor(mi);
-      body += buildVoltaFor(mi);
-      const groups = computeBeamGroups(m, meterAt(mi));
-      const groupOf = {};
-      groups.forEach((g, gi)=>{ g.forEach((idx, k)=>{ groupOf[idx] = {gi}; }); });
-      let lastTuplet = null;
-      m.forEach((t, si)=>{
-        if(t.tuplet && t.tuplet !== lastTuplet){ body += '(' + t.tuplet; lastTuplet = t.tuplet; }
-        if(!t.tuplet) lastTuplet = null;
-        body += slotStr(t);
-        const isLast = (si === m.length - 1);
-        if(isLast) return;
-        const here = groupOf[si]; const next = groupOf[si+1];
-        const inSameGroup = here && next && here.gi === next.gi;
-        if(!inSameGroup) body += ' ';
-      });
-    });
-    const lastIdx = state.measures.length - 1;
-    if(state.repeats[lastIdx]?.end) body += ':|';
-    else body += '|';
-    return header + body;
-  }
+  function buildAbcText(){let h='';if(state.headers.X)h+='X:'+state.headers.X+'\n';if(state.headers.T)h+='T:'+state.headers.T+'\n';if(state.headers.ST)h+='T:'+state.headers.ST+'\n';if(state.headers.C)h+='C:'+state.headers.C+'\n';if(state.headers.N)h+='N:'+state.headers.N+'\n';h+='M:'+state.pieceMeter+'\n';h+='L:'+state.pieceUnit+'\n';h+='Q:1/4='+state.tempo+'\n';h+='K:'+keyAbc(state.pieceKeySig)+clefAbcSuffix(state.pieceClef)+'\n';let body='';state.measures.forEach((m,mi)=>{body+=buildBarSeparator(mi-1,mi);body+=buildInlineFor(mi);body+=buildVoltaFor(mi);const groups=computeBeamGroups(m,meterAt(mi));const gOf={};groups.forEach((g,gi)=>{g.forEach((idx,k)=>{gOf[idx]={gi}})});let lt=null;m.forEach((t,si)=>{if(t.tuplet&&t.tuplet!==lt){body+='('+t.tuplet;lt=t.tuplet}if(!t.tuplet)lt=null;body+=slotStr(t);const isLast=(si===m.length-1);if(isLast)return;const he=gOf[si];const ne=gOf[si+1];const inSame=he&&ne&&he.gi===ne.gi;if(!inSame)body+=' '})});const li=state.measures.length-1;if(state.repeats[li]?.end)body+=':|';else body+='|';return h+body}
 
-  function parseKeyDef(s){
-    s = s.trim();
-    let sig = 0; let clef = 'treble';
-    const clefMatch = s.match(/clef=(\S+)/);
-    if(clefMatch){
-      const c = clefMatch[1];
-      if(c === 'bass' || c === 'F') clef = 'bass';
-      else if(c === 'treble-8' || c === 'treble_8') clef = 'treble8';
-      s = s.replace(clefMatch[0],'').trim();
-    }
-    const km = s.match(/^([A-G])([#b]?)(.*)$/);
-    if(km){
-      const root = km[1]; const acc = km[2]; const mode = (km[3] || '').toLowerCase().trim();
-      const majorSig = {'C':0,'G':1,'D':2,'A':3,'E':4,'B':5,'F#':6,'C#':7,'F':-1,'Bb':-2,'Eb':-3,'Ab':-4,'Db':-5,'Gb':-6,'Cb':-7};
-      let baseSig = majorSig[root + acc];
-      if(baseSig === undefined){ baseSig = majorSig[root] || 0; if(acc === '#') baseSig += 7; else if(acc === 'b') baseSig -= 7; }
-      sig = baseSig;
-      if(mode.startsWith('m') && !mode.startsWith('maj') && !mode.startsWith('mix')) sig -= 3;
-      else if(mode.startsWith('dor')) sig -= 2;
-      else if(mode.startsWith('phr')) sig -= 4;
-      else if(mode.startsWith('lyd')) sig += 1;
-      else if(mode.startsWith('mix')) sig -= 1;
-      else if(mode.startsWith('aeo')) sig -= 3;
-      else if(mode.startsWith('loc')) sig -= 5;
-    }
-    return {sig: Math.max(-7, Math.min(7, sig)), clef};
-  }
-  function parseAbcText(text){
-    const cleaned = text.split(/\r?\n/).map(line => { const m = line.match(/^(.*?)(?:%.*)?$/); return m ? m[1] : line; });
-    const newState = {
-      headers: {X:'1', T:''},
-      pieceMeter: '4/4', pieceUnit: '1/4', pieceKeySig: 0, pieceClef: 'treble',
-      measures: [], timeChanges: {}, keyChanges: {}, clefChanges: {}, repeats: {},
-      tempo: 100, sel: {m:0, s:0}, octave: 0, volume: state.volume,
-    };
-    let inBody = false; let bodyText = '';
-    for(const line of cleaned){
-      const trimmed = line.trim();
-      if(!inBody){
-        const m = trimmed.match(/^([A-Z]):\s*(.*)$/);
-        if(m){
-          const k = m[1]; const v = m[2].trim();
-          if(k === 'X') newState.headers.X = v;
-          else if(k === 'T') newState.headers.T = v;
-          else if(k === 'M') newState.pieceMeter = v;
-          else if(k === 'L') newState.pieceUnit = v;
-          else if(k === 'Q'){ const qm = v.match(/=(\d+)/); if(qm) newState.tempo = parseInt(qm[1],10); }
-          else if(k === 'K'){ const kkm = parseKeyDef(v); newState.pieceKeySig = kkm.sig; newState.pieceClef = kkm.clef; inBody = true; }
-          continue;
-        }
-        continue;
-      }
-      bodyText += ' ' + trimmed;
-    }
-    if(!inBody) return null;
-    parseAbcBody(bodyText, newState);
-    return newState;
-  }
-  function parseAbcBody(body, ns){
-    let i = 0; let curMeasure = []; let mIdx = 0;
-    let lastChord = null; let pendingOrn = []; let pendingTuplet = null;
-    const measures = ns.measures;
-    function flushMeasure(){ if(curMeasure.length > 0){ measures.push(curMeasure); curMeasure = []; mIdx++; } }
-    function unitMult(){ const m = ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/); if(!m) return 1; return parseInt(m[1],10) / 4; }
-    while(i < body.length){
-      const c = body[i];
-      if(/\s/.test(c)){ i++; continue; }
-      if(c === '%'){ while(i < body.length && body[i] !== '\n') i++; continue; }
-      if(c === '[' && body[i+1] && body[i+1].match(/[A-Z]/) && body[i+2] === ':'){
-        const end = body.indexOf(']', i); if(end < 0){ i++; continue; }
-        const inner = body.substring(i+1, end);
-        const m = inner.match(/^([A-Z]):\s*(.*)$/);
-        if(m){
-          const k = m[1]; const v = m[2].trim();
-          if(k === 'M') ns.timeChanges[mIdx + (curMeasure.length > 0 ? 1 : 0)] = v;
-          else if(k === 'L') ns.pieceUnit = v;
-          else if(k === 'K'){ const kdef = parseKeyDef(v); const targetIdx = mIdx + (curMeasure.length > 0 ? 1 : 0); ns.keyChanges[targetIdx] = kdef.sig; if(kdef.clef !== 'treble') ns.clefChanges[targetIdx] = kdef.clef; }
-        }
-        i = end + 1; continue;
-      }
-      if(c === '[' && body[i+1] && /[1-9]/.test(body[i+1])){
-        const v = parseInt(body[i+1], 10);
-        const ti = mIdx + (curMeasure.length === 0 ? 0 : 1);
-        if(!ns.repeats[ti]) ns.repeats[ti] = {};
-        ns.repeats[ti].volta = v;
-        i += 2; continue;
-      }
-      if(c === '"'){ const end = body.indexOf('"', i+1); if(end < 0){ i++; continue; } const ch = body.substring(i+1, end); const cleanCh = ch.replace(/^[\^_<>@]/, ''); if(cleanCh && /^[A-G]/.test(cleanCh)) lastChord = cleanCh; i = end + 1; continue; }
-      if(c === '!'){ const end = body.indexOf('!', i+1); if(end < 0){ i++; continue; } const name = body.substring(i+1, end); const knownMap = {'trill':'T','turn':'P','fermata':'H','accent':'L','staccato':'.','upbow':'u','downbow':'v','coda':'O'}; const code = knownMap[name] || name; pendingOrn.push(code); i = end + 1; continue; }
-      if('.TMHLuv'.includes(c) && (i === 0 || !/[A-Ga-gz0-9]/.test(body[i-1]))){
-        const next = body[i+1];
-        if(next && /[\^_=A-Ga-gz]/.test(next)){ pendingOrn.push(c); i++; continue; }
-      }
-      if(c === '(' && body[i+1] && /[2-9]/.test(body[i+1])){
-        const n = parseInt(body[i+1], 10); let j = i + 2; let take = n;
-        if(body[j] === ':'){ j++; const nm = body.substring(j).match(/^(\d+)?(?::(\d+))?/); if(nm){ j += (nm[0] || '').length; if(nm[2]) take = parseInt(nm[2],10); } }
-        pendingTuplet = { n: n, remaining: take }; i = j; continue;
-      }
-      if(c === ':' || c === '|'){
-        let j = i; let bar = '';
-        while(j < body.length && (body[j] === '|' || body[j] === ':')){ bar += body[j]; j++; }
-        const endRepeat = /:\|/.test(bar);
-        const startRepeat = /\|:/.test(bar);
-        if(curMeasure.length > 0){
-          if(endRepeat){ if(!ns.repeats[mIdx]) ns.repeats[mIdx] = {}; ns.repeats[mIdx].end = true; }
-          flushMeasure();
-        }
-        if(startRepeat){ if(!ns.repeats[mIdx]) ns.repeats[mIdx] = {}; ns.repeats[mIdx].start = true; }
-        if(j < body.length && /[1-9]/.test(body[j])){ const v = parseInt(body[j], 10); if(!ns.repeats[mIdx]) ns.repeats[mIdx] = {}; ns.repeats[mIdx].volta = v; j++; }
-        i = j; continue;
-      }
-      let acc = '';
-      while(i < body.length && (body[i] === '^' || body[i] === '_' || body[i] === '=')){
-        if(body[i] === '^') acc = (acc === '^' ? '^^' : '^');
-        else if(body[i] === '_') acc = (acc === '_' ? '__' : '_');
-        else if(body[i] === '=') acc = '=';
-        i++;
-      }
-      if(i >= body.length) break;
-      const ch = body[i];
-      if(/[A-Ga-g]/.test(ch)){
-        let note = ch.toUpperCase();
-        let octave = (ch === ch.toLowerCase()) ? 1 : 0;
-        i++;
-        while(i < body.length && (body[i] === "'" || body[i] === ',')){ if(body[i] === "'") octave++; else octave--; i++; }
-        let durSpec = '';
-        while(i < body.length && /[\d/]/.test(body[i])){ durSpec += body[i]; i++; }
-        let tie = false;
-        if(body[i] === '-'){ tie = true; i++; }
-        const factor = parseDurationSpec(durSpec);
-        const quarterDur = factor / unitMult();
-        let dur = quarterDur, dot = false;
-        const trial = quarterDur * 2 / 3;
-        if(Math.abs(Math.round(Math.log2(trial)) - Math.log2(trial)) < 1e-6 && trial >= 0.125 && trial <= 4){ dur = trial; dot = true; }
-        const slot = {type:'note', note, octave, dur, dot};
-        if(acc) slot.acc = acc.length > 1 ? acc[0] : acc;
-        if(tie) slot.tieToNext = true;
-        if(lastChord){ slot.chord = lastChord; lastChord = null; }
-        if(pendingOrn.length){ slot.orn = pendingOrn.slice(); pendingOrn = []; }
-        if(pendingTuplet && pendingTuplet.remaining > 0){ slot.tuplet = pendingTuplet.n; pendingTuplet.remaining--; if(pendingTuplet.remaining === 0) pendingTuplet = null; }
-        curMeasure.push(slot);
-        continue;
-      }
-      if(ch === 'z' || ch === 'Z'){
-        i++;
-        let durSpec = '';
-        while(i < body.length && /[\d/]/.test(body[i])){ durSpec += body[i]; i++; }
-        const factor = parseDurationSpec(durSpec);
-        const quarterDur = (ch === 'Z') ? measureCapacity(ns.pieceMeter) : (factor / unitMult());
-        let dur = quarterDur, dot = false;
-        const trial = quarterDur * 2 / 3;
-        if(Math.abs(Math.round(Math.log2(trial)) - Math.log2(trial)) < 1e-6 && trial >= 0.125 && trial <= 4){ dur = trial; dot = true; }
-        const slot = {type:'rest', dur, dot};
-        if(pendingTuplet && pendingTuplet.remaining > 0){ slot.tuplet = pendingTuplet.n; pendingTuplet.remaining--; if(pendingTuplet.remaining === 0) pendingTuplet = null; }
-        curMeasure.push(slot);
-        continue;
-      }
-      i++;
-    }
-    if(curMeasure.length > 0) measures.push(curMeasure);
-    measures.forEach((meas, mi) => {
-      let used = 0; for(const s of meas) used += effDur(s);
-      let localMeter = ns.pieceMeter;
-      for(let k=0; k<=mi; k++){ if(ns.timeChanges[k]) localMeter = ns.timeChanges[k]; }
-      const cap = measureCapacity(localMeter);
-      if(used < cap - 1e-6){
-        const beat = 4 / parseMeter(localMeter).den;
-        const tail = splitDurationByBeat(used, cap - used, beat).map(p => ({type:'rest', dur:p.dur, dot:p.dot}));
-        meas.push(...tail);
-      } else if(used > cap + 1e-6){
-        let acc = 0; let cutAt = meas.length;
-        for(let k=0; k<meas.length; k++){ const d = effDur(meas[k]); if(acc + d > cap + 1e-6){ cutAt = k; break; } acc += d; }
-        meas.splice(cutAt);
-      }
-    });
-    if(measures.length === 0) measures.push(buildEmptyMeasure(ns.pieceMeter));
-  }
-  function parseDurationSpec(s){
-    if(s === '') return 1;
-    if(s === '/') return 0.5;
-    if(s === '//') return 0.25;
-    if(s === '///') return 0.125;
-    if(s.startsWith('/')){ const n = parseInt(s.substring(1), 10); return 1 / (n || 2); }
-    if(s.includes('/')){ const [num, den] = s.split('/'); const n = parseInt(num, 10) || 1; const d = parseInt(den, 10) || 2; return n / d; }
-    return parseInt(s, 10) || 1;
-  }
+  function parseKeyDef(s){s=s.trim();let sig=0,clef='treble';const cm=s.match(/clef=(\S+)/);if(cm){const c=cm[1];if(c==='bass'||c==='F')clef='bass';else if(c==='treble-8'||c==='treble_8')clef='treble8';s=s.replace(cm[0],'').trim()}const km=s.match(/^([A-G])([#b]?)(.*)$/);if(km){const root=km[1],acc=km[2],mode=(km[3]||'').toLowerCase().trim();const M={'C':0,'G':1,'D':2,'A':3,'E':4,'B':5,'F#':6,'C#':7,'F':-1,'Bb':-2,'Eb':-3,'Ab':-4,'Db':-5,'Gb':-6,'Cb':-7};let bs=M[root+acc];if(bs===undefined){bs=M[root]||0;if(acc==='#')bs+=7;else if(acc==='b')bs-=7}sig=bs;if(mode.startsWith('m')&&!mode.startsWith('maj')&&!mode.startsWith('mix'))sig-=3;else if(mode.startsWith('dor'))sig-=2;else if(mode.startsWith('phr'))sig-=4;else if(mode.startsWith('lyd'))sig+=1;else if(mode.startsWith('mix'))sig-=1;else if(mode.startsWith('aeo'))sig-=3;else if(mode.startsWith('loc'))sig-=5}return{sig:Math.max(-7,Math.min(7,sig)),clef}}
+  function parseAbcText(text){const cleaned=text.split(/\r?\n/).map(line=>{const m=line.match(/^(.*?)(?:%.*)?$/);return m?m[1]:line});const ns={headers:{X:'1',T:'',ST:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:100,sel:{m:0,s:0},octave:0,volume:state.volume};let inBody=false,bodyText='',tCount=0;for(const line of cleaned){const t=line.trim();if(!inBody){const m=t.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='X')ns.headers.X=v;else if(k==='T'){if(tCount===0)ns.headers.T=v;else if(tCount===1)ns.headers.ST=v;tCount++}else if(k==='C')ns.headers.C=v;else if(k==='N')ns.headers.N=v;else if(k==='M')ns.pieceMeter=v;else if(k==='L')ns.pieceUnit=v;else if(k==='Q'){const qm=v.match(/=(\d+)/);if(qm)ns.tempo=parseInt(qm[1],10)}else if(k==='K'){const kd=parseKeyDef(v);ns.pieceKeySig=kd.sig;ns.pieceClef=kd.clef;inBody=true}continue}continue}bodyText+=' '+t}if(!inBody)return null;parseAbcBody(bodyText,ns);return ns}
+  function parseAbcBody(body,ns){let i=0,curMeasure=[],mIdx=0,lastChord=null,pendingOrn=[],pendingTuplet=null;const measures=ns.measures;function flush(){if(curMeasure.length>0){measures.push(curMeasure);curMeasure=[];mIdx++}}function uM(){const m=ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);if(!m)return 1;return parseInt(m[1],10)/4}while(i<body.length){const c=body[i];if(/\s/.test(c)){i++;continue}if(c==='%'){while(i<body.length&&body[i]!=='\n')i++;continue}if(c==='['&&body[i+1]&&body[i+1].match(/[A-Z]/)&&body[i+2]===':'){const end=body.indexOf(']',i);if(end<0){i++;continue}const inner=body.substring(i+1,end);const m=inner.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='M')ns.timeChanges[mIdx+(curMeasure.length>0?1:0)]=v;else if(k==='L')ns.pieceUnit=v;else if(k==='K'){const kd=parseKeyDef(v);const ti=mIdx+(curMeasure.length>0?1:0);ns.keyChanges[ti]=kd.sig;if(kd.clef!=='treble')ns.clefChanges[ti]=kd.clef}}i=end+1;continue}if(c==='['&&body[i+1]&&/[1-9]/.test(body[i+1])){const v=parseInt(body[i+1],10);const ti=mIdx+(curMeasure.length===0?0:1);if(!ns.repeats[ti])ns.repeats[ti]={};ns.repeats[ti].volta=v;i+=2;continue}if(c==='"'){const end=body.indexOf('"',i+1);if(end<0){i++;continue}const ch=body.substring(i+1,end);const cc=ch.replace(/^[\^_<>@]/,'');if(cc&&/^[A-G]/.test(cc))lastChord=cc;i=end+1;continue}if(c==='!'){const end=body.indexOf('!',i+1);if(end<0){i++;continue}const name=body.substring(i+1,end);const km={'trill':'T','turn':'P','fermata':'H','accent':'L','staccato':'.','upbow':'u','downbow':'v','coda':'O'};const code=km[name]||name;pendingOrn.push(code);i=end+1;continue}if('.TMHLuv'.includes(c)&&(i===0||!/[A-Ga-gz0-9]/.test(body[i-1]))){const next=body[i+1];if(next&&/[\^_=A-Ga-gz]/.test(next)){pendingOrn.push(c);i++;continue}}if(c==='('&&body[i+1]&&/[2-9]/.test(body[i+1])){const n=parseInt(body[i+1],10);let j=i+2,take=n;if(body[j]===':'){j++;const nm=body.substring(j).match(/^(\d+)?(?::(\d+))?/);if(nm){j+=(nm[0]||'').length;if(nm[2])take=parseInt(nm[2],10)}}pendingTuplet={n:n,remaining:take};i=j;continue}if(c===':'||c==='|'){let j=i,bar='';while(j<body.length&&(body[j]==='|'||body[j]===':')){bar+=body[j];j++}const endRep=/:\|/.test(bar);const startRep=/\|:/.test(bar);if(curMeasure.length>0){if(endRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].end=true}flush()}if(startRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].start=true}if(j<body.length&&/[1-9]/.test(body[j])){const v=parseInt(body[j],10);if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].volta=v;j++}i=j;continue}let acc='';while(i<body.length&&(body[i]==='^'||body[i]==='_'||body[i]==='=')){if(body[i]==='^')acc=(acc==='^'?'^^':'^');else if(body[i]==='_')acc=(acc==='_'?'__':'_');else if(body[i]==='=')acc='=';i++}if(i>=body.length)break;const ch=body[i];if(/[A-Ga-g]/.test(ch)){let note=ch.toUpperCase();let oct=(ch===ch.toLowerCase())?1:0;i++;while(i<body.length&&(body[i]==="'"||body[i]===',')){if(body[i]==="'")oct++;else oct--;i++}let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}let tie=false;if(body[i]==='-'){tie=true;i++}const factor=parseDurationSpec(ds);const qD=factor/uM();let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'note',note,octave:oct,dur,dot};if(acc)slot.acc=acc.length>1?acc[0]:acc;if(tie)slot.tieToNext=true;if(lastChord){slot.chord=lastChord;lastChord=null}if(pendingOrn.length){slot.orn=pendingOrn.slice();pendingOrn=[]}if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}if(ch==='z'||ch==='Z'){i++;let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}const factor=parseDurationSpec(ds);const qD=(ch==='Z')?measureCapacity(ns.pieceMeter):(factor/uM());let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'rest',dur,dot};if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}i++}if(curMeasure.length>0)measures.push(curMeasure);measures.forEach((meas,mi)=>{let used=0;for(const s of meas)used+=effDur(s);let lm=ns.pieceMeter;for(let k=0;k<=mi;k++)if(ns.timeChanges[k])lm=ns.timeChanges[k];const cap=measureCapacity(lm);if(used<cap-1e-6){const beat=4/parseMeter(lm).den;const tail=splitDurationByBeat(used,cap-used,beat).map(p=>({type:'rest',dur:p.dur,dot:p.dot}));meas.push(...tail)}else if(used>cap+1e-6){let a=0,ca=meas.length;for(let k=0;k<meas.length;k++){const d=effDur(meas[k]);if(a+d>cap+1e-6){ca=k;break}a+=d}meas.splice(ca)}});if(measures.length===0)measures.push(buildEmptyMeasure(ns.pieceMeter))}
+  function parseDurationSpec(s){if(s==='')return 1;if(s==='/')return 0.5;if(s==='//')return 0.25;if(s==='///')return 0.125;if(s.startsWith('/')){const n=parseInt(s.substring(1),10);return 1/(n||2)}if(s.includes('/')){const[n,d]=s.split('/');const a=parseInt(n,10)||1;const b=parseInt(d,10)||2;return a/b}return parseInt(s,10)||1}
 
-  function expandForPlayback(){
-    const out = []; const N = state.measures.length; if(N === 0) return out;
-    let i = 0; let lastStart = 0; let pass = 1;
-    while(i < N){
-      const r = state.repeats[i] || {};
-      if(r.start){ lastStart = i; pass = 1; }
-      if(r.volta){
-        if(pass === 1 && r.volta !== 1){ let j = i; while(j < N){ const rj = state.repeats[j] || {}; if(j > i && rj.volta !== r.volta) break; j++; } i = j; continue; }
-        if(pass === 2 && r.volta === 1){ let j = i; while(j < N){ const rj = state.repeats[j] || {}; if(j > i && rj.volta !== 1) break; j++; } i = j; continue; }
-      }
-      out.push(i);
-      if(r.end){ if(pass === 1){ i = lastStart; pass = 2; continue; } pass = 1; }
-      i++;
-      if(out.length > 1000) break;
-    }
-    return out;
-  }
+  function expandForPlayback(){const out=[];const N=state.measures.length;if(N===0)return out;let i=0,ls=0,pass=1;while(i<N){const r=state.repeats[i]||{};if(r.start){ls=i;pass=1}if(r.volta){if(pass===1&&r.volta!==1){let j=i;while(j<N){const rj=state.repeats[j]||{};if(j>i&&rj.volta!==r.volta)break;j++}i=j;continue}if(pass===2&&r.volta===1){let j=i;while(j<N){const rj=state.repeats[j]||{};if(j>i&&rj.volta!==1)break;j++}i=j;continue}}out.push(i);if(r.end){if(pass===1){i=ls;pass=2;continue}pass=1}i++;if(out.length>1000)break}return out}
 
-  const SCORE_W = 360;
-  const STAFF_TOP_Y = 30, LINE_GAP = 7;
-  const LEFT_PAD = 50, RIGHT_PAD = 6;
-  const MEASURES_PER_LINE = 3;
-  function clefRefStep(c){ return c === 'bass' ? -12 : 2; }
-  function noteY(staffTop, step, c){ const refStep = clefRefStep(c); const bottomLineY = staffTop + 4*LINE_GAP; return bottomLineY - (step - refStep) * (LINE_GAP/2); }
-  function stepIndex(note, octave){ const map = {C:0,D:1,E:2,F:3,G:4,A:5,B:6}; return map[note] + 7*octave; }
-  const TREBLE_SHARP_STEPS = { F:10, C:7, G:11, D:8, A:5, E:9, B:6 };
-  const TREBLE_FLAT_STEPS  = { B:6, E:9, A:5, D:8, G:4, C:7, F:10 };
-  const BASS_SHARP_STEPS   = { F:-4, C:-7, G:-3, D:-6, A:-9, E:-5, B:-8 };
-  const BASS_FLAT_STEPS    = { B:-8, E:-5, A:-9, D:-6, G:-10, C:-7, F:-4 };
-  function keySigAccidentals(sig, c){
-    const out = [];
-    if(sig > 0){ const map = c === 'bass' ? BASS_SHARP_STEPS : TREBLE_SHARP_STEPS; for(let i=0; i<sig; i++) out.push({sym:'♯', step: map[SHARP_NOTES[i]]}); }
-    else if(sig < 0){ const map = c === 'bass' ? BASS_FLAT_STEPS : TREBLE_FLAT_STEPS; for(let i=0; i<-sig; i++) out.push({sym:'♭', step: map[FLAT_NOTES[i]]}); }
-    return out;
-  }
-  function computeBeamGroups(meas, meter){
-    const groupUnit = beamGroupUnit(meter); const eps = 1e-6;
-    const groups = []; let curGroup = null; let offset = 0;
-    function flush(){ if(curGroup && curGroup.length >= 2) groups.push(curGroup); curGroup = null; }
-    for(let i=0; i<meas.length; i++){
-      const t = meas[i]; const eD = effDur(t);
-      const groupIdx = Math.floor((offset + eps) / groupUnit);
-      const beamable = (t.type === 'note') && (eD <= 0.5 + eps);
-      const crosses = (offset + eD) > (groupIdx*groupUnit + groupUnit + eps);
-      if(beamable && !crosses){
-        if(curGroup && curGroup.startGroup === groupIdx){ curGroup.push(i); }
-        else { flush(); curGroup = [i]; curGroup.startGroup = groupIdx; }
-      } else flush();
-      offset = +(offset + eD).toFixed(6);
-    }
-    flush();
-    return groups;
-  }
-  function drawNoteHead(t, cx, color, c, drawFlag, stemUp, staffTop){
-    let svg = '';
-    const step = stepIndex(t.note, t.octave);
-    const y = noteY(staffTop, step, c);
-    const refStep = clefRefStep(c);
-    if(step >= refStep + 10){ for(let s=refStep+10; s<=step; s+=2){ const ly = noteY(staffTop, s, c); svg += '<line x1="'+(cx-5)+'" y1="'+ly+'" x2="'+(cx+5)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'; } }
-    if(step <= refStep - 2){ for(let s=refStep-2; s>=step; s-=2){ const ly = noteY(staffTop, s, c); svg += '<line x1="'+(cx-5)+'" y1="'+ly+'" x2="'+(cx+5)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'; } }
-    if(t.acc==='^') svg += '<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="11" fill="'+color+'" font-family="serif">♯</text>';
-    else if(t.acc==='_') svg += '<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="11" fill="'+color+'" font-family="serif">♭</text>';
-    else if(t.acc==='=') svg += '<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="10" fill="'+color+'" font-family="serif">♮</text>';
-    const eD = effDur(t);
-    const filled = eD < 2;
-    const hasStem = eD < 4;
-    let flagCount = 0;
-    if(eD <= 0.125 + 1e-6) flagCount = 3;
-    else if(eD <= 0.25 + 1e-6) flagCount = 2;
-    else if(eD <= 0.5 + 1e-6) flagCount = 1;
-    svg += '<ellipse cx="'+cx+'" cy="'+y+'" rx="3.6" ry="2.7" transform="rotate(-20 '+cx+' '+y+')" fill="'+(filled?color:'none')+'" stroke="'+color+'" stroke-width="0.9"/>';
-    let stemTipY = y; let sx = cx;
-    if(hasStem){
-      sx = stemUp ? cx+3.3 : cx-3.3;
-      stemTipY = stemUp ? y - 19 : y + 19;
-      svg += '<line x1="'+sx+'" y1="'+y+'" x2="'+sx+'" y2="'+stemTipY+'" stroke="'+color+'" stroke-width="0.8"/>';
-      if(drawFlag){
-        for(let f=0; f<flagCount; f++){
-          const flagY = stemUp ? (stemTipY + f*4) : (stemTipY - f*4);
-          if(stemUp) svg += '<path d="M '+sx+' '+flagY+' Q '+(sx+7)+' '+(flagY+4)+' '+(sx+4)+' '+(flagY+9)+'" stroke="'+color+'" stroke-width="1" fill="none" stroke-linecap="round"/>';
-          else svg += '<path d="M '+sx+' '+flagY+' Q '+(sx-7)+' '+(flagY-4)+' '+(sx-4)+' '+(flagY-9)+'" stroke="'+color+'" stroke-width="1" fill="none" stroke-linecap="round"/>';
-        }
-      }
-    }
-    if(t.dot){ svg += '<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>'; }
-    return {svg, headY: y, stemTipY, stemX: sx, flagCount};
-  }
-  function drawRest(t, cx, color, staffTop){
-    let svg = '';
-    const y = staffTop + 2*LINE_GAP;
-    const eD = effDur(t);
-    if(eD >= 4) svg += '<rect x="'+(cx-4.5)+'" y="'+(staffTop + LINE_GAP)+'" width="9" height="3.5" fill="'+color+'"/>';
-    else if(eD >= 2) svg += '<rect x="'+(cx-4.5)+'" y="'+(staffTop + 2*LINE_GAP - 3.5)+'" width="9" height="3.5" fill="'+color+'"/>';
-    else if(eD >= 1) svg += '<text x="'+(cx-4)+'" y="'+(staffTop + 3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄽</text>';
-    else if(eD >= 0.5) svg += '<text x="'+(cx-4)+'" y="'+(staffTop + 3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄾</text>';
-    else svg += '<text x="'+(cx-4)+'" y="'+(staffTop + 3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄿</text>';
-    if(t.dot) svg += '<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>';
-    return {svg, headY: y};
-  }
-  function renderScore(){
-    const selM = state.sel.m;
-    // ⭐ Partition sur 3 lignes au lieu de 2
-    const linesShown = state.viewmode ? 6 : 3;
-    const measuresPerPage = MEASURES_PER_LINE * linesShown;
-    const page = Math.floor(selM / measuresPerPage);
-    const startM = page * measuresPerPage;
-    const usable = SCORE_W - LEFT_PAD - RIGHT_PAD;
-    const measureW = usable / MEASURES_PER_LINE;
-    const ink = '#1a1a1a'; const sel = '#e24b4a'; const dim = '#888780';
-    const scoreH = 30 + linesShown * 38 + 10;
-    let svg = '<svg viewBox="0 0 '+SCORE_W+' '+scoreH+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">';
-    for(let line=0; line<linesShown; line++){
-      const staffTop = STAFF_TOP_Y + line * 38;
-      const lineStartM = startM + line * MEASURES_PER_LINE;
-      if(state.measures[lineStartM] === undefined) continue;
-      for(let i=0;i<5;i++){ const y = staffTop + i*LINE_GAP; svg += '<line x1="'+(LEFT_PAD-25)+'" y1="'+y+'" x2="'+(SCORE_W-RIGHT_PAD)+'" y2="'+y+'" stroke="'+ink+'" stroke-width="0.55" opacity="0.55"/>'; }
-      const headClef = clefAt(lineStartM); const headKey = keyAt(lineStartM); const headMtr = meterAt(lineStartM);
-      if(headClef === 'bass'){ svg += '<text x="'+(LEFT_PAD-44)+'" y="'+(staffTop + LINE_GAP + 5)+'" font-size="32" font-family="serif" fill="'+ink+'" opacity="0.85">𝄢</text>'; }
-      else { svg += '<text x="'+(LEFT_PAD-46)+'" y="'+(staffTop + 4*LINE_GAP + 5)+'" font-size="38" font-family="serif" fill="'+ink+'" opacity="0.85">𝄞</text>'; if(headClef === 'treble8') svg += '<text x="'+(LEFT_PAD-32)+'" y="'+(staffTop + 5*LINE_GAP + 6)+'" font-size="8" fill="'+ink+'" opacity="0.85">8</text>'; }
-      let keyX = LEFT_PAD - 16;
-      keySigAccidentals(headKey, headClef).forEach(acc=>{ const ky = noteY(staffTop, acc.step, headClef) + 4; svg += '<text x="'+keyX+'" y="'+ky+'" font-size="12" font-family="serif" fill="'+ink+'">'+acc.sym+'</text>'; keyX += 6; });
-      if(line === 0){ const {num, den} = parseMeter(headMtr); const meterX = Math.max(keyX + 3, LEFT_PAD - 10); svg += '<text x="'+meterX+'" y="'+(staffTop + 1.7*LINE_GAP + 1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+num+'</text>'; svg += '<text x="'+meterX+'" y="'+(staffTop + 3.6*LINE_GAP + 1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+den+'</text>'; }
-      for(let i=0;i<=MEASURES_PER_LINE;i++){ const x = LEFT_PAD + i*measureW; svg += '<line x1="'+x+'" y1="'+staffTop+'" x2="'+x+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="'+(i===0?1.1:0.7)+'" opacity="0.7"/>'; }
-      for(let i=0;i<MEASURES_PER_LINE;i++){
-        const mIdx = lineStartM + i;
-        if(state.measures[mIdx] === undefined) continue;
-        const xL = LEFT_PAD + i*measureW; const xR = LEFT_PAD + (i+1)*measureW;
-        const r = state.repeats[mIdx];
-        if(r){
-          if(r.start){ svg += '<line x1="'+(xL+2)+'" y1="'+staffTop+'" x2="'+(xL+2)+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="2"/>'; svg += '<circle cx="'+(xL+6)+'" cy="'+(staffTop+1.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<circle cx="'+(xL+6)+'" cy="'+(staffTop+2.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; }
-          if(r.end){ svg += '<circle cx="'+(xR-6)+'" cy="'+(staffTop+1.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<circle cx="'+(xR-6)+'" cy="'+(staffTop+2.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'; svg += '<line x1="'+(xR-2)+'" y1="'+staffTop+'" x2="'+(xR-2)+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="2"/>'; }
-          if(r.volta){ const yV = staffTop - 11; svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xR-2)+'" y2="'+yV+'" stroke="'+ink+'" stroke-width="0.8"/>'; svg += '<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xL+2)+'" y2="'+(yV+4)+'" stroke="'+ink+'" stroke-width="0.8"/>'; svg += '<text x="'+(xL+5)+'" y="'+(yV+6)+'" font-size="8" fill="'+ink+'" font-weight="bold">'+r.volta+'.</text>'; }
-        }
-        const m = state.measures[mIdx];
-        const x0 = LEFT_PAD + i*measureW + 10;
-        const slotW = (measureW - 14) / Math.max(m.length, 1);
-        const localClef = clefAt(mIdx); const localMeter = meterAt(mIdx);
-        const beamGroups = computeBeamGroups(m, localMeter);
-        const slotToGroup = {};
-        beamGroups.forEach((g, gIdx)=>{ g.forEach(slotIdx => slotToGroup[slotIdx] = {gIdx, group:g}); });
-        const middleStep = clefRefStep(localClef) + 4;
-        const groupStemDir = beamGroups.map(g=>{ let sum = 0; for(const idx of g){ const t = m[idx]; sum += stepIndex(t.note, t.octave); } return (sum/g.length) < middleStep ? 'up' : 'down'; });
-        const groupBeamData = beamGroups.map((g, gIdx)=>{
-          const stemUp = groupStemDir[gIdx] === 'up';
-          let extremeY = stemUp ? Infinity : -Infinity; const stemXs = [];
-          g.forEach(slotIdx=>{ const t = m[slotIdx]; const cx = x0 + slotIdx*slotW + slotW/2; const sx = stemUp ? cx+3.3 : cx-3.3; const headY = noteY(staffTop, stepIndex(t.note, t.octave), localClef); const naturalTip = stemUp ? headY - 19 : headY + 19; if(stemUp) extremeY = Math.min(extremeY, naturalTip); else extremeY = Math.max(extremeY, naturalTip); stemXs.push({slotIdx, sx, headY}); });
-          return { stemUp, beamY: extremeY, stems: stemXs };
-        });
-        const tiePoints = []; let prevSlot = null;
-        m.forEach((t, si)=>{
-          const cx = x0 + si*slotW + slotW/2;
-          const isSel = (mIdx === selM && si === state.sel.s);
-          const color = isSel ? sel : ink;
-          if(t.chord) svg += '<text x="'+cx+'" y="'+(staffTop - 16)+'" font-size="9" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+t.chord+'</text>';
-          if(t.orn && t.orn.length){
-            const ornText = t.orn.map(o => { if(o==='T') return 'tr'; if(o==='M') return '∼'; if(o==='H') return '𝄐'; if(o==='.') return '·'; if(o==='L') return '>'; return o; }).join(' ');
-            svg += '<text x="'+cx+'" y="'+(staffTop - 7)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+ornText+'</text>';
-          }
-          if(t.type === 'note'){
-            const grp = slotToGroup[si];
-            if(grp){
-              const gIdx = grp.gIdx; const stemUp = groupStemDir[gIdx] === 'up'; const beamY = groupBeamData[gIdx].beamY;
-              const drawn = drawNoteHead(t, cx, color, localClef, false, stemUp, staffTop);
-              const sx = drawn.stemX; const headY = drawn.headY;
-              svg += drawn.svg;
-              svg += '<line x1="'+sx+'" y1="'+headY+'" x2="'+sx+'" y2="'+beamY+'" stroke="'+color+'" stroke-width="0.8"/>';
-              if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
-              if(prevSlot && prevSlot.t.tieToNext) tiePoints.push({fromCx: prevSlot.cx, fromY: prevSlot.y, toCx: cx, toY: drawn.headY});
-              prevSlot = {t, cx, y: drawn.headY};
-            } else {
-              const step = stepIndex(t.note, t.octave); const stemUp = step < middleStep;
-              const drawn = drawNoteHead(t, cx, color, localClef, true, stemUp, staffTop);
-              svg += drawn.svg;
-              if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
-              if(prevSlot && prevSlot.t.tieToNext) tiePoints.push({fromCx: prevSlot.cx, fromY: prevSlot.y, toCx: cx, toY: drawn.headY});
-              prevSlot = {t, cx, y: drawn.headY};
-            }
-          } else {
-            const drawn = drawRest(t, cx, color, staffTop);
-            svg += drawn.svg;
-            if(isSel) svg += '<circle cx="'+cx+'" cy="'+drawn.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
-            prevSlot = null;
-          }
-          if(t.tuplet && (si === 0 || !m[si-1] || !m[si-1].tuplet)){
-            const groupSlots = [];
-            for(let j=si; j<m.length && m[j].tuplet === t.tuplet && groupSlots.length < t.tuplet; j++) groupSlots.push(j);
-            if(groupSlots.length > 0){
-              const cxFirst = x0 + groupSlots[0]*slotW + slotW/2;
-              const cxLast = x0 + groupSlots[groupSlots.length-1]*slotW + slotW/2;
-              const cxMid = (cxFirst + cxLast)/2;
-              svg += '<text x="'+cxMid+'" y="'+(staffTop + 5*LINE_GAP + 6)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+t.tuplet+'</text>';
-            }
-          }
-          if(si === 0){
-            let label = String(mIdx+1);
-            svg += '<text x="'+(LEFT_PAD + i*measureW + 2)+'" y="'+(staffTop-3)+'" font-size="8" fill="'+dim+'">'+label+'</text>';
-          }
-        });
-        tiePoints.forEach(tp=>{ const cx = (tp.fromCx + tp.toCx) / 2; const cy = ((tp.fromY + tp.toY) / 2) + 6; svg += '<path d="M '+(tp.fromCx+3)+' '+(tp.fromY+3)+' Q '+cx+' '+cy+' '+(tp.toCx-3)+' '+(tp.toY+3)+'" stroke="'+ink+'" stroke-width="0.9" fill="none"/>'; });
-        beamGroups.forEach((g, gIdx)=>{
-          const data = groupBeamData[gIdx]; const stemUp = data.stemUp; const beamY = data.beamY; const stems = data.stems;
-          const xStart = stems[0].sx; const xEnd = stems[stems.length-1].sx;
-          const beamThickness = 2.5;
-          const beamCount = Math.max(...g.map(idx=>{ const t = m[idx]; const eD = effDur(t); if(eD <= 0.125 + 1e-6) return 3; if(eD <= 0.25 + 1e-6) return 2; return 1; }));
-          const dyOffset = stemUp ? beamThickness + 0.8 : -(beamThickness + 0.8);
-          for(let bi = 0; bi < beamCount; bi++){ const yy = beamY + bi * dyOffset; svg += '<rect x="'+xStart+'" y="'+(yy - beamThickness/2)+'" width="'+(xEnd - xStart)+'" height="'+beamThickness+'" fill="'+ink+'"/>'; }
-        });
-      }
-    }
-    svg += '</svg>';
-    document.getElementById('score').innerHTML = svg;
-  }
-  function selectedSlot(){ const m = state.measures[state.sel.m]; return m ? (m[state.sel.s] || null) : null; }
+  const SCORE_W=360,STAFF_TOP_Y=30,LINE_GAP=7,LEFT_PAD=50,RIGHT_PAD=6,MEASURES_PER_LINE=3;
+  function clefRefStep(c){return c==='bass'?-12:2}
+  function noteY(staffTop,step,c){const r=clefRefStep(c);const bl=staffTop+4*LINE_GAP;return bl-(step-r)*(LINE_GAP/2)}
+  function stepIndex(note,oct){const m={C:0,D:1,E:2,F:3,G:4,A:5,B:6};return m[note]+7*oct}
+  const TSS={F:10,C:7,G:11,D:8,A:5,E:9,B:6},TFS={B:6,E:9,A:5,D:8,G:4,C:7,F:10},BSS={F:-4,C:-7,G:-3,D:-6,A:-9,E:-5,B:-8},BFS={B:-8,E:-5,A:-9,D:-6,G:-10,C:-7,F:-4};
+  function keySigAccidentals(sig,c){const out=[];if(sig>0){const m=c==='bass'?BSS:TSS;for(let i=0;i<sig;i++)out.push({sym:'♯',step:m[SHARP_NOTES[i]]})}else if(sig<0){const m=c==='bass'?BFS:TFS;for(let i=0;i<-sig;i++)out.push({sym:'♭',step:m[FLAT_NOTES[i]]})}return out}
+  function computeBeamGroups(meas,meter){const gu=beamGroupUnit(meter),eps=1e-6;const groups=[];let cg=null,offset=0;function flush(){if(cg&&cg.length>=2)groups.push(cg);cg=null}for(let i=0;i<meas.length;i++){const t=meas[i];const eD=effDur(t);const gi=Math.floor((offset+eps)/gu);const bm=(t.type==='note')&&(eD<=0.5+eps);const cr=(offset+eD)>(gi*gu+gu+eps);if(bm&&!cr){if(cg&&cg.startGroup===gi)cg.push(i);else{flush();cg=[i];cg.startGroup=gi}}else flush();offset=+(offset+eD).toFixed(6)}flush();return groups}
+  function drawNoteHead(t,cx,color,c,drawFlag,stemUp,staffTop){let svg='';const step=stepIndex(t.note,t.octave);const y=noteY(staffTop,step,c);const rs=clefRefStep(c);if(step>=rs+10)for(let s=rs+10;s<=step;s+=2){const ly=noteY(staffTop,s,c);svg+='<line x1="'+(cx-5)+'" y1="'+ly+'" x2="'+(cx+5)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'}if(step<=rs-2)for(let s=rs-2;s>=step;s-=2){const ly=noteY(staffTop,s,c);svg+='<line x1="'+(cx-5)+'" y1="'+ly+'" x2="'+(cx+5)+'" y2="'+ly+'" stroke="'+color+'" stroke-width="0.7"/>'}if(t.acc==='^')svg+='<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="11" fill="'+color+'" font-family="serif">♯</text>';else if(t.acc==='_')svg+='<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="11" fill="'+color+'" font-family="serif">♭</text>';else if(t.acc==='=')svg+='<text x="'+(cx-9)+'" y="'+(y+3)+'" font-size="10" fill="'+color+'" font-family="serif">♮</text>';const eD=effDur(t);const filled=eD<2;const hs=eD<4;let fc=0;if(eD<=0.125+1e-6)fc=3;else if(eD<=0.25+1e-6)fc=2;else if(eD<=0.5+1e-6)fc=1;svg+='<ellipse cx="'+cx+'" cy="'+y+'" rx="3.6" ry="2.7" transform="rotate(-20 '+cx+' '+y+')" fill="'+(filled?color:'none')+'" stroke="'+color+'" stroke-width="0.9"/>';let sy=y,sx=cx;if(hs){sx=stemUp?cx+3.3:cx-3.3;sy=stemUp?y-19:y+19;svg+='<line x1="'+sx+'" y1="'+y+'" x2="'+sx+'" y2="'+sy+'" stroke="'+color+'" stroke-width="0.8"/>';if(drawFlag)for(let f=0;f<fc;f++){const fy=stemUp?(sy+f*4):(sy-f*4);if(stemUp)svg+='<path d="M '+sx+' '+fy+' Q '+(sx+7)+' '+(fy+4)+' '+(sx+4)+' '+(fy+9)+'" stroke="'+color+'" stroke-width="1" fill="none" stroke-linecap="round"/>';else svg+='<path d="M '+sx+' '+fy+' Q '+(sx-7)+' '+(fy-4)+' '+(sx-4)+' '+(fy-9)+'" stroke="'+color+'" stroke-width="1" fill="none" stroke-linecap="round"/>'}}if(t.dot)svg+='<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>';return{svg,headY:y,stemTipY:sy,stemX:sx,flagCount:fc}}
+  function drawRest(t,cx,color,staffTop){let svg='';const y=staffTop+2*LINE_GAP;const eD=effDur(t);if(eD>=4)svg+='<rect x="'+(cx-4.5)+'" y="'+(staffTop+LINE_GAP)+'" width="9" height="3.5" fill="'+color+'"/>';else if(eD>=2)svg+='<rect x="'+(cx-4.5)+'" y="'+(staffTop+2*LINE_GAP-3.5)+'" width="9" height="3.5" fill="'+color+'"/>';else if(eD>=1)svg+='<text x="'+(cx-4)+'" y="'+(staffTop+3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄽</text>';else if(eD>=0.5)svg+='<text x="'+(cx-4)+'" y="'+(staffTop+3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄾</text>';else svg+='<text x="'+(cx-4)+'" y="'+(staffTop+3*LINE_GAP)+'" font-size="18" font-family="serif" fill="'+color+'">𝄿</text>';if(t.dot)svg+='<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>';return{svg,headY:y}}
+
+  function renderScore(){const selM=state.sel.m;const linesShown=state.viewmode?6:3;const mPP=MEASURES_PER_LINE*linesShown;const page=Math.floor(selM/mPP);const startM=page*mPP;const usable=SCORE_W-LEFT_PAD-RIGHT_PAD;const measureW=usable/MEASURES_PER_LINE;const ink='#1a1a1a',sel='#e24b4a',dim='#888780';const scoreH=30+linesShown*38+10;let svg='<svg viewBox="0 0 '+SCORE_W+' '+scoreH+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">';for(let line=0;line<linesShown;line++){const staffTop=STAFF_TOP_Y+line*38;const lsm=startM+line*MEASURES_PER_LINE;if(state.measures[lsm]===undefined)continue;for(let i=0;i<5;i++){const y=staffTop+i*LINE_GAP;svg+='<line x1="'+(LEFT_PAD-25)+'" y1="'+y+'" x2="'+(SCORE_W-RIGHT_PAD)+'" y2="'+y+'" stroke="'+ink+'" stroke-width="0.55" opacity="0.55"/>'}const hC=clefAt(lsm),hK=keyAt(lsm),hM=meterAt(lsm);if(hC==='bass')svg+='<text x="'+(LEFT_PAD-44)+'" y="'+(staffTop+LINE_GAP+5)+'" font-size="32" font-family="serif" fill="'+ink+'" opacity="0.85">𝄢</text>';else{svg+='<text x="'+(LEFT_PAD-46)+'" y="'+(staffTop+4*LINE_GAP+5)+'" font-size="38" font-family="serif" fill="'+ink+'" opacity="0.85">𝄞</text>';if(hC==='treble8')svg+='<text x="'+(LEFT_PAD-32)+'" y="'+(staffTop+5*LINE_GAP+6)+'" font-size="8" fill="'+ink+'" opacity="0.85">8</text>'}let kx=LEFT_PAD-16;keySigAccidentals(hK,hC).forEach(a=>{const ky=noteY(staffTop,a.step,hC)+4;svg+='<text x="'+kx+'" y="'+ky+'" font-size="12" font-family="serif" fill="'+ink+'">'+a.sym+'</text>';kx+=6});if(line===0){const{num,den}=parseMeter(hM);const mx=Math.max(kx+3,LEFT_PAD-10);svg+='<text x="'+mx+'" y="'+(staffTop+1.7*LINE_GAP+1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+num+'</text>';svg+='<text x="'+mx+'" y="'+(staffTop+3.6*LINE_GAP+1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+den+'</text>'}for(let i=0;i<=MEASURES_PER_LINE;i++){const x=LEFT_PAD+i*measureW;svg+='<line x1="'+x+'" y1="'+staffTop+'" x2="'+x+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="'+(i===0?1.1:0.7)+'" opacity="0.7"/>'}for(let i=0;i<MEASURES_PER_LINE;i++){const mIdx=lsm+i;if(state.measures[mIdx]===undefined)continue;const xL=LEFT_PAD+i*measureW;const xR=LEFT_PAD+(i+1)*measureW;const r=state.repeats[mIdx];if(r){if(r.start){svg+='<line x1="'+(xL+2)+'" y1="'+staffTop+'" x2="'+(xL+2)+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="2"/>';svg+='<circle cx="'+(xL+6)+'" cy="'+(staffTop+1.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>';svg+='<circle cx="'+(xL+6)+'" cy="'+(staffTop+2.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>'}if(r.end){svg+='<circle cx="'+(xR-6)+'" cy="'+(staffTop+1.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>';svg+='<circle cx="'+(xR-6)+'" cy="'+(staffTop+2.5*LINE_GAP)+'" r="1.1" fill="'+ink+'"/>';svg+='<line x1="'+(xR-2)+'" y1="'+staffTop+'" x2="'+(xR-2)+'" y2="'+(staffTop+4*LINE_GAP)+'" stroke="'+ink+'" stroke-width="2"/>'}if(r.volta){const yV=staffTop-11;svg+='<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xR-2)+'" y2="'+yV+'" stroke="'+ink+'" stroke-width="0.8"/>';svg+='<line x1="'+(xL+2)+'" y1="'+yV+'" x2="'+(xL+2)+'" y2="'+(yV+4)+'" stroke="'+ink+'" stroke-width="0.8"/>';svg+='<text x="'+(xL+5)+'" y="'+(yV+6)+'" font-size="8" fill="'+ink+'" font-weight="bold">'+r.volta+'.</text>'}}const m=state.measures[mIdx];const x0=LEFT_PAD+i*measureW+10;const sW=(measureW-14)/Math.max(m.length,1);const lC=clefAt(mIdx),lM=meterAt(mIdx);const bg=computeBeamGroups(m,lM);const sTG={};bg.forEach((g,gi)=>{g.forEach(si=>sTG[si]={gIdx:gi,group:g})});const mS=clefRefStep(lC)+4;const gSD=bg.map(g=>{let s=0;for(const idx of g){const t=m[idx];s+=stepIndex(t.note,t.octave)}return(s/g.length)<mS?'up':'down'});const gBD=bg.map((g,gi)=>{const su=gSD[gi]==='up';let eY=su?Infinity:-Infinity;const sX=[];g.forEach(si=>{const t=m[si];const cx=x0+si*sW+sW/2;const sx=su?cx+3.3:cx-3.3;const hY=noteY(staffTop,stepIndex(t.note,t.octave),lC);const nT=su?hY-19:hY+19;if(su)eY=Math.min(eY,nT);else eY=Math.max(eY,nT);sX.push({slotIdx:si,sx,headY:hY})});return{stemUp:su,beamY:eY,stems:sX}});const tP=[];let pS=null;m.forEach((t,si)=>{const cx=x0+si*sW+sW/2;const iS=(mIdx===selM&&si===state.sel.s);const cl=iS?sel:ink;if(t.chord)svg+='<text x="'+cx+'" y="'+(staffTop-16)+'" font-size="9" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+t.chord+'</text>';if(t.orn&&t.orn.length){const ot=t.orn.map(o=>{if(o==='T')return'tr';if(o==='M')return'∼';if(o==='H')return'𝄐';if(o==='.')return'·';if(o==='L')return'>';return o}).join(' ');svg+='<text x="'+cx+'" y="'+(staffTop-7)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+ot+'</text>'}if(t.type==='note'){const gp=sTG[si];if(gp){const gi=gp.gIdx;const su=gSD[gi]==='up';const bY=gBD[gi].beamY;const dr=drawNoteHead(t,cx,cl,lC,false,su,staffTop);const sx=dr.stemX,hY=dr.headY;svg+=dr.svg;svg+='<line x1="'+sx+'" y1="'+hY+'" x2="'+sx+'" y2="'+bY+'" stroke="'+cl+'" stroke-width="0.8"/>';if(iS)svg+='<circle cx="'+cx+'" cy="'+dr.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';if(pS&&pS.t.tieToNext)tP.push({fromCx:pS.cx,fromY:pS.y,toCx:cx,toY:dr.headY});pS={t,cx,y:dr.headY}}else{const st=stepIndex(t.note,t.octave);const su=st<mS;const dr=drawNoteHead(t,cx,cl,lC,true,su,staffTop);svg+=dr.svg;if(iS)svg+='<circle cx="'+cx+'" cy="'+dr.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';if(pS&&pS.t.tieToNext)tP.push({fromCx:pS.cx,fromY:pS.y,toCx:cx,toY:dr.headY});pS={t,cx,y:dr.headY}}}else{const dr=drawRest(t,cx,cl,staffTop);svg+=dr.svg;if(iS)svg+='<circle cx="'+cx+'" cy="'+dr.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';pS=null}if(t.tuplet&&(si===0||!m[si-1]||!m[si-1].tuplet)){const gs=[];for(let j=si;j<m.length&&m[j].tuplet===t.tuplet&&gs.length<t.tuplet;j++)gs.push(j);if(gs.length>0){const cF=x0+gs[0]*sW+sW/2;const cL=x0+gs[gs.length-1]*sW+sW/2;const cM=(cF+cL)/2;svg+='<text x="'+cM+'" y="'+(staffTop+5*LINE_GAP+6)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+t.tuplet+'</text>'}}if(si===0){svg+='<text x="'+(LEFT_PAD+i*measureW+2)+'" y="'+(staffTop-3)+'" font-size="8" fill="'+dim+'">'+String(mIdx+1)+'</text>'}});tP.forEach(tp=>{const cx=(tp.fromCx+tp.toCx)/2;const cy=((tp.fromY+tp.toY)/2)+6;svg+='<path d="M '+(tp.fromCx+3)+' '+(tp.fromY+3)+' Q '+cx+' '+cy+' '+(tp.toCx-3)+' '+(tp.toY+3)+'" stroke="'+ink+'" stroke-width="0.9" fill="none"/>'});bg.forEach((g,gi)=>{const d=gBD[gi];const su=d.stemUp;const bY=d.beamY;const sts=d.stems;const xS=sts[0].sx;const xE=sts[sts.length-1].sx;const bT=2.5;const bC=Math.max(...g.map(idx=>{const t=m[idx];const eD=effDur(t);if(eD<=0.125+1e-6)return 3;if(eD<=0.25+1e-6)return 2;return 1}));const dyO=su?bT+0.8:-(bT+0.8);for(let bi=0;bi<bC;bi++){const yy=bY+bi*dyO;svg+='<rect x="'+xS+'" y="'+(yy-bT/2)+'" width="'+(xE-xS)+'" height="'+bT+'" fill="'+ink+'"/>'}})}}svg+='</svg>';document.getElementById('score').innerHTML=svg}
+
+  function selectedSlot(){const m=state.measures[state.sel.m];return m?(m[state.sel.s]||null):null}
   function renderState(){
-    document.getElementById('meas-pos').textContent = state.sel.m + 1;
-    document.getElementById('slot-pos').textContent = state.sel.s + 1;
-    document.getElementById('info-meter').textContent = meterAt(state.sel.m);
-    document.getElementById('info-key').textContent = keyHumanLabel(keyAt(state.sel.m));
-    document.getElementById('info-clef').textContent = clefHumanLabel(clefAt(state.sel.m));
-    document.getElementById('oct-val').textContent = state.octave > 0 ? '+'+state.octave : state.octave;
-    const sl = selectedSlot();
-    document.querySelectorAll('[data-dur]').forEach(b=>{ const activeD = sl ? sl.dur : 1; b.classList.toggle('active', parseFloat(b.dataset.dur) === activeD); });
-    document.querySelectorAll('[data-acc]').forEach(b=>{ const activeAcc = (sl && sl.type==='note') ? (sl.acc || '') : ''; b.classList.toggle('active', activeAcc === b.dataset.acc && b.dataset.acc !== ''); });
-    const dotBtn = document.getElementById('dot-btn');
-    if(dotBtn) dotBtn.classList.toggle('active', !!(sl && sl.dot));
-    document.getElementById('tempo-v').textContent = state.tempo;
-    document.getElementById('vol-v').textContent = state.volume;
-    document.getElementById('btn-play').textContent = audio.playing ? '⏸' : '▶';
-    document.getElementById('btn-undo').disabled = (history.pos <= 0);
-    document.getElementById('btn-redo').disabled = (history.pos >= history.stack.length - 1);
-    document.getElementById('btn-viewmode').textContent = state.viewmode ? '✎' : '👁';
-    document.getElementById('hdr-x-val').textContent = state.headers.X || '1';
-    document.getElementById('hdr-t-val').textContent = state.headers.T || 'Titre';
+    document.getElementById('meas-pos').textContent=state.sel.m+1;
+    document.getElementById('slot-pos').textContent=state.sel.s+1;
+    document.getElementById('info-meter').textContent=meterAt(state.sel.m);
+    document.getElementById('info-key').textContent=keyHumanLabel(keyAt(state.sel.m));
+    document.getElementById('info-clef').textContent=clefHumanLabel(clefAt(state.sel.m));
+    document.getElementById('oct-val').textContent=state.octave>0?'+'+state.octave:state.octave;
+    const sl=selectedSlot();
+    document.querySelectorAll('[data-dur]').forEach(b=>{const aD=sl?sl.dur:1;b.classList.toggle('active',parseFloat(b.dataset.dur)===aD)});
+    document.querySelectorAll('[data-acc]').forEach(b=>{const aA=(sl&&sl.type==='note')?(sl.acc||''):'';b.classList.toggle('active',aA===b.dataset.acc&&b.dataset.acc!=='')});
+    const dB=document.getElementById('dot-btn');if(dB)dB.classList.toggle('active',!!(sl&&sl.dot));
+    document.getElementById('tempo-v').textContent=state.tempo;
+    document.getElementById('vol-v').textContent=state.volume;
+    document.getElementById('btn-play').textContent=audio.playing?'⏸':'▶';
+    document.getElementById('btn-undo').disabled=(history.pos<=0);
+    document.getElementById('btn-redo').disabled=(history.pos>=history.stack.length-1);
+    document.getElementById('btn-viewmode').textContent=state.viewmode?'✎':'👁';
+    document.getElementById('hdr-x-val').textContent=state.headers.X||'1';
+    document.getElementById('hdr-t-val').textContent=state.headers.T||'—';
+    document.getElementById('hdr-st-val').textContent=state.headers.ST||'—';
+    document.getElementById('hdr-c-val').textContent=state.headers.C||'—';
+    document.getElementById('hdr-n-val').textContent=state.headers.N||'—';
   }
-  function render(){ renderScore(); renderState(); }
+  function render(){renderScore();renderState()}
 
-  function selectNext(){ let {m, s} = state.sel; if(s + 1 < state.measures[m].length){ state.sel = {m, s:s+1}; render(); return; } if(m + 1 < state.measures.length){ state.sel = {m:m+1, s:0}; render(); return; } state.measures.push(buildEmptyMeasure(meterAt(m))); state.sel = {m: state.measures.length - 1, s: 0}; pushHistory(); render(); }
-  function selectPrev(){ let {m, s} = state.sel; if(s > 0){ state.sel = {m, s:s-1}; render(); return; } if(m > 0){ state.sel = {m:m-1, s: state.measures[m-1].length - 1}; render(); return; } }
-  function jumpMeasure(delta){
-    const cur = state.sel.m;
-    if(delta > 0 && cur === state.measures.length - 1){ state.measures.push(buildEmptyMeasure(meterAt(cur))); state.sel = {m: state.measures.length - 1, s: 0}; pushHistory(); render(); return; }
-    const target = cur + delta;
-    if(target < 0 || target >= state.measures.length) return;
-    state.sel = {m:target, s:0}; render();
-  }
+  function selectNext(){let{m,s}=state.sel;if(s+1<state.measures[m].length){state.sel={m,s:s+1};render();return}if(m+1<state.measures.length){state.sel={m:m+1,s:0};render();return}state.measures.push(buildEmptyMeasure(meterAt(m)));state.sel={m:state.measures.length-1,s:0};pushHistory();render()}
+  function selectPrev(){let{m,s}=state.sel;if(s>0){state.sel={m,s:s-1};render();return}if(m>0){state.sel={m:m-1,s:state.measures[m-1].length-1};render();return}}
+  function jumpMeasure(delta){const cur=state.sel.m;if(delta>0&&cur===state.measures.length-1){state.measures.push(buildEmptyMeasure(meterAt(cur)));state.sel={m:state.measures.length-1,s:0};pushHistory();render();return}const t=cur+delta;if(t<0||t>=state.measures.length)return;state.sel={m:t,s:0};render()}
 
-  const audio = { ctx: null, master: null, playing: false, scheduled: [], stopAt: 0, raf: null };
-  function ensureAudio(){
-    if(!audio.ctx){ audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); audio.master = audio.ctx.createGain(); audio.master.connect(audio.ctx.destination); }
-    audio.master.gain.value = state.volume / 200;
-    if(audio.ctx.state === 'suspended') audio.ctx.resume();
-  }
-  function midiOfNote(note, octave, acc, keySig){
-    const baseSemi = {C:0, D:2, E:4, F:5, G:7, A:9, B:11}[note];
-    let midi = 60 + baseSemi + octave * 12; let alteration = 0;
-    if(acc === '^') alteration = 1; else if(acc === '_') alteration = -1;
-    else if(acc === '=') alteration = 0;
-    else { if(keySig > 0 && SHARP_NOTES.slice(0, keySig).includes(note)) alteration = 1; else if(keySig < 0 && FLAT_NOTES.slice(0, -keySig).includes(note)) alteration = -1; }
-    return midi + alteration;
-  }
-  function freqOfMidi(m){ return 440 * Math.pow(2, (m - 69)/12); }
-  function previewNote(midi, durSec = 0.25){
-    ensureAudio();
-    const t = audio.ctx.currentTime + 0.005;
-    const freq = freqOfMidi(midi);
-    const osc = audio.ctx.createOscillator(); const gain = audio.ctx.createGain();
-    osc.type = 'triangle'; osc.frequency.value = freq;
-    const peak = 0.5; const a = 0.005;
-    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(peak, t + a);
-    gain.gain.setValueAtTime(peak, t + Math.max(durSec - 0.06, a));
-    gain.gain.linearRampToValueAtTime(0, t + durSec);
-    osc.connect(gain); gain.connect(audio.master);
-    osc.start(t); osc.stop(t + durSec + 0.03);
-  }
-  function playSchedule(){
-    ensureAudio(); stopPlayback(false);
-    audio.playing = true;
-    document.getElementById('btn-play').textContent = '⏸';
-    const startTime = audio.ctx.currentTime + 0.05;
-    let t = startTime; const qDur = 60 / state.tempo;
-    const order = expandForPlayback();
-    order.forEach(mi => {
-      const m = state.measures[mi];
-      const sig = keyAt(mi);
-      m.forEach((slot, si)=>{
-        let dur = effDur(slot) * qDur;
-        if(slot.tuplet === 3) dur = dur * 2/3;
-        if(slot.type === 'note'){
-          const midi = midiOfNote(slot.note, slot.octave, slot.acc, sig);
-          const osc = audio.ctx.createOscillator(); const gain = audio.ctx.createGain();
-          osc.type = 'triangle'; osc.frequency.value = freqOfMidi(midi);
-          const a = 0.005, r = Math.min(0.05, dur * 0.3);
-          gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.5, t + a);
-          gain.gain.setValueAtTime(0.5, t + dur - r); gain.gain.linearRampToValueAtTime(0, t + dur);
-          osc.connect(gain); gain.connect(audio.master);
-          osc.start(t); osc.stop(t + dur + 0.02);
-          audio.scheduled.push(osc);
-        }
-        audio.scheduled.push({ updateAt: t, measureIdx: mi, slotIdx: si });
-        t += dur;
-      });
-    });
-    audio.stopAt = t;
-    function tick(){
-      if(!audio.playing) return;
-      const now = audio.ctx.currentTime;
-      let last = null;
-      for(const ev of audio.scheduled){ if(ev.updateAt !== undefined && ev.updateAt <= now) last = ev; if(ev.updateAt !== undefined && ev.updateAt > now) break; }
-      if(last && (state.sel.m !== last.measureIdx || state.sel.s !== last.slotIdx)){ state.sel = { m: last.measureIdx, s: last.slotIdx }; renderScore(); renderState(); }
-      if(now >= audio.stopAt){ stopPlayback(true); return; }
-      audio.raf = requestAnimationFrame(tick);
-    }
-    audio.raf = requestAnimationFrame(tick);
-  }
-  function stopPlayback(refresh){ if(audio.raf){ cancelAnimationFrame(audio.raf); audio.raf = null; } audio.scheduled.forEach(ev=>{ if(ev.stop) try{ev.stop();}catch(_){} }); audio.scheduled = []; audio.playing = false; document.getElementById('btn-play').textContent = '▶'; if(refresh) render(); }
+  const audio={ctx:null,master:null,playing:false,scheduled:[],stopAt:0,raf:null};
+  function ensureAudio(){if(!audio.ctx){audio.ctx=new(window.AudioContext||window.webkitAudioContext)();audio.master=audio.ctx.createGain();audio.master.connect(audio.ctx.destination)}audio.master.gain.value=state.volume/200;if(audio.ctx.state==='suspended')audio.ctx.resume()}
+  function midiOfNote(note,oct,acc,keySig){const bs={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[note];let midi=60+bs+oct*12;let alt=0;if(acc==='^')alt=1;else if(acc==='_')alt=-1;else if(acc==='=')alt=0;else{if(keySig>0&&SHARP_NOTES.slice(0,keySig).includes(note))alt=1;else if(keySig<0&&FLAT_NOTES.slice(0,-keySig).includes(note))alt=-1}return midi+alt}
+  function freqOfMidi(m){return 440*Math.pow(2,(m-69)/12)}
+  function previewNote(midi,durSec=0.25){ensureAudio();const t=audio.ctx.currentTime+0.005;const f=freqOfMidi(midi);const o=audio.ctx.createOscillator();const g=audio.ctx.createGain();o.type='triangle';o.frequency.value=f;const p=0.5,a=0.005;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(p,t+a);g.gain.setValueAtTime(p,t+Math.max(durSec-0.06,a));g.gain.linearRampToValueAtTime(0,t+durSec);o.connect(g);g.connect(audio.master);o.start(t);o.stop(t+durSec+0.03)}
+  function playSchedule(){ensureAudio();stopPlayback(false);audio.playing=true;document.getElementById('btn-play').textContent='⏸';const st=audio.ctx.currentTime+0.05;let t=st;const qD=60/state.tempo;const order=expandForPlayback();order.forEach(mi=>{const m=state.measures[mi];const sig=keyAt(mi);m.forEach((slot,si)=>{let dur=effDur(slot)*qD;if(slot.tuplet===3)dur=dur*2/3;if(slot.type==='note'){const midi=midiOfNote(slot.note,slot.octave,slot.acc,sig);const o=audio.ctx.createOscillator();const g=audio.ctx.createGain();o.type='triangle';o.frequency.value=freqOfMidi(midi);const a=0.005,r=Math.min(0.05,dur*0.3);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.5,t+a);g.gain.setValueAtTime(0.5,t+dur-r);g.gain.linearRampToValueAtTime(0,t+dur);o.connect(g);g.connect(audio.master);o.start(t);o.stop(t+dur+0.02);audio.scheduled.push(o)}audio.scheduled.push({updateAt:t,measureIdx:mi,slotIdx:si});t+=dur})});audio.stopAt=t;function tick(){if(!audio.playing)return;const now=audio.ctx.currentTime;let last=null;for(const ev of audio.scheduled){if(ev.updateAt!==undefined&&ev.updateAt<=now)last=ev;if(ev.updateAt!==undefined&&ev.updateAt>now)break}if(last&&(state.sel.m!==last.measureIdx||state.sel.s!==last.slotIdx)){state.sel={m:last.measureIdx,s:last.slotIdx};renderScore();renderState()}if(now>=audio.stopAt){stopPlayback(true);return}audio.raf=requestAnimationFrame(tick)}audio.raf=requestAnimationFrame(tick)}
+  function stopPlayback(refresh){if(audio.raf){cancelAnimationFrame(audio.raf);audio.raf=null}audio.scheduled.forEach(ev=>{if(ev.stop)try{ev.stop()}catch(_){}});audio.scheduled=[];audio.playing=false;document.getElementById('btn-play').textContent='▶';if(refresh)render()}
 
-  function setNoteAtSelection(noteName){
-    const sl = selectedSlot(); if(!sl) return;
-    const dur = sl.dur, dot = sl.dot;
-    const acc = (sl.type === 'note') ? sl.acc : '';
-    state.measures[state.sel.m][state.sel.s] = { type:'note', note: noteName, octave: state.octave, dur, dot, acc };
-    pushHistory();
-    const midi = midiOfNote(noteName, state.octave, acc, keyAt(state.sel.m));
-    previewNote(midi); render();
-  }
-  function setRestAtSelection(){ const sl = selectedSlot(); if(!sl) return; state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); }
-  function setDurAtSelection(d){
-    const sl = selectedSlot(); if(!sl) return;
-    const oldEff = effDur(sl); sl.dur = d;
-    rebalanceMeasure(state.sel.m, state.sel.s, oldEff);
-    const newLen = state.measures[state.sel.m].length;
-    if(state.sel.s >= newLen) state.sel.s = newLen - 1;
-    pushHistory();
-    const cur = selectedSlot();
-    if(cur && cur.type === 'note'){ const midi = midiOfNote(cur.note, cur.octave, cur.acc, keyAt(state.sel.m)); previewNote(midi, Math.min(0.4, effDur(cur) * 60 / state.tempo)); }
-    render();
-  }
-  function toggleDotAtSelection(){
-    const sl = selectedSlot(); if(!sl) return;
-    const oldEff = effDur(sl); sl.dot = !sl.dot;
-    rebalanceMeasure(state.sel.m, state.sel.s, oldEff);
-    const newLen = state.measures[state.sel.m].length;
-    if(state.sel.s >= newLen) state.sel.s = newLen - 1;
-    pushHistory();
-    const cur = selectedSlot();
-    if(cur && cur.type === 'note'){ const midi = midiOfNote(cur.note, cur.octave, cur.acc, keyAt(state.sel.m)); previewNote(midi); }
-    render();
-  }
-  function toggleAccAtSelection(acc){
-    const sl = selectedSlot();
-    if(sl && sl.type === 'note'){
-      sl.acc = (sl.acc === acc) ? '' : acc;
-      pushHistory();
-      const midi = midiOfNote(sl.note, sl.octave, sl.acc, keyAt(state.sel.m));
-      previewNote(midi); render();
-    }
-  }
-  function changeOctave(delta){
-    state.octave = Math.max(-2, Math.min(3, state.octave + delta));
-    const sl = selectedSlot();
-    if(sl && sl.type === 'note'){ sl.octave = Math.max(-2, Math.min(3, sl.octave + delta)); const midi = midiOfNote(sl.note, sl.octave, sl.acc, keyAt(state.sel.m)); previewNote(midi); }
-    pushHistory(); render();
-  }
+  function setNoteAtSelection(n){const sl=selectedSlot();if(!sl)return;const dur=sl.dur,dot=sl.dot;const acc=(sl.type==='note')?sl.acc:'';state.measures[state.sel.m][state.sel.s]={type:'note',note:n,octave:state.octave,dur,dot,acc};pushHistory();const midi=midiOfNote(n,state.octave,acc,keyAt(state.sel.m));previewNote(midi);render()}
+  function setRestAtSelection(){const sl=selectedSlot();if(!sl)return;state.measures[state.sel.m][state.sel.s]={type:'rest',dur:sl.dur,dot:sl.dot};pushHistory();render()}
+  function setDurAtSelection(d){const sl=selectedSlot();if(!sl)return;const oE=effDur(sl);sl.dur=d;rebalanceMeasure(state.sel.m,state.sel.s,oE);const nl=state.measures[state.sel.m].length;if(state.sel.s>=nl)state.sel.s=nl-1;pushHistory();const c=selectedSlot();if(c&&c.type==='note'){const midi=midiOfNote(c.note,c.octave,c.acc,keyAt(state.sel.m));previewNote(midi,Math.min(0.4,effDur(c)*60/state.tempo))}render()}
+  function toggleDotAtSelection(){const sl=selectedSlot();if(!sl)return;const oE=effDur(sl);sl.dot=!sl.dot;rebalanceMeasure(state.sel.m,state.sel.s,oE);const nl=state.measures[state.sel.m].length;if(state.sel.s>=nl)state.sel.s=nl-1;pushHistory();const c=selectedSlot();if(c&&c.type==='note'){const midi=midiOfNote(c.note,c.octave,c.acc,keyAt(state.sel.m));previewNote(midi)}render()}
+  function toggleAccAtSelection(acc){const sl=selectedSlot();if(sl&&sl.type==='note'){sl.acc=(sl.acc===acc)?'':acc;pushHistory();const midi=midiOfNote(sl.note,sl.octave,sl.acc,keyAt(state.sel.m));previewNote(midi);render()}}
+  function changeOctave(d){state.octave=Math.max(-2,Math.min(3,state.octave+d));const sl=selectedSlot();if(sl&&sl.type==='note'){sl.octave=Math.max(-2,Math.min(3,sl.octave+d));const midi=midiOfNote(sl.note,sl.octave,sl.acc,keyAt(state.sel.m));previewNote(midi)}pushHistory();render()}
 
-  // Onglets
-  function setActiveTab(name){
-    state.activeTab = name;
-    document.querySelectorAll('.tab').forEach(t=> t.classList.toggle('active', t.dataset.tab === name));
-    document.querySelectorAll('.tab-panel').forEach(p=> p.classList.toggle('active', p.dataset.panel === name));
-  }
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.addEventListener('click', ()=> setActiveTab(t.dataset.tab));
-  });
+  function setActiveTab(name){state.activeTab=name;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name))}
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>setActiveTab(t.dataset.tab)));
 
-  // Notes : Do en gras + C non gras, taille 50/50
-  const notesRow = document.getElementById('notes-row');
-  NOTES.forEach(n=>{
-    const b = document.createElement('button');
-    b.className = 'k note-btn';
-    b.innerHTML = '<span class="lbl">' + n.label + '</span><span class="sub">' + n.sub + '</span>';
-    b.addEventListener('click', ()=> setNoteAtSelection(n.n));
-    notesRow.appendChild(b);
-  });
+  // Notes
+  const nR=document.getElementById('notes-row');
+  NOTES.forEach(n=>{const b=document.createElement('button');b.className='k note-btn';b.innerHTML='<span class="lbl">'+n.label+'</span><span class="sub">'+n.sub+'</span>';b.addEventListener('click',()=>setNoteAtSelection(n.n));nR.appendChild(b)});
 
-  // Durées : 6 boutons (ronde, blanche, noire, croche, double, triple)
-  const durRow = document.getElementById('dur-row');
-  DURATIONS.forEach(d=>{
-    const b = document.createElement('button');
-    b.className = 'k symbol'; b.dataset.dur = d.d; b.textContent = d.label;
-    b.addEventListener('click', ()=> setDurAtSelection(d.d));
-    durRow.appendChild(b);
-  });
+  // Durées
+  const dR=document.getElementById('dur-row');
+  DURATIONS.forEach(d=>{const b=document.createElement('button');b.className='k symbol';b.dataset.dur=d.d;b.textContent=d.label;b.addEventListener('click',()=>setDurAtSelection(d.d));dR.appendChild(b)});
 
-  // Altérations + point + silence : ♯ ♭ ♮ ♩· 𝄽
-  const altRow = document.getElementById('alt-row');
-  [{label:'♯',acc:'^'},{label:'♭',acc:'_'},{label:'♮',acc:'='}].forEach(a=>{
-    const b = document.createElement('button');
-    b.className = 'k symbol'; b.dataset.acc = a.acc; b.textContent = a.label;
-    b.addEventListener('click', ()=> toggleAccAtSelection(a.acc));
-    altRow.appendChild(b);
-  });
-  const dotBtn = document.createElement('button');
-  dotBtn.className = 'k symbol'; dotBtn.id = 'dot-btn'; dotBtn.textContent = '♩·';
-  dotBtn.addEventListener('click', toggleDotAtSelection);
-  altRow.appendChild(dotBtn);
-  const restBtn = document.createElement('button');
-  restBtn.className = 'k symbol'; restBtn.id = 'btn-rest'; restBtn.textContent = '𝄽';
-  restBtn.addEventListener('click', setRestAtSelection);
-  altRow.appendChild(restBtn);
+  // Altérations + point + silence
+  const aR=document.getElementById('alt-row');
+  [{label:'♯',acc:'^'},{label:'♭',acc:'_'},{label:'♮',acc:'='}].forEach(a=>{const b=document.createElement('button');b.className='k symbol';b.dataset.acc=a.acc;b.textContent=a.label;b.addEventListener('click',()=>toggleAccAtSelection(a.acc));aR.appendChild(b)});
+  const dotB=document.createElement('button');dotB.className='k symbol';dotB.id='dot-btn';dotB.textContent='♩·';dotB.addEventListener('click',toggleDotAtSelection);aR.appendChild(dotB);
+  const restB=document.createElement('button');restB.className='k symbol';restB.id='btn-rest';restB.textContent='𝄽';restB.addEventListener('click',setRestAtSelection);aR.appendChild(restB);
 
-  document.getElementById('oct-up').addEventListener('click', ()=> changeOctave(+1));
-  document.getElementById('oct-down').addEventListener('click', ()=> changeOctave(-1));
-  document.getElementById('cur-prev').addEventListener('click', selectPrev);
-  document.getElementById('cur-next').addEventListener('click', selectNext);
-  document.getElementById('meas-prev').addEventListener('click', ()=> jumpMeasure(-1));
-  document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
-  document.getElementById('btn-del').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
-  document.getElementById('btn-undo').addEventListener('click', undo);
-  document.getElementById('btn-redo').addEventListener('click', redo);
-  document.getElementById('btn-trans-up').addEventListener('click', ()=>{ transposePiece(+1); pushHistory(); render(); });
-  document.getElementById('btn-trans-down').addEventListener('click', ()=>{ transposePiece(-1); pushHistory(); render(); });
-  document.getElementById('btn-tie').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ sl.tieToNext = !sl.tieToNext; pushHistory(); render(); } });
-  document.getElementById('btn-disarm').addEventListener('click', ()=>{ disarmKey(); pushHistory(); render(); });
+  document.getElementById('oct-up').addEventListener('click',()=>changeOctave(+1));
+  document.getElementById('oct-down').addEventListener('click',()=>changeOctave(-1));
+  document.getElementById('cur-prev').addEventListener('click',selectPrev);
+  document.getElementById('cur-next').addEventListener('click',selectNext);
+  document.getElementById('meas-prev').addEventListener('click',()=>jumpMeasure(-1));
+  document.getElementById('meas-next').addEventListener('click',()=>jumpMeasure(+1));
+  document.getElementById('btn-del').addEventListener('click',()=>{const sl=selectedSlot();if(sl){state.measures[state.sel.m][state.sel.s]={type:'rest',dur:sl.dur,dot:sl.dot};pushHistory();render()}});
+  document.getElementById('btn-undo').addEventListener('click',undo);
+  document.getElementById('btn-redo').addEventListener('click',redo);
+  document.getElementById('btn-trans-up').addEventListener('click',()=>{transposePiece(+1);pushHistory();render()});
+  document.getElementById('btn-trans-down').addEventListener('click',()=>{transposePiece(-1);pushHistory();render()});
+  document.getElementById('btn-tie').addEventListener('click',()=>{const sl=selectedSlot();if(sl){sl.tieToNext=!sl.tieToNext;pushHistory();render()}});
+  document.getElementById('btn-disarm').addEventListener('click',()=>{disarmKey();pushHistory();render()});
 
-  document.getElementById('btn-tuplet').addEventListener('click', ()=>{
-    const sl = selectedSlot(); if(!sl) return;
-    const meas = state.measures[state.sel.m]; const idx = state.sel.s;
-    if(sl.tuplet){
-      const n = sl.tuplet;
-      for(let i = idx; i < meas.length && meas[i].tuplet === n; i++) delete meas[i].tuplet;
-      pushHistory(); render(); return;
-    }
-    openPanel({ title:'N-uplet', body:'<small>Choisir le N-uplet</small>', hideActions:true,
-      extraButtons:['Annuler','3','5','6','7'],
-      onExtra:(which)=>{
-        if(which === 'Annuler'){ closePanel(); return; }
-        const n = parseInt(which, 10);
-        for(let i = idx; i < Math.min(meas.length, idx + n); i++) meas[i].tuplet = n;
-        pushHistory(); closePanel(); render();
-      },
-    });
-  });
+  document.getElementById('btn-tuplet').addEventListener('click',()=>{const sl=selectedSlot();if(!sl)return;const meas=state.measures[state.sel.m];const idx=state.sel.s;if(sl.tuplet){const n=sl.tuplet;for(let i=idx;i<meas.length&&meas[i].tuplet===n;i++)delete meas[i].tuplet;pushHistory();render();return}openPanel({title:'N-uplet',body:'<small>Choisir le N-uplet</small>',hideActions:true,extraButtons:['Annuler','3','5','6','7'],onExtra:(w)=>{if(w==='Annuler'){closePanel();return}const n=parseInt(w,10);for(let i=idx;i<Math.min(meas.length,idx+n);i++)meas[i].tuplet=n;pushHistory();closePanel();render()}})});
 
-  document.getElementById('meas-del').addEventListener('click', ()=>{
-    if(state.measures.length <= 1) return;
-    const m = state.sel.m;
-    state.measures.splice(m, 1);
-    function shiftKeys(map, threshold){ const out = {}; for(const k of Object.keys(map)){ const i = parseInt(k,10); if(i < threshold) out[i] = map[k]; else if(i > threshold) out[i-1] = map[k]; } return out; }
-    state.timeChanges = shiftKeys(state.timeChanges, m);
-    state.keyChanges  = shiftKeys(state.keyChanges,  m);
-    state.clefChanges = shiftKeys(state.clefChanges, m);
-    state.repeats     = shiftKeys(state.repeats,     m);
-    if(state.sel.m >= state.measures.length) state.sel.m = state.measures.length - 1;
-    state.sel.s = 0;
-    pushHistory(); render();
-  });
-  document.getElementById('meas-add').addEventListener('click', ()=>{
-    let count = 1; let side = 'right';
-    function controls(){
-      return ('<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small>' +
-              '<div class="row-grid row-2" id="side-pick"><button class="k" data-side="left">←</button><button class="k" data-side="right">→</button></div>' +
-              '<small>Nombre</small>' +
-              '<div class="stepper"><button class="k" id="cnt-d">−</button><div class="val"><b id="cnt-v">'+count+'</b></div><button class="k" id="cnt-u">+</button></div>');
-    }
-    function refreshSide(){ document.querySelectorAll('#side-pick .k').forEach(b=> b.classList.toggle('active', b.dataset.side === side)); }
-    openPanel({ title: 'Ajouter mesure(s)', body: controls(), hideActions: true, extraButtons: ['Annuler', 'Ajouter'],
-      onMount: ()=>{
-        document.querySelectorAll('#side-pick .k').forEach(b=> b.addEventListener('click', ()=>{ side = b.dataset.side; refreshSide(); }));
-        refreshSide();
-        document.getElementById('cnt-u').addEventListener('click', ()=>{ if(count < 16){ count++; document.getElementById('cnt-v').textContent = count; } });
-        document.getElementById('cnt-d').addEventListener('click', ()=>{ if(count > 1){ count--; document.getElementById('cnt-v').textContent = count; } });
-      },
-      onExtra: (which)=>{
-        if(which === 'Annuler'){ closePanel(); return; }
-        function shiftKeys(map, threshold, inclusive){ const out = {}; for(const k of Object.keys(map)){ const i = parseInt(k,10); const shift = inclusive ? (i >= threshold) : (i > threshold); out[shift ? i+count : i] = map[k]; } return out; }
-        const insertAt = (side === 'left') ? state.sel.m : state.sel.m + 1;
-        const meter = meterAt(state.sel.m);
-        for(let k=0; k<count; k++) state.measures.splice(insertAt, 0, buildEmptyMeasure(meter));
-        const inclusive = (side === 'left');
-        const threshold = state.sel.m;
-        state.timeChanges = shiftKeys(state.timeChanges, threshold, inclusive);
-        state.keyChanges  = shiftKeys(state.keyChanges,  threshold, inclusive);
-        state.clefChanges = shiftKeys(state.clefChanges, threshold, inclusive);
-        state.repeats     = shiftKeys(state.repeats,     threshold, inclusive);
-        state.sel = { m: (side === 'right' ? state.sel.m + 1 : state.sel.m), s: 0 };
-        pushHistory(); closePanel(); render();
-      },
-    });
-  });
+  document.getElementById('meas-del').addEventListener('click',()=>{if(state.measures.length<=1)return;const m=state.sel.m;state.measures.splice(m,1);function sk(map,th){const out={};for(const k of Object.keys(map)){const i=parseInt(k,10);if(i<th)out[i]=map[k];else if(i>th)out[i-1]=map[k]}return out}state.timeChanges=sk(state.timeChanges,m);state.keyChanges=sk(state.keyChanges,m);state.clefChanges=sk(state.clefChanges,m);state.repeats=sk(state.repeats,m);if(state.sel.m>=state.measures.length)state.sel.m=state.measures.length-1;state.sel.s=0;pushHistory();render()});
 
-  function ensureRepeat(m){ if(!state.repeats[m]) state.repeats[m] = {}; return state.repeats[m]; }
-  document.getElementById('btn-rep-start').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.start = !r.start; pushHistory(); render(); });
-  document.getElementById('btn-rep-end').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.end = !r.end; pushHistory(); render(); });
-  document.getElementById('btn-volta1').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 1) ? 0 : 1; pushHistory(); render(); });
-  document.getElementById('btn-volta2').addEventListener('click', ()=>{ const r = ensureRepeat(state.sel.m); r.volta = (r.volta === 2) ? 0 : 2; pushHistory(); render(); });
+  document.getElementById('meas-add').addEventListener('click',()=>{let count=1,side='right';function controls(){return('<small>Insérer par rapport à la mesure '+(state.sel.m+1)+'</small><div class="row-grid row-2" id="side-pick"><button class="k" data-side="left">←</button><button class="k" data-side="right">→</button></div><small>Nombre</small><div class="stepper"><button class="k" id="cnt-d">−</button><div class="val"><b id="cnt-v">'+count+'</b></div><button class="k" id="cnt-u">+</button></div>')}function rs(){document.querySelectorAll('#side-pick .k').forEach(b=>b.classList.toggle('active',b.dataset.side===side))}openPanel({title:'Ajouter mesure(s)',body:controls(),hideActions:true,extraButtons:['Annuler','Ajouter'],onMount:()=>{document.querySelectorAll('#side-pick .k').forEach(b=>b.addEventListener('click',()=>{side=b.dataset.side;rs()}));rs();document.getElementById('cnt-u').addEventListener('click',()=>{if(count<16){count++;document.getElementById('cnt-v').textContent=count}});document.getElementById('cnt-d').addEventListener('click',()=>{if(count>1){count--;document.getElementById('cnt-v').textContent=count}})},onExtra:(w)=>{if(w==='Annuler'){closePanel();return}function sk(map,th,inc){const out={};for(const k of Object.keys(map)){const i=parseInt(k,10);const sh=inc?(i>=th):(i>th);out[sh?i+count:i]=map[k]}return out}const ia=(side==='left')?state.sel.m:state.sel.m+1;const meter=meterAt(state.sel.m);for(let k=0;k<count;k++)state.measures.splice(ia,0,buildEmptyMeasure(meter));const inc=(side==='left');const th=state.sel.m;state.timeChanges=sk(state.timeChanges,th,inc);state.keyChanges=sk(state.keyChanges,th,inc);state.clefChanges=sk(state.clefChanges,th,inc);state.repeats=sk(state.repeats,th,inc);state.sel={m:(side==='right'?state.sel.m+1:state.sel.m),s:0};pushHistory();closePanel();render()}})});
 
-  document.getElementById('vol-u').addEventListener('click', ()=>{ state.volume = Math.min(100, state.volume + 10); ensureAudio(); render(); });
-  document.getElementById('vol-d').addEventListener('click', ()=>{ state.volume = Math.max(0, state.volume - 10); ensureAudio(); render(); });
-  document.getElementById('tempo-u').addEventListener('click', ()=>{ state.tempo = Math.min(240, state.tempo + 5); render(); });
-  document.getElementById('tempo-d').addEventListener('click', ()=>{ state.tempo = Math.max(30, state.tempo - 5); render(); });
-  document.getElementById('btn-play').addEventListener('click', ()=>{ if(audio.playing) stopPlayback(true); else playSchedule(); });
-  document.getElementById('btn-stop').addEventListener('click', ()=> stopPlayback(true));
-  document.getElementById('btn-viewmode').addEventListener('click', ()=>{ state.viewmode = !state.viewmode; document.getElementById('app').classList.toggle('viewmode', state.viewmode); render(); });
-  document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); });
+  function ensureRepeat(m){if(!state.repeats[m])state.repeats[m]={};return state.repeats[m]}
+  document.getElementById('btn-rep-start').addEventListener('click',()=>{const r=ensureRepeat(state.sel.m);r.start=!r.start;pushHistory();render()});
+  document.getElementById('btn-rep-end').addEventListener('click',()=>{const r=ensureRepeat(state.sel.m);r.end=!r.end;pushHistory();render()});
+  document.getElementById('btn-volta1').addEventListener('click',()=>{const r=ensureRepeat(state.sel.m);r.volta=(r.volta===1)?0:1;pushHistory();render()});
+  document.getElementById('btn-volta2').addEventListener('click',()=>{const r=ensureRepeat(state.sel.m);r.volta=(r.volta===2)?0:2;pushHistory();render()});
 
-  document.getElementById('btn-chord').addEventListener('click', ()=>{
-    const sl = selectedSlot();
-    if(!sl || sl.type !== 'note'){ alert('Sélectionnez une note'); return; }
-    const roots = ['C','D','E','F','G','A','B'];
-    let root = sl.note, acc = '', qual = '';
-    if(sl.chord){ const m = sl.chord.match(/^([A-G])([#b]?)(.*)$/); if(m){ root = m[1]; acc = m[2]; qual = m[3]; } }
-    function controls(){
-      let html = '<small>Fondamentale</small><div class="root-grid">';
-      roots.forEach(r => html += '<button class="k" data-root="'+r+'">'+r+'</button>');
-      html += '</div><small>Altération</small><div class="row-grid row-3"><button class="k" data-acc="">♮</button><button class="k" data-acc="#">♯</button><button class="k" data-acc="b">♭</button></div>';
-      html += '<small>Qualité</small><div class="chord-grid">';
-      CHORD_QUALITIES.forEach(q => html += '<button class="k" data-qual="'+q+'">'+(q || 'maj')+'</button>');
-      html += '</div><small>Aperçu : <b id="chord-preview">'+root+acc+qual+'</b></small>';
-      return html;
-    }
-    function refresh(){
-      document.querySelectorAll('[data-root]').forEach(b=> b.classList.toggle('active', b.dataset.root === root));
-      document.querySelectorAll('[data-acc]').forEach(b=> b.classList.toggle('active', b.dataset.acc === acc));
-      document.querySelectorAll('[data-qual]').forEach(b=> b.classList.toggle('active', b.dataset.qual === qual));
-      document.getElementById('chord-preview').textContent = root + acc + qual;
-    }
-    openPanel({ title:'Accord', body: controls(), hideActions:true, extraButtons:['Annuler','Suppr','Appliquer'],
-      onMount: ()=>{
-        document.querySelectorAll('[data-root]').forEach(b=> b.addEventListener('click', ()=>{ root = b.dataset.root; refresh(); }));
-        document.querySelectorAll('[data-acc]').forEach(b=> b.addEventListener('click', ()=>{ acc = b.dataset.acc; refresh(); }));
-        document.querySelectorAll('[data-qual]').forEach(b=> b.addEventListener('click', ()=>{ qual = b.dataset.qual; refresh(); }));
-        refresh();
-      },
-      onExtra:(which)=>{
-        if(which === 'Annuler'){ closePanel(); return; }
-        if(which === 'Suppr'){ delete sl.chord; pushHistory(); closePanel(); render(); return; }
-        sl.chord = root + acc + qual; pushHistory(); closePanel(); render();
-      },
-    });
-  });
+  document.getElementById('vol-u').addEventListener('click',()=>{state.volume=Math.min(100,state.volume+10);ensureAudio();render()});
+  document.getElementById('vol-d').addEventListener('click',()=>{state.volume=Math.max(0,state.volume-10);ensureAudio();render()});
+  document.getElementById('tempo-u').addEventListener('click',()=>{state.tempo=Math.min(240,state.tempo+5);render()});
+  document.getElementById('tempo-d').addEventListener('click',()=>{state.tempo=Math.max(30,state.tempo-5);render()});
+  document.getElementById('btn-play').addEventListener('click',()=>{if(audio.playing)stopPlayback(true);else playSchedule()});
+  document.getElementById('btn-stop').addEventListener('click',()=>stopPlayback(true));
+  document.getElementById('btn-viewmode').addEventListener('click',()=>{state.viewmode=!state.viewmode;document.getElementById('app').classList.toggle('viewmode',state.viewmode);render()});
+  document.getElementById('btn-fs').addEventListener('click',()=>{state.fullscreen=!state.fullscreen;document.getElementById('app').classList.toggle('fullscreen',state.fullscreen)});
 
-  document.getElementById('btn-orn').addEventListener('click', ()=>{
-    const sl = selectedSlot();
-    if(!sl || sl.type !== 'note'){ alert('Sélectionnez une note'); return; }
-    sl.orn = sl.orn || [];
-    function controls(){
-      let html = '<small>Cliquez pour activer/désactiver</small><div class="row-grid row-3">';
-      ORNAMENTS.forEach(o => html += '<button class="k" data-orn="'+o.code+'">'+o.label+'</button>');
-      html += '</div><small>Actifs : <b id="orn-preview">'+(sl.orn.length ? sl.orn.join(' ') : '(aucun)')+'</b></small>';
-      return html;
-    }
-    function refresh(){
-      document.querySelectorAll('[data-orn]').forEach(b=> b.classList.toggle('active', sl.orn.includes(b.dataset.orn)));
-      document.getElementById('orn-preview').textContent = sl.orn.length ? sl.orn.join(' ') : '(aucun)';
-    }
-    openPanel({ title:'Ornement', body: controls(), hideActions:true, extraButtons:['Tout enlever','Fermer'],
-      onMount:()=>{
-        document.querySelectorAll('[data-orn]').forEach(b=> b.addEventListener('click', ()=>{
-          const code = b.dataset.orn; const i = sl.orn.indexOf(code);
-          if(i >= 0) sl.orn.splice(i, 1); else sl.orn.push(code);
-          render(); refresh();
-        }));
-        refresh();
-      },
-      onExtra:(which)=>{ if(which === 'Tout enlever'){ sl.orn = []; pushHistory(); render(); refresh(); return; } pushHistory(); closePanel(); },
-    });
-  });
+  document.getElementById('btn-chord').addEventListener('click',()=>{const sl=selectedSlot();if(!sl||sl.type!=='note'){alert('Sélectionnez une note');return}const roots=['C','D','E','F','G','A','B'];let root=sl.note,acc='',qual='';if(sl.chord){const m=sl.chord.match(/^([A-G])([#b]?)(.*)$/);if(m){root=m[1];acc=m[2];qual=m[3]}}function controls(){let h='<small>Fondamentale</small><div class="root-grid">';roots.forEach(r=>h+='<button class="k" data-root="'+r+'">'+r+'</button>');h+='</div><small>Altération</small><div class="row-grid row-3"><button class="k" data-acc="">♮</button><button class="k" data-acc="#">♯</button><button class="k" data-acc="b">♭</button></div>';h+='<small>Qualité</small><div class="chord-grid">';CHORD_QUALITIES.forEach(q=>h+='<button class="k" data-qual="'+q+'">'+(q||'maj')+'</button>');h+='</div><small>Aperçu : <b id="chord-preview">'+root+acc+qual+'</b></small>';return h}function refresh(){document.querySelectorAll('[data-root]').forEach(b=>b.classList.toggle('active',b.dataset.root===root));document.querySelectorAll('[data-acc]').forEach(b=>b.classList.toggle('active',b.dataset.acc===acc));document.querySelectorAll('[data-qual]').forEach(b=>b.classList.toggle('active',b.dataset.qual===qual));document.getElementById('chord-preview').textContent=root+acc+qual}openPanel({title:'Accord',body:controls(),hideActions:true,extraButtons:['Annuler','Suppr','Appliquer'],actionsClass:'three',onMount:()=>{document.querySelectorAll('[data-root]').forEach(b=>b.addEventListener('click',()=>{root=b.dataset.root;refresh()}));document.querySelectorAll('[data-acc]').forEach(b=>b.addEventListener('click',()=>{acc=b.dataset.acc;refresh()}));document.querySelectorAll('[data-qual]').forEach(b=>b.addEventListener('click',()=>{qual=b.dataset.qual;refresh()}));refresh()},onExtra:(w)=>{if(w==='Annuler'){closePanel();return}if(w==='Suppr'){delete sl.chord;pushHistory();closePanel();render();return}sl.chord=root+acc+qual;pushHistory();closePanel();render()}})});
 
-  document.getElementById('btn-save-file').addEventListener('click', ()=>{
-    const abc = buildAbcText();
-    const blob = new Blob([abc], {type:'text/plain;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const filename = (state.headers.T || 'morceau').replace(/[^a-zA-Z0-9_\-]/g,'_') + '.abc';
-    a.href = url; a.download = filename;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  });
-  const fileInput = document.getElementById('file-input');
-  document.getElementById('btn-open-file').addEventListener('click', ()=>{ fileInput.click(); });
-  fileInput.addEventListener('change', (e)=>{
-    const f = e.target.files[0]; if(!f) return;
-    const reader = new FileReader();
-    reader.onload = (ev)=>{
-      const text = ev.target.result;
-      const ns = parseAbcText(text);
-      if(!ns){ alert('Impossible de lire ce fichier ABC (en-tête K: introuvable)'); fileInput.value=''; return; }
-      Object.assign(state, ns);
-      cleanupAccidentals();
-      state.sel = {m:0, s:0};
-      pushHistory(); render();
-      fileInput.value = '';
-    };
-    reader.readAsText(f);
-  });
+  document.getElementById('btn-orn').addEventListener('click',()=>{const sl=selectedSlot();if(!sl||sl.type!=='note'){alert('Sélectionnez une note');return}sl.orn=sl.orn||[];function controls(){let h='<small>Cliquez pour activer/désactiver</small><div class="row-grid row-3">';ORNAMENTS.forEach(o=>h+='<button class="k" data-orn="'+o.code+'">'+o.label+'</button>');h+='</div><small>Actifs : <b id="orn-preview">'+(sl.orn.length?sl.orn.join(' '):'(aucun)')+'</b></small>';return h}function refresh(){document.querySelectorAll('[data-orn]').forEach(b=>b.classList.toggle('active',sl.orn.includes(b.dataset.orn)));document.getElementById('orn-preview').textContent=sl.orn.length?sl.orn.join(' '):'(aucun)'}openPanel({title:'Ornement',body:controls(),hideActions:true,extraButtons:['Tout enlever','Fermer'],onMount:()=>{document.querySelectorAll('[data-orn]').forEach(b=>b.addEventListener('click',()=>{const code=b.dataset.orn;const i=sl.orn.indexOf(code);if(i>=0)sl.orn.splice(i,1);else sl.orn.push(code);render();refresh()}));refresh()},onExtra:(w)=>{if(w==='Tout enlever'){sl.orn=[];pushHistory();render();refresh();return}pushHistory();closePanel()}})});
 
-  const STORAGE_KEY = 'abc-editor-saves';
-  function getSaves(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(_){ return []; } }
-  function setSaves(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
-  function exportState(){ return JSON.stringify({ headers: state.headers, pieceMeter: state.pieceMeter, pieceUnit: state.pieceUnit, pieceKeySig: state.pieceKeySig, pieceClef: state.pieceClef, measures: state.measures, timeChanges: state.timeChanges, keyChanges: state.keyChanges, clefChanges: state.clefChanges, repeats: state.repeats, tempo: state.tempo }); }
-  function importStateJson(json){ try { const o = JSON.parse(json); Object.assign(state, o); state.sel = {m:0, s:0}; state.octave = 0; pushHistory(); render(); return true; } catch(e){ return false; } }
+  document.getElementById('btn-save-file').addEventListener('click',()=>{const abc=buildAbcText();const blob=new Blob([abc],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');const fn=(state.headers.T||'morceau').replace(/[^a-zA-Z0-9_\-]/g,'_')+'.abc';a.href=url;a.download=fn;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url)});
+  const fileInput=document.getElementById('file-input');
+  document.getElementById('btn-open-file').addEventListener('click',()=>fileInput.click());
+  fileInput.addEventListener('change',(e)=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=(ev)=>{const text=ev.target.result;const ns=parseAbcText(text);if(!ns){alert('Impossible de lire ce fichier ABC');fileInput.value='';return}Object.assign(state,ns);cleanupAccidentals();state.sel={m:0,s:0};pushHistory();render();fileInput.value=''};r.readAsText(f)});
 
-  document.getElementById('btn-saves').addEventListener('click', ()=>{
-    const saves = getSaves();
-    let listHtml = '<div class="save-list">';
-    if(saves.length === 0) listHtml += '<div class="item" style="color:#888780; cursor:default;">Aucune sauvegarde</div>';
-    else saves.forEach((s, i)=> listHtml += '<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');
-    listHtml += '</div>';
-    listHtml += '<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';
-    openPanel({ title:'Mémoires', body: listHtml, hideActions:true, extraButtons:['Annuler','Enregistrer'],
-      onMount:()=>{
-        document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{
-          el.addEventListener('click', (ev)=>{
-            if(ev.target.dataset.del !== undefined){ const idx = parseInt(ev.target.dataset.del, 10); const saves = getSaves(); saves.splice(idx,1); setSaves(saves); closePanel(); return; }
-            const idx = parseInt(el.dataset.idx, 10); const saves = getSaves();
-            if(saves[idx] && importStateJson(saves[idx].data)) closePanel();
-          });
-        });
-      },
-      onExtra:(which)=>{
-        if(which === 'Annuler'){ closePanel(); return; }
-        const name = document.getElementById('sn').value.trim() || 'Morceau';
-        const saves = getSaves(); const existing = saves.findIndex(s=> s.name === name);
-        const entry = { name, data: exportState(), date: new Date().toISOString() };
-        if(existing >= 0) saves[existing] = entry; else saves.push(entry);
-        setSaves(saves); closePanel();
-      },
-    });
-  });
-  document.getElementById('btn-export').addEventListener('click', ()=>{
-    const abc = buildAbcText();
-    openPanel({ title:'Code ABC', body:'<textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>', hideActions:true, extraButtons:['Fermer','Copier'],
-      onMount:()=>{ document.getElementById('exp').select(); },
-      onExtra:(which)=>{ if(which === 'Copier'){ const ta = document.getElementById('exp'); ta.select(); try { document.execCommand('copy'); } catch(_){} } closePanel(); }, });
-  });
-  document.getElementById('btn-new').addEventListener('click', ()=>{
-    openPanel({ title:'Nouveau', body:'<small>Effacer le morceau ?</small>', hideActions:true, extraButtons:['Annuler','Effacer'],
-      onExtra:(which)=>{ if(which === 'Effacer'){ state.headers = {X:'1', T:''}; state.pieceMeter='4/4'; state.pieceUnit='1/4'; state.pieceKeySig=0; state.pieceClef='treble'; rebuildMeasures(); pushHistory(); render(); } closePanel(); }, });
-  });
+  const STORAGE_KEY='abc-editor-saves';
+  function getSaves(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(_){return[]}}
+  function setSaves(list){localStorage.setItem(STORAGE_KEY,JSON.stringify(list))}
+  function exportState(){return JSON.stringify({headers:state.headers,pieceMeter:state.pieceMeter,pieceUnit:state.pieceUnit,pieceKeySig:state.pieceKeySig,pieceClef:state.pieceClef,measures:state.measures,timeChanges:state.timeChanges,keyChanges:state.keyChanges,clefChanges:state.clefChanges,repeats:state.repeats,tempo:state.tempo})}
+  function importStateJson(json){try{const o=JSON.parse(json);Object.assign(state,o);state.sel={m:0,s:0};state.octave=0;pushHistory();render();return true}catch(e){return false}}
 
-  const panel = document.getElementById('panel');
-  const panelTitle = document.getElementById('panel-title');
-  const panelBody = document.getElementById('panel-body');
-  const panelOk = document.getElementById('panel-ok');
-  const panelCancel = document.getElementById('panel-cancel');
-  let currentOnOk = null; let currentOnExtra = null;
-  function openPanel({title, body, onMount, onOk, hideActions, extraButtons, onExtra}){
-    panelTitle.textContent = title;
-    let extraHtml = '';
-    if(extraButtons && extraButtons.length){
-      extraHtml = '<div class="actions" style="margin-top:10px;">' + extraButtons.map((b,i)=> '<button class="k '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('') + '</div>';
-    }
-    panelBody.innerHTML = body + extraHtml;
-    currentOnOk = onOk || null; currentOnExtra = onExtra || null;
-    panelOk.style.display = (hideActions || extraButtons) ? 'none' : '';
-    panelCancel.style.display = (hideActions || extraButtons) ? 'none' : '';
-    panel.classList.add('open');
-    if(onMount) setTimeout(onMount, 50);
-    if(extraButtons) setTimeout(()=>{ panelBody.querySelectorAll('[data-extra]').forEach(b=>{ b.addEventListener('click', ()=>{ if(currentOnExtra) currentOnExtra(b.dataset.extra); }); }); }, 50);
-  }
-  function closePanel(){ panel.classList.remove('open'); currentOnOk = null; currentOnExtra = null; }
-  panelOk.addEventListener('click', ()=>{ if(currentOnOk) currentOnOk(); closePanel(); render(); });
-  panelCancel.addEventListener('click', closePanel);
+  document.getElementById('btn-saves').addEventListener('click',()=>{const saves=getSaves();let lh='<div class="save-list">';if(saves.length===0)lh+='<div class="item" style="color:#888780;cursor:default;">Aucune sauvegarde</div>';else saves.forEach((s,i)=>lh+='<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');lh+='</div>';lh+='<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';openPanel({title:'Mémoires',body:lh,hideActions:true,extraButtons:['Annuler','Enregistrer'],onMount:()=>{document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{el.addEventListener('click',(ev)=>{if(ev.target.dataset.del!==undefined){const idx=parseInt(ev.target.dataset.del,10);const saves=getSaves();saves.splice(idx,1);setSaves(saves);closePanel();return}const idx=parseInt(el.dataset.idx,10);const saves=getSaves();if(saves[idx]&&importStateJson(saves[idx].data))closePanel()})})},onExtra:(w)=>{if(w==='Annuler'){closePanel();return}const name=document.getElementById('sn').value.trim()||'Morceau';const saves=getSaves();const ex=saves.findIndex(s=>s.name===name);const e={name,data:exportState(),date:new Date().toISOString()};if(ex>=0)saves[ex]=e;else saves.push(e);setSaves(saves);closePanel()}})});
 
-  document.querySelector('[data-hdr="X"]').addEventListener('click', ()=>{ openPanel({ title: 'X:', body: '<div class="row"><input id="hi" type="text" value="' + (state.headers.X||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.X = document.getElementById('hi').value.trim(); pushHistory(); } }); });
-  document.querySelector('[data-hdr="T"]').addEventListener('click', ()=>{ openPanel({ title: 'Titre', body: '<div class="row"><input id="hi" type="text" value="' + (state.headers.T||'') + '"/></div>', onMount: ()=> document.getElementById('hi').focus(), onOk: ()=>{ state.headers.T = document.getElementById('hi').value.trim(); pushHistory(); } }); });
+  document.getElementById('btn-export').addEventListener('click',()=>{const abc=buildAbcText();openPanel({title:'Code ABC',body:'<textarea id="exp" readonly>'+abc.replace(/</g,'&lt;')+'</textarea>',hideActions:true,extraButtons:['Fermer','Copier'],onMount:()=>{document.getElementById('exp').select()},onExtra:(w)=>{if(w==='Copier'){const ta=document.getElementById('exp');ta.select();try{document.execCommand('copy')}catch(_){}}closePanel()}})});
 
-  function scopePanel({title, renderControls, applyPiece, applyHere}){
-    const onFirstMeasure = (state.sel.m === 0);
-    const buttons = ['Annuler', 'Tout', onFirstMeasure ? null : 'Mes ' + (state.sel.m+1) + '+'].filter(Boolean);
-    openPanel({ title, body: renderControls(), hideActions:true, extraButtons: buttons,
-      onMount: ()=>{ if(typeof renderControls.mount === 'function') renderControls.mount(); },
-      onExtra:(which)=>{
-        if(which === 'Annuler'){ closePanel(); return; }
-        if(which === 'Tout'){ applyPiece(); cleanupAccidentals(); pushHistory(); closePanel(); render(); return; }
-        applyHere(); cleanupAccidentals(); pushHistory(); closePanel(); render();
-      },
-    });
-  }
+  document.getElementById('btn-new').addEventListener('click',()=>{openPanel({title:'Nouveau',body:'<small>Effacer le morceau ?</small>',hideActions:true,extraButtons:['Annuler','Effacer'],onExtra:(w)=>{if(w==='Effacer'){state.headers={X:'1',T:'',ST:'',C:'',N:''};state.pieceMeter='4/4';state.pieceUnit='1/4';state.pieceKeySig=0;state.pieceClef='treble';rebuildMeasures();pushHistory();render()}closePanel()}})});
 
-  document.querySelector('[data-hdr="M"]').addEventListener('click', ()=>{
-    const cur = meterAt(state.sel.m); const {num, den} = parseMeter(cur);
-    let n = num, d = den; const denValues = [1,2,4,8,16];
-    let unitDenom = parseInt(state.pieceUnit.split('/')[1], 10);
-    const unitDenoms = [1,2,4,8,16,32];
-    function controls(){
-      return ('<div class="stepper"><button class="k" id="num-d">−</button><div class="val">N: <b id="num-v">'+n+'</b></div><button class="k" id="num-u">+</button></div>'+
-              '<div class="stepper"><button class="k" id="den-d">−</button><div class="val">D: <b id="den-v">'+d+'</b></div><button class="k" id="den-u">+</button></div>'+
-              '<small>Unité L:</small>'+
-              '<div class="stepper"><button class="k" id="L-d">−</button><div class="val">L:1/<b id="L-v">'+unitDenom+'</b></div><button class="k" id="L-u">+</button></div>');
-    }
-    controls.mount = function(){
-      const upd = ()=>{ document.getElementById('num-v').textContent = n; document.getElementById('den-v').textContent = d; document.getElementById('L-v').textContent = unitDenom; };
-      document.getElementById('num-u').addEventListener('click', ()=>{ n = Math.min(16, n+1); upd(); });
-      document.getElementById('num-d').addEventListener('click', ()=>{ n = Math.max(1, n-1); upd(); });
-      document.getElementById('den-u').addEventListener('click', ()=>{ const i = denValues.indexOf(d); if(i<denValues.length-1){ d = denValues[i+1]; upd(); } });
-      document.getElementById('den-d').addEventListener('click', ()=>{ const i = denValues.indexOf(d); if(i>0){ d = denValues[i-1]; upd(); } });
-      document.getElementById('L-u').addEventListener('click', ()=>{ const i = unitDenoms.indexOf(unitDenom); if(i<unitDenoms.length-1){ unitDenom = unitDenoms[i+1]; upd(); } });
-      document.getElementById('L-d').addEventListener('click', ()=>{ const i = unitDenoms.indexOf(unitDenom); if(i>0){ unitDenom = unitDenoms[i-1]; upd(); } });
-    };
-    scopePanel({ title:'Rythme', renderControls: controls,
-      applyPiece: ()=>{
-        state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom;
-        if(state.sel.m === 0) delete state.timeChanges[0];
-        else state.timeChanges = {};
-        rebuildMeasures();
-      },
-      applyHere: ()=>{
-        if(state.sel.m === 0){ state.pieceMeter = n + '/' + d; state.pieceUnit = '1/' + unitDenom; delete state.timeChanges[0]; rebuildMeasures(); return; }
-        state.pieceUnit = '1/' + unitDenom;
-        state.timeChanges[state.sel.m] = n + '/' + d;
-        for(let i = state.sel.m; i < state.measures.length; i++){ if(i > state.sel.m && state.timeChanges[i]) break; state.measures[i] = buildEmptyMeasure(meterAt(i)); }
-        state.sel = {m: state.sel.m, s: 0};
-      },
-    });
-  });
+  const panel=document.getElementById('panel');
+  const panelTitle=document.getElementById('panel-title');
+  const panelBody=document.getElementById('panel-body');
+  const panelOk=document.getElementById('panel-ok');
+  const panelCancel=document.getElementById('panel-cancel');
+  let cOnOk=null,cOnExtra=null;
+  function openPanel({title,body,onMount,onOk,hideActions,extraButtons,onExtra,actionsClass}){panelTitle.textContent=title;let eH='';if(extraButtons&&extraButtons.length){const cls='actions'+(actionsClass?' '+actionsClass:(extraButtons.length===3?' three':''));eH='<div class="'+cls+'" style="margin-top:10px;">'+extraButtons.map((b,i)=>'<button class="k '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('')+'</div>'}panelBody.innerHTML=body+eH;cOnOk=onOk||null;cOnExtra=onExtra||null;panelOk.style.display=(hideActions||extraButtons)?'none':'';panelCancel.style.display=(hideActions||extraButtons)?'none':'';panel.classList.add('open');if(onMount)setTimeout(onMount,50);if(extraButtons)setTimeout(()=>{panelBody.querySelectorAll('[data-extra]').forEach(b=>{b.addEventListener('click',()=>{if(cOnExtra)cOnExtra(b.dataset.extra)})})},50)}
+  function closePanel(){panel.classList.remove('open');cOnOk=null;cOnExtra=null}
+  panelOk.addEventListener('click',()=>{if(cOnOk)cOnOk();closePanel();render()});
+  panelCancel.addEventListener('click',closePanel);
 
-  document.querySelector('[data-hdr="K"]').addEventListener('click', ()=>{
-    let sig = keyAt(state.sel.m);
-    const labelOf = (s)=>{ if(s === 0) return '0'; if(s > 0) return s + ' ♯'; return Math.abs(s) + ' ♭'; };
-    function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭−</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯+</button></div>'); }
-    controls.mount = function(){ const upd = ()=>{ document.getElementById('sig-v').textContent = labelOf(sig); }; document.getElementById('sig-u').addEventListener('click', ()=>{ sig = Math.min(7, sig+1); upd(); }); document.getElementById('sig-d').addEventListener('click', ()=>{ sig = Math.max(-7, sig-1); upd(); }); };
-    scopePanel({ title:'Armure', renderControls: controls,
-      applyPiece: ()=>{ state.pieceKeySig = sig; if(state.sel.m === 0) delete state.keyChanges[0]; else state.keyChanges = {}; },
-      applyHere: ()=>{ if(state.sel.m === 0){ state.pieceKeySig = sig; delete state.keyChanges[0]; } else state.keyChanges[state.sel.m] = sig; }, });
-  });
+  // Headers : X, T, ST, C, N
+  function headerPrompt(key,title){return ()=>openPanel({title:title,body:'<div class="row"><input id="hi" type="text" value="'+((state.headers[key]||'')+'').replace(/"/g,'&quot;')+'"/></div>',onMount:()=>document.getElementById('hi').focus(),onOk:()=>{state.headers[key]=document.getElementById('hi').value.trim();pushHistory()}})}
+  document.querySelector('[data-hdr="X"]').addEventListener('click',headerPrompt('X','X: Numéro'));
+  document.querySelector('[data-hdr="T"]').addEventListener('click',headerPrompt('T','Titre'));
+  document.querySelector('[data-hdr="ST"]').addEventListener('click',headerPrompt('ST','Sous-titre'));
+  document.querySelector('[data-hdr="C"]').addEventListener('click',headerPrompt('C','Compositeur'));
+  document.querySelector('[data-hdr="N"]').addEventListener('click',headerPrompt('N','Commentaire'));
 
-  document.querySelector('[data-hdr="CLEF"]').addEventListener('click', ()=>{
-    let pick = clefAt(state.sel.m);
-    function controls(){ return ('<div class="row-grid row-3" id="clef-pick"><button class="k symbol" data-clef="treble">𝄞</button><button class="k" data-clef="treble8">Sol-8</button><button class="k symbol" data-clef="bass">𝄢</button></div>'); }
-    controls.mount = function(){ const refresh = ()=>{ document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.classList.toggle('active', b.dataset.clef === pick); }); }; refresh(); document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.addEventListener('click', ()=>{ pick = b.dataset.clef; refresh(); }); }); };
-    scopePanel({ title:'Clé', renderControls: controls,
-      applyPiece: ()=>{ state.pieceClef = pick; if(state.sel.m === 0) delete state.clefChanges[0]; else state.clefChanges = {}; },
-      applyHere: ()=>{ if(state.sel.m === 0){ state.pieceClef = pick; delete state.clefChanges[0]; } else state.clefChanges[state.sel.m] = pick; }, });
-  });
+  function scopePanel({title,renderControls,applyPiece,applyHere}){const onFM=(state.sel.m===0);const buttons=['Annuler','Tout',onFM?null:'Mes '+(state.sel.m+1)+'+'].filter(Boolean);openPanel({title,body:renderControls(),hideActions:true,extraButtons:buttons,onMount:()=>{if(typeof renderControls.mount==='function')renderControls.mount()},onExtra:(w)=>{if(w==='Annuler'){closePanel();return}if(w==='Tout'){applyPiece();cleanupAccidentals();pushHistory();closePanel();render();return}applyHere();cleanupAccidentals();pushHistory();closePanel();render()}})}
 
-  function updateBadge(){
-    document.getElementById('ww-tag').textContent = window.innerWidth || 0;
-    document.getElementById('wh-tag').textContent = window.innerHeight || 0;
-  }
-  window.addEventListener('resize', updateBadge);
-  updateBadge();
+  document.querySelector('[data-hdr="M"]').addEventListener('click',()=>{const cur=meterAt(state.sel.m);const{num,den}=parseMeter(cur);let n=num,d=den;const dV=[1,2,4,8,16];let uD=parseInt(state.pieceUnit.split('/')[1],10);const uDs=[1,2,4,8,16,32];function controls(){return('<div class="stepper"><button class="k" id="num-d">−</button><div class="val">N: <b id="num-v">'+n+'</b></div><button class="k" id="num-u">+</button></div><div class="stepper"><button class="k" id="den-d">−</button><div class="val">D: <b id="den-v">'+d+'</b></div><button class="k" id="den-u">+</button></div><small>Unité L:</small><div class="stepper"><button class="k" id="L-d">−</button><div class="val">L:1/<b id="L-v">'+uD+'</b></div><button class="k" id="L-u">+</button></div>')}controls.mount=function(){const upd=()=>{document.getElementById('num-v').textContent=n;document.getElementById('den-v').textContent=d;document.getElementById('L-v').textContent=uD};document.getElementById('num-u').addEventListener('click',()=>{n=Math.min(16,n+1);upd()});document.getElementById('num-d').addEventListener('click',()=>{n=Math.max(1,n-1);upd()});document.getElementById('den-u').addEventListener('click',()=>{const i=dV.indexOf(d);if(i<dV.length-1){d=dV[i+1];upd()}});document.getElementById('den-d').addEventListener('click',()=>{const i=dV.indexOf(d);if(i>0){d=dV[i-1];upd()}});document.getElementById('L-u').addEventListener('click',()=>{const i=uDs.indexOf(uD);if(i<uDs.length-1){uD=uDs[i+1];upd()}});document.getElementById('L-d').addEventListener('click',()=>{const i=uDs.indexOf(uD);if(i>0){uD=uDs[i-1];upd()}})};scopePanel({title:'Rythme',renderControls:controls,applyPiece:()=>{state.pieceMeter=n+'/'+d;state.pieceUnit='1/'+uD;if(state.sel.m===0)delete state.timeChanges[0];else state.timeChanges={};rebuildMeasures()},applyHere:()=>{if(state.sel.m===0){state.pieceMeter=n+'/'+d;state.pieceUnit='1/'+uD;delete state.timeChanges[0];rebuildMeasures();return}state.pieceUnit='1/'+uD;state.timeChanges[state.sel.m]=n+'/'+d;for(let i=state.sel.m;i<state.measures.length;i++){if(i>state.sel.m&&state.timeChanges[i])break;state.measures[i]=buildEmptyMeasure(meterAt(i))}state.sel={m:state.sel.m,s:0}}})});
 
-  rebuildMeasures();
-  pushHistory();
-  render();
+  document.querySelector('[data-hdr="K"]').addEventListener('click',()=>{let sig=keyAt(state.sel.m);const lO=(s)=>keyHumanLabel(s);function controls(){return('<div class="stepper"><button class="k" id="sig-d">♭</button><div class="val"><b id="sig-v">'+lO(sig)+'</b></div><button class="k" id="sig-u">♯</button></div>')}controls.mount=function(){const upd=()=>{document.getElementById('sig-v').textContent=lO(sig)};document.getElementById('sig-u').addEventListener('click',()=>{sig=Math.min(7,sig+1);upd()});document.getElementById('sig-d').addEventListener('click',()=>{sig=Math.max(-7,sig-1);upd()})};scopePanel({title:'Armure',renderControls:controls,applyPiece:()=>{state.pieceKeySig=sig;if(state.sel.m===0)delete state.keyChanges[0];else state.keyChanges={}},applyHere:()=>{if(state.sel.m===0){state.pieceKeySig=sig;delete state.keyChanges[0]}else state.keyChanges[state.sel.m]=sig}})});
+
+  document.querySelector('[data-hdr="CLEF"]').addEventListener('click',()=>{let pick=clefAt(state.sel.m);function controls(){return('<div class="row-grid row-3" id="clef-pick"><button class="k clef-small" data-clef="treble">𝄞</button><button class="k" data-clef="treble8" style="font-size:28px;">Sol-8</button><button class="k clef-small" data-clef="bass">𝄢</button></div>')}controls.mount=function(){const refresh=()=>{document.querySelectorAll('#clef-pick .k').forEach(b=>b.classList.toggle('active',b.dataset.clef===pick))};refresh();document.querySelectorAll('#clef-pick .k').forEach(b=>b.addEventListener('click',()=>{pick=b.dataset.clef;refresh()}))};scopePanel({title:'Clé',renderControls:controls,applyPiece:()=>{state.pieceClef=pick;if(state.sel.m===0)delete state.clefChanges[0];else state.clefChanges={}},applyHere:()=>{if(state.sel.m===0){state.pieceClef=pick;delete state.clefChanges[0]}else state.clefChanges[state.sel.m]=pick}})});
+
+  function updateBadge(){document.getElementById('ww-tag').textContent=window.innerWidth||0;document.getElementById('wh-tag').textContent=window.innerHeight||0}
+  window.addEventListener('resize',updateBadge);updateBadge();
+
+  rebuildMeasures();pushHistory();render();
 })();
 </script>
