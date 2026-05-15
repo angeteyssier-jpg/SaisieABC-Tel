@@ -11,29 +11,31 @@
 
   .ver-badge {
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 13px; color: #5f5e5a;
+    font-size: 14px; color: #5f5e5a;
     background: #ebe9e0; padding: 5px 10px; border-radius: 6px;
     margin-bottom: 5px;
   }
   .ver-badge b { color: #1a1a1a; font-weight: 700; }
 
-  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 5px; }
-  .score-wrap { width: 100%; aspect-ratio: 360 / 200; max-height: 240px; }
+  .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 6px; }
+  /* Partition 3 lignes au lieu de 2 → ratio plus haut */
+  .score-wrap { width: 100%; aspect-ratio: 360 / 280; max-height: 320px; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
 
   .ctx-card {
-    background: #ebe9e0; border: 1px solid #d8d6ce; border-radius: 8px;
-    padding: 7px 10px; margin-bottom: 6px;
-    font-size: 18px; color: #1a1a1a; line-height: 1.4;
+    background: #ebe9e0; border: 1px solid #d8d6ce; border-radius: 10px;
+    padding: 10px 12px; margin-bottom: 8px;
+    font-size: 50px; color: #1a1a1a; line-height: 1.15; font-weight: 700;
   }
+  .ctx-card .line-small { font-size: 28px; font-weight: 700; margin-top: 6px; }
   .ctx-card b { color: #185fa5; font-weight: 700; }
 
-  /* === Bouton générique (GROS) === */
+  /* === Bouton générique TOUT en taille 50 === */
   .abc-app button.k {
-    display: flex; align-items: center; justify-content: center; gap: 4px;
-    width: 100%; height: 78px; padding: 0 4px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; height: 96px; padding: 0 4px;
     background: #ffffff; border: 2px solid #b4b2a9; border-radius: 12px;
-    font-family: inherit; font-size: 28px; font-weight: 700; color: #1a1a1a;
+    font-family: inherit; font-size: 50px; font-weight: 700; color: #1a1a1a;
     cursor: pointer; text-align: center; line-height: 1;
     -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none;
     min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -41,81 +43,89 @@
   .abc-app button.k:active { background: #e8e6df; }
   .abc-app button.k:disabled { color: #bbb8a8; background: #f3f1ea; cursor: not-allowed; }
   .abc-app button.k.active { background: #cfe5fa; border-color: #185fa5; color: #0c447c; }
-  .abc-app button.k.symbol { font-size: 42px; font-family: "Times New Roman", serif; }
-  .abc-app button.k .sub { font-size: 18px; color: #888780; font-weight: 600; }
+  .abc-app button.k.symbol { font-size: 50px; font-family: "Times New Roman", serif; }
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
-  .abc-app button.k.small { height: 58px; font-size: 20px; font-weight: 600; border-radius: 10px; }
+
+  /* Note button : Do en gras 50, sub C non gras 50 */
+  .note-btn { flex-direction: column !important; gap: 0 !important; height: 130px !important; }
+  .note-btn .lbl { font-size: 50px; font-weight: 700; line-height: 1; }
+  .note-btn .sub { font-size: 50px; font-weight: 400; color: #5f5e5a; line-height: 1; }
+
+  /* Variante slim pour les boutons avec beaucoup de texte (Plein écran, Sauver .abc...) */
+  .abc-app button.k.text-long { font-size: 50px; }
 
   .row-grid { display: grid; gap: 6px; margin-bottom: 6px; }
   .row-2 { grid-template-columns: 1fr 1fr; }
   .row-3 { grid-template-columns: 1fr 1fr 1fr; }
   .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .row-6 { grid-template-columns: repeat(6, 1fr); }
+  .row-7 { grid-template-columns: repeat(7, 1fr); }
 
-  /* === Barre de navigation persistante === */
+  /* === Barre de navigation 6 flèches égales === */
   .nav-bar {
-    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 6px; margin-bottom: 6px;
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 5px; margin-bottom: 8px;
     background: #fdf1d8; border: 2px solid #e2b840; padding: 6px;
     border-radius: 12px;
   }
   .nav-bar .k {
     background: #fffaee; border-color: #e2b840;
-    font-size: 26px; height: 78px;
+    font-size: 44px; height: 88px; padding: 0;
   }
   .nav-bar .k:active { background: #f5e2a8; }
 
-  /* === Onglets === */
+  /* Onglets gros */
   .tabs {
     display: grid; grid-template-columns: repeat(5, 1fr);
-    gap: 3px; margin-bottom: 6px;
-    border-bottom: 2px solid #b4b2a9; padding-bottom: 0;
+    gap: 3px; margin-bottom: 8px;
+    border-bottom: 2px solid #b4b2a9;
   }
   .tab {
-    height: 54px;
-    background: #ebe9e0; border: 1.5px solid #b4b2a9; border-bottom: none;
-    border-radius: 8px 8px 0 0;
-    font-family: inherit; font-size: 16px; font-weight: 700; color: #5f5e5a;
-    cursor: pointer; padding: 0 4px;
+    height: 68px;
+    background: #ebe9e0; border: 2px solid #b4b2a9; border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    font-family: inherit; font-size: 22px; font-weight: 700; color: #5f5e5a;
+    cursor: pointer; padding: 0 2px;
     -webkit-tap-highlight-color: transparent;
     display: flex; align-items: center; justify-content: center;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    overflow: hidden;
   }
   .tab.active {
     background: #ffffff; color: #0c447c; border-color: #185fa5;
-    margin-bottom: -2px; padding-bottom: 2px; font-weight: 700;
+    margin-bottom: -2px; padding-bottom: 2px;
   }
   .tab:active { background: #d6d4cb; }
 
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  /* === Octave row (utilisé dans onglet Notes) === */
+  /* === Octave row === */
   .oct-row {
     display: grid; grid-template-columns: 1fr 1.4fr 1fr;
-    gap: 6px; margin-bottom: 6px;
+    gap: 6px; margin-bottom: 8px;
     background: #ebe9e0; padding: 6px; border-radius: 12px;
     align-items: center;
   }
   .oct-row .label {
-    font-size: 22px; color: #1a1a1a; text-align: center; font-weight: 700;
+    font-size: 50px; color: #1a1a1a; text-align: center; font-weight: 700;
   }
-  .oct-row .label b { color: #185fa5; font-size: 32px; margin-left: 6px; }
+  .oct-row .label b { color: #185fa5; font-size: 50px; margin-left: 6px; }
 
-  /* === Volume / Tempo combinés (onglet Play) === */
+  /* === Volume / Tempo === */
   .control-row {
     display: grid; grid-template-columns: 1fr 1.4fr 1fr;
-    gap: 6px; margin-bottom: 6px;
+    gap: 6px; margin-bottom: 8px;
     background: #ebe9e0; padding: 6px; border-radius: 12px;
     align-items: center;
   }
   .control-row .label {
-    font-size: 22px; color: #1a1a1a; text-align: center; font-weight: 700;
+    font-size: 50px; color: #1a1a1a; text-align: center; font-weight: 700;
   }
   .control-row .label b {
-    color: #185fa5; font-size: 30px; margin-left: 4px;
+    color: #185fa5; font-size: 50px; margin-left: 6px;
   }
 
-  /* === Panel modal === */
+  /* Panel modal (laissé en tailles raisonnables) */
   .panel {
     background: #e6f1fb; border: 2px solid #378add; border-radius: 12px;
     padding: 10px; margin-bottom: 8px; display: none;
@@ -123,61 +133,62 @@
   }
   .panel.open { display: block; }
   .panel .title {
-    font-size: 22px; color: #0c447c; font-weight: 700; margin-bottom: 10px;
+    font-size: 28px; color: #0c447c; font-weight: 700; margin-bottom: 12px;
   }
   .panel .row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .panel input, .panel textarea {
-    flex: 1; min-height: 50px; font-family: ui-monospace, monospace;
-    font-size: 20px; padding: 8px 10px; border: 2px solid #b4b2a9;
+    flex: 1; min-height: 60px; font-family: ui-monospace, monospace;
+    font-size: 24px; padding: 10px 12px; border: 2px solid #b4b2a9;
     border-radius: 8px; background: #ffffff; color: #1a1a1a;
   }
-  .panel textarea { width: 100%; min-height: 150px; }
+  .panel textarea { width: 100%; min-height: 180px; }
   .panel .field-label {
-    font-family: ui-monospace, monospace; font-size: 18px;
-    color: #0c447c; font-weight: 700; min-width: 40px;
+    font-family: ui-monospace, monospace; font-size: 22px;
+    color: #0c447c; font-weight: 700; min-width: 50px;
   }
   .panel .actions {
     display: flex; gap: 8px; justify-content: flex-end;
-    flex-wrap: wrap; margin-top: 8px;
+    flex-wrap: wrap; margin-top: 10px;
   }
   .panel .actions .k {
-    width: auto !important; padding: 0 20px !important;
-    height: 56px !important; font-size: 20px !important;
+    width: auto !important; padding: 0 24px !important;
+    height: 70px !important; font-size: 24px !important;
   }
   .panel .stepper {
-    display: grid; grid-template-columns: 70px 1fr 70px;
-    gap: 10px; align-items: center; margin-bottom: 10px;
+    display: grid; grid-template-columns: 80px 1fr 80px;
+    gap: 12px; align-items: center; margin-bottom: 12px;
   }
+  .panel .stepper .k { height: 70px !important; font-size: 32px !important; padding: 0 !important; }
   .panel .stepper .val {
     text-align: center; font-family: ui-monospace, monospace;
-    font-size: 22px; color: #0c447c; font-weight: 700;
+    font-size: 28px; color: #0c447c; font-weight: 700;
   }
   .panel small {
-    display: block; color: #5f5e5a; font-size: 16px;
+    display: block; color: #5f5e5a; font-size: 18px;
     margin-bottom: 8px; font-style: italic;
   }
   .panel .save-list {
-    max-height: 200px; overflow-y: auto;
+    max-height: 240px; overflow-y: auto;
     border: 2px solid #b4b2a9; border-radius: 8px;
     background: #ffffff; margin-bottom: 8px;
   }
   .panel .save-list .item {
-    padding: 14px 12px; border-bottom: 1px solid #ebe9e0;
+    padding: 16px 14px; border-bottom: 1px solid #ebe9e0;
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 18px; cursor: pointer;
+    font-size: 22px; cursor: pointer;
   }
   .panel .save-list .item .del {
-    color: #c34536; font-size: 22px; padding: 0 10px; cursor: pointer;
+    color: #c34536; font-size: 28px; padding: 0 12px; cursor: pointer;
   }
   .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
-  .chord-grid .k { height: 54px !important; font-size: 18px !important; }
+  .chord-grid .k { height: 64px !important; font-size: 22px !important; padding: 0 !important; }
   .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px; }
-  .root-grid .k { height: 54px !important; font-size: 20px !important; }
+  .root-grid .k { height: 64px !important; font-size: 24px !important; padding: 0 !important; }
 </style>
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v30</b></span>
+    <span>Éditeur ABC <b>v31</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -185,8 +196,8 @@
     <div class="title" id="panel-title">Édition</div>
     <div id="panel-body"></div>
     <div class="actions">
-      <button class="k small" id="panel-cancel">Annuler</button>
-      <button class="k small primary" id="panel-ok">OK</button>
+      <button class="k" id="panel-cancel">Annuler</button>
+      <button class="k primary" id="panel-ok">OK</button>
     </div>
   </div>
   <input type="file" id="file-input" accept=".abc,text/plain" style="display:none;"/>
@@ -195,21 +206,21 @@
     <div class="score-wrap" id="score"></div>
   </div>
 
-  <!-- Bandeau infos contextuelles -->
   <div class="ctx-card">
-    <div>Mesure <b id="meas-pos">1</b> · slot <b id="slot-pos">1</b></div>
-    <div>Rythmique : <b id="info-meter">4/4</b> · Armure : <b id="info-key">0</b> · Clé : <b id="info-clef">Sol</b></div>
+    <div>Mes <b id="meas-pos">1</b> · slot <b id="slot-pos">1</b></div>
+    <div class="line-small">Rythmique : <b id="info-meter">4/4</b> · Armure : <b id="info-key">0</b> · Clé : <b id="info-clef">Sol</b></div>
   </div>
 
-  <!-- ⭐ Barre de navigation persistante (sous partition) -->
+  <!-- Barre de navigation : ← ↓ ⟪ ⟫ ↑ → -->
   <div class="nav-bar">
-    <button class="k" id="cur-prev">◀</button>
-    <button class="k" id="meas-prev">◀ Mes</button>
-    <button class="k" id="meas-next">Mes ▶</button>
-    <button class="k" id="cur-next">▶</button>
+    <button class="k" id="cur-prev" title="Note précédente">←</button>
+    <button class="k" id="btn-trans-down" title="-1/2 ton">↓</button>
+    <button class="k" id="meas-prev" title="Mesure précédente">⟪</button>
+    <button class="k" id="meas-next" title="Mesure suivante">⟫</button>
+    <button class="k" id="btn-trans-up" title="+1/2 ton">↑</button>
+    <button class="k" id="cur-next" title="Note suivante">→</button>
   </div>
 
-  <!-- ⭐ Onglets -->
   <div class="tabs">
     <button class="tab active" data-tab="notes">Notes</button>
     <button class="tab" data-tab="mesure">Mesure</button>
@@ -220,112 +231,104 @@
 
   <!-- === ONGLET NOTES === -->
   <div class="tab-panel active" data-panel="notes">
-    <!-- Octave -->
     <div class="oct-row">
       <button class="k" id="oct-down">▽</button>
       <div class="label">Oct <b id="oct-val">0</b></div>
       <button class="k" id="oct-up">△</button>
     </div>
 
-    <!-- 7 notes pleine largeur -->
-    <div class="row-grid" id="notes-row" style="grid-template-columns: repeat(7, 1fr);"></div>
+    <!-- 7 notes : Do Ré Mi Fa Sol La Si -->
+    <div class="row-grid row-7" id="notes-row"></div>
 
-    <!-- Durées 4 + Altérations 3 + Point sur 2 lignes ou 1 ligne -->
-    <div class="row-grid row-4" id="dur-row"></div>
-    <div class="row-grid row-4" id="alt-row"></div>
+    <!-- 6 durées sur une ligne : ronde, blanche, noire, croche, double, triple -->
+    <div class="row-grid row-6" id="dur-row"></div>
 
-    <!-- Actions sur la sélection -->
-    <div class="row-grid row-3">
-      <button class="k small" id="btn-rest">→ Silence</button>
-      <button class="k small" id="btn-tie">⌒ Liaison</button>
-      <button class="k small" id="btn-del">⌫ Suppr</button>
+    <!-- Altérations + point + silence : ♯ ♭ ♮ ♩· 𝄽 -->
+    <div class="row-grid" id="alt-row" style="grid-template-columns: repeat(5, 1fr);"></div>
+
+    <div class="row-grid row-2">
+      <button class="k" id="btn-tie">⌒</button>
+      <button class="k" id="btn-del">⌫</button>
     </div>
     <div class="row-grid row-3">
-      <button class="k small" id="btn-trans-down">−½ ton</button>
-      <button class="k small" id="btn-trans-up">+½ ton</button>
-      <button class="k small" id="btn-tuplet">3:2</button>
+      <button class="k" id="btn-tuplet">3:2</button>
+      <button class="k" id="btn-chord">Cm</button>
+      <button class="k" id="btn-orn">~T</button>
     </div>
     <div class="row-grid row-2">
-      <button class="k small" id="btn-chord">"Cm" Accord</button>
-      <button class="k small" id="btn-orn">~T Ornement</button>
-    </div>
-    <div class="row-grid row-2">
-      <button class="k small" id="btn-undo">↶ Annul</button>
-      <button class="k small" id="btn-redo">↷ Refaire</button>
+      <button class="k" id="btn-undo">↶</button>
+      <button class="k" id="btn-redo">↷</button>
     </div>
   </div>
 
   <!-- === ONGLET MESURE === -->
   <div class="tab-panel" data-panel="mesure">
-    <!-- 4 boutons gestion mesures -->
     <div class="row-grid row-2">
-      <button class="k" id="meas-del">⊟ Suppr<br>mesure</button>
-      <button class="k" id="meas-add">⊞ Ajouter<br>mesure</button>
+      <button class="k" id="meas-del">⊟ Mes</button>
+      <button class="k" id="meas-add">⊞ Mes</button>
     </div>
-    <!-- Métrique / Armure / Clé -->
     <div class="row-grid row-3">
-      <button class="k small" data-hdr="M">Rythme</button>
-      <button class="k small" data-hdr="K">Armure</button>
-      <button class="k small" data-hdr="CLEF">Clé</button>
+      <button class="k" data-hdr="M">M</button>
+      <button class="k" data-hdr="K">K</button>
+      <button class="k" data-hdr="CLEF">Clé</button>
     </div>
     <div class="row-grid">
-      <button class="k small" id="btn-disarm">K → ♯ désarmer (mettre les altérations explicitement)</button>
-    </div>
-    <!-- Reprises et voltas -->
-    <div class="row-grid row-2">
-      <button class="k" id="btn-rep-start">𝄆 Début reprise</button>
-      <button class="k" id="btn-rep-end">𝄇 Fin reprise</button>
+      <button class="k" id="btn-disarm">K→♯</button>
     </div>
     <div class="row-grid row-2">
-      <button class="k" id="btn-volta1">|1 Volta 1</button>
-      <button class="k" id="btn-volta2">|2 Volta 2</button>
+      <button class="k" id="btn-rep-start">𝄆</button>
+      <button class="k" id="btn-rep-end">𝄇</button>
+    </div>
+    <div class="row-grid row-2">
+      <button class="k" id="btn-volta1">|1</button>
+      <button class="k" id="btn-volta2">|2</button>
     </div>
   </div>
 
   <!-- === ONGLET PLAY === -->
   <div class="tab-panel" data-panel="play">
     <div class="row-grid row-3">
-      <button class="k" id="btn-play">▶ Play</button>
-      <button class="k" id="btn-stop">■ Stop</button>
-      <button class="k" id="btn-viewmode">👁 Vue</button>
+      <button class="k" id="btn-play">▶</button>
+      <button class="k" id="btn-stop">■</button>
+      <button class="k" id="btn-viewmode">👁</button>
     </div>
     <div class="control-row">
-      <button class="k" id="vol-d">🔉 −</button>
+      <button class="k" id="vol-d">−</button>
       <div class="label">Vol <b id="vol-v">60</b></div>
-      <button class="k" id="vol-u">🔊 +</button>
+      <button class="k" id="vol-u">+</button>
     </div>
     <div class="control-row">
-      <button class="k" id="tempo-d">♩ −</button>
+      <button class="k" id="tempo-d">−</button>
       <div class="label">♩ <b id="tempo-v">100</b></div>
-      <button class="k" id="tempo-u">♩ +</button>
+      <button class="k" id="tempo-u">+</button>
     </div>
     <div class="row-grid">
-      <button class="k small" id="btn-fs">⛶ Plein écran</button>
+      <button class="k" id="btn-fs">⛶</button>
     </div>
   </div>
 
   <!-- === ONGLET TITRE === -->
   <div class="tab-panel" data-panel="titre">
     <div class="row-grid">
-      <button class="k" data-hdr="X">X: <b id="hdr-x-val" style="margin-left:8px; color:#185fa5;">1</b></button>
+      <button class="k" data-hdr="X">X: <span style="color:#185fa5;" id="hdr-x-val">1</span></button>
     </div>
     <div class="row-grid">
-      <button class="k" data-hdr="T">Titre <b id="hdr-t-val" style="margin-left:8px; color:#185fa5; font-size:20px;">(vide)</b></button>
+      <button class="k" data-hdr="T"><span id="hdr-t-val">Titre</span></button>
     </div>
   </div>
 
   <!-- === ONGLET FICHIER === -->
   <div class="tab-panel" data-panel="fichier">
     <div class="row-grid">
-      <button class="k" id="btn-new">📄 Nouveau</button>
+      <button class="k" id="btn-new">📄</button>
     </div>
     <div class="row-grid row-2">
-      <button class="k" id="btn-open-file">📂 Ouvrir .abc</button>
-      <button class="k" id="btn-save-file">💾 Sauver .abc</button>
+      <button class="k" id="btn-open-file">📂</button>
+      <button class="k" id="btn-save-file">💾</button>
     </div>
     <div class="row-grid row-2">
-      <button class="k" id="btn-saves">⭐ Mémoires</button>
-      <button class="k" id="btn-export">⇣ Voir ABC</button>
+      <button class="k" id="btn-saves">⭐</button>
+      <button class="k" id="btn-export">⇣</button>
     </div>
   </div>
 </div>
@@ -336,7 +339,11 @@
     {label:'Do',sub:'C',n:'C'},{label:'Ré',sub:'D',n:'D'},{label:'Mi',sub:'E',n:'E'},
     {label:'Fa',sub:'F',n:'F'},{label:'Sol',sub:'G',n:'G'},{label:'La',sub:'A',n:'A'},{label:'Si',sub:'B',n:'B'},
   ];
-  const DURATIONS = [{label:'𝅗𝅥',d:2},{label:'♩',d:1},{label:'♪',d:0.5},{label:'♬',d:0.25}];
+  // ronde 4, blanche 2, noire 1, croche 0.5, double 0.25, triple 0.125
+  const DURATIONS = [
+    {label:'𝅝',d:4}, {label:'𝅗𝅥',d:2}, {label:'♩',d:1},
+    {label:'♪',d:0.5}, {label:'♬',d:0.25}, {label:'𝅘𝅥𝅰',d:0.125}
+  ];
   const SHARP_NOTES = ['F','C','G','D','A','E','B'];
   const FLAT_NOTES  = ['B','E','A','D','G','C','F'];
   const ORNAMENTS = [
@@ -391,7 +398,7 @@
     return slots;
   }
   function rebuildMeasures(){
-    const count = Math.max(state.measures.length, 6);
+    const count = Math.max(state.measures.length, 9);
     state.measures = [];
     state.timeChanges = {}; state.keyChanges = {}; state.clefChanges = {}; state.repeats = {};
     for(let i=0; i<count; i++) state.measures.push(buildEmptyMeasure(state.pieceMeter));
@@ -968,7 +975,8 @@
   }
   function renderScore(){
     const selM = state.sel.m;
-    const linesShown = state.viewmode ? 6 : 2;
+    // ⭐ Partition sur 3 lignes au lieu de 2
+    const linesShown = state.viewmode ? 6 : 3;
     const measuresPerPage = MEASURES_PER_LINE * linesShown;
     const page = Math.floor(selM / measuresPerPage);
     const startM = page * measuresPerPage;
@@ -1093,12 +1101,12 @@
     if(dotBtn) dotBtn.classList.toggle('active', !!(sl && sl.dot));
     document.getElementById('tempo-v').textContent = state.tempo;
     document.getElementById('vol-v').textContent = state.volume;
-    document.getElementById('btn-play').textContent = audio.playing ? '⏸ Pause' : '▶ Play';
+    document.getElementById('btn-play').textContent = audio.playing ? '⏸' : '▶';
     document.getElementById('btn-undo').disabled = (history.pos <= 0);
     document.getElementById('btn-redo').disabled = (history.pos >= history.stack.length - 1);
-    document.getElementById('btn-viewmode').textContent = state.viewmode ? '✎ Édit' : '👁 Vue';
+    document.getElementById('btn-viewmode').textContent = state.viewmode ? '✎' : '👁';
     document.getElementById('hdr-x-val').textContent = state.headers.X || '1';
-    document.getElementById('hdr-t-val').textContent = state.headers.T || '(vide)';
+    document.getElementById('hdr-t-val').textContent = state.headers.T || 'Titre';
   }
   function render(){ renderScore(); renderState(); }
 
@@ -1143,7 +1151,7 @@
   function playSchedule(){
     ensureAudio(); stopPlayback(false);
     audio.playing = true;
-    document.getElementById('btn-play').textContent = '⏸ Pause';
+    document.getElementById('btn-play').textContent = '⏸';
     const startTime = audio.ctx.currentTime + 0.05;
     let t = startTime; const qDur = 60 / state.tempo;
     const order = expandForPlayback();
@@ -1180,7 +1188,7 @@
     }
     audio.raf = requestAnimationFrame(tick);
   }
-  function stopPlayback(refresh){ if(audio.raf){ cancelAnimationFrame(audio.raf); audio.raf = null; } audio.scheduled.forEach(ev=>{ if(ev.stop) try{ev.stop();}catch(_){} }); audio.scheduled = []; audio.playing = false; document.getElementById('btn-play').textContent = '▶ Play'; if(refresh) render(); }
+  function stopPlayback(refresh){ if(audio.raf){ cancelAnimationFrame(audio.raf); audio.raf = null; } audio.scheduled.forEach(ev=>{ if(ev.stop) try{ev.stop();}catch(_){} }); audio.scheduled = []; audio.playing = false; document.getElementById('btn-play').textContent = '▶'; if(refresh) render(); }
 
   function setNoteAtSelection(noteName){
     const sl = selectedSlot(); if(!sl) return;
@@ -1230,7 +1238,7 @@
     pushHistory(); render();
   }
 
-  // --- Onglets ---
+  // Onglets
   function setActiveTab(name){
     state.activeTab = name;
     document.querySelectorAll('.tab').forEach(t=> t.classList.toggle('active', t.dataset.tab === name));
@@ -1240,20 +1248,17 @@
     t.addEventListener('click', ()=> setActiveTab(t.dataset.tab));
   });
 
-  // --- Construction des boutons dynamiques ---
-  // Notes : 7 boutons pleine largeur
+  // Notes : Do en gras + C non gras, taille 50/50
   const notesRow = document.getElementById('notes-row');
   NOTES.forEach(n=>{
     const b = document.createElement('button');
-    b.className = 'k';
-    b.style.flexDirection = 'column';
-    b.style.gap = '2px';
-    b.innerHTML = '<span style="font-size:30px;">' + n.label + '</span><span class="sub">' + n.sub + '</span>';
+    b.className = 'k note-btn';
+    b.innerHTML = '<span class="lbl">' + n.label + '</span><span class="sub">' + n.sub + '</span>';
     b.addEventListener('click', ()=> setNoteAtSelection(n.n));
     notesRow.appendChild(b);
   });
 
-  // Durées : 4 boutons (𝅗𝅥 ♩ ♪ ♬)
+  // Durées : 6 boutons (ronde, blanche, noire, croche, double, triple)
   const durRow = document.getElementById('dur-row');
   DURATIONS.forEach(d=>{
     const b = document.createElement('button');
@@ -1262,7 +1267,7 @@
     durRow.appendChild(b);
   });
 
-  // Altérations + point : 4 boutons (♯ ♭ ♮ ♩·)
+  // Altérations + point + silence : ♯ ♭ ♮ ♩· 𝄽
   const altRow = document.getElementById('alt-row');
   [{label:'♯',acc:'^'},{label:'♭',acc:'_'},{label:'♮',acc:'='}].forEach(a=>{
     const b = document.createElement('button');
@@ -1274,6 +1279,10 @@
   dotBtn.className = 'k symbol'; dotBtn.id = 'dot-btn'; dotBtn.textContent = '♩·';
   dotBtn.addEventListener('click', toggleDotAtSelection);
   altRow.appendChild(dotBtn);
+  const restBtn = document.createElement('button');
+  restBtn.className = 'k symbol'; restBtn.id = 'btn-rest'; restBtn.textContent = '𝄽';
+  restBtn.addEventListener('click', setRestAtSelection);
+  altRow.appendChild(restBtn);
 
   document.getElementById('oct-up').addEventListener('click', ()=> changeOctave(+1));
   document.getElementById('oct-down').addEventListener('click', ()=> changeOctave(-1));
@@ -1281,7 +1290,6 @@
   document.getElementById('cur-next').addEventListener('click', selectNext);
   document.getElementById('meas-prev').addEventListener('click', ()=> jumpMeasure(-1));
   document.getElementById('meas-next').addEventListener('click', ()=> jumpMeasure(+1));
-  document.getElementById('btn-rest').addEventListener('click', setRestAtSelection);
   document.getElementById('btn-del').addEventListener('click', ()=>{ const sl = selectedSlot(); if(sl){ state.measures[state.sel.m][state.sel.s] = {type:'rest', dur:sl.dur, dot:sl.dot}; pushHistory(); render(); } });
   document.getElementById('btn-undo').addEventListener('click', undo);
   document.getElementById('btn-redo').addEventListener('click', redo);
@@ -1326,9 +1334,9 @@
     let count = 1; let side = 'right';
     function controls(){
       return ('<small>Insérer par rapport à la mesure ' + (state.sel.m+1) + '</small>' +
-              '<div class="row-grid row-2" id="side-pick"><button class="k small" data-side="left">À gauche</button><button class="k small" data-side="right">À droite</button></div>' +
+              '<div class="row-grid row-2" id="side-pick"><button class="k" data-side="left">←</button><button class="k" data-side="right">→</button></div>' +
               '<small>Nombre</small>' +
-              '<div class="stepper"><button class="k small" id="cnt-d">−</button><div class="val"><b id="cnt-v">'+count+'</b></div><button class="k small" id="cnt-u">+</button></div>');
+              '<div class="stepper"><button class="k" id="cnt-d">−</button><div class="val"><b id="cnt-v">'+count+'</b></div><button class="k" id="cnt-u">+</button></div>');
     }
     function refreshSide(){ document.querySelectorAll('#side-pick .k').forEach(b=> b.classList.toggle('active', b.dataset.side === side)); }
     openPanel({ title: 'Ajouter mesure(s)', body: controls(), hideActions: true, extraButtons: ['Annuler', 'Ajouter'],
@@ -1369,7 +1377,7 @@
   document.getElementById('btn-play').addEventListener('click', ()=>{ if(audio.playing) stopPlayback(true); else playSchedule(); });
   document.getElementById('btn-stop').addEventListener('click', ()=> stopPlayback(true));
   document.getElementById('btn-viewmode').addEventListener('click', ()=>{ state.viewmode = !state.viewmode; document.getElementById('app').classList.toggle('viewmode', state.viewmode); render(); });
-  document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); document.getElementById('btn-fs').textContent = state.fullscreen ? '⛶ Quitter plein écran' : '⛶ Plein écran'; });
+  document.getElementById('btn-fs').addEventListener('click', ()=>{ state.fullscreen = !state.fullscreen; document.getElementById('app').classList.toggle('fullscreen', state.fullscreen); });
 
   document.getElementById('btn-chord').addEventListener('click', ()=>{
     const sl = selectedSlot();
@@ -1379,10 +1387,10 @@
     if(sl.chord){ const m = sl.chord.match(/^([A-G])([#b]?)(.*)$/); if(m){ root = m[1]; acc = m[2]; qual = m[3]; } }
     function controls(){
       let html = '<small>Fondamentale</small><div class="root-grid">';
-      roots.forEach(r => html += '<button class="k small" data-root="'+r+'">'+r+'</button>');
-      html += '</div><small>Altération</small><div class="row-grid row-3"><button class="k small" data-acc="">♮</button><button class="k small" data-acc="#">♯</button><button class="k small" data-acc="b">♭</button></div>';
+      roots.forEach(r => html += '<button class="k" data-root="'+r+'">'+r+'</button>');
+      html += '</div><small>Altération</small><div class="row-grid row-3"><button class="k" data-acc="">♮</button><button class="k" data-acc="#">♯</button><button class="k" data-acc="b">♭</button></div>';
       html += '<small>Qualité</small><div class="chord-grid">';
-      CHORD_QUALITIES.forEach(q => html += '<button class="k small" data-qual="'+q+'">'+(q || 'maj')+'</button>');
+      CHORD_QUALITIES.forEach(q => html += '<button class="k" data-qual="'+q+'">'+(q || 'maj')+'</button>');
       html += '</div><small>Aperçu : <b id="chord-preview">'+root+acc+qual+'</b></small>';
       return html;
     }
@@ -1413,7 +1421,7 @@
     sl.orn = sl.orn || [];
     function controls(){
       let html = '<small>Cliquez pour activer/désactiver</small><div class="row-grid row-3">';
-      ORNAMENTS.forEach(o => html += '<button class="k small" data-orn="'+o.code+'">'+o.label+'</button>');
+      ORNAMENTS.forEach(o => html += '<button class="k" data-orn="'+o.code+'">'+o.label+'</button>');
       html += '</div><small>Actifs : <b id="orn-preview">'+(sl.orn.length ? sl.orn.join(' ') : '(aucun)')+'</b></small>';
       return html;
     }
@@ -1516,7 +1524,7 @@
     panelTitle.textContent = title;
     let extraHtml = '';
     if(extraButtons && extraButtons.length){
-      extraHtml = '<div class="actions" style="margin-top:8px;">' + extraButtons.map((b,i)=> '<button class="k small '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('') + '</div>';
+      extraHtml = '<div class="actions" style="margin-top:10px;">' + extraButtons.map((b,i)=> '<button class="k '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('') + '</div>';
     }
     panelBody.innerHTML = body + extraHtml;
     currentOnOk = onOk || null; currentOnExtra = onExtra || null;
@@ -1552,10 +1560,10 @@
     let unitDenom = parseInt(state.pieceUnit.split('/')[1], 10);
     const unitDenoms = [1,2,4,8,16,32];
     function controls(){
-      return ('<div class="stepper"><button class="k small" id="num-d">−</button><div class="val">N: <b id="num-v">'+n+'</b></div><button class="k small" id="num-u">+</button></div>'+
-              '<div class="stepper"><button class="k small" id="den-d">−</button><div class="val">D: <b id="den-v">'+d+'</b></div><button class="k small" id="den-u">+</button></div>'+
+      return ('<div class="stepper"><button class="k" id="num-d">−</button><div class="val">N: <b id="num-v">'+n+'</b></div><button class="k" id="num-u">+</button></div>'+
+              '<div class="stepper"><button class="k" id="den-d">−</button><div class="val">D: <b id="den-v">'+d+'</b></div><button class="k" id="den-u">+</button></div>'+
               '<small>Unité L:</small>'+
-              '<div class="stepper"><button class="k small" id="L-d">−</button><div class="val">L:1/<b id="L-v">'+unitDenom+'</b></div><button class="k small" id="L-u">+</button></div>');
+              '<div class="stepper"><button class="k" id="L-d">−</button><div class="val">L:1/<b id="L-v">'+unitDenom+'</b></div><button class="k" id="L-u">+</button></div>');
     }
     controls.mount = function(){
       const upd = ()=>{ document.getElementById('num-v').textContent = n; document.getElementById('den-v').textContent = d; document.getElementById('L-v').textContent = unitDenom; };
@@ -1585,8 +1593,8 @@
 
   document.querySelector('[data-hdr="K"]').addEventListener('click', ()=>{
     let sig = keyAt(state.sel.m);
-    const labelOf = (s)=>{ if(s === 0) return '0 (Do/La m)'; if(s > 0) return s + ' ♯'; return Math.abs(s) + ' ♭'; };
-    function controls(){ return ('<div class="stepper"><button class="k small" id="sig-d">♭ −</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k small" id="sig-u">♯ +</button></div>'); }
+    const labelOf = (s)=>{ if(s === 0) return '0'; if(s > 0) return s + ' ♯'; return Math.abs(s) + ' ♭'; };
+    function controls(){ return ('<div class="stepper"><button class="k" id="sig-d">♭−</button><div class="val"><b id="sig-v">'+labelOf(sig)+'</b></div><button class="k" id="sig-u">♯+</button></div>'); }
     controls.mount = function(){ const upd = ()=>{ document.getElementById('sig-v').textContent = labelOf(sig); }; document.getElementById('sig-u').addEventListener('click', ()=>{ sig = Math.min(7, sig+1); upd(); }); document.getElementById('sig-d').addEventListener('click', ()=>{ sig = Math.max(-7, sig-1); upd(); }); };
     scopePanel({ title:'Armure', renderControls: controls,
       applyPiece: ()=>{ state.pieceKeySig = sig; if(state.sel.m === 0) delete state.keyChanges[0]; else state.keyChanges = {}; },
@@ -1595,7 +1603,7 @@
 
   document.querySelector('[data-hdr="CLEF"]').addEventListener('click', ()=>{
     let pick = clefAt(state.sel.m);
-    function controls(){ return ('<div class="row-grid row-3" id="clef-pick"><button class="k small symbol" data-clef="treble">𝄞</button><button class="k small" data-clef="treble8">Sol-8</button><button class="k small symbol" data-clef="bass">𝄢</button></div>'); }
+    function controls(){ return ('<div class="row-grid row-3" id="clef-pick"><button class="k symbol" data-clef="treble">𝄞</button><button class="k" data-clef="treble8">Sol-8</button><button class="k symbol" data-clef="bass">𝄢</button></div>'); }
     controls.mount = function(){ const refresh = ()=>{ document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.classList.toggle('active', b.dataset.clef === pick); }); }; refresh(); document.querySelectorAll('#clef-pick .k').forEach(b=>{ b.addEventListener('click', ()=>{ pick = b.dataset.clef; refresh(); }); }); };
     scopePanel({ title:'Clé', renderControls: controls,
       applyPiece: ()=>{ state.pieceClef = pick; if(state.sel.m === 0) delete state.clefChanges[0]; else state.clefChanges = {}; },
