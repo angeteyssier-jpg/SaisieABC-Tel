@@ -46,16 +46,15 @@
   .row-5 { grid-template-columns: repeat(5, 1fr); }
   .row-6 { grid-template-columns: repeat(6, 1fr); }
   .row-7 { grid-template-columns: repeat(7, 1fr); }
-  .row-8 { grid-template-columns: repeat(8, 1fr); }
 
-  /* Barre de navigation : 8 boutons */
-  .nav-bar { display: grid; grid-template-columns: repeat(8, 1fr);
+  /* Navigation : 6 boutons */
+  .nav-bar { display: grid; grid-template-columns: repeat(6, 1fr);
     gap: 4px; margin-bottom: 8px;
     background: #fdf1d8; border: 2px solid #e2b840; padding: 5px;
     border-radius: 12px; }
   .nav-bar .k { background: #fffaee; border-color: #e2b840;
-    font-size: 30px; height: 78px; padding: 0; }
-  .nav-bar .k.dbtxt { font-size: 18px; font-weight: 700; }
+    font-size: 40px; height: 78px; padding: 0; }
+  .nav-bar .k.dbtxt { font-size: 40px; font-weight: 700; }
   .nav-bar .k:active { background: #f5e2a8; }
 
   .tabs { display: grid; grid-template-columns: repeat(5, 1fr);
@@ -82,16 +81,24 @@
   .oct-row .label, .control-row .label { font-size: 50px; color: #1a1a1a; text-align: center; font-weight: 700; }
   .oct-row .label b, .control-row .label b { color: #185fa5; font-size: 50px; margin-left: 6px; }
 
+  /* Ligne transposer */
+  .transpose-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px;
+    background: #ebe9e0; padding: 6px; border-radius: 12px; align-items: center; }
+  .transpose-row .label { font-size: 38px; color: #1a1a1a; text-align: center; font-weight: 700; }
+
   .panel { background: #e6f1fb; border: 2px solid #378add; border-radius: 12px;
     padding: 12px; margin-bottom: 8px; display: none;
     max-height: 80vh; overflow-y: auto; }
   .panel.open { display: block; }
-  .panel .title { font-size: 50px; color: #0c447c; font-weight: 700; margin-bottom: 14px; }
+  .panel .title-row { display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 14px; }
+  .panel .title { font-size: 50px; color: #0c447c; font-weight: 700; }
+  .panel .title-mes { font-size: 50px; color: #185fa5; font-weight: 700; }
   .panel .row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .panel input, .panel textarea { flex: 1; min-height: 96px; font-family: inherit;
     font-size: 50px; padding: 10px 14px; border: 2px solid #b4b2a9;
     border-radius: 10px; background: #ffffff; color: #1a1a1a; font-weight: 700; }
-  .panel textarea { width: 100%; min-height: 200px; line-height: 1.2; }
+  .panel textarea { width: 100%; min-height: 240px; line-height: 1.2; }
   .panel .field-label { font-family: inherit; font-size: 50px;
     color: #0c447c; font-weight: 700; min-width: 80px; }
   .panel .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
@@ -104,6 +111,7 @@
   .panel .stepper .k { height: 96px !important; font-size: 50px !important; padding: 0 !important; }
   .panel .stepper .val { text-align: center; font-family: inherit;
     font-size: 50px; color: #0c447c; font-weight: 700; }
+  .panel .stepper-label { font-size: 28px; color: #1a1a1a; font-weight: 700; margin-bottom: 6px; text-align: center; }
   .panel small { display: block; color: #5f5e5a; font-size: 24px;
     margin-bottom: 10px; font-style: italic; font-weight: 600; }
   .panel .save-list { max-height: 320px; overflow-y: auto;
@@ -113,25 +121,30 @@
     display: flex; justify-content: space-between; align-items: center;
     font-size: 32px; cursor: pointer; font-weight: 700; }
   .panel .save-list .item .del { color: #c34536; font-size: 40px; padding: 0 12px; cursor: pointer; font-weight: 700; }
+  .panel .mes-active { font-size: 32px; color: #0c447c; font-weight: 700;
+    background: #ffffff; padding: 12px; border-radius: 10px; border: 2px solid #b4b2a9;
+    text-align: center; margin-bottom: 10px; }
 
+  /* Accord */
   .chord-input { width: 100%; min-height: 96px; font-family: inherit;
     font-size: 50px; padding: 10px 14px; border: 2px solid #b4b2a9;
     border-radius: 10px; background: #ffffff; color: #1a1a1a; font-weight: 700;
     margin-bottom: 10px; text-align: center; }
-  .chord-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
-  .chord-grid .k { height: 78px !important; font-size: 28px !important; padding: 0 !important; }
-  .root-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 10px; }
-  .root-grid .k { height: 78px !important; font-size: 32px !important; padding: 0 !important; }
+  .chord-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+  .chord-pad .k { height: 78px !important; font-size: 30px !important; padding: 0 !important; }
 </style>
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v33</b></span>
+    <span>Éditeur ABC <b>v0.34</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
   <div class="panel" id="panel">
-    <div class="title" id="panel-title">Édition</div>
+    <div class="title-row">
+      <div class="title" id="panel-title">Édition</div>
+      <div class="title-mes" id="panel-mes"></div>
+    </div>
     <div id="panel-body"></div>
     <div class="actions">
       <button class="k" id="panel-cancel">Annuler</button>
@@ -147,14 +160,13 @@
     <div class="line-small">Rythmique : <b id="info-meter">4/4</b> · Armure : <b id="info-key">C maj : 0</b> · Clé : <b id="info-clef">Sol</b></div>
   </div>
 
+  <!-- 6 boutons : ← ⟪ Deb Fin ⟫ → -->
   <div class="nav-bar">
     <button class="k" id="cur-prev">←</button>
-    <button class="k" id="btn-trans-down">↓</button>
     <button class="k" id="meas-prev">⟪</button>
-    <button class="k dbtxt" id="meas-start">Début</button>
+    <button class="k dbtxt" id="meas-start">Deb</button>
     <button class="k dbtxt" id="meas-end">Fin</button>
     <button class="k" id="meas-next">⟫</button>
-    <button class="k" id="btn-trans-up">↑</button>
     <button class="k" id="cur-next">→</button>
   </div>
 
@@ -183,6 +195,12 @@
       <button class="k" id="btn-tuplet">3:2</button>
       <button class="k" id="btn-chord">Cm</button>
       <button class="k" id="btn-orn">~T</button>
+    </div>
+    <!-- Ligne transposer -->
+    <div class="transpose-row">
+      <div class="label">Transp.</div>
+      <button class="k" id="btn-trans-down">↓</button>
+      <button class="k" id="btn-trans-up">↑</button>
     </div>
     <div class="row-grid row-2">
       <button class="k" id="btn-undo">↶</button>
@@ -258,7 +276,8 @@
   const SHARP_NOTES=['F','C','G','D','A','E','B'];
   const FLAT_NOTES=['B','E','A','D','G','C','F'];
   const ORNAMENTS=[{code:'T',label:'tr'},{code:'M',label:'~M'},{code:'P',label:'pralle'},{code:'H',label:'fermata'},{code:'L',label:'accent'},{code:'.',label:'staccato'},{code:'u',label:'up'},{code:'v',label:'down'},{code:'O',label:'coda'}];
-  const CHORD_QUALITIES=['','m','7','m7','M7','6','m6','9','11','13','sus2','sus4','dim','dim7','aug','add9'];
+  // Boutons accord : ajoutent leur texte au champ
+  const CHORD_BTNS=['#','b','m','Maj','2','4','5','6','7','9','11','13','sus','dim','aug','add','/'];
   const KEY_NAMES_MAJOR=['C','G','D','A','E','B','F♯','C♯'];
   const KEY_NAMES_MAJOR_FLAT=['C','F','B♭','E♭','A♭','D♭','G♭','C♭'];
 
@@ -316,63 +335,7 @@
   function parseAbcBody(body,ns){let i=0,curMeasure=[],mIdx=0,lastChord=null,pendingOrn=[],pendingTuplet=null;const measures=ns.measures;function flush(){if(curMeasure.length>0){measures.push(curMeasure);curMeasure=[];mIdx++}}function uM(){const m=ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);if(!m)return 1;return parseInt(m[1],10)/4}while(i<body.length){const c=body[i];if(/\s/.test(c)){i++;continue}if(c==='%'){while(i<body.length&&body[i]!=='\n')i++;continue}if(c==='['&&body[i+1]&&body[i+1].match(/[A-Z]/)&&body[i+2]===':'){const end=body.indexOf(']',i);if(end<0){i++;continue}const inner=body.substring(i+1,end);const m=inner.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='M')ns.timeChanges[mIdx+(curMeasure.length>0?1:0)]=v;else if(k==='L')ns.pieceUnit=v;else if(k==='K'){const kd=parseKeyDef(v);const ti=mIdx+(curMeasure.length>0?1:0);ns.keyChanges[ti]=kd.sig;if(kd.clef!=='treble')ns.clefChanges[ti]=kd.clef}}i=end+1;continue}if(c==='['&&body[i+1]&&/[1-9]/.test(body[i+1])){const v=parseInt(body[i+1],10);const ti=mIdx+(curMeasure.length===0?0:1);if(!ns.repeats[ti])ns.repeats[ti]={};ns.repeats[ti].volta=v;i+=2;continue}if(c==='"'){const end=body.indexOf('"',i+1);if(end<0){i++;continue}const ch=body.substring(i+1,end);const cc=ch.replace(/^[\^_<>@]/,'');if(cc)lastChord=cc;i=end+1;continue}if(c==='!'){const end=body.indexOf('!',i+1);if(end<0){i++;continue}const name=body.substring(i+1,end);const km={'trill':'T','turn':'P','fermata':'H','accent':'L','staccato':'.','upbow':'u','downbow':'v','coda':'O'};const code=km[name]||name;pendingOrn.push(code);i=end+1;continue}if('.TMHLuv'.includes(c)&&(i===0||!/[A-Ga-gz0-9]/.test(body[i-1]))){const next=body[i+1];if(next&&/[\^_=A-Ga-gz]/.test(next)){pendingOrn.push(c);i++;continue}}if(c==='('&&body[i+1]&&/[2-9]/.test(body[i+1])){const n=parseInt(body[i+1],10);let j=i+2,take=n;if(body[j]===':'){j++;const nm=body.substring(j).match(/^(\d+)?(?::(\d+))?/);if(nm){j+=(nm[0]||'').length;if(nm[2])take=parseInt(nm[2],10)}}pendingTuplet={n:n,remaining:take};i=j;continue}if(c===':'||c==='|'){let j=i,bar='';while(j<body.length&&(body[j]==='|'||body[j]===':')){bar+=body[j];j++}const endRep=/:\|/.test(bar);const startRep=/\|:/.test(bar);if(curMeasure.length>0){if(endRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].end=true}flush()}if(startRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].start=true}if(j<body.length&&/[1-9]/.test(body[j])){const v=parseInt(body[j],10);if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].volta=v;j++}i=j;continue}let acc='';while(i<body.length&&(body[i]==='^'||body[i]==='_'||body[i]==='=')){if(body[i]==='^')acc=(acc==='^'?'^^':'^');else if(body[i]==='_')acc=(acc==='_'?'__':'_');else if(body[i]==='=')acc='=';i++}if(i>=body.length)break;const ch=body[i];if(/[A-Ga-g]/.test(ch)){let note=ch.toUpperCase();let oct=(ch===ch.toLowerCase())?1:0;i++;while(i<body.length&&(body[i]==="'"||body[i]===',')){if(body[i]==="'")oct++;else oct--;i++}let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}let tie=false;if(body[i]==='-'){tie=true;i++}const factor=parseDurationSpec(ds);const qD=factor/uM();let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'note',note,octave:oct,dur,dot};if(acc)slot.acc=acc.length>1?acc[0]:acc;if(tie)slot.tieToNext=true;if(lastChord){slot.chord=lastChord;lastChord=null}if(pendingOrn.length){slot.orn=pendingOrn.slice();pendingOrn=[]}if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}if(ch==='z'||ch==='Z'){i++;let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}const factor=parseDurationSpec(ds);const qD=(ch==='Z')?measureCapacity(ns.pieceMeter):(factor/uM());let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'rest',dur,dot};if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}i++}if(curMeasure.length>0)measures.push(curMeasure);measures.forEach((meas,mi)=>{let used=0;for(const s of meas)used+=effDur(s);let lm=ns.pieceMeter;for(let k=0;k<=mi;k++)if(ns.timeChanges[k])lm=ns.timeChanges[k];const cap=measureCapacity(lm);if(used<cap-1e-6){const beat=4/parseMeter(lm).den;const tail=splitDurationByBeat(used,cap-used,beat).map(p=>({type:'rest',dur:p.dur,dot:p.dot}));meas.push(...tail)}else if(used>cap+1e-6){let a=0,ca=meas.length;for(let k=0;k<meas.length;k++){const d=effDur(meas[k]);if(a+d>cap+1e-6){ca=k;break}a+=d}meas.splice(ca)}});if(measures.length===0)measures.push(buildEmptyMeasure(ns.pieceMeter))}
   function parseDurationSpec(s){if(s==='')return 1;if(s==='/')return 0.5;if(s==='//')return 0.25;if(s==='///')return 0.125;if(s.startsWith('/')){const n=parseInt(s.substring(1),10);return 1/(n||2)}if(s.includes('/')){const[n,d]=s.split('/');const a=parseInt(n,10)||1;const b=parseInt(d,10)||2;return a/b}return parseInt(s,10)||1}
 
-  // ⭐ expandForPlayback réécrit : robuste pour reprises et voltas
-  function expandForPlayback(){
-    const out=[]; const N=state.measures.length; if(N===0)return out;
-    // Trouver les groupes de reprise : pour chaque mesure end, retrouver le start correspondant
-    let i=0;
-    let safety=0;
-    while(i<N && safety<2000){
-      safety++;
-      const r=state.repeats[i]||{};
-      // Si cette mesure est dans un volta non joué actuellement, on saute
-      // (sera géré quand on rejouera après un end)
-      // En mode normal (pas dans un end-loop), on joue tout sauf les voltas non-1
-      if(r.volta && r.volta!==1){
-        // Sauter ce groupe de volta
-        let j=i;
-        while(j<N){
-          const rj=state.repeats[j]||{};
-          if(j>i && rj.volta!==r.volta)break;
-          j++;
-        }
-        i=j; continue;
-      }
-      out.push(i);
-      // Si c'est une fin de reprise, on remonte au dernier start (ou 0) et on rejoue
-      if(r.end){
-        // Trouver le start correspondant
-        let startIdx=0;
-        for(let k=i;k>=0;k--){
-          if(state.repeats[k]?.start){ startIdx=k; break; }
-        }
-        // Rejouer de startIdx jusqu'à la fin, en sautant cette fois volta 1
-        let k=startIdx; let safety2=0;
-        while(k<N && safety2<2000){
-          safety2++;
-          const rk=state.repeats[k]||{};
-          // Sauter volta 1 cette fois
-          if(rk.volta===1){
-            let j=k;
-            while(j<N){
-              const rj=state.repeats[j]||{};
-              if(j>k && rj.volta!==1)break;
-              j++;
-            }
-            k=j; continue;
-          }
-          out.push(k);
-          // Ne pas faire de boucle infinie : un .end rencontré au pass 2 est ignoré
-          k++;
-          if(out.length>2000)break;
-        }
-        // Sortir du parcours principal après avoir joué la 2e passe
-        return out;
-      }
-      i++;
-    }
-    return out;
-  }
+  function expandForPlayback(){const out=[];const N=state.measures.length;if(N===0)return out;let i=0,safety=0;while(i<N&&safety<2000){safety++;const r=state.repeats[i]||{};if(r.volta&&r.volta!==1){let j=i;while(j<N){const rj=state.repeats[j]||{};if(j>i&&rj.volta!==r.volta)break;j++}i=j;continue}out.push(i);if(r.end){let startIdx=0;for(let k=i;k>=0;k--){if(state.repeats[k]?.start){startIdx=k;break}}let k=startIdx,safety2=0;while(k<N&&safety2<2000){safety2++;const rk=state.repeats[k]||{};if(rk.volta===1){let j=k;while(j<N){const rj=state.repeats[j]||{};if(j>k&&rj.volta!==1)break;j++}k=j;continue}out.push(k);k++;if(out.length>2000)break}return out}i++}return out}
 
   const SCORE_W=360,STAFF_TOP_Y=30,LINE_GAP=7,LEFT_PAD=50,RIGHT_PAD=6,MEASURES_PER_LINE=3;
   function clefRefStep(c){return c==='bass'?-12:2}
@@ -406,11 +369,11 @@
     document.getElementById('btn-viewmode').textContent=state.viewmode?'✎':'👁';
     document.getElementById('hdr-x-val').textContent=state.headers.X||'1';
     document.getElementById('hdr-t-val').textContent=state.headers.T||'—';
-    document.getElementById('hdr-st-val').textContent=state.headers.ST||'—';
-    document.getElementById('hdr-c-val').textContent=state.headers.C||'—';
-    document.getElementById('hdr-n-val').textContent=state.headers.N||'—';
+    document.getElementById('hdr-st-val').textContent=(state.headers.ST||'—').split('\n')[0];
+    document.getElementById('hdr-c-val').textContent=(state.headers.C||'—').split('\n')[0];
+    document.getElementById('hdr-n-val').textContent=(state.headers.N||'—').split('\n')[0];
   }
-  function render(){renderScore();renderState()}
+  function render(){renderScore();renderState();notifyPanelMeasureChanged()}
 
   function selectNext(){let{m,s}=state.sel;if(s+1<state.measures[m].length){state.sel={m,s:s+1};render();return}if(m+1<state.measures.length){state.sel={m:m+1,s:0};render();return}state.measures.push(buildEmptyMeasure(meterAt(m)));state.sel={m:state.measures.length-1,s:0};pushHistory();render()}
   function selectPrev(){let{m,s}=state.sel;if(s>0){state.sel={m,s:s-1};render();return}if(m>0){state.sel={m:m-1,s:state.measures[m-1].length-1};render();return}}
@@ -423,54 +386,7 @@
   function midiOfNote(note,oct,acc,keySig){const bs={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[note];let midi=60+bs+oct*12;let alt=0;if(acc==='^')alt=1;else if(acc==='_')alt=-1;else if(acc==='=')alt=0;else{if(keySig>0&&SHARP_NOTES.slice(0,keySig).includes(note))alt=1;else if(keySig<0&&FLAT_NOTES.slice(0,-keySig).includes(note))alt=-1}return midi+alt}
   function freqOfMidi(m){return 440*Math.pow(2,(m-69)/12)}
   function previewNote(midi,durSec=0.25){ensureAudio();const t=audio.ctx.currentTime+0.005;const f=freqOfMidi(midi);const o=audio.ctx.createOscillator();const g=audio.ctx.createGain();o.type='triangle';o.frequency.value=f;const p=0.5,a=0.005;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(p,t+a);g.gain.setValueAtTime(p,t+Math.max(durSec-0.06,a));g.gain.linearRampToValueAtTime(0,t+durSec);o.connect(g);g.connect(audio.master);o.start(t);o.stop(t+durSec+0.03)}
-  function playSchedule(){
-    ensureAudio();stopPlayback(false);
-    audio.playing=true;
-    document.getElementById('btn-play').textContent='⏸';
-    const st=audio.ctx.currentTime+0.05;
-    let t=st;const qD=60/state.tempo;
-    const order=expandForPlayback();
-    if(order.length===0){ stopPlayback(true); return; }
-    order.forEach(mi=>{
-      const m=state.measures[mi];
-      if(!m)return;
-      const sig=keyAt(mi);
-      m.forEach((slot,si)=>{
-        let dur=effDur(slot)*qD;
-        if(slot.tuplet===3)dur=dur*2/3;
-        if(slot.type==='note'){
-          const midi=midiOfNote(slot.note,slot.octave,slot.acc,sig);
-          const o=audio.ctx.createOscillator();const g=audio.ctx.createGain();
-          o.type='triangle';o.frequency.value=freqOfMidi(midi);
-          const a=0.005,r=Math.min(0.05,dur*0.3);
-          g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.5,t+a);
-          g.gain.setValueAtTime(0.5,t+dur-r);g.gain.linearRampToValueAtTime(0,t+dur);
-          o.connect(g);g.connect(audio.master);
-          o.start(t);o.stop(t+dur+0.02);
-          audio.scheduled.push(o);
-        }
-        audio.scheduled.push({updateAt:t,measureIdx:mi,slotIdx:si});
-        t+=dur;
-      });
-    });
-    audio.stopAt=t;
-    function tick(){
-      if(!audio.playing)return;
-      const now=audio.ctx.currentTime;
-      let last=null;
-      for(const ev of audio.scheduled){
-        if(ev.updateAt!==undefined&&ev.updateAt<=now)last=ev;
-        if(ev.updateAt!==undefined&&ev.updateAt>now)break;
-      }
-      if(last&&(state.sel.m!==last.measureIdx||state.sel.s!==last.slotIdx)){
-        state.sel={m:last.measureIdx,s:last.slotIdx};
-        renderScore();renderState();
-      }
-      if(now>=audio.stopAt){stopPlayback(true);return}
-      audio.raf=requestAnimationFrame(tick);
-    }
-    audio.raf=requestAnimationFrame(tick);
-  }
+  function playSchedule(){ensureAudio();stopPlayback(false);audio.playing=true;document.getElementById('btn-play').textContent='⏸';const st=audio.ctx.currentTime+0.05;let t=st;const qD=60/state.tempo;const order=expandForPlayback();if(order.length===0){stopPlayback(true);return}order.forEach(mi=>{const m=state.measures[mi];if(!m)return;const sig=keyAt(mi);m.forEach((slot,si)=>{let dur=effDur(slot)*qD;if(slot.tuplet===3)dur=dur*2/3;if(slot.type==='note'){const midi=midiOfNote(slot.note,slot.octave,slot.acc,sig);const o=audio.ctx.createOscillator();const g=audio.ctx.createGain();o.type='triangle';o.frequency.value=freqOfMidi(midi);const a=0.005,r=Math.min(0.05,dur*0.3);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.5,t+a);g.gain.setValueAtTime(0.5,t+dur-r);g.gain.linearRampToValueAtTime(0,t+dur);o.connect(g);g.connect(audio.master);o.start(t);o.stop(t+dur+0.02);audio.scheduled.push(o)}audio.scheduled.push({updateAt:t,measureIdx:mi,slotIdx:si});t+=dur})});audio.stopAt=t;function tick(){if(!audio.playing)return;const now=audio.ctx.currentTime;let last=null;for(const ev of audio.scheduled){if(ev.updateAt!==undefined&&ev.updateAt<=now)last=ev;if(ev.updateAt!==undefined&&ev.updateAt>now)break}if(last&&(state.sel.m!==last.measureIdx||state.sel.s!==last.slotIdx)){state.sel={m:last.measureIdx,s:last.slotIdx};renderScore();renderState()}if(now>=audio.stopAt){stopPlayback(true);return}audio.raf=requestAnimationFrame(tick)}audio.raf=requestAnimationFrame(tick)}
   function stopPlayback(refresh){if(audio.raf){cancelAnimationFrame(audio.raf);audio.raf=null}audio.scheduled.forEach(ev=>{if(ev.stop)try{ev.stop()}catch(_){}});audio.scheduled=[];audio.playing=false;document.getElementById('btn-play').textContent='▶';if(refresh)render()}
 
   function setNoteAtSelection(n){const sl=selectedSlot();if(!sl)return;const dur=sl.dur,dot=sl.dot;const acc=(sl.type==='note')?sl.acc:'';state.measures[state.sel.m][state.sel.s]={type:'note',note:n,octave:state.octave,dur,dot,acc};pushHistory();const midi=midiOfNote(n,state.octave,acc,keyAt(state.sel.m));previewNote(midi);render()}
@@ -510,55 +426,125 @@
   document.getElementById('btn-tie').addEventListener('click',()=>{const sl=selectedSlot();if(sl){sl.tieToNext=!sl.tieToNext;pushHistory();render()}});
   document.getElementById('btn-disarm').addEventListener('click',()=>{disarmKey();pushHistory();render()});
 
-  document.getElementById('btn-tuplet').addEventListener('click',()=>{const sl=selectedSlot();if(!sl)return;const meas=state.measures[state.sel.m];const idx=state.sel.s;if(sl.tuplet){const n=sl.tuplet;for(let i=idx;i<meas.length&&meas[i].tuplet===n;i++)delete meas[i].tuplet;pushHistory();render();return}openPanel({title:'N-uplet',body:'<small>Choisir le N-uplet</small>',hideActions:true,extraButtons:['Annuler','3','5','6','7'],actionsClass:'four',onExtra:(w)=>{if(w==='Annuler'){closePanel();return}const n=parseInt(w,10);for(let i=idx;i<Math.min(meas.length,idx+n);i++)meas[i].tuplet=n;pushHistory();closePanel();render()}})});
+  document.getElementById('btn-tuplet').addEventListener('click',()=>{const sl=selectedSlot();if(!sl)return;const meas=state.measures[state.sel.m];const idx=state.sel.s;if(sl.tuplet){const n=sl.tuplet;for(let i=idx;i<meas.length&&meas[i].tuplet===n;i++)delete meas[i].tuplet;pushHistory();render();return}openPanel({title:'N-uplet',body:'',hideActions:true,extraButtons:['Annuler','3','5','6','7'],actionsClass:'four',onExtra:(w)=>{if(w==='Annuler'){closePanel();return}const n=parseInt(w,10);for(let i=idx;i<Math.min(meas.length,idx+n);i++)meas[i].tuplet=n;pushHistory();closePanel();render()}})});
 
-  document.getElementById('meas-del').addEventListener('click',()=>{if(state.measures.length<=1)return;const m=state.sel.m;state.measures.splice(m,1);function sk(map,th){const out={};for(const k of Object.keys(map)){const i=parseInt(k,10);if(i<th)out[i]=map[k];else if(i>th)out[i-1]=map[k]}return out}state.timeChanges=sk(state.timeChanges,m);state.keyChanges=sk(state.keyChanges,m);state.clefChanges=sk(state.clefChanges,m);state.repeats=sk(state.repeats,m);if(state.sel.m>=state.measures.length)state.sel.m=state.measures.length-1;state.sel.s=0;pushHistory();render()});
+  // ⭐ −Mes : panneau dédié avec compteur
+  document.getElementById('meas-del').addEventListener('click',()=>{
+    let count=1;
+    function controls(){
+      return '<div class="mes-active">Mesure active : <b id="del-active-mes">'+(state.sel.m+1)+'</b></div>'+
+        '<div class="stepper-label">Combien de mesures à supprimer</div>'+
+        '<div class="stepper">'+
+          '<button class="k" id="cnt-d">−</button>'+
+          '<div class="val"><b id="cnt-v">'+count+'</b></div>'+
+          '<button class="k" id="cnt-u">+</button>'+
+        '</div>';
+    }
+    function rebindStepper(){
+      document.getElementById('cnt-u').addEventListener('click',()=>{
+        const maxCount=state.measures.length-state.sel.m;
+        if(count<maxCount){count++;document.getElementById('cnt-v').textContent=count}
+      });
+      document.getElementById('cnt-d').addEventListener('click',()=>{
+        if(count>1){count--;document.getElementById('cnt-v').textContent=count}
+      });
+    }
+    openPanel({
+      title:'Suppr mesure(s)',
+      showMes:true,
+      body:controls(),
+      hideActions:true,
+      extraButtons:['Annuler','Supprimer'],
+      onMount:rebindStepper,
+      onMeasureChange:()=>{
+        const maxCount=state.measures.length-state.sel.m;
+        if(count>maxCount)count=maxCount;
+        document.getElementById('panel-body').innerHTML=controls()+document.getElementById('panel-body').querySelector('.actions').outerHTML;
+        rebindStepper();
+        // Re-bind extra buttons (they got rewritten)
+        document.getElementById('panel-body').querySelectorAll('[data-extra]').forEach(b=>{
+          b.addEventListener('click',()=>{if(cOnExtra)cOnExtra(b.dataset.extra)});
+        });
+      },
+      onExtra:(w)=>{
+        if(w==='Annuler'){closePanel();return}
+        if(state.measures.length<=count){count=state.measures.length-1}
+        if(count<=0){closePanel();return}
+        const m=state.sel.m;
+        state.measures.splice(m,count);
+        function sk(map,from,to){const out={};for(const k of Object.keys(map)){const i=parseInt(k,10);if(i<from)out[i]=map[k];else if(i>=to)out[i-count]=map[k]}return out}
+        state.timeChanges=sk(state.timeChanges,m,m+count);
+        state.keyChanges=sk(state.keyChanges,m,m+count);
+        state.clefChanges=sk(state.clefChanges,m,m+count);
+        state.repeats=sk(state.repeats,m,m+count);
+        if(state.sel.m>=state.measures.length)state.sel.m=state.measures.length-1;
+        state.sel.s=0;
+        pushHistory();closePanel();render();
+      }
+    });
+  });
 
-  // ⭐ +Mes : ajouter bouton "Fin"
+  // ⭐ +Mes : sans textes explicatifs
   document.getElementById('meas-add').addEventListener('click',()=>{
     let count=1,side='right';
     function controls(){
-      return('<small>Insérer par rapport à la mesure '+(state.sel.m+1)+'</small>'+
+      return '<div class="mes-active">Mesure active : <b id="add-active-mes">'+(state.sel.m+1)+'</b></div>'+
         '<div class="row-grid row-3" id="side-pick">'+
           '<button class="k" data-side="left">Gauche</button>'+
           '<button class="k" data-side="right">Droite</button>'+
           '<button class="k" data-side="end">Fin</button>'+
         '</div>'+
-        '<small>Nombre</small>'+
         '<div class="stepper">'+
           '<button class="k" id="cnt-d">−</button>'+
           '<div class="val"><b id="cnt-v">'+count+'</b></div>'+
           '<button class="k" id="cnt-u">+</button>'+
-        '</div>');
+        '</div>';
     }
-    function rs(){document.querySelectorAll('#side-pick .k').forEach(b=>b.classList.toggle('active',b.dataset.side===side))}
-    openPanel({title:'Ajouter mesure(s)',body:controls(),hideActions:true,extraButtons:['Annuler','Ajouter'],onMount:()=>{
-      document.querySelectorAll('#side-pick .k').forEach(b=>b.addEventListener('click',()=>{side=b.dataset.side;rs()}));rs();
+    function rebind(){
+      const rs=()=>document.querySelectorAll('#side-pick .k').forEach(b=>b.classList.toggle('active',b.dataset.side===side));
+      document.querySelectorAll('#side-pick .k').forEach(b=>b.addEventListener('click',()=>{side=b.dataset.side;rs()}));
+      rs();
       document.getElementById('cnt-u').addEventListener('click',()=>{if(count<16){count++;document.getElementById('cnt-v').textContent=count}});
       document.getElementById('cnt-d').addEventListener('click',()=>{if(count>1){count--;document.getElementById('cnt-v').textContent=count}});
-    },onExtra:(w)=>{
-      if(w==='Annuler'){closePanel();return}
-      function sk(map,th,inc){const out={};for(const k of Object.keys(map)){const i=parseInt(k,10);const sh=inc?(i>=th):(i>th);out[sh?i+count:i]=map[k]}return out}
-      let ia;
-      const lastMeter=meterAt(state.measures.length-1);
-      if(side==='end'){
-        ia=state.measures.length;
-        for(let k=0;k<count;k++)state.measures.push(buildEmptyMeasure(lastMeter));
-      } else {
-        ia=(side==='left')?state.sel.m:state.sel.m+1;
-        const meter=meterAt(state.sel.m);
-        for(let k=0;k<count;k++)state.measures.splice(ia,0,buildEmptyMeasure(meter));
-        const inc=(side==='left');
-        const th=state.sel.m;
-        state.timeChanges=sk(state.timeChanges,th,inc);
-        state.keyChanges=sk(state.keyChanges,th,inc);
-        state.clefChanges=sk(state.clefChanges,th,inc);
-        state.repeats=sk(state.repeats,th,inc);
+    }
+    openPanel({
+      title:'Ajouter mesure(s)',
+      showMes:true,
+      body:controls(),
+      hideActions:true,
+      extraButtons:['Annuler','Ajouter'],
+      onMount:rebind,
+      onMeasureChange:()=>{
+        document.getElementById('panel-body').innerHTML=controls()+document.getElementById('panel-body').querySelector('.actions').outerHTML;
+        rebind();
+        document.getElementById('panel-body').querySelectorAll('[data-extra]').forEach(b=>{
+          b.addEventListener('click',()=>{if(cOnExtra)cOnExtra(b.dataset.extra)});
+        });
+      },
+      onExtra:(w)=>{
+        if(w==='Annuler'){closePanel();return}
+        function sk(map,th,inc){const out={};for(const k of Object.keys(map)){const i=parseInt(k,10);const sh=inc?(i>=th):(i>th);out[sh?i+count:i]=map[k]}return out}
+        let ia;
+        const lastMeter=meterAt(state.measures.length-1);
+        if(side==='end'){
+          ia=state.measures.length;
+          for(let k=0;k<count;k++)state.measures.push(buildEmptyMeasure(lastMeter));
+        } else {
+          ia=(side==='left')?state.sel.m:state.sel.m+1;
+          const meter=meterAt(state.sel.m);
+          for(let k=0;k<count;k++)state.measures.splice(ia,0,buildEmptyMeasure(meter));
+          const inc=(side==='left');
+          const th=state.sel.m;
+          state.timeChanges=sk(state.timeChanges,th,inc);
+          state.keyChanges=sk(state.keyChanges,th,inc);
+          state.clefChanges=sk(state.clefChanges,th,inc);
+          state.repeats=sk(state.repeats,th,inc);
+        }
+        if(side==='end')state.sel={m:state.measures.length-count,s:0};
+        else state.sel={m:(side==='right'?state.sel.m+1:state.sel.m),s:0};
+        pushHistory();closePanel();render();
       }
-      if(side==='end')state.sel={m:state.measures.length-count,s:0};
-      else state.sel={m:(side==='right'?state.sel.m+1:state.sel.m),s:0};
-      pushHistory();closePanel();render();
-    }});
+    });
   });
 
   function ensureRepeat(m){if(!state.repeats[m])state.repeats[m]={};return state.repeats[m]}
@@ -576,43 +562,36 @@
   document.getElementById('btn-viewmode').addEventListener('click',()=>{state.viewmode=!state.viewmode;document.getElementById('app').classList.toggle('viewmode',state.viewmode);render()});
   document.getElementById('btn-fs').addEventListener('click',()=>{state.fullscreen=!state.fullscreen;document.getElementById('app').classList.toggle('fullscreen',state.fullscreen)});
 
-  // ⭐ Accord avec saisie libre
+  // ⭐ Accord : boutons ajoutent leur texte, ⌫ efface dernier char, pas de fondamentale
   document.getElementById('btn-chord').addEventListener('click',()=>{
     const sl=selectedSlot();
     if(!sl||sl.type!=='note'){alert('Sélectionnez une note');return}
-    const roots=['C','D','E','F','G','A','B'];
-    let root=sl.note,acc='',qual='';
-    let freeText=sl.chord||(root+acc+qual);
-    if(sl.chord){const m=sl.chord.match(/^([A-G])([#b]?)(.*)$/);if(m){root=m[1];acc=m[2];qual=m[3]}}
+    let freeText=sl.chord||'';
     function controls(){
-      let h='<small>Saisie libre (ex: Cm7/G, F#dim, etc.)</small>';
-      h+='<input class="chord-input" id="chord-free" type="text" value="'+freeText.replace(/"/g,'&quot;')+'"/>';
-      h+='<small>Ou choix guidé : Fondamentale</small><div class="root-grid">';
-      roots.forEach(r=>h+='<button class="k" data-root="'+r+'">'+r+'</button>');
-      h+='</div><small>Altération</small><div class="row-grid row-3"><button class="k" data-acc="">♮</button><button class="k" data-acc="#">♯</button><button class="k" data-acc="b">♭</button></div>';
-      h+='<small>Qualité</small><div class="chord-grid">';
-      CHORD_QUALITIES.forEach(q=>h+='<button class="k" data-qual="'+q+'">'+(q||'maj')+'</button>');
+      let h='<input class="chord-input" id="chord-free" type="text" value="'+freeText.replace(/"/g,'&quot;')+'"/>';
+      h+='<div class="chord-pad">';
+      CHORD_BTNS.forEach(b=>h+='<button class="k" data-add="'+b+'">'+b+'</button>');
+      h+='<button class="k" data-add="__BS__">⌫</button>';
       h+='</div>';
       return h;
     }
-    function refresh(){
-      document.querySelectorAll('[data-root]').forEach(b=>b.classList.toggle('active',b.dataset.root===root));
-      document.querySelectorAll('[data-acc]').forEach(b=>b.classList.toggle('active',b.dataset.acc===acc));
-      document.querySelectorAll('[data-qual]').forEach(b=>b.classList.toggle('active',b.dataset.qual===qual));
-    }
-    function syncFromGuide(){freeText=root+acc+qual;document.getElementById('chord-free').value=freeText}
     openPanel({title:'Accord',body:controls(),hideActions:true,extraButtons:['Annuler','Suppr','Appliquer'],actionsClass:'three',onMount:()=>{
-      document.querySelectorAll('[data-root]').forEach(b=>b.addEventListener('click',()=>{root=b.dataset.root;refresh();syncFromGuide()}));
-      document.querySelectorAll('[data-acc]').forEach(b=>b.addEventListener('click',()=>{acc=b.dataset.acc;refresh();syncFromGuide()}));
-      document.querySelectorAll('[data-qual]').forEach(b=>b.addEventListener('click',()=>{qual=b.dataset.qual;refresh();syncFromGuide()}));
-      document.getElementById('chord-free').addEventListener('input',(e)=>{freeText=e.target.value});
-      refresh();
+      const inp=document.getElementById('chord-free');
+      inp.addEventListener('input',(e)=>{freeText=e.target.value});
+      document.querySelectorAll('[data-add]').forEach(b=>{
+        b.addEventListener('click',()=>{
+          const add=b.dataset.add;
+          if(add==='__BS__'){freeText=freeText.slice(0,-1);}
+          else freeText+=add;
+          inp.value=freeText;
+        });
+      });
     },onExtra:(w)=>{
       if(w==='Annuler'){closePanel();return}
       if(w==='Suppr'){delete sl.chord;pushHistory();closePanel();render();return}
-      // Utiliser la saisie libre, fallback sur le guide
-      const finalChord=(freeText||'').trim()||(root+acc+qual);
-      if(finalChord)sl.chord=finalChord;
+      const final=(freeText||'').trim();
+      if(final)sl.chord=final;
+      else delete sl.chord;
       pushHistory();closePanel();render();
     }});
   });
@@ -638,12 +617,16 @@
 
   const panel=document.getElementById('panel');
   const panelTitle=document.getElementById('panel-title');
+  const panelMes=document.getElementById('panel-mes');
   const panelBody=document.getElementById('panel-body');
   const panelOk=document.getElementById('panel-ok');
   const panelCancel=document.getElementById('panel-cancel');
-  let cOnOk=null,cOnExtra=null;
-  function openPanel({title,body,onMount,onOk,hideActions,extraButtons,onExtra,actionsClass}){
+  let cOnOk=null,cOnExtra=null,cOnMeasureChange=null,cShowMes=false;
+
+  function openPanel({title,body,onMount,onOk,hideActions,extraButtons,onExtra,actionsClass,showMes,onMeasureChange}){
     panelTitle.textContent=title;
+    cShowMes=!!showMes;
+    panelMes.textContent=cShowMes?('Mes '+(state.sel.m+1)):'';
     let eH='';
     if(extraButtons&&extraButtons.length){
       let cls='actions';
@@ -653,31 +636,156 @@
       eH='<div class="'+cls+'" style="margin-top:10px;">'+extraButtons.map((b,i)=>'<button class="k '+(i===extraButtons.length-1?'primary':'')+'" data-extra="'+b.replace(/"/g,'&quot;')+'">'+b+'</button>').join('')+'</div>';
     }
     panelBody.innerHTML=body+eH;
-    cOnOk=onOk||null;cOnExtra=onExtra||null;
+    cOnOk=onOk||null;cOnExtra=onExtra||null;cOnMeasureChange=onMeasureChange||null;
     panelOk.style.display=(hideActions||extraButtons)?'none':'';
     panelCancel.style.display=(hideActions||extraButtons)?'none':'';
     panel.classList.add('open');
     if(onMount)setTimeout(onMount,50);
     if(extraButtons)setTimeout(()=>{panelBody.querySelectorAll('[data-extra]').forEach(b=>{b.addEventListener('click',()=>{if(cOnExtra)cOnExtra(b.dataset.extra)})})},50);
   }
-  function closePanel(){panel.classList.remove('open');cOnOk=null;cOnExtra=null}
+  function closePanel(){panel.classList.remove('open');cOnOk=null;cOnExtra=null;cOnMeasureChange=null;cShowMes=false}
+  function notifyPanelMeasureChanged(){
+    if(!panel.classList.contains('open'))return;
+    if(cShowMes)panelMes.textContent='Mes '+(state.sel.m+1);
+    if(cOnMeasureChange)cOnMeasureChange();
+  }
   panelOk.addEventListener('click',()=>{if(cOnOk)cOnOk();closePanel();render()});
   panelCancel.addEventListener('click',closePanel);
 
-  function headerPrompt(key,title){return ()=>openPanel({title:title,body:'<div class="row"><input id="hi" type="text" value="'+((state.headers[key]||'')+'').replace(/"/g,'&quot;')+'"/></div>',onMount:()=>document.getElementById('hi').focus(),onOk:()=>{state.headers[key]=document.getElementById('hi').value.trim();pushHistory()}})}
-  document.querySelector('[data-hdr="X"]').addEventListener('click',headerPrompt('X','X: Numéro'));
-  document.querySelector('[data-hdr="T"]').addEventListener('click',headerPrompt('T','Titre'));
-  document.querySelector('[data-hdr="ST"]').addEventListener('click',headerPrompt('ST','Sous-titre'));
-  document.querySelector('[data-hdr="C"]').addEventListener('click',headerPrompt('C','Compositeur'));
-  document.querySelector('[data-hdr="N"]').addEventListener('click',headerPrompt('N','Commentaire'));
+  // ⭐ Headers : Titre/X simple input, ST/C/N multilignes avec bouton ↵
+  function headerPromptSimple(key,title){return ()=>openPanel({title:title,body:'<div class="row"><input id="hi" type="text" value="'+((state.headers[key]||'')+'').replace(/"/g,'&quot;')+'"/></div>',onMount:()=>document.getElementById('hi').focus(),onOk:()=>{state.headers[key]=document.getElementById('hi').value.trim();pushHistory()}})}
+  function headerPromptMulti(key,title){return ()=>{
+    openPanel({
+      title:title,
+      body:'<textarea id="hi">'+((state.headers[key]||'')+'').replace(/</g,'&lt;')+'</textarea>'+
+        '<div class="row-grid" style="margin-top:8px;"><button class="k" id="newline-btn" style="font-size:36px;">↵ Nouvelle ligne</button></div>',
+      onMount:()=>{
+        const ta=document.getElementById('hi');
+        ta.focus();
+        document.getElementById('newline-btn').addEventListener('click',()=>{
+          const pos=ta.selectionStart;
+          const v=ta.value;
+          ta.value=v.substring(0,pos)+'\n'+v.substring(pos);
+          ta.selectionStart=ta.selectionEnd=pos+1;
+          ta.focus();
+        });
+      },
+      onOk:()=>{state.headers[key]=document.getElementById('hi').value.trim();pushHistory()}
+    });
+  }}
+  document.querySelector('[data-hdr="X"]').addEventListener('click',headerPromptSimple('X','X: Numéro'));
+  document.querySelector('[data-hdr="T"]').addEventListener('click',headerPromptSimple('T','Titre'));
+  document.querySelector('[data-hdr="ST"]').addEventListener('click',headerPromptMulti('ST','Sous-titre'));
+  document.querySelector('[data-hdr="C"]').addEventListener('click',headerPromptMulti('C','Compositeur'));
+  document.querySelector('[data-hdr="N"]').addEventListener('click',headerPromptMulti('N','Commentaire'));
 
-  function scopePanel({title,renderControls,applyPiece,applyHere}){const onFM=(state.sel.m===0);const buttons=['Annuler','Tout',onFM?null:'Mes '+(state.sel.m+1)+'+'].filter(Boolean);openPanel({title,body:renderControls(),hideActions:true,extraButtons:buttons,onMount:()=>{if(typeof renderControls.mount==='function')renderControls.mount()},onExtra:(w)=>{if(w==='Annuler'){closePanel();return}if(w==='Tout'){applyPiece();cleanupAccidentals();pushHistory();closePanel();render();return}applyHere();cleanupAccidentals();pushHistory();closePanel();render()}})}
+  // ⭐ Rythme : applique à partir de la mesure active uniquement
+  document.querySelector('[data-hdr="M"]').addEventListener('click',()=>{
+    function getCurrent(){const cur=meterAt(state.sel.m);const{num,den}=parseMeter(cur);return{n:num,d:den,uD:parseInt(state.pieceUnit.split('/')[1],10)}}
+    let st=getCurrent();
+    const dV=[1,2,4,8,16];
+    const uDs=[1,2,4,8,16,32];
+    function controls(){
+      return '<div class="stepper-label">Numérateur</div><div class="stepper"><button class="k" id="num-d">−</button><div class="val"><b id="num-v">'+st.n+'</b></div><button class="k" id="num-u">+</button></div>'+
+        '<div class="stepper-label">Dénominateur</div><div class="stepper"><button class="k" id="den-d">−</button><div class="val"><b id="den-v">'+st.d+'</b></div><button class="k" id="den-u">+</button></div>'+
+        '<div class="stepper-label">Unité L:1/x</div><div class="stepper"><button class="k" id="L-d">−</button><div class="val"><b id="L-v">'+st.uD+'</b></div><button class="k" id="L-u">+</button></div>';
+    }
+    function rebind(){
+      document.getElementById('num-u').addEventListener('click',()=>{st.n=Math.min(16,st.n+1);document.getElementById('num-v').textContent=st.n});
+      document.getElementById('num-d').addEventListener('click',()=>{st.n=Math.max(1,st.n-1);document.getElementById('num-v').textContent=st.n});
+      document.getElementById('den-u').addEventListener('click',()=>{const i=dV.indexOf(st.d);if(i<dV.length-1){st.d=dV[i+1];document.getElementById('den-v').textContent=st.d}});
+      document.getElementById('den-d').addEventListener('click',()=>{const i=dV.indexOf(st.d);if(i>0){st.d=dV[i-1];document.getElementById('den-v').textContent=st.d}});
+      document.getElementById('L-u').addEventListener('click',()=>{const i=uDs.indexOf(st.uD);if(i<uDs.length-1){st.uD=uDs[i+1];document.getElementById('L-v').textContent=st.uD}});
+      document.getElementById('L-d').addEventListener('click',()=>{const i=uDs.indexOf(st.uD);if(i>0){st.uD=uDs[i-1];document.getElementById('L-v').textContent=st.uD}});
+    }
+    openPanel({
+      title:'Rythme',showMes:true,body:controls(),hideActions:true,extraButtons:['Annuler','Appliquer'],
+      onMount:rebind,
+      onMeasureChange:()=>{
+        st=getCurrent();
+        document.getElementById('panel-body').innerHTML=controls()+document.getElementById('panel-body').querySelector('.actions').outerHTML;
+        rebind();
+        document.getElementById('panel-body').querySelectorAll('[data-extra]').forEach(b=>{
+          b.addEventListener('click',()=>{if(cOnExtra)cOnExtra(b.dataset.extra)});
+        });
+      },
+      onExtra:(w)=>{
+        if(w==='Annuler'){closePanel();return}
+        if(state.sel.m===0){
+          state.pieceMeter=st.n+'/'+st.d;
+          state.pieceUnit='1/'+st.uD;
+          delete state.timeChanges[0];
+          rebuildMeasures();
+        } else {
+          state.pieceUnit='1/'+st.uD;
+          state.timeChanges[state.sel.m]=st.n+'/'+st.d;
+          for(let i=state.sel.m;i<state.measures.length;i++){
+            if(i>state.sel.m&&state.timeChanges[i])break;
+            state.measures[i]=buildEmptyMeasure(meterAt(i));
+          }
+          state.sel={m:state.sel.m,s:0};
+        }
+        cleanupAccidentals();pushHistory();closePanel();render();
+      }
+    });
+  });
 
-  document.querySelector('[data-hdr="M"]').addEventListener('click',()=>{const cur=meterAt(state.sel.m);const{num,den}=parseMeter(cur);let n=num,d=den;const dV=[1,2,4,8,16];let uD=parseInt(state.pieceUnit.split('/')[1],10);const uDs=[1,2,4,8,16,32];function controls(){return('<div class="stepper"><button class="k" id="num-d">−</button><div class="val">N: <b id="num-v">'+n+'</b></div><button class="k" id="num-u">+</button></div><div class="stepper"><button class="k" id="den-d">−</button><div class="val">D: <b id="den-v">'+d+'</b></div><button class="k" id="den-u">+</button></div><small>Unité L:</small><div class="stepper"><button class="k" id="L-d">−</button><div class="val">L:1/<b id="L-v">'+uD+'</b></div><button class="k" id="L-u">+</button></div>')}controls.mount=function(){const upd=()=>{document.getElementById('num-v').textContent=n;document.getElementById('den-v').textContent=d;document.getElementById('L-v').textContent=uD};document.getElementById('num-u').addEventListener('click',()=>{n=Math.min(16,n+1);upd()});document.getElementById('num-d').addEventListener('click',()=>{n=Math.max(1,n-1);upd()});document.getElementById('den-u').addEventListener('click',()=>{const i=dV.indexOf(d);if(i<dV.length-1){d=dV[i+1];upd()}});document.getElementById('den-d').addEventListener('click',()=>{const i=dV.indexOf(d);if(i>0){d=dV[i-1];upd()}});document.getElementById('L-u').addEventListener('click',()=>{const i=uDs.indexOf(uD);if(i<uDs.length-1){uD=uDs[i+1];upd()}});document.getElementById('L-d').addEventListener('click',()=>{const i=uDs.indexOf(uD);if(i>0){uD=uDs[i-1];upd()}})};scopePanel({title:'Rythme',renderControls:controls,applyPiece:()=>{state.pieceMeter=n+'/'+d;state.pieceUnit='1/'+uD;if(state.sel.m===0)delete state.timeChanges[0];else state.timeChanges={};rebuildMeasures()},applyHere:()=>{if(state.sel.m===0){state.pieceMeter=n+'/'+d;state.pieceUnit='1/'+uD;delete state.timeChanges[0];rebuildMeasures();return}state.pieceUnit='1/'+uD;state.timeChanges[state.sel.m]=n+'/'+d;for(let i=state.sel.m;i<state.measures.length;i++){if(i>state.sel.m&&state.timeChanges[i])break;state.measures[i]=buildEmptyMeasure(meterAt(i))}state.sel={m:state.sel.m,s:0}}})});
+  // ⭐ Armure : applique à partir de la mesure active
+  document.querySelector('[data-hdr="K"]').addEventListener('click',()=>{
+    let sig=keyAt(state.sel.m);
+    function controls(){return '<div class="stepper-label">Armure</div><div class="stepper"><button class="k" id="sig-d">♭</button><div class="val"><b id="sig-v">'+keyHumanLabel(sig)+'</b></div><button class="k" id="sig-u">♯</button></div>'}
+    function rebind(){
+      document.getElementById('sig-u').addEventListener('click',()=>{sig=Math.min(7,sig+1);document.getElementById('sig-v').textContent=keyHumanLabel(sig)});
+      document.getElementById('sig-d').addEventListener('click',()=>{sig=Math.max(-7,sig-1);document.getElementById('sig-v').textContent=keyHumanLabel(sig)});
+    }
+    openPanel({
+      title:'Armure',showMes:true,body:controls(),hideActions:true,extraButtons:['Annuler','Appliquer'],
+      onMount:rebind,
+      onMeasureChange:()=>{
+        sig=keyAt(state.sel.m);
+        document.getElementById('panel-body').innerHTML=controls()+document.getElementById('panel-body').querySelector('.actions').outerHTML;
+        rebind();
+        document.getElementById('panel-body').querySelectorAll('[data-extra]').forEach(b=>{
+          b.addEventListener('click',()=>{if(cOnExtra)cOnExtra(b.dataset.extra)});
+        });
+      },
+      onExtra:(w)=>{
+        if(w==='Annuler'){closePanel();return}
+        if(state.sel.m===0){state.pieceKeySig=sig;delete state.keyChanges[0]}
+        else state.keyChanges[state.sel.m]=sig;
+        cleanupAccidentals();pushHistory();closePanel();render();
+      }
+    });
+  });
 
-  document.querySelector('[data-hdr="K"]').addEventListener('click',()=>{let sig=keyAt(state.sel.m);const lO=(s)=>keyHumanLabel(s);function controls(){return('<div class="stepper"><button class="k" id="sig-d">♭</button><div class="val"><b id="sig-v">'+lO(sig)+'</b></div><button class="k" id="sig-u">♯</button></div>')}controls.mount=function(){const upd=()=>{document.getElementById('sig-v').textContent=lO(sig)};document.getElementById('sig-u').addEventListener('click',()=>{sig=Math.min(7,sig+1);upd()});document.getElementById('sig-d').addEventListener('click',()=>{sig=Math.max(-7,sig-1);upd()})};scopePanel({title:'Armure',renderControls:controls,applyPiece:()=>{state.pieceKeySig=sig;if(state.sel.m===0)delete state.keyChanges[0];else state.keyChanges={}},applyHere:()=>{if(state.sel.m===0){state.pieceKeySig=sig;delete state.keyChanges[0]}else state.keyChanges[state.sel.m]=sig}})});
-
-  document.querySelector('[data-hdr="CLEF"]').addEventListener('click',()=>{let pick=clefAt(state.sel.m);function controls(){return('<div class="row-grid row-3" id="clef-pick"><button class="k clef-small" data-clef="treble">𝄞</button><button class="k" data-clef="treble8" style="font-size:28px;">Sol-8</button><button class="k clef-small" data-clef="bass">𝄢</button></div>')}controls.mount=function(){const refresh=()=>{document.querySelectorAll('#clef-pick .k').forEach(b=>b.classList.toggle('active',b.dataset.clef===pick))};refresh();document.querySelectorAll('#clef-pick .k').forEach(b=>b.addEventListener('click',()=>{pick=b.dataset.clef;refresh()}))};scopePanel({title:'Clé',renderControls:controls,applyPiece:()=>{state.pieceClef=pick;if(state.sel.m===0)delete state.clefChanges[0];else state.clefChanges={}},applyHere:()=>{if(state.sel.m===0){state.pieceClef=pick;delete state.clefChanges[0]}else state.clefChanges[state.sel.m]=pick}})});
+  // ⭐ Clé : applique à partir de la mesure active
+  document.querySelector('[data-hdr="CLEF"]').addEventListener('click',()=>{
+    let pick=clefAt(state.sel.m);
+    function controls(){return '<div class="row-grid row-3" id="clef-pick"><button class="k clef-small" data-clef="treble">𝄞</button><button class="k" data-clef="treble8" style="font-size:28px;">Sol-8</button><button class="k clef-small" data-clef="bass">𝄢</button></div>'}
+    function rebind(){
+      const rf=()=>document.querySelectorAll('#clef-pick .k').forEach(b=>b.classList.toggle('active',b.dataset.clef===pick));
+      rf();
+      document.querySelectorAll('#clef-pick .k').forEach(b=>b.addEventListener('click',()=>{pick=b.dataset.clef;rf()}));
+    }
+    openPanel({
+      title:'Clé',showMes:true,body:controls(),hideActions:true,extraButtons:['Annuler','Appliquer'],
+      onMount:rebind,
+      onMeasureChange:()=>{
+        pick=clefAt(state.sel.m);
+        document.getElementById('panel-body').innerHTML=controls()+document.getElementById('panel-body').querySelector('.actions').outerHTML;
+        rebind();
+        document.getElementById('panel-body').querySelectorAll('[data-extra]').forEach(b=>{
+          b.addEventListener('click',()=>{if(cOnExtra)cOnExtra(b.dataset.extra)});
+        });
+      },
+      onExtra:(w)=>{
+        if(w==='Annuler'){closePanel();return}
+        if(state.sel.m===0){state.pieceClef=pick;delete state.clefChanges[0]}
+        else state.clefChanges[state.sel.m]=pick;
+        cleanupAccidentals();pushHistory();closePanel();render();
+      }
+    });
+  });
 
   function updateBadge(){document.getElementById('ww-tag').textContent=window.innerWidth||0;document.getElementById('wh-tag').textContent=window.innerHeight||0}
   window.addEventListener('resize',updateBadge);updateBadge();
