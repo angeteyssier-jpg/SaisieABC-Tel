@@ -1,5 +1,7 @@
 <style>
   .abc-app, .abc-app * { box-sizing: border-box; min-width: 0; }
+  /* Empeche le zoom au double-tap sur tous les elements interactifs */
+  .abc-app button, .abc-app .tab, .abc-app .k { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .abc-app { width: 100%; max-width: 100%; padding: 5px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     color: #1a1a1a; background: #f5f4ef; border-radius: 8px;
@@ -138,7 +140,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.39</b></span>
+    <span>Éditeur ABC <b>v0.40</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
