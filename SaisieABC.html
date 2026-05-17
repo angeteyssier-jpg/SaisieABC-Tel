@@ -73,8 +73,8 @@
   .tab:active { background: #d6d4cb; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
-  /* Point 6 : en mode play, decaler les reglages vers le bas */
-  .abc-app.tab-play .tab-panel[data-panel="play"].active { margin-top: 35vh; }
+  /* Point 4 : en mode play, agrandir la zone d'affichage des notes */
+  .abc-app.tab-play .score-wrap { max-height: 60vh; }
 
   .oct-row, .control-row { display: grid; grid-template-columns: 1fr 1.4fr 1fr;
     gap: 6px; margin-bottom: 8px;
@@ -138,7 +138,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.38</b></span>
+    <span>Éditeur ABC <b>v0.39</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -348,11 +348,11 @@
   function buildInlineFor(mi){const parts=[];if(mi===0)return'';if(state.timeChanges[mi])parts.push('[M:'+state.timeChanges[mi]+']');const keyChange=state.keyChanges[mi];const clefChange=state.clefChanges[mi];if(keyChange!==undefined||clefChange){const sig=keyChange!==undefined?keyChange:keyAt(mi);const cl=clefChange?clefChange:clefAt(mi);let inner='K:'+keyAbc(sig);if(cl&&cl!=='treble')inner+=clefAbcSuffix(cl);parts.push('['+inner+']')}return parts.join('')}
   function buildVoltaFor(mi){const r=state.repeats[mi];if(!r||!r.volta)return'';return'['+r.volta}
 
-  function buildAbcText(){let h='';h+='X:'+(state.headers.X||'0')+'\n';if(state.headers.T)state.headers.T.split('\n').forEach(l=>{if(l.trim())h+='T:'+l+'\n'});if(state.headers.C)state.headers.C.split('\n').forEach(l=>{if(l.trim())h+='C:'+l+'\n'});if(state.headers.N)state.headers.N.split('\n').forEach(l=>{if(l.trim())h+='N:'+l+'\n'});h+='M:'+state.pieceMeter+'\n';h+='L:'+state.pieceUnit+'\n';h+='Q:1/4='+state.tempo+'\n';h+='K:'+keyAbc(state.pieceKeySig)+clefAbcSuffix(state.pieceClef)+'\n';let body='';state.measures.forEach((m,mi)=>{body+=buildBarSeparator(mi-1,mi);body+=buildInlineFor(mi);body+=buildVoltaFor(mi);const groups=computeBeamGroups(m,meterAt(mi));const gOf={};groups.forEach((g,gi)=>{g.forEach((idx,k)=>{gOf[idx]={gi}})});let lt=null;m.forEach((t,si)=>{if(t.tuplet&&t.tuplet!==lt){body+='('+t.tuplet;lt=t.tuplet}if(!t.tuplet)lt=null;body+=slotStr(t);const isLast=(si===m.length-1);if(isLast)return;const he=gOf[si];const ne=gOf[si+1];const inSame=he&&ne&&he.gi===ne.gi;if(!inSame)body+=' '})});const li=state.measures.length-1;if(state.repeats[li]?.end)body+=':|';else body+='|';return h+body}
+  function buildAbcText(){let h='';h+='X:'+(state.headers.X||'0')+'\n';if(state.headers.T)state.headers.T.split('\n').forEach(l=>{if(l.trim())h+='T:'+l+'\n'});if(state.headers.C)state.headers.C.split('\n').forEach(l=>{if(l.trim())h+='C:'+l+'\n'});if(state.headers.N)state.headers.N.split('\n').forEach(l=>{if(l.trim())h+='N:'+l+'\n'});h+='M:'+state.pieceMeter+'\n';h+='L:'+state.pieceUnit+'\n';h+='Q:1/4='+state.tempo+'\n';h+='K:'+keyAbc(state.pieceKeySig)+clefAbcSuffix(state.pieceClef)+'\n';let body='';state.measures.forEach((m,mi)=>{body+=buildBarSeparator(mi-1,mi);body+=buildInlineFor(mi);body+=buildVoltaFor(mi);const groups=computeBeamGroups(m,meterAt(mi));const gOf={};groups.forEach((g,gi)=>{g.forEach((idx,k)=>{gOf[idx]={gi}})});let lastTid=null;m.forEach((t,si)=>{if(t.tuplet&&t.tupletId!==lastTid){body+='('+t.tuplet;lastTid=t.tupletId}if(!t.tuplet)lastTid=null;body+=slotStr(t);const isLast=(si===m.length-1);if(isLast)return;const he=gOf[si];const ne=gOf[si+1];const inSame=he&&ne&&he.gi===ne.gi;if(!inSame)body+=' '})});const li=state.measures.length-1;if(state.repeats[li]?.end)body+=':|';else body+='|';return h+body}
 
   function parseKeyDef(s){s=s.trim();let sig=0,clef='treble';const cm=s.match(/clef=(\S+)/);if(cm){const c=cm[1];if(c==='bass'||c==='F')clef='bass';else if(c==='treble-8'||c==='treble_8')clef='treble8';s=s.replace(cm[0],'').trim()}const km=s.match(/^([A-G])([#b]?)(.*)$/);if(km){const root=km[1],acc=km[2],mode=(km[3]||'').toLowerCase().trim();const M={'C':0,'G':1,'D':2,'A':3,'E':4,'B':5,'F#':6,'C#':7,'F':-1,'Bb':-2,'Eb':-3,'Ab':-4,'Db':-5,'Gb':-6,'Cb':-7};let bs=M[root+acc];if(bs===undefined){bs=M[root]||0;if(acc==='#')bs+=7;else if(acc==='b')bs-=7}sig=bs;if(mode.startsWith('m')&&!mode.startsWith('maj')&&!mode.startsWith('mix'))sig-=3;else if(mode.startsWith('dor'))sig-=2;else if(mode.startsWith('phr'))sig-=4;else if(mode.startsWith('lyd'))sig+=1;else if(mode.startsWith('mix'))sig-=1;else if(mode.startsWith('aeo'))sig-=3;else if(mode.startsWith('loc'))sig-=5}return{sig:Math.max(-7,Math.min(7,sig)),clef}}
   function parseAbcText(text){const cleaned=text.split(/\r?\n/).map(line=>{const m=line.match(/^(.*?)(?:%.*)?$/);return m?m[1]:line});const ns={headers:{X:'1',T:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:100,sel:{m:0,s:0},octave:0,volume:state.volume};let inBody=false,bodyText='';for(const line of cleaned){const t=line.trim();if(!inBody){const m=t.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='X')ns.headers.X=v;else if(k==='T'){ns.headers.T=ns.headers.T?(ns.headers.T+'\n'+v):v}else if(k==='C'){ns.headers.C=ns.headers.C?(ns.headers.C+'\n'+v):v}else if(k==='N'){ns.headers.N=ns.headers.N?(ns.headers.N+'\n'+v):v}else if(k==='M')ns.pieceMeter=v;else if(k==='L')ns.pieceUnit=v;else if(k==='Q'){const qm=v.match(/=(\d+)/);if(qm)ns.tempo=parseInt(qm[1],10)}else if(k==='K'){const kd=parseKeyDef(v);ns.pieceKeySig=kd.sig;ns.pieceClef=kd.clef;inBody=true}continue}continue}bodyText+=' '+t}if(!inBody)return null;parseAbcBody(bodyText,ns);return ns}
-  function parseAbcBody(body,ns){let i=0,curMeasure=[],mIdx=0,lastChord=null,pendingOrn=[],pendingTuplet=null;const measures=ns.measures;function flush(){if(curMeasure.length>0){measures.push(curMeasure);curMeasure=[];mIdx++}}function uM(){const m=ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);if(!m)return 1;return parseInt(m[1],10)/4}while(i<body.length){const c=body[i];if(/\s/.test(c)){i++;continue}if(c==='%'){while(i<body.length&&body[i]!=='\n')i++;continue}if(c==='['&&body[i+1]&&body[i+1].match(/[A-Z]/)&&body[i+2]===':'){const end=body.indexOf(']',i);if(end<0){i++;continue}const inner=body.substring(i+1,end);const m=inner.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='M')ns.timeChanges[mIdx+(curMeasure.length>0?1:0)]=v;else if(k==='L')ns.pieceUnit=v;else if(k==='K'){const kd=parseKeyDef(v);const ti=mIdx+(curMeasure.length>0?1:0);ns.keyChanges[ti]=kd.sig;if(kd.clef!=='treble')ns.clefChanges[ti]=kd.clef}}i=end+1;continue}if(c==='['&&body[i+1]&&/[1-9]/.test(body[i+1])){const v=parseInt(body[i+1],10);const ti=mIdx+(curMeasure.length===0?0:1);if(!ns.repeats[ti])ns.repeats[ti]={};ns.repeats[ti].volta=v;i+=2;continue}if(c==='"'){const end=body.indexOf('"',i+1);if(end<0){i++;continue}const ch=body.substring(i+1,end);const cc=ch.replace(/^[\^_<>@]/,'');if(cc)lastChord=cc;i=end+1;continue}if(c==='!'){const end=body.indexOf('!',i+1);if(end<0){i++;continue}const name=body.substring(i+1,end);const km={'trill':'T','turn':'P','fermata':'H','accent':'L','staccato':'.','upbow':'u','downbow':'v','coda':'O'};const code=km[name]||name;pendingOrn.push(code);i=end+1;continue}if('.TMHLuv'.includes(c)&&(i===0||!/[A-Ga-gz0-9]/.test(body[i-1]))){const next=body[i+1];if(next&&/[\^_=A-Ga-gz]/.test(next)){pendingOrn.push(c);i++;continue}}if(c==='('&&body[i+1]&&/[2-9]/.test(body[i+1])){const n=parseInt(body[i+1],10);let j=i+2,take=n;if(body[j]===':'){j++;const nm=body.substring(j).match(/^(\d+)?(?::(\d+))?/);if(nm){j+=(nm[0]||'').length;if(nm[2])take=parseInt(nm[2],10)}}pendingTuplet={n:n,remaining:take};i=j;continue}if(c===':'||c==='|'){let j=i,bar='';while(j<body.length&&(body[j]==='|'||body[j]===':')){bar+=body[j];j++}const endRep=/:\|/.test(bar);const startRep=/\|:/.test(bar);if(curMeasure.length>0){if(endRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].end=true}flush()}if(startRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].start=true}if(j<body.length&&/[1-9]/.test(body[j])){const v=parseInt(body[j],10);if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].volta=v;j++}i=j;continue}let acc='';while(i<body.length&&(body[i]==='^'||body[i]==='_'||body[i]==='=')){if(body[i]==='^')acc=(acc==='^'?'^^':'^');else if(body[i]==='_')acc=(acc==='_'?'__':'_');else if(body[i]==='=')acc='=';i++}if(i>=body.length)break;const ch=body[i];if(/[A-Ga-g]/.test(ch)){let note=ch.toUpperCase();let oct=(ch===ch.toLowerCase())?1:0;i++;while(i<body.length&&(body[i]==="'"||body[i]===',')){if(body[i]==="'")oct++;else oct--;i++}let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}let tie=false;if(body[i]==='-'){tie=true;i++}const factor=parseDurationSpec(ds);const qD=factor/uM();let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'note',note,octave:oct,dur,dot};if(acc)slot.acc=acc.length>1?acc[0]:acc;if(tie)slot.tieToNext=true;if(lastChord){slot.chord=lastChord;lastChord=null}if(pendingOrn.length){slot.orn=pendingOrn.slice();pendingOrn=[]}if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}if(ch==='z'||ch==='Z'){i++;let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}const factor=parseDurationSpec(ds);const qD=(ch==='Z')?measureCapacity(ns.pieceMeter):(factor/uM());let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'rest',dur,dot};if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}i++}if(curMeasure.length>0)measures.push(curMeasure);measures.forEach((meas,mi)=>{let used=0;for(const s of meas)used+=effDur(s);let lm=ns.pieceMeter;for(let k=0;k<=mi;k++)if(ns.timeChanges[k])lm=ns.timeChanges[k];const cap=measureCapacity(lm);if(used<cap-1e-6){const beat=4/parseMeter(lm).den;const tail=splitDurationByBeat(used,cap-used,beat).map(p=>({type:'rest',dur:p.dur,dot:p.dot}));meas.push(...tail)}else if(used>cap+1e-6){let a=0,ca=meas.length;for(let k=0;k<meas.length;k++){const d=effDur(meas[k]);if(a+d>cap+1e-6){ca=k;break}a+=d}meas.splice(ca)}});if(measures.length===0)measures.push(buildEmptyMeasure(ns.pieceMeter))}
+  function parseAbcBody(body,ns){let i=0,curMeasure=[],mIdx=0,lastChord=null,pendingOrn=[],pendingTuplet=null;const measures=ns.measures;function flush(){if(curMeasure.length>0){measures.push(curMeasure);curMeasure=[];mIdx++}}function uM(){const m=ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);if(!m)return 1;return parseInt(m[1],10)/4}while(i<body.length){const c=body[i];if(/\s/.test(c)){i++;continue}if(c==='%'){while(i<body.length&&body[i]!=='\n')i++;continue}if(c==='['&&body[i+1]&&body[i+1].match(/[A-Z]/)&&body[i+2]===':'){const end=body.indexOf(']',i);if(end<0){i++;continue}const inner=body.substring(i+1,end);const m=inner.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='M')ns.timeChanges[mIdx+(curMeasure.length>0?1:0)]=v;else if(k==='L')ns.pieceUnit=v;else if(k==='K'){const kd=parseKeyDef(v);const ti=mIdx+(curMeasure.length>0?1:0);ns.keyChanges[ti]=kd.sig;if(kd.clef!=='treble')ns.clefChanges[ti]=kd.clef}}i=end+1;continue}if(c==='['&&body[i+1]&&/[1-9]/.test(body[i+1])){const v=parseInt(body[i+1],10);const ti=mIdx+(curMeasure.length===0?0:1);if(!ns.repeats[ti])ns.repeats[ti]={};ns.repeats[ti].volta=v;i+=2;continue}if(c==='"'){const end=body.indexOf('"',i+1);if(end<0){i++;continue}const ch=body.substring(i+1,end);const cc=ch.replace(/^[\^_<>@]/,'');if(cc)lastChord=cc;i=end+1;continue}if(c==='!'){const end=body.indexOf('!',i+1);if(end<0){i++;continue}const name=body.substring(i+1,end);const km={'trill':'T','turn':'P','fermata':'H','accent':'L','staccato':'.','upbow':'u','downbow':'v','coda':'O'};const code=km[name]||name;pendingOrn.push(code);i=end+1;continue}if('.TMHLuv'.includes(c)&&(i===0||!/[A-Ga-gz0-9]/.test(body[i-1]))){const next=body[i+1];if(next&&/[\^_=A-Ga-gz]/.test(next)){pendingOrn.push(c);i++;continue}}if(c==='('&&body[i+1]&&/[2-9]/.test(body[i+1])){const n=parseInt(body[i+1],10);let j=i+2,take=n;if(body[j]===':'){j++;const nm=body.substring(j).match(/^(\d+)?(?::(\d+))?/);if(nm){j+=(nm[0]||'').length;if(nm[2])take=parseInt(nm[2],10)}}pendingTuplet={n:n,remaining:take,id:nextTupletId++};i=j;continue}if(c===':'||c==='|'){let j=i,bar='';while(j<body.length&&(body[j]==='|'||body[j]===':')){bar+=body[j];j++}const endRep=/:\|/.test(bar);const startRep=/\|:/.test(bar);if(curMeasure.length>0){if(endRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].end=true}flush()}if(startRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].start=true}if(j<body.length&&/[1-9]/.test(body[j])){const v=parseInt(body[j],10);if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].volta=v;j++}i=j;continue}let acc='';while(i<body.length&&(body[i]==='^'||body[i]==='_'||body[i]==='=')){if(body[i]==='^')acc=(acc==='^'?'^^':'^');else if(body[i]==='_')acc=(acc==='_'?'__':'_');else if(body[i]==='=')acc='=';i++}if(i>=body.length)break;const ch=body[i];if(/[A-Ga-g]/.test(ch)){let note=ch.toUpperCase();let oct=(ch===ch.toLowerCase())?1:0;i++;while(i<body.length&&(body[i]==="'"||body[i]===',')){if(body[i]==="'")oct++;else oct--;i++}let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}let tie=false;if(body[i]==='-'){tie=true;i++}const factor=parseDurationSpec(ds);const qD=factor/uM();let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'note',note,octave:oct,dur,dot};if(acc)slot.acc=acc.length>1?acc[0]:acc;if(tie)slot.tieToNext=true;if(lastChord){slot.chord=lastChord;lastChord=null}if(pendingOrn.length){slot.orn=pendingOrn.slice();pendingOrn=[]}if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;slot.tupletId=pendingTuplet.id;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}if(ch==='z'||ch==='Z'){i++;let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}const factor=parseDurationSpec(ds);const qD=(ch==='Z')?measureCapacity(ns.pieceMeter):(factor/uM());let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'rest',dur,dot};if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;slot.tupletId=pendingTuplet.id;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}i++}if(curMeasure.length>0)measures.push(curMeasure);measures.forEach((meas,mi)=>{let used=0;for(const s of meas)used+=effDur(s);let lm=ns.pieceMeter;for(let k=0;k<=mi;k++)if(ns.timeChanges[k])lm=ns.timeChanges[k];const cap=measureCapacity(lm);if(used<cap-1e-6){const beat=4/parseMeter(lm).den;const tail=splitDurationByBeat(used,cap-used,beat).map(p=>({type:'rest',dur:p.dur,dot:p.dot}));meas.push(...tail)}else if(used>cap+1e-6){let a=0,ca=meas.length;for(let k=0;k<meas.length;k++){const d=effDur(meas[k]);if(a+d>cap+1e-6){ca=k;break}a+=d}meas.splice(ca)}});if(measures.length===0)measures.push(buildEmptyMeasure(ns.pieceMeter))}
   function parseDurationSpec(s){if(s==='')return 1;if(s==='/')return 0.5;if(s==='//')return 0.25;if(s==='///')return 0.125;if(s.startsWith('/')){const n=parseInt(s.substring(1),10);return 1/(n||2)}if(s.includes('/')){const[n,d]=s.split('/');const a=parseInt(n,10)||1;const b=parseInt(d,10)||2;return a/b}return parseInt(s,10)||1}
 
   function expandForPlayback(){const out=[];const N=state.measures.length;if(N===0)return out;let i=0,safety=0;while(i<N&&safety<2000){safety++;const r=state.repeats[i]||{};if(r.volta&&r.volta!==1){let j=i;while(j<N){const rj=state.repeats[j]||{};if(j>i&&rj.volta!==r.volta)break;j++}i=j;continue}out.push(i);if(r.end){let startIdx=0;for(let k=i;k>=0;k--){if(state.repeats[k]?.start){startIdx=k;break}}let k=startIdx,safety2=0;while(k<N&&safety2<2000){safety2++;const rk=state.repeats[k]||{};if(rk.volta===1){let j=k;while(j<N){const rj=state.repeats[j]||{};if(j>k&&rj.volta!==1)break;j++}k=j;continue}out.push(k);k++;if(out.length>2000)break}return out}i++}return out}
@@ -459,11 +459,10 @@
           }
         }
         const m=state.measures[mIdx];
-        const x0=LEFT_PAD+i*measureW+10;
-        const sW=(measureW-14)/Math.max(m.length,1);
         const lC=clefAt(mIdx),lM=meterAt(mIdx);
-        // Point 1 : afficher changements (cle/armure/rythme) AVANT la mesure qui change
+        // Point 1 : afficher changements (cle/armure/rythme) AU DEBUT de la mesure qui change
         // (pour les mesures qui ne sont pas en debut de ligne — la 1ere de ligne montre deja l'etat dans l'en-tete)
+        let changeOffset=0;
         if(i>0){
           const prevClef=clefAt(mIdx-1);
           const prevKey=keyAt(mIdx-1);
@@ -472,37 +471,42 @@
           const hasKeyChange=keyAt(mIdx)!==prevKey;
           const hasMeterChange=lM!==prevMeter;
           if(hasClefChange||hasKeyChange||hasMeterChange){
-            // Reserver une zone juste a gauche de xL (entre la barre precedente et celle-ci, sur la fin de mesure precedente)
-            let cx=xL-3;
-            // Metrique (a droite-au-plus-proche de la barre)
-            if(hasMeterChange){
-              const{num,den}=parseMeter(lM);
-              svg+='<text x="'+cx+'" y="'+(staffTop+1.7*LINE_GAP+1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="end">'+num+'</text>';
-              svg+='<text x="'+cx+'" y="'+(staffTop+3.6*LINE_GAP+1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="end">'+den+'</text>';
-              cx-=8;
+            let cx=xL+3;
+            // Cle (en premier, juste apres la barre)
+            if(hasClefChange){
+              cx+=4;
+              if(lC==='bass'){
+                svg+='<text x="'+cx+'" y="'+(staffTop+2.6*LINE_GAP+5)+'" font-size="22" font-family="serif" fill="'+ink+'" opacity="0.85" text-anchor="middle">𝄢</text>';
+              } else {
+                svg+='<text x="'+cx+'" y="'+(staffTop+2.4*LINE_GAP+5)+'" font-size="26" font-family="serif" fill="'+ink+'" opacity="0.85" text-anchor="middle">𝄞</text>';
+                if(lC==='treble8')svg+='<text x="'+(cx+3)+'" y="'+(staffTop+4.6*LINE_GAP+5)+'" font-size="7" fill="'+ink+'" opacity="0.85" text-anchor="middle">8</text>';
+              }
+              cx+=8;
             }
             // Armure
             if(hasKeyChange){
               const accs=keySigAccidentals(keyAt(mIdx),lC);
-              // Si on annule des alterations, dessiner des becarres pour les notes de l'ancienne armure qui ne sont plus actives
               accs.forEach(a=>{
                 const ky=noteY(staffTop,a.step,lC)+4;
-                svg+='<text x="'+cx+'" y="'+ky+'" font-size="12" font-family="serif" fill="'+ink+'" text-anchor="end">'+a.sym+'</text>';
-                cx-=6;
+                svg+='<text x="'+cx+'" y="'+ky+'" font-size="12" font-family="serif" fill="'+ink+'">'+a.sym+'</text>';
+                cx+=6;
               });
-              cx-=4;
+              cx+=2;
             }
-            // Cle
-            if(hasClefChange){
-              if(lC==='bass'){
-                svg+='<text x="'+cx+'" y="'+(staffTop+2.6*LINE_GAP+5)+'" font-size="22" font-family="serif" fill="'+ink+'" opacity="0.85" text-anchor="end">𝄢</text>';
-              } else {
-                svg+='<text x="'+cx+'" y="'+(staffTop+2.4*LINE_GAP+5)+'" font-size="26" font-family="serif" fill="'+ink+'" opacity="0.85" text-anchor="end">𝄞</text>';
-                if(lC==='treble8')svg+='<text x="'+(cx-3)+'" y="'+(staffTop+4.6*LINE_GAP+5)+'" font-size="7" fill="'+ink+'" opacity="0.85" text-anchor="end">8</text>';
-              }
+            // Rythme
+            if(hasMeterChange){
+              const{num,den}=parseMeter(lM);
+              cx+=4;
+              svg+='<text x="'+cx+'" y="'+(staffTop+1.7*LINE_GAP+1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+num+'</text>';
+              svg+='<text x="'+cx+'" y="'+(staffTop+3.6*LINE_GAP+1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+den+'</text>';
+              cx+=8;
             }
+            // Espace consomme depuis xL
+            changeOffset=cx-xL;
           }
         }
+        const x0=LEFT_PAD+i*measureW+10+changeOffset;
+        const sW=(measureW-14-changeOffset)/Math.max(m.length,1);
         const bg=computeBeamGroups(m,lM);
         const sTG={};
         bg.forEach((g,gi)=>{g.forEach(si=>sTG[si]={gIdx:gi,group:g})});
@@ -567,9 +571,9 @@
             // Silences cassent les liaisons
             pS=null;
           }
-          if(t.tuplet&&(si===0||!m[si-1]||!m[si-1].tuplet||m[si-1].tuplet!==t.tuplet)){
+          if(t.tuplet&&(si===0||!m[si-1]||!m[si-1].tuplet||m[si-1].tupletId!==t.tupletId)){
             const gs=[];
-            for(let j=si;j<m.length&&m[j].tuplet===t.tuplet&&gs.length<t.tuplet;j++)gs.push(j);
+            for(let j=si;j<m.length&&m[j].tupletId===t.tupletId&&gs.length<t.tuplet;j++)gs.push(j);
             if(gs.length>0){
               const cF=x0+gs[0]*sW+sW/2;
               const cL=x0+gs[gs.length-1]*sW+sW/2;
@@ -837,9 +841,10 @@
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name));
     // Point 6 : classe pour decaler la zone play vers le bas
     document.getElementById('app').classList.toggle('tab-play', name==='play');
-    // Point 7 : quand on quitte l'onglet play, couper le son
+    // Point 7 : quand on quitte l'onglet play, couper le son et remettre la vue normale (oeil)
     if(previous==='play'&&name!=='play'){
       if(audio.playing)stopPlayback(true);
+      if(state.viewmode){state.viewmode=false;document.getElementById('app').classList.remove('viewmode');render()}
     }
   }
   document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>setActiveTab(t.dataset.tab)));
@@ -878,9 +883,9 @@
     // Si dans un n-uplet : un clic sur le bouton (bleu) supprime le n-uplet
     // et le remplace par des silences adaptes a la rythmique
     if(sl.tuplet){
-      const tn=sl.tuplet;
-      let start=idx;while(start>0&&meas[start-1].tuplet===tn)start--;
-      let end=idx;while(end<meas.length-1&&meas[end+1].tuplet===tn)end++;
+      const tid=sl.tupletId;
+      let start=idx;while(start>0&&meas[start-1].tupletId===tid)start--;
+      let end=idx;while(end<meas.length-1&&meas[end+1].tupletId===tid)end++;
       let space=0;
       for(let i=start;i<=end;i++)space+=effDur(meas[i]);
       const meter=meterAt(state.sel.m);
@@ -943,6 +948,7 @@
     });
   });
 
+  let nextTupletId=1;
   function applyTuplet(n,unitDur){
     // n-uplet de unitDur occupe l'espace de (n-1) notes de unitDur (règle 3:2 → 3 notes dans l'espace de 2)
     // Plus généralement : selon ratio implicite ABC (n:2 pour n impair, n:3 pour 6, etc.) — on garde 3:2 simple
@@ -959,20 +965,19 @@
     // Si l'espace disponible jusqu'à fin de mesure < totalSpace, on tronque (on garde le bouton désactivé sinon)
     const available=cap-offset;
     if(available<totalSpace-1e-6){alert('Pas assez de place dans la mesure pour ce n-uplet');return}
-    // Construire les n slots : 
-    // - slot 0 = note active (ou silence si l'actuel est silence) à la durée unitDur
-    // - autres = silences à la durée unitDur
+    // Identifiant unique pour ce groupe de n-uplet
+    const tid=nextTupletId++;
     const activeSlot=m[idx];
     const isRest=(activeSlot.type==='rest');
     const newSlots=[];
     for(let i=0;i<n;i++){
       if(i===0){
-        if(isRest){newSlots.push({type:'rest',dur:unitDur,dot:false,tuplet:n})}
+        if(isRest){newSlots.push({type:'rest',dur:unitDur,dot:false,tuplet:n,tupletId:tid})}
         else{
-          newSlots.push({type:'note',note:activeSlot.note,octave:activeSlot.octave,dur:unitDur,dot:false,acc:activeSlot.acc||'',tuplet:n});
+          newSlots.push({type:'note',note:activeSlot.note,octave:activeSlot.octave,dur:unitDur,dot:false,acc:activeSlot.acc||'',tuplet:n,tupletId:tid});
         }
       } else {
-        newSlots.push({type:'rest',dur:unitDur,dot:false,tuplet:n});
+        newSlots.push({type:'rest',dur:unitDur,dot:false,tuplet:n,tupletId:tid});
       }
     }
     // Consommer totalSpace à partir de idx (effacer/raccourcir les slots existants)
