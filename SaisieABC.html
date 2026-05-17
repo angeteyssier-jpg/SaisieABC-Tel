@@ -73,6 +73,8 @@
   .tab:active { background: #d6d4cb; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
+  /* Point 6 : en mode play, decaler les reglages vers le bas */
+  .abc-app.tab-play .tab-panel[data-panel="play"].active { margin-top: 35vh; }
 
   .oct-row, .control-row { display: grid; grid-template-columns: 1fr 1.4fr 1fr;
     gap: 6px; margin-bottom: 8px;
@@ -136,7 +138,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.36</b></span>
+    <span>Éditeur ABC <b>v0.38</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -346,7 +348,7 @@
   function buildInlineFor(mi){const parts=[];if(mi===0)return'';if(state.timeChanges[mi])parts.push('[M:'+state.timeChanges[mi]+']');const keyChange=state.keyChanges[mi];const clefChange=state.clefChanges[mi];if(keyChange!==undefined||clefChange){const sig=keyChange!==undefined?keyChange:keyAt(mi);const cl=clefChange?clefChange:clefAt(mi);let inner='K:'+keyAbc(sig);if(cl&&cl!=='treble')inner+=clefAbcSuffix(cl);parts.push('['+inner+']')}return parts.join('')}
   function buildVoltaFor(mi){const r=state.repeats[mi];if(!r||!r.volta)return'';return'['+r.volta}
 
-  function buildAbcText(){let h='';if(state.headers.X)h+='X:'+state.headers.X+'\n';if(state.headers.T)state.headers.T.split('\n').forEach(l=>{if(l.trim())h+='T:'+l+'\n'});if(state.headers.C)state.headers.C.split('\n').forEach(l=>{if(l.trim())h+='C:'+l+'\n'});if(state.headers.N)state.headers.N.split('\n').forEach(l=>{if(l.trim())h+='N:'+l+'\n'});h+='M:'+state.pieceMeter+'\n';h+='L:'+state.pieceUnit+'\n';h+='Q:1/4='+state.tempo+'\n';h+='K:'+keyAbc(state.pieceKeySig)+clefAbcSuffix(state.pieceClef)+'\n';let body='';state.measures.forEach((m,mi)=>{body+=buildBarSeparator(mi-1,mi);body+=buildInlineFor(mi);body+=buildVoltaFor(mi);const groups=computeBeamGroups(m,meterAt(mi));const gOf={};groups.forEach((g,gi)=>{g.forEach((idx,k)=>{gOf[idx]={gi}})});let lt=null;m.forEach((t,si)=>{if(t.tuplet&&t.tuplet!==lt){body+='('+t.tuplet;lt=t.tuplet}if(!t.tuplet)lt=null;body+=slotStr(t);const isLast=(si===m.length-1);if(isLast)return;const he=gOf[si];const ne=gOf[si+1];const inSame=he&&ne&&he.gi===ne.gi;if(!inSame)body+=' '})});const li=state.measures.length-1;if(state.repeats[li]?.end)body+=':|';else body+='|';return h+body}
+  function buildAbcText(){let h='';h+='X:'+(state.headers.X||'0')+'\n';if(state.headers.T)state.headers.T.split('\n').forEach(l=>{if(l.trim())h+='T:'+l+'\n'});if(state.headers.C)state.headers.C.split('\n').forEach(l=>{if(l.trim())h+='C:'+l+'\n'});if(state.headers.N)state.headers.N.split('\n').forEach(l=>{if(l.trim())h+='N:'+l+'\n'});h+='M:'+state.pieceMeter+'\n';h+='L:'+state.pieceUnit+'\n';h+='Q:1/4='+state.tempo+'\n';h+='K:'+keyAbc(state.pieceKeySig)+clefAbcSuffix(state.pieceClef)+'\n';let body='';state.measures.forEach((m,mi)=>{body+=buildBarSeparator(mi-1,mi);body+=buildInlineFor(mi);body+=buildVoltaFor(mi);const groups=computeBeamGroups(m,meterAt(mi));const gOf={};groups.forEach((g,gi)=>{g.forEach((idx,k)=>{gOf[idx]={gi}})});let lt=null;m.forEach((t,si)=>{if(t.tuplet&&t.tuplet!==lt){body+='('+t.tuplet;lt=t.tuplet}if(!t.tuplet)lt=null;body+=slotStr(t);const isLast=(si===m.length-1);if(isLast)return;const he=gOf[si];const ne=gOf[si+1];const inSame=he&&ne&&he.gi===ne.gi;if(!inSame)body+=' '})});const li=state.measures.length-1;if(state.repeats[li]?.end)body+=':|';else body+='|';return h+body}
 
   function parseKeyDef(s){s=s.trim();let sig=0,clef='treble';const cm=s.match(/clef=(\S+)/);if(cm){const c=cm[1];if(c==='bass'||c==='F')clef='bass';else if(c==='treble-8'||c==='treble_8')clef='treble8';s=s.replace(cm[0],'').trim()}const km=s.match(/^([A-G])([#b]?)(.*)$/);if(km){const root=km[1],acc=km[2],mode=(km[3]||'').toLowerCase().trim();const M={'C':0,'G':1,'D':2,'A':3,'E':4,'B':5,'F#':6,'C#':7,'F':-1,'Bb':-2,'Eb':-3,'Ab':-4,'Db':-5,'Gb':-6,'Cb':-7};let bs=M[root+acc];if(bs===undefined){bs=M[root]||0;if(acc==='#')bs+=7;else if(acc==='b')bs-=7}sig=bs;if(mode.startsWith('m')&&!mode.startsWith('maj')&&!mode.startsWith('mix'))sig-=3;else if(mode.startsWith('dor'))sig-=2;else if(mode.startsWith('phr'))sig-=4;else if(mode.startsWith('lyd'))sig+=1;else if(mode.startsWith('mix'))sig-=1;else if(mode.startsWith('aeo'))sig-=3;else if(mode.startsWith('loc'))sig-=5}return{sig:Math.max(-7,Math.min(7,sig)),clef}}
   function parseAbcText(text){const cleaned=text.split(/\r?\n/).map(line=>{const m=line.match(/^(.*?)(?:%.*)?$/);return m?m[1]:line});const ns={headers:{X:'1',T:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:100,sel:{m:0,s:0},octave:0,volume:state.volume};let inBody=false,bodyText='';for(const line of cleaned){const t=line.trim();if(!inBody){const m=t.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='X')ns.headers.X=v;else if(k==='T'){ns.headers.T=ns.headers.T?(ns.headers.T+'\n'+v):v}else if(k==='C'){ns.headers.C=ns.headers.C?(ns.headers.C+'\n'+v):v}else if(k==='N'){ns.headers.N=ns.headers.N?(ns.headers.N+'\n'+v):v}else if(k==='M')ns.pieceMeter=v;else if(k==='L')ns.pieceUnit=v;else if(k==='Q'){const qm=v.match(/=(\d+)/);if(qm)ns.tempo=parseInt(qm[1],10)}else if(k==='K'){const kd=parseKeyDef(v);ns.pieceKeySig=kd.sig;ns.pieceClef=kd.clef;inBody=true}continue}continue}bodyText+=' '+t}if(!inBody)return null;parseAbcBody(bodyText,ns);return ns}
@@ -419,6 +421,18 @@
       // Etat partage pour les liaisons traversant les mesures de la ligne
       let pS=null;
       const tP=[];
+      // Liaison "entrante" : si la derniere note avant lsm avait tieToNext, on retiendra la premiere note pour dessiner un demi-arc
+      let pendingIncomingTie=false;
+      if(lsm>0){
+        // Chercher la derniere note de la mesure precedente
+        const prevM=state.measures[lsm-1];
+        if(prevM){
+          for(let k=prevM.length-1;k>=0;k--){
+            const s=prevM[k];
+            if(s.type==='note'){if(s.tieToNext)pendingIncomingTie=true;break}
+          }
+        }
+      }
       for(let i=0;i<MEASURES_PER_LINE;i++){
         const mIdx=lsm+i;
         if(state.measures[mIdx]===undefined)continue;
@@ -448,6 +462,47 @@
         const x0=LEFT_PAD+i*measureW+10;
         const sW=(measureW-14)/Math.max(m.length,1);
         const lC=clefAt(mIdx),lM=meterAt(mIdx);
+        // Point 1 : afficher changements (cle/armure/rythme) AVANT la mesure qui change
+        // (pour les mesures qui ne sont pas en debut de ligne — la 1ere de ligne montre deja l'etat dans l'en-tete)
+        if(i>0){
+          const prevClef=clefAt(mIdx-1);
+          const prevKey=keyAt(mIdx-1);
+          const prevMeter=meterAt(mIdx-1);
+          const hasClefChange=lC!==prevClef;
+          const hasKeyChange=keyAt(mIdx)!==prevKey;
+          const hasMeterChange=lM!==prevMeter;
+          if(hasClefChange||hasKeyChange||hasMeterChange){
+            // Reserver une zone juste a gauche de xL (entre la barre precedente et celle-ci, sur la fin de mesure precedente)
+            let cx=xL-3;
+            // Metrique (a droite-au-plus-proche de la barre)
+            if(hasMeterChange){
+              const{num,den}=parseMeter(lM);
+              svg+='<text x="'+cx+'" y="'+(staffTop+1.7*LINE_GAP+1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="end">'+num+'</text>';
+              svg+='<text x="'+cx+'" y="'+(staffTop+3.6*LINE_GAP+1)+'" font-size="12" font-family="serif" font-weight="bold" fill="'+ink+'" text-anchor="end">'+den+'</text>';
+              cx-=8;
+            }
+            // Armure
+            if(hasKeyChange){
+              const accs=keySigAccidentals(keyAt(mIdx),lC);
+              // Si on annule des alterations, dessiner des becarres pour les notes de l'ancienne armure qui ne sont plus actives
+              accs.forEach(a=>{
+                const ky=noteY(staffTop,a.step,lC)+4;
+                svg+='<text x="'+cx+'" y="'+ky+'" font-size="12" font-family="serif" fill="'+ink+'" text-anchor="end">'+a.sym+'</text>';
+                cx-=6;
+              });
+              cx-=4;
+            }
+            // Cle
+            if(hasClefChange){
+              if(lC==='bass'){
+                svg+='<text x="'+cx+'" y="'+(staffTop+2.6*LINE_GAP+5)+'" font-size="22" font-family="serif" fill="'+ink+'" opacity="0.85" text-anchor="end">𝄢</text>';
+              } else {
+                svg+='<text x="'+cx+'" y="'+(staffTop+2.4*LINE_GAP+5)+'" font-size="26" font-family="serif" fill="'+ink+'" opacity="0.85" text-anchor="end">𝄞</text>';
+                if(lC==='treble8')svg+='<text x="'+(cx-3)+'" y="'+(staffTop+4.6*LINE_GAP+5)+'" font-size="7" fill="'+ink+'" opacity="0.85" text-anchor="end">8</text>';
+              }
+            }
+          }
+        }
         const bg=computeBeamGroups(m,lM);
         const sTG={};
         bg.forEach((g,gi)=>{g.forEach(si=>sTG[si]={gIdx:gi,group:g})});
@@ -493,6 +548,7 @@
               svg+='<line x1="'+sx+'" y1="'+hY+'" x2="'+sx+'" y2="'+bY+'" stroke="'+cl+'" stroke-width="0.8"/>';
               if(iS)svg+='<circle cx="'+cx+'" cy="'+dr.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
               if(pS&&pS.t.tieToNext)tP.push({fromCx:pS.cx,fromY:pS.y,toCx:cx,toY:dr.headY});
+              if(pendingIncomingTie){tP.push({fromCx:LEFT_PAD-6,fromY:dr.headY,toCx:cx,toY:dr.headY,partial:'in'});pendingIncomingTie=false}
               pS={t,cx,y:dr.headY};
             } else {
               const st=stepIndex(t.note,t.octave);
@@ -501,6 +557,7 @@
               svg+=dr.svg;
               if(iS)svg+='<circle cx="'+cx+'" cy="'+dr.headY+'" r="8" fill="none" stroke="'+sel+'" stroke-width="0.7" opacity="0.4"/>';
               if(pS&&pS.t.tieToNext)tP.push({fromCx:pS.cx,fromY:pS.y,toCx:cx,toY:dr.headY});
+              if(pendingIncomingTie){tP.push({fromCx:LEFT_PAD-6,fromY:dr.headY,toCx:cx,toY:dr.headY,partial:'in'});pendingIncomingTie=false}
               pS={t,cx,y:dr.headY};
             }
           } else {
@@ -510,7 +567,7 @@
             // Silences cassent les liaisons
             pS=null;
           }
-          if(t.tuplet&&(si===0||!m[si-1]||!m[si-1].tuplet)){
+          if(t.tuplet&&(si===0||!m[si-1]||!m[si-1].tuplet||m[si-1].tuplet!==t.tuplet)){
             const gs=[];
             for(let j=si;j<m.length&&m[j].tuplet===t.tuplet&&gs.length<t.tuplet;j++)gs.push(j);
             if(gs.length>0){
@@ -541,6 +598,10 @@
             svg+='<rect x="'+xS+'" y="'+(yy-bT/2)+'" width="'+(xE-xS)+'" height="'+bT+'" fill="'+ink+'"/>';
           }
         });
+      }
+      // Liaison sortante : si la derniere note de la ligne a tieToNext
+      if(pS&&pS.t.tieToNext){
+        tP.push({fromCx:pS.cx,fromY:pS.y,toCx:SCORE_W-RIGHT_PAD+4,toY:pS.y,partial:'out'});
       }
       // Dessiner toutes les liaisons de la ligne (apres avoir parcouru toutes les mesures)
       tP.forEach(tp=>{
@@ -581,8 +642,16 @@
     document.getElementById('btn-redo').disabled=(history.pos>=history.stack.length-1);
     const um=document.getElementById('btn-undo-mes');if(um)um.disabled=(history.pos<=0);
     const rm=document.getElementById('btn-redo-mes');if(rm)rm.disabled=(history.pos>=history.stack.length-1);
+    updatePasteButton();
+    // Point 8 : bouton n-uplet en bleu si le slot actif est dans un n-uplet
+    const sl0=selectedSlot();
+    const tb=document.getElementById('btn-tuplet');
+    if(tb)tb.classList.toggle('active', !!(sl0&&sl0.tuplet));
+    // Point 2 : bouton liaison en bleu si la note active a un tieToNext
+    const tieBtn=document.getElementById('btn-tie');
+    if(tieBtn)tieBtn.classList.toggle('active', !!(sl0&&sl0.type==='note'&&sl0.tieToNext));
     document.getElementById('btn-viewmode').textContent=state.viewmode?'✎':'👁';
-    document.getElementById('hdr-x-val').textContent=state.headers.X||'1';
+    document.getElementById('hdr-x-val').textContent=state.headers.X||'0';
     document.getElementById('hdr-t-val').textContent=(state.headers.T||'—').split('\n')[0];
     document.getElementById('hdr-c-val').textContent=(state.headers.C||'—').split('\n')[0];
     document.getElementById('hdr-n-val').textContent=(state.headers.N||'—').split('\n')[0];
@@ -609,11 +678,35 @@
   function midiOfNote(note,oct,acc,keySig){const bs={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[note];let midi=60+bs+oct*12;let alt=0;if(acc==='^')alt=1;else if(acc==='_')alt=-1;else if(acc==='=')alt=0;else{if(keySig>0&&SHARP_NOTES.slice(0,keySig).includes(note))alt=1;else if(keySig<0&&FLAT_NOTES.slice(0,-keySig).includes(note))alt=-1}return midi+alt}
   function freqOfMidi(m){return 440*Math.pow(2,(m-69)/12)}
   function previewNote(midi,durSec=0.25){ensureAudio();const t=audio.ctx.currentTime+0.005;const f=freqOfMidi(midi);const o=audio.ctx.createOscillator();const g=audio.ctx.createGain();o.type='triangle';o.frequency.value=f;const p=0.5,a=0.005;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(p,t+a);g.gain.setValueAtTime(p,t+Math.max(durSec-0.06,a));g.gain.linearRampToValueAtTime(0,t+durSec);o.connect(g);g.connect(audio.master);o.start(t);o.stop(t+durSec+0.03)}
-  function playSchedule(){ensureAudio();stopPlayback(false);audio.playing=true;document.getElementById('btn-play').textContent='⏸';const st=audio.ctx.currentTime+0.05;let t=st;const qD=60/state.tempo;const order=expandForPlayback();if(order.length===0){stopPlayback(true);return}
-    // Construire une liste linéaire d'événements avec gestion des liaisons
-    const events=[]; // {midi|null, dur, measureIdx, slotIdx}
-    order.forEach(mi=>{const m=state.measures[mi];if(!m)return;const sig=keyAt(mi);m.forEach((slot,si)=>{let dur=effDur(slot)*qD;if(slot.tuplet===3)dur=dur*2/3;if(slot.type==='note'){const midi=midiOfNote(slot.note,slot.octave,slot.acc,sig);events.push({midi,dur,measureIdx:mi,slotIdx:si,tieToNext:!!slot.tieToNext})}else{events.push({midi:null,dur,measureIdx:mi,slotIdx:si,tieToNext:false})}})});
-    // Fusionner les notes liées de même hauteur
+  function playSchedule(){
+    ensureAudio();stopPlayback(false);audio.playing=true;
+    document.getElementById('btn-play').textContent='⏸';
+    const st=audio.ctx.currentTime+0.05;let t=st;
+    const qD=60/state.tempo;
+    const order=expandForPlayback();
+    if(order.length===0){stopPlayback(true);return}
+    // Point 5 : demarrer a la mesure et au slot actifs
+    const startMeasure=state.sel.m,startSlot=state.sel.s;
+    let startIdxInOrder=order.indexOf(startMeasure);
+    if(startIdxInOrder<0)startIdxInOrder=0;
+    const events=[];
+    for(let oi=startIdxInOrder;oi<order.length;oi++){
+      const mi=order[oi];
+      const m=state.measures[mi];if(!m)continue;
+      const sig=keyAt(mi);
+      const firstSlot=(oi===startIdxInOrder&&mi===startMeasure)?startSlot:0;
+      for(let si=firstSlot;si<m.length;si++){
+        const slot=m[si];
+        const dur=effDur(slot)*qD;
+        if(slot.type==='note'){
+          const midi=midiOfNote(slot.note,slot.octave,slot.acc,sig);
+          events.push({midi,dur,measureIdx:mi,slotIdx:si,tieToNext:!!slot.tieToNext});
+        } else {
+          events.push({midi:null,dur,measureIdx:mi,slotIdx:si,tieToNext:false});
+        }
+      }
+    }
+    // Fusionner les notes liées de même hauteur (la durée des suivantes va sur l'ancre, dur=0 pour eux)
     let i=0;
     while(i<events.length){
       const ev=events[i];
@@ -621,17 +714,48 @@
         let j=i+1;
         while(j<events.length&&events[j].midi===ev.midi){
           ev.dur+=events[j].dur;
-          // marquer pour ne pas rejouer mais garder l'événement pour la sélection
           events[j].silent=true;
+          events[j].dur=0;
           if(!events[j].tieToNext)break;
           j++;
         }
       }
       i++;
     }
-    // Programmer les sons et les évènements de sélection
-    events.forEach(ev=>{if(ev.midi!==null&&!ev.silent){const o=audio.ctx.createOscillator();const g=audio.ctx.createGain();o.type='triangle';o.frequency.value=freqOfMidi(ev.midi);const a=0.005,r=Math.min(0.05,ev.dur*0.3);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.5,t+a);g.gain.setValueAtTime(0.5,t+ev.dur-r);g.gain.linearRampToValueAtTime(0,t+ev.dur);o.connect(g);g.connect(audio.master);o.start(t);o.stop(t+ev.dur+0.02);audio.scheduled.push(o)}audio.scheduled.push({updateAt:t,measureIdx:ev.measureIdx,slotIdx:ev.slotIdx});t+=ev.dur});
-    audio.stopAt=t;function tick(){if(!audio.playing)return;const now=audio.ctx.currentTime;let last=null;for(const ev of audio.scheduled){if(ev.updateAt!==undefined&&ev.updateAt<=now)last=ev;if(ev.updateAt!==undefined&&ev.updateAt>now)break}if(last&&(state.sel.m!==last.measureIdx||state.sel.s!==last.slotIdx)){state.sel={m:last.measureIdx,s:last.slotIdx};renderScore();renderState()}if(now>=audio.stopAt){stopPlayback(true);return}audio.raf=requestAnimationFrame(tick)}audio.raf=requestAnimationFrame(tick)}
+    events.forEach(ev=>{
+      if(ev.midi!==null&&!ev.silent){
+        const o=audio.ctx.createOscillator();
+        const g=audio.ctx.createGain();
+        o.type='triangle';o.frequency.value=freqOfMidi(ev.midi);
+        const a=0.005,r=Math.min(0.05,ev.dur*0.3);
+        g.gain.setValueAtTime(0,t);
+        g.gain.linearRampToValueAtTime(0.5,t+a);
+        g.gain.setValueAtTime(0.5,t+ev.dur-r);
+        g.gain.linearRampToValueAtTime(0,t+ev.dur);
+        o.connect(g);g.connect(audio.master);
+        o.start(t);o.stop(t+ev.dur+0.02);
+        audio.scheduled.push(o);
+      }
+      audio.scheduled.push({updateAt:t,measureIdx:ev.measureIdx,slotIdx:ev.slotIdx});
+      t+=ev.dur;
+    });
+    audio.stopAt=t;
+    function tick(){
+      if(!audio.playing)return;
+      const now=audio.ctx.currentTime;
+      let last=null;
+      for(const ev of audio.scheduled){
+        if(ev.updateAt!==undefined&&ev.updateAt<=now)last=ev;
+        if(ev.updateAt!==undefined&&ev.updateAt>now)break;
+      }
+      if(last&&(state.sel.m!==last.measureIdx||state.sel.s!==last.slotIdx)){
+        state.sel={m:last.measureIdx,s:last.slotIdx};renderScore();renderState();
+      }
+      if(now>=audio.stopAt){stopPlayback(true);return}
+      audio.raf=requestAnimationFrame(tick);
+    }
+    audio.raf=requestAnimationFrame(tick);
+  }
   function stopPlayback(refresh){if(audio.raf){cancelAnimationFrame(audio.raf);audio.raf=null}audio.scheduled.forEach(ev=>{if(ev.stop)try{ev.stop()}catch(_){}});audio.scheduled=[];audio.playing=false;document.getElementById('btn-play').textContent='▶';if(refresh)render()}
 
   function setNoteAtSelection(n){
@@ -706,7 +830,18 @@
   function toggleAccAtSelection(acc){const sl=selectedSlot();if(sl&&sl.type==='note'){sl.acc=(sl.acc===acc)?'':acc;pushHistory();const midi=midiOfNote(sl.note,sl.octave,sl.acc,keyAt(state.sel.m));previewNote(midi);render()}}
   function changeOctave(d){state.octave=Math.max(-2,Math.min(3,state.octave+d));const sl=selectedSlot();if(sl&&sl.type==='note'){sl.octave=Math.max(-2,Math.min(3,sl.octave+d));const midi=midiOfNote(sl.note,sl.octave,sl.acc,keyAt(state.sel.m));previewNote(midi)}pushHistory();render()}
 
-  function setActiveTab(name){state.activeTab=name;document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name))}
+  function setActiveTab(name){
+    const previous=state.activeTab;
+    state.activeTab=name;
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name));
+    // Point 6 : classe pour decaler la zone play vers le bas
+    document.getElementById('app').classList.toggle('tab-play', name==='play');
+    // Point 7 : quand on quitte l'onglet play, couper le son
+    if(previous==='play'&&name!=='play'){
+      if(audio.playing)stopPlayback(true);
+    }
+  }
   document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>setActiveTab(t.dataset.tab)));
 
   const nR=document.getElementById('notes-row');
@@ -737,13 +872,32 @@
   document.getElementById('btn-disarm').addEventListener('click',()=>{disarmKey();pushHistory();render()});
 
   document.getElementById('btn-tuplet').addEventListener('click',()=>{
-    const sl=selectedSlot();if(!sl)return;const meas=state.measures[state.sel.m];const idx=state.sel.s;
-    // Si déjà dans un tuplet, l'enlever
-    if(sl.tuplet){const n=sl.tuplet;for(let i=idx;i<meas.length&&meas[i].tuplet===n;i++)delete meas[i].tuplet;pushHistory();render();return}
-    // Sinon, ouvrir le panneau de saisie du n-uplet
-    // Choix de durée : noire/croche/double/triple. Si actuelle ronde/blanche → forcer noire.
+    const sl=selectedSlot();if(!sl)return;
+    const meas=state.measures[state.sel.m];
+    const idx=state.sel.s;
+    // Si dans un n-uplet : un clic sur le bouton (bleu) supprime le n-uplet
+    // et le remplace par des silences adaptes a la rythmique
+    if(sl.tuplet){
+      const tn=sl.tuplet;
+      let start=idx;while(start>0&&meas[start-1].tuplet===tn)start--;
+      let end=idx;while(end<meas.length-1&&meas[end+1].tuplet===tn)end++;
+      let space=0;
+      for(let i=start;i<=end;i++)space+=effDur(meas[i]);
+      const meter=meterAt(state.sel.m);
+      const{den}=parseMeter(meter);
+      const beat=4/den;
+      let offset=0;for(let i=0;i<start;i++)offset+=effDur(meas[i]);
+      const pieces=splitDurationByBeat(offset,space,beat);
+      const newSlots=pieces.map(p=>({type:'rest',dur:p.dur,dot:p.dot}));
+      meas.splice(start,end-start+1,...newSlots);
+      state.sel.s=Math.min(start,meas.length-1);
+      pushHistory();render();
+      return;
+    }
+    // Point 9 : refus du n-uplet imbrique - on verifie que la zone qu'on consommerait
+    // ne contient pas d'autre n-uplet en cours. On le verifie au moment du choix de chiffre.
     let chosenDur=sl.dur;
-    if(chosenDur>=2)chosenDur=1; // ronde ou blanche → noire
+    if(chosenDur>=2)chosenDur=1;
     const TUPLET_DURS=[{label:'♩',d:1},{label:'♪',d:0.5},{label:'♬',d:0.25},{label:'𝅘𝅥𝅰',d:0.125}];
     function controls(){
       let h='<div class="stepper-label">Affichage sur 3:2</div>';
@@ -768,6 +922,18 @@
         document.querySelectorAll('[data-tn]').forEach(b=>{
           b.addEventListener('click',()=>{
             const n=parseInt(b.dataset.tn,10);
+            // Point 9 : verifier que la zone qu'on va consommer ne mord pas sur un autre tuplet
+            const totalSpace=2*chosenDur;
+            const m=state.measures[state.sel.m];
+            const idxLocal=state.sel.s;
+            let consumed=0;
+            for(let i=idxLocal;i<m.length&&consumed<totalSpace-1e-6;i++){
+              if(m[i].tuplet&&i!==idxLocal){
+                alert('Impossible : un autre n-uplet se trouve dans la zone occupee.');
+                return;
+              }
+              consumed+=effDur(m[i]);
+            }
             applyTuplet(n,chosenDur);
             closePanel();
           });
@@ -965,6 +1131,11 @@
   document.getElementById('btn-undo-mes').addEventListener('click',undo);
   document.getElementById('btn-redo-mes').addEventListener('click',redo);
   let clipboardMes=null; // {measures:[...], repeats:{0:..},  timeChanges:{}, keyChanges:{}, clefChanges:{}}
+  function updatePasteButton(){
+    const b=document.getElementById('btn-paste-mes');
+    if(!b)return;
+    b.classList.toggle('active', !!(clipboardMes&&clipboardMes.measures&&clipboardMes.measures.length>0));
+  }
   document.getElementById('btn-copy-mes').addEventListener('click',()=>{
     let endM=state.sel.m;
     function getStart(){return state.sel.m}
@@ -1010,6 +1181,7 @@
         }
         clipboardMes={measures:copyMeas,repeats:copyRepeats,timeChanges:copyTime,keyChanges:copyKey,clefChanges:copyClef};
         closePanel();
+        updatePasteButton();
       }
     });
   });
@@ -1103,44 +1275,40 @@
   // Point 9 : Bouton Aide
   document.getElementById('btn-help').addEventListener('click',()=>{
     const helpText='<div style="font-size:24px;line-height:1.4;font-weight:600;text-align:left;">'
-      +'<b style="color:#0c447c;">Navigation</b><br>'
-      +'• Note à gauche, Mesure à gauche, Début, Fin, Mesure à droite, Note à droite <br>'
       +'<b style="color:#0c447c;">Onglet Notes</b><br>'
-      +'• Octave haut ou bas de la note active<br>'
       +'• 7 boutons Do…Si pour saisir une note<br>'
       +'• Durées : ronde, blanche, noire, croche, double, triple<br>'
-      +'• Altérations ♯ ♭ ♮ , pointée, silence<br>'
-      +'• ⌒ liaison vers la droite, ⌫ remplace par silence<br>'
+      +'• Altérations ♯ ♭ ♮ et point pointé<br>'
+      +'• ⌒ liaison, ⌫ remplace par silence<br>'
       +'• 3:2 ouvre le panneau n-uplet<br>'
       +'• Cm bouton accord avec notes Do…Si + #/b/m/Maj…<br>'
       +'• ~T ornements (trille, fermata, staccato, etc.)<br>'
       +'• Transp. ↓↑ transpose tout le morceau<br>'
-      +'• ↶ ↷ annuler/refaire<br>'
+      +'• ↶ ↷ annuler/refaire<br><br>'
       +'<b style="color:#0c447c;">Onglet Mesure</b><br>'
       +'• −Mes / +Mes ajouter ou supprimer des mesures<br>'
       +'• Rythme, Armure, Clé s\'appliquent dès la mesure active<br>'
-      +'• Armure -> C majeur : altère la partition<br>'
       +'• 𝄆 𝄇 reprises, |1 |2 voltas<br>'
       +'• 📋 copier mesures de la mesure active à N<br>'
       +'• 📥 coller à partir de la mesure active<br>'
-      +'• ↶ ↷ annuler/refaire<br>'
+      +'• ↶ ↷ annuler/refaire<br><br>'
       +'<b style="color:#0c447c;">Onglet Play</b><br>'
       +'• ▶ jouer, ■ stop, 👁 vue large<br>'
       +'• Vol et ♩ tempo ajustables<br>'
       +'• ⛶ plein écran<br>'
+      +'• Les liaisons de notes identiques sont jouées comme une seule note<br><br>'
       +'<b style="color:#0c447c;">Onglet Titre</b><br>'
       +'• X numéro<br>'
       +'• Titre, Compositeur, Commentaire multi-lignes<br>'
-      +'• ↵ Nouvelle ligne génère plusieurs T:/C:/N: dans le ABC<br>'
+      +'• ↵ Nouvelle ligne génère plusieurs T:/C:/N: dans le ABC<br><br>'
       +'<b style="color:#0c447c;">Onglet Fichier</b><br>'
       +'• 📄 nouveau, 📂 ouvrir .abc, 💾 enregistrer .abc<br>'
-      +'• ⭐ mémoires locales, ABC voir le code généré<br>'
-      +'• ? Aide ; cet aide<br>'
+      +'• ⭐ mémoires locales, ABC voir le code généré<br><br>'
       +'<b style="color:#0c447c;">Limites</b><br>'
-      +'• Un seul fichier ABC<br>'
       +'• Une seule voix (monophonique)<br>'
-      +'• Accord (texte) sur la note<br>'
+      +'• Accord (texte) sur la note, pas plusieurs notes simultanées<br>'
       +'• N-uplets en mode 3:2 (3 dans le temps de 2)<br>'
+      +'• 7 dièses ou 7 bémols max à l\'armure<br>'
       +'</div>';
     openPanel({title:'Aide',body:helpText,hideActions:true,extraButtons:['Fermer'],onExtra:()=>closePanel()});
   });
@@ -1183,7 +1351,7 @@
   panelCancel.addEventListener('click',closePanel);
 
   // ⭐ Headers : Titre/X simple input, ST/C/N multilignes avec bouton ↵
-  function headerPromptSimple(key,title){return ()=>openPanel({title:title,body:'<div class="row"><input id="hi" type="text" value="'+((state.headers[key]||'')+'').replace(/"/g,'&quot;')+'"/></div>',onMount:()=>document.getElementById('hi').focus(),onOk:()=>{state.headers[key]=document.getElementById('hi').value.trim();pushHistory()}})}
+  function headerPromptSimple(key,title){return ()=>openPanel({title:title,body:'<div class="row"><input id="hi" type="text" value="'+((state.headers[key]||'')+'').replace(/"/g,'&quot;')+'"/></div>',onMount:()=>document.getElementById('hi').focus(),onOk:()=>{let v=document.getElementById('hi').value.trim();if(key==='X'&&!v)v='0';state.headers[key]=v;pushHistory()}})}
   function headerPromptMulti(key,title){return ()=>{
     openPanel({
       title:title,
