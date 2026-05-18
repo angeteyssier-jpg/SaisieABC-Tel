@@ -140,7 +140,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.41</b></span>
+    <span>Éditeur ABC <b>v0.42</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -593,16 +593,53 @@
             svg+='<text x="'+(LEFT_PAD+i*measureW+2)+'" y="'+(staffTop-3)+'" font-size="8" fill="'+dim+'">'+String(mIdx+1)+'</text>';
           }
         });
-        // Beams pour cette mesure
+        // Beams pour cette mesure : niveau 1 complet, niveaux 2/3 partiels selon notes
         bg.forEach((g,gi)=>{
           const d=gBD[gi];const su=d.stemUp;const bY=d.beamY;const sts=d.stems;
-          const xS=sts[0].sx;const xE=sts[sts.length-1].sx;
           const bT=2.5;
-          const bC=Math.max(...g.map(idx=>{const t=m[idx];const eD=effDur(t);if(eD<=0.125+1e-6)return 3;if(eD<=0.25+1e-6)return 2;return 1}));
           const dyO=su?bT+0.8:-(bT+0.8);
-          for(let bi=0;bi<bC;bi++){
-            const yy=bY+bi*dyO;
+          // Niveau de chaque note du groupe (1=croche, 2=double, 3=triple)
+          const lvls=g.map(idx=>{
+            const eD=effDur(m[idx]);
+            if(eD<=0.125+1e-6)return 3;
+            if(eD<=0.25+1e-6)return 2;
+            return 1;
+          });
+          // sX = position x de chaque hampe (ordre = ordre du groupe)
+          const xPos=sts.map(s=>s.sx);
+          const xS=xPos[0],xE=xPos[xPos.length-1];
+          // Barre principale (niveau 1) : toute la largeur du groupe
+          {
+            const yy=bY;
             svg+='<rect x="'+xS+'" y="'+(yy-bT/2)+'" width="'+(xE-xS)+'" height="'+bT+'" fill="'+ink+'"/>';
+          }
+          // Niveaux 2 et 3 : segments entre notes consecutives de meme niveau, demi-barres pour les isolees
+          for(let lvl=2;lvl<=3;lvl++){
+            const yy=bY+(lvl-1)*dyO;
+            // 1) Segments connectes : entre i et i+1 si les deux ont niveau >= lvl
+            const connected=new Array(xPos.length).fill(false);
+            for(let i=0;i<xPos.length-1;i++){
+              if(lvls[i]>=lvl&&lvls[i+1]>=lvl){
+                svg+='<rect x="'+xPos[i]+'" y="'+(yy-bT/2)+'" width="'+(xPos[i+1]-xPos[i])+'" height="'+bT+'" fill="'+ink+'"/>';
+                connected[i]=true;connected[i+1]=true;
+              }
+            }
+            // 2) Demi-barres pour les notes de niveau >= lvl qui ne sont pas connectees
+            for(let i=0;i<xPos.length;i++){
+              if(lvls[i]>=lvl&&!connected[i]){
+                // Longueur de demi-barre : ~40% de la distance au voisin du meme groupe
+                let halfLen;
+                if(i===0){
+                  // Demi-barre vers la droite
+                  halfLen=Math.max(3,(xPos[1]-xPos[0])*0.4);
+                  svg+='<rect x="'+xPos[i]+'" y="'+(yy-bT/2)+'" width="'+halfLen+'" height="'+bT+'" fill="'+ink+'"/>';
+                } else {
+                  // Demi-barre vers la gauche
+                  halfLen=Math.max(3,(xPos[i]-xPos[i-1])*0.4);
+                  svg+='<rect x="'+(xPos[i]-halfLen)+'" y="'+(yy-bT/2)+'" width="'+halfLen+'" height="'+bT+'" fill="'+ink+'"/>';
+                }
+              }
+            }
           }
         });
       }
