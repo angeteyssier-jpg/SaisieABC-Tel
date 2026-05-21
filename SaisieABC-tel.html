@@ -5,10 +5,23 @@
   .abc-app { width: 100%; max-width: 100%; padding: 4px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     color: #1a1a1a; background: #f5f4ef; border-radius: 8px;
-    position: relative; overflow: hidden; height: 100vh; }
+    position: relative; overflow: hidden; height: 100vh;
+    display: flex; flex-direction: column; }
   /* Quand un panel popup est ouvert, on autorise le scroll pour acceder a tout */
-  .abc-app.panel-open { overflow-y: auto; height: auto; min-height: 100vh; }
+  .abc-app.panel-open { overflow-y: auto; height: auto; min-height: 100vh; display: block; }
   .abc-app.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; max-width: none; border-radius: 0; z-index: 9999; overflow-y: auto; }
+
+  /* Tous les blocs gardent leur taille naturelle (boutons cales en bas) */
+  .abc-app > .ver-badge, .abc-app > .ctx-card, .abc-app > .nav-bar,
+  .abc-app > .tabs, .abc-app > .tab-panel-stack, .abc-app > .panel,
+  .abc-app > input { flex: 0 0 auto; }
+  /* Seule la carte portee s'etire pour combler l'espace au-dessus des boutons */
+  .abc-app > .abc-card { flex: 1 1 0; min-height: 100px;
+    display: flex; align-items: stretch; overflow: hidden; }
+
+  /* Stack des tab-panels : tous occupent la meme cellule grid, taille = celle du plus grand */
+  .tab-panel-stack { display: grid; }
+  .tab-panel-stack > .tab-panel { grid-column: 1; grid-row: 1; }
 
   .ver-badge { display: flex; justify-content: space-between; align-items: center;
     font-size: 14px; color: #5f5e5a;
@@ -16,8 +29,8 @@
   .ver-badge b { color: #1a1a1a; font-weight: 700; }
 
   .abc-card { background: #ffffff; border: 1px solid #d8d6ce; border-radius: 6px; padding: 4px; margin-bottom: 6px; }
-  /* Hauteur de portee fixe : calibree pour laisser de la place a l'onglet le plus charge (Notes) */
-  .score-wrap { width: 100%; height: 270px; }
+  /* La portee remplit dynamiquement la zone disponible au-dessus des boutons */
+  .score-wrap { width: 100%; height: 100%; min-height: 0; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
 
   .ctx-card { background: #ebe9e0; border: 1px solid #d8d6ce; border-radius: 10px;
@@ -76,9 +89,9 @@
   .tab.active { background: #ffffff; color: #0c447c; border-color: #185fa5;
     margin-bottom: -2px; padding-bottom: 2px; }
   .tab:active { background: #d6d4cb; }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-  /* Point 4 : en mode play, agrandir la zone d'affichage des notes */
+  /* Tous les tab-panels sont dans la grille, l'inactif est invisible mais conserve sa place */
+  .tab-panel { visibility: hidden; pointer-events: none; }
+  .tab-panel.active { visibility: visible; pointer-events: auto; }
   /* En onglet Play, la portee s'etend deja naturellement grace au flex */
 
   .oct-row, .control-row { display: grid; grid-template-columns: 1fr 1.4fr 1fr;
@@ -142,7 +155,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.64</b></span>
+    <span>Éditeur ABC <b>v0.65</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -184,6 +197,7 @@
     <button class="tab" data-tab="fichier">Fichier</button>
   </div>
 
+  <div class="tab-panel-stack">
   <div class="tab-panel active" data-panel="notes">
     <div class="oct-row">
       <button class="k" id="oct-down">▽</button>
@@ -285,6 +299,7 @@
     </div>
     <div class="row-grid"><button class="k" id="btn-export-mxl" style="font-size:36px;">MusicXML (.mxl)</button></div>
     <div class="row-grid"><button class="k" id="btn-help" style="font-size:36px;">? Aide</button></div>
+  </div>
   </div>
 </div>
 
