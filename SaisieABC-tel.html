@@ -158,8 +158,8 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.68 diag</b></span>
-    <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b> · vp<b id="vp-tag">0</b> · app<b id="app-tag">0</b></span>
+    <span>Éditeur ABC <b>v0.68</b></span>
+    <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
   <div class="panel" id="panel">
@@ -304,7 +304,6 @@
     <div class="row-grid"><button class="k" id="btn-help" style="font-size:36px;">? Aide</button></div>
   </div>
   </div>
-  <div style="background:#e24b4a;color:white;font-size:14px;text-align:center;padding:4px;border-radius:4px;flex-shrink:0;">⬇ BAS APP ⬇</div>
 </div>
 
 <script>
@@ -2012,14 +2011,7 @@
     });
   });
 
-  function updateBadge(){
-    document.getElementById('ww-tag').textContent=window.innerWidth||0;
-    document.getElementById('wh-tag').textContent=window.innerHeight||0;
-    const vp=window.visualViewport;
-    document.getElementById('vp-tag').textContent=vp?Math.round(vp.height):'-';
-    const app=document.getElementById('app');
-    document.getElementById('app-tag').textContent=app?Math.round(app.getBoundingClientRect().height):'-';
-  }
+  function updateBadge(){document.getElementById('ww-tag').textContent=window.innerWidth||0;document.getElementById('wh-tag').textContent=window.innerHeight||0}
   window.addEventListener('resize',()=>{updateBadge();render()});updateBadge();
 
   rebuildMeasures();pushHistory();render();
