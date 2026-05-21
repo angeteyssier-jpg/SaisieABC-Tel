@@ -33,10 +33,10 @@
   .score-wrap { width: 100%; height: 100%; min-height: 0; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
 
-  .ctx-card { background: #ebe9e0; border: 1px solid #d8d6ce; border-radius: 10px;
-    padding: 10px 12px; margin-bottom: 8px;
-    font-size: 50px; color: #1a1a1a; line-height: 1.15; font-weight: 700; }
-  .ctx-card .line-small { font-size: 28px; font-weight: 700; margin-top: 6px; }
+  .ctx-card { background: #ebe9e0; border: 1px solid #d8d6ce; border-radius: 8px;
+    padding: 5px 8px; margin-bottom: 4px;
+    font-size: 28px; color: #1a1a1a; line-height: 1.15; font-weight: 700; }
+  .ctx-card .line-small { font-size: 18px; font-weight: 700; margin-top: 3px; }
   .ctx-card b { color: #185fa5; font-weight: 700; }
 
   .abc-app button.k { display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -57,7 +57,7 @@
   .note-btn .lbl { font-size: 50px; font-weight: 700; line-height: 1; }
   .note-btn .sub { font-size: 50px; font-weight: 400; color: #5f5e5a; line-height: 1; }
 
-  .row-grid { display: grid; gap: 6px; margin-bottom: 6px; }
+  .row-grid { display: grid; gap: 4px; margin-bottom: 4px; }
   .row-2 { grid-template-columns: 1fr 1fr; }
   .row-3 { grid-template-columns: 1fr 1fr 1fr; }
   .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
@@ -67,16 +67,16 @@
 
   /* Navigation : 6 boutons */
   .nav-bar { display: grid; grid-template-columns: repeat(6, 1fr);
-    gap: 4px; margin-bottom: 8px;
-    background: #fdf1d8; border: 2px solid #e2b840; padding: 5px;
-    border-radius: 12px; }
+    gap: 4px; margin-bottom: 4px;
+    background: #fdf1d8; border: 2px solid #e2b840; padding: 4px;
+    border-radius: 10px; }
   .nav-bar .k { background: #fffaee; border-color: #e2b840;
     font-size: 40px; height: 58px; padding: 0; }
   .nav-bar .k.dbtxt { font-size: 40px; font-weight: 700; }
   .nav-bar .k:active { background: #f5e2a8; }
 
   .tabs { display: grid; grid-template-columns: repeat(5, 1fr);
-    gap: 3px; margin-bottom: 8px;
+    gap: 3px; margin-bottom: 4px;
     border-bottom: 2px solid #b4b2a9; }
   .tab { height: 72px;
     background: #ebe9e0; border: 2px solid #b4b2a9; border-bottom: none;
@@ -95,15 +95,15 @@
   /* En onglet Play, la portee s'etend deja naturellement grace au flex */
 
   .oct-row, .control-row { display: grid; grid-template-columns: 1fr 1.4fr 1fr;
-    gap: 6px; margin-bottom: 8px;
-    background: #ebe9e0; padding: 6px; border-radius: 12px;
+    gap: 6px; margin-bottom: 4px;
+    background: #ebe9e0; padding: 4px; border-radius: 10px;
     align-items: center; }
   .oct-row .label, .control-row .label { font-size: 50px; color: #1a1a1a; text-align: center; font-weight: 700; }
   .oct-row .label b, .control-row .label b { color: #185fa5; font-size: 50px; margin-left: 6px; }
 
   /* Ligne transposer */
-  .transpose-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px;
-    background: #ebe9e0; padding: 6px; border-radius: 12px; align-items: center; }
+  .transpose-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 4px;
+    background: #ebe9e0; padding: 4px; border-radius: 10px; align-items: center; }
   .transpose-row .label { font-size: 38px; color: #1a1a1a; text-align: center; font-weight: 700; }
 
   .panel { background: #e6f1fb; border: 2px solid #378add; border-radius: 12px;
@@ -155,7 +155,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.65</b></span>
+    <span>Éditeur ABC <b>v0.66</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -233,17 +233,17 @@
       <button class="k" id="meas-del">− Mes</button>
       <button class="k" id="meas-add">+ Mes</button>
     </div>
-    <div class="row-grid"><button class="k" data-hdr="M">Rythme</button></div>
-    <div class="row-grid"><button class="k" data-hdr="K">Armure</button></div>
-    <div class="row-grid"><button class="k" data-hdr="CLEF">Clé</button></div>
+    <div class="row-grid row-3">
+      <button class="k" data-hdr="M">Rythme</button>
+      <button class="k" data-hdr="K">Armure</button>
+      <button class="k" data-hdr="CLEF">Clé</button>
+    </div>
     <div class="row-grid">
       <button class="k" id="btn-disarm" style="font-size:34px;">Armure → C majeur</button>
     </div>
-    <div class="row-grid row-2">
+    <div class="row-grid row-4">
       <button class="k" id="btn-rep-start">𝄆</button>
       <button class="k" id="btn-rep-end">𝄇</button>
-    </div>
-    <div class="row-grid row-2">
       <button class="k" id="btn-volta1">|1</button>
       <button class="k" id="btn-volta2">|2</button>
     </div>
