@@ -158,7 +158,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.70</b></span>
+    <span>Éditeur ABC <b>v0.71</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -1436,29 +1436,27 @@
     return null;
   }
   document.getElementById('btn-swing-dot').addEventListener('click',()=>{
-    const p=pairForSwing();if(!p)return;
+    const p=pairForSwing();
+    if(!p){alert('♪♪→♪.𝅘𝅥𝅯 : selectionnez la 1ere de 2 notes consecutives de meme duree (hors n-uplet), ou une note pointee + double.');return}
     const m=state.measures[state.sel.m];
     if(p.kind==='equal'){
-      // 2 croches egales d+d -> croche pointee (d*1.5,dot) + double (d/2)
       m[p.idx]={...p.a,dur:p.a.dur,dot:true};
       m[p.idx+1]={...p.b,dur:p.b.dur/2,dot:false};
     } else if(p.kind==='dotted'){
-      // Revenir a 2 notes egales de duree a.dur (la croche initiale)
       m[p.idx]={...p.a,dur:p.a.dur,dot:false};
       m[p.idx+1]={...p.b,dur:p.a.dur,dot:false};
     }
     pushHistory();render();
   });
   document.getElementById('btn-swing-triplet').addEventListener('click',()=>{
-    const p=pairForTriplet();if(!p)return;
+    const p=pairForTriplet();
+    if(!p){alert('♪♪→♩♪³ : selectionnez la 1ere de 2 notes consecutives de meme duree, ou la 1ere d un triolet noire+croche.');return}
     const m=state.measures[state.sel.m];
     if(p.kind==='equal'){
-      // 2 notes egales d+d -> triolet 3:2 noire(2d)+croche(d) avec tuplet:3 (effDur total = 2d*2/3 + d*2/3 = 2d, inchange)
       const tid=nextTupletId++;
       m[p.idx]={...p.a,dur:2*p.a.dur,dot:false,tuplet:3,tupletId:tid};
       m[p.idx+1]={...p.b,dur:p.b.dur,dot:false,tuplet:3,tupletId:tid};
     } else if(p.kind==='triplet'){
-      // Revenir a 2 notes egales (chacune de duree b.dur, qui est la croche du triolet)
       const na={...p.a,dur:p.b.dur,dot:false};delete na.tuplet;delete na.tupletId;
       const nb={...p.b,dur:p.b.dur,dot:false};delete nb.tuplet;delete nb.tupletId;
       m[p.idx]=na;m[p.idx+1]=nb;
@@ -1494,16 +1492,22 @@
       if(!sl.tuplet&&!sl.dot){
         const head={...sl,dur:want};
         const tail={...sl,dur:e-want,dot:false};
-        // Si la nouvelle tail a une duree non standard, c'est imparfait mais on garde
-        if(sl.type==='note')tail.tieToNext=true; // lier
+        // Liaison : si c'est une note, on lie le head au tail. La liaison originale (vers la note suivante du morceau) va sur le tail.
+        if(sl.type==='note'){
+          head.tieToNext=true;
+          if(!sl.tieToNext)delete tail.tieToNext;
+          // sinon tail.tieToNext reste (copie via spread)
+        }
         return[head,tail];
       }
       // Cas pointe : couper proprement
       if(sl.dot&&!sl.tuplet){
-        // 0.75 = 0.5+0.25 (croche pointee = croche + double)
         const head={...sl,dur:want,dot:false};
         const tail={...sl,dur:e-want,dot:false};
-        if(sl.type==='note')tail.tieToNext=true;
+        if(sl.type==='note'){
+          head.tieToNext=true;
+          if(!sl.tieToNext)delete tail.tieToNext;
+        }
         return[head,tail];
       }
       // Tuplet : on ne coupe pas, on laisse tel quel (debordera et sera tronque)
@@ -1545,17 +1549,53 @@
     }
     return result;
   }
-  function shiftPiece(direction){
+  function chooseShiftDuration(direction){
+    // Popup pour choisir la duree du decalage
+    const sl=selectedSlot();
+    const defDur=sl?(sl.dot?sl.dur*1.5:sl.dur):1;
+    const DURS=[{label:'𝅝',d:4},{label:'𝅗𝅥',d:2},{label:'♩',d:1},{label:'♪',d:0.5},{label:'♬',d:0.25},{label:'𝅘𝅥𝅰',d:0.125}];
+    let chosen=defDur,chosenDot=false;
+    function body(){
+      let h='<div style="font-size:30px;margin-bottom:8px;">Decaler vers la '+(direction>0?'droite':'gauche')+' de :</div>';
+      h+='<div class="row-grid row-6" style="margin-bottom:8px;">';
+      DURS.forEach(d=>h+='<button class="k symbol" data-shdur="'+d.d+'">'+d.label+'</button>');
+      h+='</div>';
+      h+='<div class="row-grid row-2">';
+      h+='<button class="k" id="shift-dot-tgl" style="font-size:36px;">Pointee : <b id="shift-dot-v">non</b></button>';
+      h+='</div>';
+      return h;
+    }
+    function refreshSel(){
+      document.querySelectorAll('[data-shdur]').forEach(b=>b.classList.toggle('active',parseFloat(b.dataset.shdur)===chosen));
+      const dv=document.getElementById('shift-dot-v');if(dv)dv.textContent=chosenDot?'oui':'non';
+    }
+    openPanel({title:'Decalage',body:body(),hideActions:true,extraButtons:['Annuler','Appliquer'],
+      onMount:()=>{
+        refreshSel();
+        document.querySelectorAll('[data-shdur]').forEach(b=>{
+          b.addEventListener('click',()=>{chosen=parseFloat(b.dataset.shdur);refreshSel()});
+        });
+        const tgl=document.getElementById('shift-dot-tgl');
+        if(tgl)tgl.addEventListener('click',()=>{chosenDot=!chosenDot;refreshSel()});
+      },
+      onExtra:(w)=>{
+        if(w==='Annuler'){closePanel();return}
+        if(w==='Appliquer'){closePanel();shiftPiece(direction,chosen,chosenDot)}
+      }
+    });
+  }
+  function shiftPiece(direction,shiftDur,shiftDot){
     // direction = +1 (droite : insere un silence avant la selection) ou -1 (gauche : supprime ce qui est avant)
+    // shiftDur, shiftDot : duree et pointee a decaler (ex: 0.5 noire, true pointee)
     const sl=selectedSlot();if(!sl)return;
     if(sl.tuplet){alert('Decalage impossible sur une note dans un n-uplet');return}
-    const dur=sl.dot?sl.dur*1.5:sl.dur;
+    const dur=shiftDot?shiftDur*1.5:shiftDur;
     const{slots,absSel,caps}=flattenSlots();
     if(absSel<0)return;
     let newFlat;
     if(direction>0){
-      // Inserer un silence avant absSel
-      const silence={type:'rest',dur:sl.dur,dot:!!sl.dot};
+      // Inserer un silence de la duree choisie avant absSel
+      const silence={type:'rest',dur:shiftDur,dot:!!shiftDot};
       newFlat=[...slots.slice(0,absSel).map(x=>x.slot),silence,...slots.slice(absSel).map(x=>x.slot)];
       // Si la duree totale depasse la capacite totale, ajouter une mesure
       let totalDur=0;for(const s of newFlat)totalDur+=effDur(s);
@@ -1604,8 +1644,8 @@
     }
     pushHistory();render();
   }
-  document.getElementById('btn-shift-left').addEventListener('click',()=>shiftPiece(-1));
-  document.getElementById('btn-shift-right').addEventListener('click',()=>shiftPiece(+1));
+  document.getElementById('btn-shift-left').addEventListener('click',()=>chooseShiftDuration(-1));
+  document.getElementById('btn-shift-right').addEventListener('click',()=>chooseShiftDuration(+1));
 
   // Point 6+11 : annuler/refaire + copier/coller dans Mesure
   document.getElementById('btn-undo-mes').addEventListener('click',undo);
