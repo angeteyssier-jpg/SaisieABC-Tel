@@ -19,6 +19,26 @@
   .abc-app > .abc-card { flex: 1 1 0; min-height: 100px;
     display: flex; align-items: stretch; overflow: hidden; }
 
+  /* Mode paysage : 2 colonnes — partition a gauche, boutons a droite */
+  @media (orientation: landscape) {
+    .abc-app { display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas:
+        "badge   tabs"
+        "ctx     navbar"
+        "score   panels";
+      column-gap: 6px; row-gap: 0; }
+    .abc-app > .ver-badge { grid-area: badge; }
+    .abc-app > .ctx-card { grid-area: ctx; }
+    .abc-app > .abc-card { grid-area: score; min-height: 0; }
+    .abc-app > .tabs { grid-area: tabs; }
+    .abc-app > .nav-bar { grid-area: navbar; }
+    .abc-app > .tab-panel-stack { grid-area: panels; overflow-y: auto; }
+    /* Panel popup reste dans le flux normal (occupera tout l'espace) */
+    .abc-app > .panel { grid-column: 1 / -1; grid-row: 1 / -1; z-index: 10; }
+  }
+
   /* Stack des tab-panels : tous occupent la meme cellule grid, taille = celle du plus grand */
   .tab-panel-stack { display: grid; }
   .tab-panel-stack > .tab-panel { grid-column: 1; grid-row: 1; }
@@ -155,7 +175,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.65</b></span>
+    <span>Éditeur ABC <b>v0.66</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
