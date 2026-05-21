@@ -24,7 +24,7 @@
   .ctx-card b { color: #185fa5; font-weight: 700; }
 
   .abc-app button.k { display: flex; align-items: center; justify-content: center; gap: 6px;
-    width: 100%; height: 96px; padding: 0 4px;
+    width: 100%; height: 72px; padding: 0 4px;
     background: #ffffff; border: 2px solid #b4b2a9; border-radius: 12px;
     font-family: inherit; font-size: 50px; font-weight: 700; color: #1a1a1a;
     cursor: pointer; text-align: center; line-height: 1;
@@ -37,7 +37,7 @@
   .abc-app button.k.primary { background: #185fa5; border-color: #185fa5; color: #ffffff; }
   .abc-app button.k.clef-small { font-size: 36px; }
 
-  .note-btn { flex-direction: column !important; gap: 0 !important; height: 130px !important; }
+  .note-btn { flex-direction: column !important; gap: 0 !important; height: 98px !important; }
   .note-btn .lbl { font-size: 50px; font-weight: 700; line-height: 1; }
   .note-btn .sub { font-size: 50px; font-weight: 400; color: #5f5e5a; line-height: 1; }
 
@@ -55,14 +55,14 @@
     background: #fdf1d8; border: 2px solid #e2b840; padding: 5px;
     border-radius: 12px; }
   .nav-bar .k { background: #fffaee; border-color: #e2b840;
-    font-size: 40px; height: 78px; padding: 0; }
+    font-size: 40px; height: 58px; padding: 0; }
   .nav-bar .k.dbtxt { font-size: 40px; font-weight: 700; }
   .nav-bar .k:active { background: #f5e2a8; }
 
   .tabs { display: grid; grid-template-columns: repeat(5, 1fr);
     gap: 3px; margin-bottom: 8px;
     border-bottom: 2px solid #b4b2a9; }
-  .tab { height: 96px;
+  .tab { height: 72px;
     background: #ebe9e0; border: 2px solid #b4b2a9; border-bottom: none;
     border-radius: 10px 10px 0 0;
     font-family: inherit; font-size: 32px; font-weight: 700; color: #5f5e5a;
@@ -99,7 +99,7 @@
   .panel .title { font-size: 50px; color: #0c447c; font-weight: 700; }
   .panel .title-mes { font-size: 50px; color: #185fa5; font-weight: 700; }
   .panel .row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .panel input, .panel textarea { flex: 1; min-height: 96px; font-family: inherit;
+  .panel input, .panel textarea { flex: 1; min-height: 72px; font-family: inherit;
     font-size: 50px; padding: 10px 14px; border: 2px solid #b4b2a9;
     border-radius: 10px; background: #ffffff; color: #1a1a1a; font-weight: 700; }
   .panel textarea { width: 100%; min-height: 240px; line-height: 1.2; }
@@ -109,10 +109,10 @@
   .panel .actions.three { grid-template-columns: 1fr 1fr 1fr; }
   .panel .actions.four { grid-template-columns: 1fr 1fr 1fr 1fr; }
   .panel .actions .k { width: 100% !important; padding: 0 8px !important;
-    height: 96px !important; font-size: 32px !important; }
-  .panel .stepper { display: grid; grid-template-columns: 96px 1fr 96px;
+    height: 72px !important; font-size: 32px !important; }
+  .panel .stepper { display: grid; grid-template-columns: 72px 1fr 72px;
     gap: 10px; align-items: center; margin-bottom: 6px; }
-  .panel .stepper .k { height: 96px !important; font-size: 50px !important; padding: 0 !important; }
+  .panel .stepper .k { height: 72px !important; font-size: 50px !important; padding: 0 !important; }
   .panel .stepper .val { text-align: center; font-family: inherit;
     font-size: 50px; color: #0c447c; font-weight: 700; }
   .panel .stepper-label { font-size: 28px; color: #1a1a1a; font-weight: 700; margin-bottom: 2px; text-align: center; }
@@ -130,17 +130,17 @@
     text-align: center; margin-bottom: 10px; }
 
   /* Accord */
-  .chord-input { width: 100%; min-height: 96px; font-family: inherit;
+  .chord-input { width: 100%; min-height: 72px; font-family: inherit;
     font-size: 50px; padding: 10px 14px; border: 2px solid #b4b2a9;
     border-radius: 10px; background: #ffffff; color: #1a1a1a; font-weight: 700;
     margin-bottom: 10px; text-align: center; }
   .chord-pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
-  .chord-pad .k { height: 78px !important; font-size: 30px !important; padding: 0 !important; }
+  .chord-pad .k { height: 58px !important; font-size: 30px !important; padding: 0 !important; }
 </style>
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.61</b></span>
+    <span>Éditeur ABC <b>v0.62</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -1452,7 +1452,7 @@
       let h='<input class="chord-input" id="chord-free" type="text" value="'+freeText.replace(/"/g,'&quot;')+'"/>';
       // Boutons de notes (Do, Ré, Mi...) qui ajoutent leur lettre ABC
       h+='<div class="chord-pad" style="grid-template-columns:repeat(7,1fr);">';
-      NOTES.forEach(n=>h+='<button class="k note-btn" data-add="'+n.n+'" style="height:96px !important;"><span class="lbl" style="font-size:30px;">'+n.label+'</span><span class="sub" style="font-size:22px;">'+n.sub+'</span></button>');
+      NOTES.forEach(n=>h+='<button class="k note-btn" data-add="'+n.n+'" style="height:72px !important;"><span class="lbl" style="font-size:30px;">'+n.label+'</span><span class="sub" style="font-size:22px;">'+n.sub+'</span></button>');
       h+='</div>';
       h+='<div class="chord-pad">';
       CHORD_BTNS.forEach(b=>h+='<button class="k" data-add="'+b+'">'+b+'</button>');
