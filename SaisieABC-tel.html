@@ -158,7 +158,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.68</b></span>
+    <span>Éditeur ABC <b>v0.69</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -261,9 +261,10 @@
   </div>
 
   <div class="tab-panel" data-panel="play">
-    <div class="row-grid row-3">
+    <div class="row-grid row-4">
       <button class="k" id="btn-play">▶</button>
       <button class="k" id="btn-stop">■</button>
+      <button class="k" id="btn-loop">⟲</button>
       <button class="k" id="btn-viewmode">👁</button>
     </div>
     <div class="control-row">
@@ -318,7 +319,7 @@
   const KEY_NAMES_MAJOR=['C','G','D','A','E','B','F♯','C♯'];
   const KEY_NAMES_MAJOR_FLAT=['C','F','B♭','E♭','A♭','D♭','G♭','C♭'];
 
-  const state={headers:{X:'1',T:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],sel:{m:0,s:0},octave:0,timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:60,tempoDotted:false,volume:60,fullscreen:false,viewmode:false,activeTab:'notes',openedFileName:null};
+  const state={headers:{X:'1',T:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],sel:{m:0,s:0},octave:0,timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:60,tempoDotted:false,volume:60,fullscreen:false,viewmode:false,activeTab:'notes',openedFileName:null,loop:false};
 
   const history={stack:[],pos:-1,max:100};
   function snapshot(){return JSON.stringify(state)}
@@ -724,6 +725,8 @@
         });
         m.forEach((t,si)=>{
           const cx=x0+si*sW+sW/2;
+          // Rectangle cliquable invisible sur toute la zone du slot (selection par clic)
+          svg+='<rect x="'+(cx-sW/2)+'" y="'+staffTop+'" width="'+sW+'" height="'+(4*LINE_GAP+20)+'" fill="transparent" pointer-events="all" data-m="'+mIdx+'" data-s="'+si+'" style="cursor:pointer"/>';
           const iS=(mIdx===selM&&si===state.sel.s);
           const cl=iS?sel:ink;
           if(t.chord)svg+='<text x="'+cx+'" y="'+(staffTop-3)+'" font-size="9" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+t.chord+'</text>';
@@ -876,6 +879,8 @@
     document.getElementById('tempo-mode-qd').classList.toggle('active',!!state.tempoDotted);
     document.getElementById('vol-v').textContent=state.volume;
     document.getElementById('btn-play').textContent=audio.playing?'⏸':'▶';
+    const loopBtn=document.getElementById('btn-loop');
+    if(loopBtn)loopBtn.classList.toggle('active',!!state.loop);
     document.getElementById('btn-undo').disabled=(history.pos<=0);
     document.getElementById('btn-redo').disabled=(history.pos>=history.stack.length-1);
     const um=document.getElementById('btn-undo-mes');if(um)um.disabled=(history.pos<=0);
@@ -934,6 +939,7 @@
     const order=expandForPlayback();
     if(order.length===0){stopPlayback(true);return}
     const startMeasure=state.sel.m,startSlot=state.sel.s;
+    if(!audio.loopFrom)audio.loopFrom={m:startMeasure,s:startSlot};
     let startIdxInOrder=order.indexOf(startMeasure);
     if(startIdxInOrder<0)startIdxInOrder=0;
     const events=[];
@@ -1013,12 +1019,20 @@
       if(last&&(state.sel.m!==last.measureIdx||state.sel.s!==last.slotIdx)){
         state.sel={m:last.measureIdx,s:last.slotIdx};renderScore();renderState();
       }
-      if(now>=audio.stopAt){stopPlayback(true);return}
+      if(now>=audio.stopAt){
+        if(state.loop&&audio.loopFrom){
+          state.sel={m:audio.loopFrom.m,s:audio.loopFrom.s};
+          stopPlayback(false);
+          playSchedule();
+          return;
+        }
+        stopPlayback(true);return
+      }
       audio.raf=requestAnimationFrame(tick);
     }
     audio.raf=requestAnimationFrame(tick);
   }
-  function stopPlayback(refresh){if(audio.raf){cancelAnimationFrame(audio.raf);audio.raf=null}audio.scheduled.forEach(ev=>{if(ev.stop)try{ev.stop()}catch(_){}});audio.scheduled=[];audio.playing=false;document.getElementById('btn-play').textContent='▶';if(refresh)render()}
+  function stopPlayback(refresh){if(audio.raf){cancelAnimationFrame(audio.raf);audio.raf=null}audio.scheduled.forEach(ev=>{if(ev.stop)try{ev.stop()}catch(_){}});audio.scheduled=[];audio.playing=false;document.getElementById('btn-play').textContent='▶';if(refresh){audio.loopFrom=null;render()}}
 
   function setNoteAtSelection(n){
     const sl=selectedSlot();if(!sl)return;const dur=sl.dur,dot=sl.dot;
@@ -1475,6 +1489,7 @@
   document.getElementById('tempo-mode-qd').addEventListener('click',()=>{state.tempoDotted=true;render()});
   document.getElementById('btn-play').addEventListener('click',()=>{if(audio.playing)stopPlayback(true);else playSchedule()});
   document.getElementById('btn-stop').addEventListener('click',()=>stopPlayback(true));
+  document.getElementById('btn-loop').addEventListener('click',()=>{state.loop=!state.loop;document.getElementById('btn-loop').classList.toggle('active',state.loop)});
   document.getElementById('btn-viewmode').addEventListener('click',()=>{state.viewmode=!state.viewmode;document.getElementById('app').classList.toggle('viewmode',state.viewmode);render()});
   document.getElementById('btn-fs').addEventListener('click',()=>{state.fullscreen=!state.fullscreen;document.getElementById('app').classList.toggle('fullscreen',state.fullscreen)});
 
@@ -2009,6 +2024,21 @@
         cleanupAccidentals();pushHistory();closePanel();render();
       }
     });
+  });
+
+  // Sélection d'une note/silence par clic sur la portée
+  document.getElementById('score').addEventListener('click',(e)=>{
+    const t=e.target;
+    if(!t||t.tagName!=='rect')return;
+    const m=t.getAttribute('data-m');
+    const s=t.getAttribute('data-s');
+    if(m===null||s===null)return;
+    const mi=parseInt(m,10),si=parseInt(s,10);
+    if(isNaN(mi)||isNaN(si))return;
+    if(mi<0||mi>=state.measures.length)return;
+    if(si<0||si>=state.measures[mi].length)return;
+    state.sel={m:mi,s:si};
+    render();
   });
 
   function updateBadge(){document.getElementById('ww-tag').textContent=window.innerWidth||0;document.getElementById('wh-tag').textContent=window.innerHeight||0}
