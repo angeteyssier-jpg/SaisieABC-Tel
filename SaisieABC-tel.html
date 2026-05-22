@@ -158,7 +158,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.79</b></span>
+    <span>Éditeur ABC <b>v0.81</b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -218,7 +218,7 @@
     <div class="row-grid row-3">
       <button class="k" id="btn-tuplet">3:2</button>
       <button class="k" id="btn-chord">Cm</button>
-      <button class="k" id="btn-orn">~T</button>
+      <button class="k" id="btn-orn">~ tr</button>
     </div>
     <div class="row-grid row-2">
       <button class="k" id="btn-undo">↶</button>
@@ -329,7 +329,7 @@
   const DURATIONS=[{label:'𝅝',d:4},{label:'𝅗𝅥',d:2},{label:'♩',d:1},{label:'♪',d:0.5},{label:'♬',d:0.25},{label:'𝅘𝅥𝅰',d:0.125}];
   const SHARP_NOTES=['F','C','G','D','A','E','B'];
   const FLAT_NOTES=['B','E','A','D','G','C','F'];
-  const ORNAMENTS=[{code:'T',label:'tr'},{code:'M',label:'~M'},{code:'P',label:'pralle'},{code:'H',label:'fermata'},{code:'L',label:'accent'},{code:'.',label:'staccato'},{code:'u',label:'up'},{code:'v',label:'down'},{code:'O',label:'coda'}];
+  const ORNAMENTS=[{code:'T',label:'tr'},{code:'M',label:'∼ (gruppetto)'},{code:'P',label:'∿ pincé'},{code:'H',label:'𝄐 point d\'orgue'},{code:'L',label:'> accent'},{code:'.',label:'• staccato'},{code:'u',label:'⋁ levé'},{code:'v',label:'⊓ tiré'},{code:'O',label:'⊕ coda'}];
   // Boutons accord : ajoutent leur texte au champ
   const CHORD_BTNS=['#','b','m','Maj','2','4','5','6','7','9','11','13','sus','dim','aug','add','/'];
   const KEY_NAMES_MAJOR=['C','G','D','A','E','B','F♯','C♯'];
@@ -747,7 +747,7 @@
           const cl=iS?sel:ink;
           if(t.chord)svg+='<text x="'+cx+'" y="'+(staffTop-3)+'" font-size="9" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+t.chord+'</text>';
           if(t.orn&&t.orn.length){
-            const ot=t.orn.map(o=>{if(o==='T')return'tr';if(o==='M')return'∼';if(o==='H')return'𝄐';if(o==='.')return'·';if(o==='L')return'>';return o}).join(' ');
+            const ot=t.orn.map(o=>{if(o==='T')return'tr';if(o==='M')return'∼';if(o==='P')return'∿';if(o==='H')return'𝄐';if(o==='.')return'·';if(o==='L')return'>';if(o==='u')return'⋁';if(o==='v')return'⊓';if(o==='O')return'⊕';return o}).join(' ');
             svg+='<text x="'+cx+'" y="'+(staffTop-12)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+ot+'</text>';
           }
           if(t.type==='note'){
@@ -1027,10 +1027,11 @@
       scheduleAhead();
       // Nettoyage des marqueurs anciens
       audio.scheduled=audio.scheduled.filter(ev=>ev.stop||(ev.updateAt!==undefined&&ev.updateAt>now-1));
+      const LOOKAHEAD=0.12;
       let last=null;
       for(const ev of audio.scheduled){
-        if(ev.updateAt!==undefined&&ev.updateAt<=now)last=ev;
-        if(ev.updateAt!==undefined&&ev.updateAt>now)break;
+        if(ev.updateAt!==undefined&&ev.updateAt<=now+LOOKAHEAD)last=ev;
+        if(ev.updateAt!==undefined&&ev.updateAt>now+LOOKAHEAD)break;
       }
       if(last&&(state.sel.m!==last.measureIdx||state.sel.s!==last.slotIdx)){
         state.sel={m:last.measureIdx,s:last.slotIdx};renderScore();renderState();
