@@ -159,7 +159,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.94</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v0.95</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -322,15 +322,7 @@
     <div class="row-grid">
       <button class="k" id="btn-disarm" style="font-size:34px;">Armure → C majeur</button>
     </div>
-    <div class="row-grid row-2">
-      <button class="k" id="btn-swing-dot" style="font-size:30px;">2♪→♪.𝅘𝅥𝅯</button>
-      <button class="k" id="btn-swing-triplet" style="font-size:30px;">2♪→♩♪³</button>
-    </div>
-    <div class="row-grid row-2">
-      <button class="k" id="btn-swing-undot" style="font-size:30px;">♪.𝅘𝅥𝅯→2♪</button>
-      <button class="k" id="btn-swing-untriplet" style="font-size:30px;">♩♪³→2♪</button>
-    </div>
-    <div class="row-grid"><button class="k" id="btn-reorg" style="font-size:30px;">⮂ Réorganiser rythme</button></div>
+    <div class="row-grid"><button class="k" id="btn-groove" style="font-size:26px;">⮂ Changer le groove…</button></div>
     <div class="row-grid row-3">
       <button class="k" id="btn-toggle-chords" style="font-size:26px;">Accords</button>
       <button class="k" id="btn-toggle-text" style="font-size:26px;">Texte</button>
@@ -1284,7 +1276,6 @@
   document.getElementById('btn-trans-down').addEventListener('click',()=>{transposePiece(-1);pushHistory();render()});
   document.getElementById('btn-tie').addEventListener('click',()=>{const sl=selectedSlot();if(sl){sl.tieToNext=!sl.tieToNext;pushHistory();render()}});
   document.getElementById('btn-disarm').addEventListener('click',()=>{disarmKey();pushHistory();render()});
-  document.getElementById('btn-reorg').addEventListener('click',()=>{consolidateRhythm(false)});
   function bindToggle(id,key){const el=document.getElementById(id);if(!el)return;el.addEventListener('click',()=>{state.viewFlags[key]=!state.viewFlags[key];render()})}
   bindToggle('btn-toggle-chords','chords');
   bindToggle('btn-toggle-text','text');
@@ -1665,25 +1656,21 @@
     if(Math.abs(2*a.dur-beat)>1e-6)return false;
     return true;
   }
-  document.getElementById('btn-swing-dot').addEventListener('click',()=>{
+  function grooveDot(){
     applySwingGlobal(matchEqualPair,(meas,i)=>{
       const a=meas[i],b=meas[i+1];
       meas[i]={...a,dur:a.dur,dot:true};
       meas[i+1]={...b,dur:b.dur/2,dot:false};
     },'2♪→♪.𝅘𝅥𝅯');
-  });
-
-  // 2♪→♩♪³ : deux notes egales sur un temps → triolet 3:2 noire+croche
-  document.getElementById('btn-swing-triplet').addEventListener('click',()=>{
+  }
+  function grooveTriplet(){
     applySwingGlobal(matchEqualPair,(meas,i)=>{
       const a=meas[i],b=meas[i+1];
       const tid=nextTupletId++;
       meas[i]={...a,dur:2*a.dur,dot:false,tuplet:3,tupletId:tid};
       meas[i+1]={...b,dur:b.dur,dot:false,tuplet:3,tupletId:tid};
     },'2♪→♩♪³');
-  });
-
-  // ♪.𝅘𝅥𝅯→2♪ : croche pointee + double sur un temps → 2 croches egales
+  }
   function matchDotPair(meas,i,beat){
     if(i>=meas.length-1)return false;
     const a=meas[i],b=meas[i+1];
@@ -1694,13 +1681,13 @@
     if(Math.abs(2*a.dur-beat)>1e-6)return false;
     return true;
   }
-  document.getElementById('btn-swing-undot').addEventListener('click',()=>{
+  function grooveUndot(){
     applySwingGlobal(matchDotPair,(meas,i)=>{
       const a=meas[i],b=meas[i+1];
       meas[i]={...a,dur:a.dur,dot:false};
       meas[i+1]={...b,dur:a.dur,dot:false};
     },'♪.𝅘𝅥𝅯→2♪');
-  });
+  }
 
   // ♩♪³→2♪ : triolet noire+croche sur un temps → 2 croches egales
   function matchTripletPair(meas,i,beat){
@@ -1712,13 +1699,27 @@
     if(Math.abs(2*b.dur-beat)>1e-6)return false;
     return true;
   }
-  document.getElementById('btn-swing-untriplet').addEventListener('click',()=>{
+  function grooveUntriplet(){
     applySwingGlobal(matchTripletPair,(meas,i)=>{
       const a=meas[i],b=meas[i+1];
       const na={...a,dur:b.dur,dot:false};delete na.tuplet;delete na.tupletId;
       const nb={...b,dur:b.dur,dot:false};delete nb.tuplet;delete nb.tupletId;
       meas[i]=na;meas[i+1]=nb;
     },'♩♪³→2♪');
+  }
+  document.getElementById('btn-groove').addEventListener('click',()=>{
+    const body='<small>Conversions appliquées à tout le morceau :</small>'+
+      '<div class="row-grid" style="margin-top:8px;"><button class="k" id="gv-dot" style="font-size:24px;">2 ♪ égales → ♪. 𝅘𝅥𝅯 (pointé)</button></div>'+
+      '<div class="row-grid"><button class="k" id="gv-triplet" style="font-size:24px;">2 ♪ égales → ♩ ♪ en triolet</button></div>'+
+      '<div style="height:8px;"></div>'+
+      '<div class="row-grid"><button class="k" id="gv-undot" style="font-size:24px;">♪. 𝅘𝅥𝅯 (pointé) → 2 ♪ égales</button></div>'+
+      '<div class="row-grid"><button class="k" id="gv-untriplet" style="font-size:24px;">♩ ♪ triolet → 2 ♪ égales</button></div>';
+    openPanel({title:'Changer le groove',body:body,hideActions:true,extraButtons:['Fin'],onMount:()=>{
+      document.getElementById('gv-dot').addEventListener('click',grooveDot);
+      document.getElementById('gv-triplet').addEventListener('click',grooveTriplet);
+      document.getElementById('gv-undot').addEventListener('click',grooveUndot);
+      document.getElementById('gv-untriplet').addEventListener('click',grooveUntriplet);
+    },onExtra:()=>{closePanel()}});
   });
 
   // === Materialisation des alterations implicites avant un decalage ===
