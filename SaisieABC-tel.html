@@ -142,6 +142,7 @@
   .panel .save-list .item { padding: 16px 14px; border-bottom: 1px solid #ebe9e0;
     display: flex; justify-content: space-between; align-items: center;
     font-size: 32px; cursor: pointer; font-weight: 700; }
+  .panel .save-list .item.active { background: #d3e6fa; outline: 3px solid #378add; outline-offset: -3px; }
   .panel .save-list .item .del { color: #c34536; font-size: 40px; padding: 0 12px; cursor: pointer; font-weight: 700; }
   .panel .mes-active { font-size: 32px; color: #0c447c; font-weight: 700;
     background: #ffffff; padding: 12px; border-radius: 10px; border: 2px solid #b4b2a9;
@@ -158,7 +159,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.86</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v0.92</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -271,16 +272,15 @@
       <button class="k" id="vol-u">+1</button>
       <button class="k" id="vol-u5">+5</button>
     </div>
-    <div class="label" style="font-size:30px;text-align:center;margin:6px 0 4px;">♩ <b id="tempo-v">60</b>  ·  ♩. <b id="tempo-v-dot">40</b></div>
+    <div class="label" style="font-size:30px;text-align:center;margin:6px 0 4px;"><span id="tempo-unit-sym">♩</span> = <b id="tempo-disp">60</b> /min</div>
     <div class="row-grid row-4">
       <button class="k" id="tempo-d5">−5</button>
       <button class="k" id="tempo-d">−1</button>
       <button class="k" id="tempo-u">+1</button>
       <button class="k" id="tempo-u5">+5</button>
     </div>
-    <div class="row-grid row-2">
-      <button class="k" id="tempo-mode-q" style="font-size:30px;">♩ noire</button>
-      <button class="k" id="tempo-mode-qd" style="font-size:30px;">♩. pointée</button>
+    <div class="row-grid">
+      <button class="k" id="tempo-unit-btn" style="font-size:22px;">Unité : <b id="tempo-unit-lbl">♩ noire</b></button>
     </div>
   </div>
 
@@ -289,6 +289,7 @@
     <div class="row-grid"><button class="k" data-hdr="T" style="font-size:36px;">Titre : <span id="hdr-t-val">—</span></button></div>
     <div class="row-grid"><button class="k" data-hdr="C" style="font-size:28px;">Compositeur : <span id="hdr-c-val">—</span></button></div>
     <div class="row-grid"><button class="k" data-hdr="N" style="font-size:30px;">Commentaire : <span id="hdr-n-val">—</span></button></div>
+    <div class="row-grid"><button class="k" data-hdr="R" style="font-size:30px;">Rythme : <span id="hdr-r-val">—</span></button></div>
   </div>
 
   <div class="tab-panel" data-panel="fichier">
@@ -348,9 +349,20 @@
   const KEY_NAMES_MAJOR=['C','G','D','A','E','B','F♯','C♯'];
   const KEY_NAMES_MAJOR_FLAT=['C','F','B♭','E♭','A♭','D♭','G♭','C♭'];
 
-  const state={headers:{X:'1',T:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],sel:{m:0,s:0},octave:0,timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:60,tempoDotted:false,volume:60,fullscreen:false,viewmode:false,activeTab:'notes',openedFileName:null,loop:false,viewFlags:{chords:true,text:true,lyrics:true,parts:true,measureNums:true},parts:{}};
+  const state={headers:{X:'1',T:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],sel:{m:0,s:0},octave:0,timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:60,tempoDotted:false,tempoBeatUnit:1,tempoBeatDotted:false,volume:60,fullscreen:false,viewmode:false,activeTab:'notes',openedFileName:null,loop:false,viewFlags:{chords:true,text:true,lyrics:true,parts:true,measureNums:true},parts:{}};
 
   const history={stack:[],pos:-1,max:100};
+  const TEMPO_UNITS=[{u:4,sym:'𝅝',name:'ronde'},{u:2,sym:'𝅗𝅥',name:'blanche'},{u:1,sym:'♩',name:'noire'},{u:0.5,sym:'♪',name:'croche'},{u:0.25,sym:'𝅘𝅥𝅯',name:'double-croche'}];
+  function beatUnit(){let u=state.tempoBeatUnit;if(typeof u!=='number'||!(u>0)){if(state.tempoMode==='e'||state.tempoMode==='ed')u=0.5;else u=1;}return u}
+  function beatDotted(){if(typeof state.tempoBeatDotted==='boolean')return state.tempoBeatDotted;return !!state.tempoDotted||state.tempoMode==='qd'||state.tempoMode==='ed'}
+  function setBeat(u,dotted){state.tempoBeatUnit=u;state.tempoBeatDotted=!!dotted;state.tempoDotted=(u===1&&dotted)}
+  function beatQuarters(u,dotted){if(u===undefined)u=beatUnit();if(dotted===undefined)dotted=beatDotted();return u*(dotted?1.5:1)}
+  function tempoDisplayVal(){return Math.round(state.tempo/beatQuarters())}
+  function tempoFromDisplay(val){return val*beatQuarters()}
+  function beatSym(u,dotted){if(u===undefined)u=beatUnit();if(dotted===undefined)dotted=beatDotted();const f=TEMPO_UNITS.find(x=>Math.abs(x.u-u)<1e-9);return (f?f.sym:'♩')+(dotted?'.':'')}
+  function beatName(u,dotted){if(u===undefined)u=beatUnit();if(dotted===undefined)dotted=beatDotted();const f=TEMPO_UNITS.find(x=>Math.abs(x.u-u)<1e-9);return (f?f.name:'noire')+(dotted?' pointée':'')}
+  function beatAbcFraction(u,dotted){if(u===undefined)u=beatUnit();if(dotted===undefined)dotted=beatDotted();let num=u,den=4;if(dotted){num*=3;den*=2}let n=num,d=den;while(Math.abs(n-Math.round(n))>1e-9){n*=2;d*=2}n=Math.round(n);function gcd(a,b){return b?gcd(b,a%b):a}const g=gcd(n,d)||1;return (n/g)+'/'+(d/g)}
+  function beatFromAbc(num,den){const q=num/den*4;for(const tu of TEMPO_UNITS){if(Math.abs(q-tu.u)<1e-6)return{unit:tu.u,dotted:false};if(Math.abs(q-tu.u*1.5)<1e-6)return{unit:tu.u,dotted:true}}return{unit:q>0?q:1,dotted:false}}
   function snapshot(){return JSON.stringify(state)}
   function pushHistory(){if(history.pos<history.stack.length-1)history.stack=history.stack.slice(0,history.pos+1);history.stack.push(snapshot());if(history.stack.length>history.max)history.stack.shift();history.pos=history.stack.length-1}
   function loadFrom(snap){const o=JSON.parse(snap);Object.assign(state,o)}
@@ -385,7 +397,7 @@
   function unitMultiplier(){const m=state.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);if(!m)return 1;const denom=parseInt(m[1],10);return denom/4}
   function effDToAbc(d){const v=d*unitMultiplier();const e=1e-9;if(Math.abs(v-1)<e)return'';if(Math.abs(v-2)<e)return'2';if(Math.abs(v-3)<e)return'3';if(Math.abs(v-4)<e)return'4';if(Math.abs(v-6)<e)return'6';if(Math.abs(v-8)<e)return'8';if(Math.abs(v-0.5)<e)return'/2';if(Math.abs(v-0.25)<e)return'/4';if(Math.abs(v-0.125)<e)return'/8';if(Math.abs(v-1.5)<e)return'3/2';if(Math.abs(v-0.75)<e)return'3/4';if(Math.abs(v-0.375)<e)return'3/8';const denom=16;const numer=Math.round(v*denom);function gcd(a,b){return b?gcd(b,a%b):a}const g=gcd(numer,denom);const a=numer/g,b=denom/g;if(b===1)return String(a);if(a===1)return'/'+b;return a+'/'+b}
   function nominalDur(t){return t.dot?t.dur*1.5:t.dur}
-  function slotStr(t){let s='';if(t.chord)s+='"'+t.chord+'"';if(t.text)s+='"^'+t.text+'"';if(t.orn&&t.orn.length)t.orn.forEach(o=>{if('TMPHLRuv'.includes(o))s+=o;else if(o==='.')s+='.';else s+='!'+o+'!'});if(t.type==='note'){s+=t.acc||'';let n=t.note;if(t.octave>=1)n=n.toLowerCase();s+=n;if(t.octave>=2)s+="'".repeat(t.octave-1);else if(t.octave<=-1)s+=",".repeat(-t.octave)}else s+='z';s+=effDToAbc(nominalDur(t));if(t.tieToNext)s+='-';return s}
+  function slotStr(t){let s='';if(t.chord)s+='"'+t.chord+'"';if(t.text)s+='"^'+t.text+'"';if(t.orn&&t.orn.length)t.orn.forEach(o=>{if(o==='~')s+='~';else if('TMPHLRuv'.includes(o))s+=o;else if(o==='.')s+='.';else s+='!'+o+'!'});if(t.type==='note'){s+=t.acc||'';let n=t.note;if(t.octave>=1)n=n.toLowerCase();s+=n;if(t.octave>=2)s+="'".repeat(t.octave-1);else if(t.octave<=-1)s+=",".repeat(-t.octave)}else s+='z';s+=effDToAbc(nominalDur(t));if(t.tieToNext)s+='-';return s}
   function keyAbc(sig){if(sig===0)return'C';if(sig>0)return['C','G','D','A','E','B','F#','C#'][sig];return['C','F','Bb','Eb','Ab','Db','Gb','Cb'][-sig]}
   function clefAbcSuffix(c){if(c==='bass')return' clef=bass';if(c==='treble8')return' clef=treble-8';return''}
   function clefHumanLabel(c){if(c==='bass')return'Fa';if(c==='treble8')return'Sol-8';return'Sol'}
@@ -509,7 +521,7 @@
   function buildInlineFor(mi){const parts=[];if(mi===0)return'';if(state.timeChanges[mi])parts.push('[M:'+state.timeChanges[mi]+']');const keyChange=state.keyChanges[mi];const clefChange=state.clefChanges[mi];if(keyChange!==undefined||clefChange){const sig=keyChange!==undefined?keyChange:keyAt(mi);const cl=clefChange?clefChange:clefAt(mi);let inner='K:'+keyAbc(sig);if(cl&&cl!=='treble')inner+=clefAbcSuffix(cl);parts.push('['+inner+']')}return parts.join('')}
   function buildVoltaFor(mi){const r=state.repeats[mi];if(!r||!r.volta)return'';return'['+r.volta}
 
-  function buildAbcText(){let h='';h+='X:'+(state.headers.X||'0')+'\n';if(state.headers.T)state.headers.T.split('\n').forEach(l=>{if(l.trim())h+='T:'+l+'\n'});if(state.headers.C)state.headers.C.split('\n').forEach(l=>{if(l.trim())h+='C:'+l+'\n'});if(state.headers.N)state.headers.N.split('\n').forEach(l=>{if(l.trim())h+='N:'+l+'\n'});h+='M:'+state.pieceMeter+'\n';h+='L:'+state.pieceUnit+'\n';if(state.tempoDotted){h+='Q:3/8='+Math.round(state.tempo*2/3)+'\n'}else{h+='Q:1/4='+state.tempo+'\n'}h+='K:'+keyAbc(state.pieceKeySig)+clefAbcSuffix(state.pieceClef)+'\n';let body='';state.measures.forEach((m,mi)=>{if(state.parts&&state.parts[mi]){if(body&&!body.endsWith('\n'))body+='\n';body+='P:'+state.parts[mi]+'\n'}body+=buildBarSeparator(mi-1,mi);body+=buildInlineFor(mi);body+=buildVoltaFor(mi);const groups=computeBeamGroups(m,meterAt(mi));const gOf={};groups.forEach((g,gi)=>{g.forEach((idx,k)=>{gOf[idx]={gi}})});let lastTid=null;m.forEach((t,si)=>{if(t.tuplet&&t.tupletId!==lastTid){body+='('+t.tuplet;lastTid=t.tupletId}if(!t.tuplet)lastTid=null;body+=slotStr(t);const isLast=(si===m.length-1);if(isLast)return;const he=gOf[si];const ne=gOf[si+1];const inSame=he&&ne&&he.gi===ne.gi;if(!inSame)body+=' '})});const li=state.measures.length-1;if(state.repeats[li]?.end)body+=':|';else body+='|';const lyr=buildLyricLine();return h+body+(lyr?('\n'+lyr):'')}
+  function buildAbcText(){let h='';h+='X:'+(state.headers.X||'0')+'\n';if(state.headers.T)state.headers.T.split('\n').forEach(l=>{if(l.trim())h+='T:'+l+'\n'});if(state.headers.C)state.headers.C.split('\n').forEach(l=>{if(l.trim())h+='C:'+l+'\n'});if(state.headers.N)state.headers.N.split('\n').forEach(l=>{if(l.trim())h+='N:'+l+'\n'});if(state.headers.R&&state.headers.R.trim())h+='R:'+state.headers.R.trim()+'\n';h+='M:'+state.pieceMeter+'\n';h+='L:'+state.pieceUnit+'\n';h+='Q:'+beatAbcFraction()+'='+Math.round(state.tempo/beatQuarters())+'\n';h+='K:'+keyAbc(state.pieceKeySig)+clefAbcSuffix(state.pieceClef)+'\n';let body='';state.measures.forEach((m,mi)=>{if(state.parts&&state.parts[mi]){if(body&&!body.endsWith('\n'))body+='\n';body+='P:'+state.parts[mi]+'\n'}body+=buildBarSeparator(mi-1,mi);body+=buildInlineFor(mi);body+=buildVoltaFor(mi);const groups=computeBeamGroups(m,meterAt(mi));const gOf={};groups.forEach((g,gi)=>{g.forEach((idx,k)=>{gOf[idx]={gi}})});let lastTid=null;m.forEach((t,si)=>{if(t.tuplet&&t.tupletId!==lastTid){body+='('+t.tuplet;lastTid=t.tupletId}if(!t.tuplet)lastTid=null;body+=slotStr(t);const isLast=(si===m.length-1);if(isLast)return;const he=gOf[si];const ne=gOf[si+1];const inSame=he&&ne&&he.gi===ne.gi;if(!inSame)body+=' '})});const li=state.measures.length-1;if(state.repeats[li]?.end)body+=':|';else body+='|';const lyr=buildLyricLine();return h+body+(lyr?('\n'+lyr):'')}
   function buildLyricLine(){const syls=[];let any=false;state.measures.forEach(m=>m.forEach(s=>{if(s.type==='note'){if(s.lyric){any=true;syls.push(s.lyric.replace(/ /g,'~'))}else syls.push('*')}}));if(!any)return'';return'w:'+syls.join(' ')}
 
   function parseKeyDef(s){s=s.trim();let sig=0,clef='treble';const cm=s.match(/clef=(\S+)/);if(cm){const c=cm[1];if(c==='bass'||c==='F')clef='bass';else if(c==='treble-8'||c==='treble_8')clef='treble8';s=s.replace(cm[0],'').trim()}const km=s.match(/^([A-G])([#b]?)(.*)$/);if(km){const root=km[1],acc=km[2],mode=(km[3]||'').toLowerCase().trim();const M={'C':0,'G':1,'D':2,'A':3,'E':4,'B':5,'F#':6,'C#':7,'F':-1,'Bb':-2,'Eb':-3,'Ab':-4,'Db':-5,'Gb':-6,'Cb':-7};let bs=M[root+acc];if(bs===undefined){bs=M[root]||0;if(acc==='#')bs+=7;else if(acc==='b')bs-=7}sig=bs;if(mode.startsWith('m')&&!mode.startsWith('maj')&&!mode.startsWith('mix'))sig-=3;else if(mode.startsWith('dor'))sig-=2;else if(mode.startsWith('phr'))sig-=4;else if(mode.startsWith('lyd'))sig+=1;else if(mode.startsWith('mix'))sig-=1;else if(mode.startsWith('aeo'))sig-=3;else if(mode.startsWith('loc'))sig-=5}return{sig:Math.max(-7,Math.min(7,sig)),clef}}
@@ -546,8 +558,38 @@
     if(cur)tunes.push(cur);
     return tunes.map(t=>({title:t.title||('Sans titre (X:'+(t.x||'?')+')'),x:t.x,abc:t.lines.join('\n')}));
   }
-  function parseAbcText(text){const cleaned=text.split(/\r?\n/).map(line=>{const m=line.match(/^(.*?)(?:%.*)?$/);return m?m[1]:line});const ns={headers:{X:'1',T:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:60,tempoDotted:false,sel:{m:0,s:0},octave:0,volume:state.volume,parts:{}};let inBody=false,bodyText='';for(const line of cleaned){const t=line.trim();if(!inBody){const m=t.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='X')ns.headers.X=v;else if(k==='T'){ns.headers.T=ns.headers.T?(ns.headers.T+'\n'+v):v}else if(k==='C'){ns.headers.C=ns.headers.C?(ns.headers.C+'\n'+v):v}else if(k==='N'){ns.headers.N=ns.headers.N?(ns.headers.N+'\n'+v):v}else if(k==='M')ns.pieceMeter=v;else if(k==='L')ns.pieceUnit=v;else if(k==='Q'){const qm=v.match(/(\d+)\s*\/\s*(\d+)\s*=\s*(\d+)/);if(qm){const num=parseInt(qm[1],10),den=parseInt(qm[2],10),bpm=parseInt(qm[3],10);if(num===3&&den===8){ns.tempo=Math.round(bpm*3/2);ns.tempoDotted=true}else{ns.tempo=bpm;ns.tempoDotted=false}}else{const qm2=v.match(/=(\d+)/);if(qm2)ns.tempo=parseInt(qm2[1],10)}}else if(k==='K'){const kd=parseKeyDef(v);ns.pieceKeySig=kd.sig;ns.pieceClef=kd.clef;inBody=true}continue}continue}const wf=t.match(/^([A-Za-z]):\s*(.*)$/);if(wf&&'PwWslmreds'.includes(wf[1])){const fk=wf[1],fv=wf[2];if(fk==='P'){bodyText+=' [P:'+fv.trim()+'] '}else if(fk==='w'||fk==='W'){ns._lyricLines=ns._lyricLines||[];ns._lyricLines.push(fv)}continue}bodyText+=' '+t}if(!inBody)return null;parseAbcBody(bodyText,ns);if(ns._lyricLines&&ns._lyricLines.length)assignLyrics(ns,ns._lyricLines);return ns}
-  function parseAbcBody(body,ns){let i=0,curMeasure=[],mIdx=0,lastChord=null,lastText=null,pendingOrn=[],pendingTuplet=null;const measures=ns.measures;function flush(){if(curMeasure.length>0){measures.push(curMeasure);curMeasure=[];mIdx++}}function uM(){const m=ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);if(!m)return 1;return parseInt(m[1],10)/4}while(i<body.length){const c=body[i];if(/\s/.test(c)){i++;continue}if(c==='%'){while(i<body.length&&body[i]!=='\n')i++;continue}if(c==='['&&body[i+1]&&body[i+1].match(/[A-Z]/)&&body[i+2]===':'){const end=body.indexOf(']',i);if(end<0){i++;continue}const inner=body.substring(i+1,end);const m=inner.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='M')ns.timeChanges[mIdx+(curMeasure.length>0?1:0)]=v;else if(k==='L')ns.pieceUnit=v;else if(k==='P'){ns.parts[mIdx+(curMeasure.length>0?1:0)]=v}else if(k==='K'){const kd=parseKeyDef(v);const ti=mIdx+(curMeasure.length>0?1:0);ns.keyChanges[ti]=kd.sig;if(kd.clef!=='treble')ns.clefChanges[ti]=kd.clef}}i=end+1;continue}if(c==='['&&body[i+1]&&/[1-9]/.test(body[i+1])){const v=parseInt(body[i+1],10);const ti=mIdx+(curMeasure.length===0?0:1);if(!ns.repeats[ti])ns.repeats[ti]={};ns.repeats[ti].volta=v;i+=2;continue}if(c==='"'){const end=body.indexOf('"',i+1);if(end<0){i++;continue}const ch=body.substring(i+1,end);if(/^[\^_<>@]/.test(ch)){const txt=ch.replace(/^[\^_<>@]/,'');if(txt)lastText=txt}else{if(ch)lastChord=ch}i=end+1;continue}if(c==='!'){const end=body.indexOf('!',i+1);if(end<0){i++;continue}const name=body.substring(i+1,end);const km={'trill':'T','turn':'P','fermata':'H','accent':'L','staccato':'.','upbow':'u','downbow':'v','coda':'O'};const code=km[name]||name;pendingOrn.push(code);i=end+1;continue}if('.TMHLuv'.includes(c)&&(i===0||!/[A-Ga-gz0-9]/.test(body[i-1]))){const next=body[i+1];if(next&&/[\^_=A-Ga-gz]/.test(next)){pendingOrn.push(c);i++;continue}}if(c==='('&&body[i+1]&&/[2-9]/.test(body[i+1])){const n=parseInt(body[i+1],10);let j=i+2,take=n;if(body[j]===':'){j++;const nm=body.substring(j).match(/^(\d+)?(?::(\d+))?/);if(nm){j+=(nm[0]||'').length;if(nm[2])take=parseInt(nm[2],10)}}pendingTuplet={n:n,remaining:take,id:nextTupletId++};i=j;continue}if(c===':'||c==='|'){let j=i,bar='';while(j<body.length&&(body[j]==='|'||body[j]===':')){bar+=body[j];j++}const endRep=/:\|/.test(bar);const startRep=/\|:/.test(bar);if(curMeasure.length>0){if(endRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].end=true}flush()}if(startRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].start=true}if(j<body.length&&/[1-9]/.test(body[j])){const v=parseInt(body[j],10);if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].volta=v;j++}i=j;continue}let acc='';while(i<body.length&&(body[i]==='^'||body[i]==='_'||body[i]==='=')){if(body[i]==='^')acc=(acc==='^'?'^^':'^');else if(body[i]==='_')acc=(acc==='_'?'__':'_');else if(body[i]==='=')acc='=';i++}if(i>=body.length)break;const ch=body[i];if(/[A-Ga-g]/.test(ch)){let note=ch.toUpperCase();let oct=(ch===ch.toLowerCase())?1:0;i++;while(i<body.length&&(body[i]==="'"||body[i]===',')){if(body[i]==="'")oct++;else oct--;i++}let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}let tie=false;if(body[i]==='-'){tie=true;i++}const factor=parseDurationSpec(ds);const qD=factor/uM();let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'note',note,octave:oct,dur,dot};if(acc)slot.acc=acc.length>1?acc[0]:acc;if(tie)slot.tieToNext=true;if(lastChord){slot.chord=lastChord;lastChord=null}if(lastText){slot.text=lastText;lastText=null}if(pendingOrn.length){slot.orn=pendingOrn.slice();pendingOrn=[]}if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;slot.tupletId=pendingTuplet.id;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}if(ch==='z'||ch==='Z'){i++;let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}const factor=parseDurationSpec(ds);const qD=(ch==='Z')?measureCapacity(ns.pieceMeter):(factor/uM());let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'rest',dur,dot};if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;slot.tupletId=pendingTuplet.id;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}i++}if(curMeasure.length>0)measures.push(curMeasure);measures.forEach((meas,mi)=>{let used=0;for(const s of meas)used+=effDur(s);let lm=ns.pieceMeter;for(let k=0;k<=mi;k++)if(ns.timeChanges[k])lm=ns.timeChanges[k];const cap=measureCapacity(lm);if(used<cap-1e-6){const beat=4/parseMeter(lm).den;const tail=splitDurationByBeat(used,cap-used,beat).map(p=>({type:'rest',dur:p.dur,dot:p.dot}));meas.push(...tail)}else if(used>cap+1e-6){let a=0,ca=meas.length;for(let k=0;k<meas.length;k++){const d=effDur(meas[k]);if(a+d>cap+1e-6){ca=k;break}a+=d}meas.splice(ca)}});if(measures.length===0)measures.push(buildEmptyMeasure(ns.pieceMeter))}
+  function parseAbcText(text){const cleaned=text.split(/\r?\n/).map(line=>{const m=line.match(/^(.*?)(?:%.*)?$/);return m?m[1]:line});const ns={headers:{X:'1',T:'',C:'',N:''},pieceMeter:'4/4',pieceUnit:'1/4',pieceKeySig:0,pieceClef:'treble',measures:[],timeChanges:{},keyChanges:{},clefChanges:{},repeats:{},tempo:60,tempoDotted:false,tempoBeatUnit:1,tempoBeatDotted:false,sel:{m:0,s:0},octave:0,volume:state.volume,parts:{}};let inBody=false,bodyText='',sawL=false;for(const line of cleaned){const t=line.trim();if(!inBody){const m=t.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='X')ns.headers.X=v;else if(k==='T'){ns.headers.T=ns.headers.T?(ns.headers.T+'\n'+v):v}else if(k==='C'){ns.headers.C=ns.headers.C?(ns.headers.C+'\n'+v):v}else if(k==='N'){ns.headers.N=ns.headers.N?(ns.headers.N+'\n'+v):v}else if(k==='R'){ns.headers.R=v}else if(k==='M')ns.pieceMeter=v;else if(k==='L'){ns.pieceUnit=v;sawL=true}else if(k==='Q'){const qm=v.match(/(\d+)\s*\/\s*(\d+)\s*=\s*(\d+)/);if(qm){const num=parseInt(qm[1],10),den=parseInt(qm[2],10),bpm=parseInt(qm[3],10);const bf=beatFromAbc(num,den);const uq=bf.unit*(bf.dotted?1.5:1);ns.tempo=bpm*uq;ns.tempoBeatUnit=bf.unit;ns.tempoBeatDotted=bf.dotted;ns.tempoDotted=(bf.unit===1&&bf.dotted)}else{const qm2=v.match(/=\s*(\d+)/);if(qm2){ns.tempo=parseInt(qm2[1],10);ns.tempoBeatUnit=1;ns.tempoBeatDotted=false;ns.tempoDotted=false}else{const qm3=v.match(/^\s*(\d+)\s*$/);if(qm3){const um=ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);const denom=um?parseInt(um[1],10):4;const unitInQuarters=4/denom;ns.tempo=parseInt(qm3[1],10)*unitInQuarters;ns.tempoBeatUnit=unitInQuarters;ns.tempoBeatDotted=false;ns.tempoDotted=false}}}}else if(k==='K'){const kd=parseKeyDef(v);ns.pieceKeySig=kd.sig;ns.pieceClef=kd.clef;inBody=true}continue}continue}const wf=t.match(/^([A-Za-z]):\s*(.*)$/);if(wf&&'PwWslmreds'.includes(wf[1])){const fk=wf[1],fv=wf[2];if(fk==='P'){bodyText+=' [P:'+fv.trim()+'] '}else if(fk==='w'||fk==='W'){ns._lyricLines=ns._lyricLines||[];ns._lyricLines.push(fv)}continue}
+    // Champs d'en-tete (M/L/Q/K) places APRES le premier K: : si on n'a pas encore vu de
+    // musique, ils completent l'en-tete du morceau ; sinon ce sont des changements en cours.
+    const hf=t.match(/^([MLQK]):\s*(.*)$/);
+    if(hf){const hk=hf[1],hv=hf[2].trim();const seenMusic=/[A-Ga-gz]/.test(bodyText);
+      if(!seenMusic){
+        if(hk==='M')ns.pieceMeter=hv;
+        else if(hk==='L'){ns.pieceUnit=hv;sawL=true}
+        else if(hk==='Q'){const qm=hv.match(/(\d+)\s*\/\s*(\d+)\s*=\s*(\d+)/);if(qm){const num=parseInt(qm[1],10),den=parseInt(qm[2],10),bpm=parseInt(qm[3],10);const bf=beatFromAbc(num,den);const uq=bf.unit*(bf.dotted?1.5:1);ns.tempo=bpm*uq;ns.tempoBeatUnit=bf.unit;ns.tempoBeatDotted=bf.dotted;ns.tempoDotted=(bf.unit===1&&bf.dotted)}else{const qm2=hv.match(/=\s*(\d+)/);if(qm2){ns.tempo=parseInt(qm2[1],10);ns.tempoBeatUnit=1;ns.tempoBeatDotted=false;ns.tempoDotted=false}else{const qm3=hv.match(/^\s*(\d+)\s*$/);if(qm3){const um=ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);const denom=um?parseInt(um[1],10):4;const unitInQuarters=4/denom;ns.tempo=parseInt(qm3[1],10)*unitInQuarters;ns.tempoBeatUnit=unitInQuarters;ns.tempoBeatDotted=false;ns.tempoDotted=false}}}}
+        else if(hk==='K'){const kd=parseKeyDef(hv);ns.pieceKeySig=kd.sig;ns.pieceClef=kd.clef}
+      } else {
+        if(hk==='M'||hk==='L'||hk==='K')bodyText+=' ['+hk+':'+hv+'] ';
+      }
+      continue;
+    }
+    bodyText+=' '+t}if(!inBody)return null;if(!sawL){const pm=parseMeter(ns.pieceMeter);ns.pieceUnit=(pm.num/pm.den<0.75)?'1/16':'1/8'}parseAbcBody(bodyText,ns);if(ns._lyricLines&&ns._lyricLines.length)assignLyrics(ns,ns._lyricLines);return ns}
+  function parseAbcBody(body,ns){let i=0,curMeasure=[],mIdx=0,lastChord=null,lastText=null,pendingOrn=[],pendingTuplet=null;const measures=ns.measures;function flush(){if(curMeasure.length>0){measures.push(curMeasure);curMeasure=[];mIdx++}}function uM(){const m=ns.pieceUnit.match(/^\s*1\s*\/\s*(\d+)\s*$/);if(!m)return 1;return parseInt(m[1],10)/4}while(i<body.length){const c=body[i];if(/\s/.test(c)){i++;continue}if(c==='%'){while(i<body.length&&body[i]!=='\n')i++;continue}if(c==='['&&body[i+1]&&body[i+1].match(/[A-Z]/)&&body[i+2]===':'){const end=body.indexOf(']',i);if(end<0){i++;continue}const inner=body.substring(i+1,end);const m=inner.match(/^([A-Z]):\s*(.*)$/);if(m){const k=m[1],v=m[2].trim();if(k==='M')ns.timeChanges[mIdx+(curMeasure.length>0?1:0)]=v;else if(k==='L')ns.pieceUnit=v;else if(k==='P'){ns.parts[mIdx+(curMeasure.length>0?1:0)]=v}else if(k==='K'){const kd=parseKeyDef(v);const ti=mIdx+(curMeasure.length>0?1:0);ns.keyChanges[ti]=kd.sig;if(kd.clef!=='treble')ns.clefChanges[ti]=kd.clef}}i=end+1;continue}if(c==='['&&body[i+1]&&/[1-9]/.test(body[i+1])){const v=parseInt(body[i+1],10);const ti=mIdx+(curMeasure.length===0?0:1);if(!ns.repeats[ti])ns.repeats[ti]={};ns.repeats[ti].volta=v;i+=2;continue}if(c==='"'){const end=body.indexOf('"',i+1);if(end<0){i++;continue}const ch=body.substring(i+1,end);if(/^[\^_<>@]/.test(ch)){const txt=ch.replace(/^[\^_<>@]/,'');if(txt)lastText=txt}else{if(ch)lastChord=ch}i=end+1;continue}if(c==='!'){const end=body.indexOf('!',i+1);if(end<0){i++;continue}const name=body.substring(i+1,end);const km={'trill':'T','turn':'P','fermata':'H','accent':'L','staccato':'.','upbow':'u','downbow':'v','coda':'O'};const code=km[name]||name;pendingOrn.push(code);i=end+1;continue}if(c==='~'){pendingOrn.push('~');i++;continue}if('.TMHLuv'.includes(c)&&(i===0||!/[A-Ga-gz0-9]/.test(body[i-1]))){const next=body[i+1];if(next&&/[\^_=A-Ga-gz]/.test(next)){pendingOrn.push(c);i++;continue}}if(c==='('&&body[i+1]&&/[2-9]/.test(body[i+1])){const n=parseInt(body[i+1],10);let j=i+2,take=n;if(body[j]===':'){j++;const nm=body.substring(j).match(/^(\d+)?(?::(\d+))?/);if(nm){j+=(nm[0]||'').length;if(nm[2])take=parseInt(nm[2],10)}}pendingTuplet={n:n,remaining:take,id:nextTupletId++};i=j;continue}if(c===':'||c==='|'){let j=i,bar='';while(j<body.length&&(body[j]==='|'||body[j]===':')){bar+=body[j];j++}const endRep=/:\|/.test(bar);const startRep=/\|:/.test(bar);if(curMeasure.length>0){if(endRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].end=true}flush()}if(startRep){if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].start=true}if(j<body.length&&/[1-9]/.test(body[j])){const v=parseInt(body[j],10);if(!ns.repeats[mIdx])ns.repeats[mIdx]={};ns.repeats[mIdx].volta=v;j++}i=j;continue}let acc='';while(i<body.length&&(body[i]==='^'||body[i]==='_'||body[i]==='=')){if(body[i]==='^')acc=(acc==='^'?'^^':'^');else if(body[i]==='_')acc=(acc==='_'?'__':'_');else if(body[i]==='=')acc='=';i++}if(i>=body.length)break;const ch=body[i];if(/[A-Ga-g]/.test(ch)){let note=ch.toUpperCase();let oct=(ch===ch.toLowerCase())?1:0;i++;while(i<body.length&&(body[i]==="'"||body[i]===',')){if(body[i]==="'")oct++;else oct--;i++}let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}let tie=false;if(body[i]==='-'){tie=true;i++}const factor=parseDurationSpec(ds);const qD=factor/uM();let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'note',note,octave:oct,dur,dot};if(acc)slot.acc=acc.length>1?acc[0]:acc;if(tie)slot.tieToNext=true;if(lastChord){slot.chord=lastChord;lastChord=null}if(lastText){slot.text=lastText;lastText=null}if(pendingOrn.length){slot.orn=pendingOrn.slice();pendingOrn=[]}if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;slot.tupletId=pendingTuplet.id;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}if(ch==='z'||ch==='Z'){i++;let ds='';while(i<body.length&&/[\d/]/.test(body[i])){ds+=body[i];i++}const factor=parseDurationSpec(ds);const qD=(ch==='Z')?measureCapacity(ns.pieceMeter):(factor/uM());let dur=qD,dot=false;const trial=qD*2/3;if(Math.abs(Math.round(Math.log2(trial))-Math.log2(trial))<1e-6&&trial>=0.125&&trial<=4){dur=trial;dot=true}const slot={type:'rest',dur,dot};if(pendingTuplet&&pendingTuplet.remaining>0){slot.tuplet=pendingTuplet.n;slot.tupletId=pendingTuplet.id;pendingTuplet.remaining--;if(pendingTuplet.remaining===0)pendingTuplet=null}curMeasure.push(slot);continue}i++}if(curMeasure.length>0)measures.push(curMeasure);
+    // Chaque mesure dont la durée diffère de la capacité courante reçoit sa VRAIE métrique locale
+    // (anacrouse, bouclage, changement de métrique non annoncé). Le moteur garde sa logique "mesure = capacité".
+    function durToMeter(q){let num=q,den=4;while(Math.abs(num-Math.round(num))>1e-9 && den<256){num*=2;den*=2}num=Math.round(num);return num+'/'+den;}
+    measures.forEach((meas,mi)=>{
+      let used=0;for(const s of meas)used+=effDur(s);
+      let lm=ns.pieceMeter;for(let k=0;k<=mi;k++)if(ns.timeChanges[k])lm=ns.timeChanges[k];
+      const cap=measureCapacity(lm);
+      if(used>1e-6 && Math.abs(used-cap)>1e-6){
+        if(!ns.timeChanges[mi])ns.timeChanges[mi]=durToMeter(used);
+        if(mi+1<measures.length && !ns.timeChanges[mi+1]){let nu=0;for(const s of measures[mi+1])nu+=effDur(s);if(Math.abs(nu-cap)<1e-6)ns.timeChanges[mi+1]=lm;}
+      } else if(used<=1e-6){
+        const beat=4/parseMeter(lm).den;const tail=splitDurationByBeat(0,cap,beat).map(p=>({type:'rest',dur:p.dur,dot:p.dot}));meas.push(...tail);
+      }
+    });
+    if(measures.length===0)measures.push(buildEmptyMeasure(ns.pieceMeter))}
   function parseDurationSpec(s){if(s==='')return 1;if(s==='/')return 0.5;if(s==='//')return 0.25;if(s==='///')return 0.125;if(s.startsWith('/')){const n=parseInt(s.substring(1),10);return 1/(n||2)}if(s.includes('/')){const[n,d]=s.split('/');const a=parseInt(n,10)||1;const b=parseInt(d,10)||2;return a/b}return parseInt(s,10)||1}
 
   function expandForPlayback(){const out=[];const N=state.measures.length;if(N===0)return out;let i=0,pass=1,safety=0;const done={};const sectionStarted=new Set();while(i<N&&safety<5000){safety++;const r=state.repeats[i]||{};if(r.start&&!sectionStarted.has(i)){sectionStarted.add(i);pass=1}if(r.volta!==undefined&&r.volta!==pass){const skipV=r.volta;let j=i;while(j<N){const rj=state.repeats[j]||{};if(rj.volta!==skipV)break;j++}i=j;continue}out.push(i);if(r.end){let startIdx=0;for(let k=i;k>=0;k--){if(state.repeats[k]?.start){startIdx=k;break}}const key=startIdx+':'+i;if(!done[key]){done[key]=true;i=startIdx;pass=2;continue}pass=1}i++;if(out.length>5000)break}return out}
@@ -802,7 +844,7 @@
           if(t.chord&&state.viewFlags.chords)svg+='<text x="'+cx+'" y="'+(staffTop-3)+'" font-size="9" font-weight="bold" fill="'+ink+'" text-anchor="middle">'+escXml(t.chord)+'</text>';
           if(t.text&&state.viewFlags.text)svg+='<text x="'+cx+'" y="'+(staffTop-(t.chord&&state.viewFlags.chords?13:3))+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+escXml(t.text)+'</text>';
           if(t.orn&&t.orn.length){
-            const ot=t.orn.filter(o=>o!=='.').map(o=>{if(o==='T')return'tr';if(o==='M')return'∼';if(o==='P')return'∿';if(o==='H')return'𝄐';if(o==='L')return'>';if(o==='u')return'⋁';if(o==='v')return'⊓';if(o==='O')return'⊕';return o}).join(' ');
+            const ot=t.orn.filter(o=>o!=='.').map(o=>{if(o==='~')return'tr';if(o==='T')return'tr';if(o==='M')return'∼';if(o==='P')return'∿';if(o==='H')return'𝄐';if(o==='L')return'>';if(o==='u')return'⋁';if(o==='v')return'⊓';if(o==='O')return'⊕';return o}).join(' ');
             if(ot)svg+='<text x="'+cx+'" y="'+(staffTop-12)+'" font-size="8" font-style="italic" fill="'+ink+'" text-anchor="middle">'+ot+'</text>';
           }
           if(t.type==='note'){
@@ -948,10 +990,9 @@
       b.classList.toggle('active',aA===b.dataset.acc&&b.dataset.acc!=='')
     });
     const dB=document.getElementById('dot-btn');if(dB)dB.classList.toggle('active',!!(sl&&sl.dot));
-    document.getElementById('tempo-v').textContent=state.tempo;
-    document.getElementById('tempo-v-dot').textContent=Math.round(state.tempo*2/3);
-    document.getElementById('tempo-mode-q').classList.toggle('active',!state.tempoDotted);
-    document.getElementById('tempo-mode-qd').classList.toggle('active',!!state.tempoDotted);
+    {const dv=document.getElementById('tempo-disp');if(dv)dv.textContent=tempoDisplayVal();
+      const sym=document.getElementById('tempo-unit-sym');if(sym)sym.textContent=beatSym();
+      const ul=document.getElementById('tempo-unit-lbl');if(ul)ul.textContent=beatSym()+' '+beatName();}
     document.getElementById('vol-v').textContent=state.volume;
     document.getElementById('btn-play').textContent=audio.playing?'⏸':'▶';
     const loopBtn=document.getElementById('btn-loop');
@@ -990,6 +1031,7 @@
     {const vt=document.getElementById('ver-title');if(vt)vt.textContent=(state.headers.T||'').split('\n')[0];}
     document.getElementById('hdr-c-val').textContent=(state.headers.C||'—').split('\n')[0];
     document.getElementById('hdr-n-val').textContent=(state.headers.N||'—').split('\n')[0];
+    {const re=document.getElementById('hdr-r-val');if(re)re.textContent=(state.headers.R||'—').split('\n')[0];}
   }
   function render(){renderScore();renderState();notifyPanelMeasureChanged()}
 
@@ -2073,22 +2115,32 @@
   document.getElementById('vol-d5').addEventListener('click',()=>changeVolume(-5));
   // Tempo : delta s'applique au mode actif (noire ou pointee), l'autre se recalcule
   function changeTempo(delta){
-    if(state.tempoDotted){
-      // Agir sur la valeur pointee affichee, puis recalculer la noire
-      let dotted=Math.round(state.tempo*2/3)+delta;
-      dotted=Math.max(20,Math.min(200,dotted));
-      state.tempo=Math.round(dotted*3/2);
-    } else {
-      state.tempo=Math.max(30,Math.min(300,state.tempo+delta));
-    }
+    let disp=Math.max(1,tempoDisplayVal()+delta);
+    let canon=Math.max(30,Math.min(300,tempoFromDisplay(disp)));
+    state.tempo=canon;
     if(audio.playing){stopPlayback(false);playSchedule()}else render();
   }
   document.getElementById('tempo-u').addEventListener('click',()=>changeTempo(1));
   document.getElementById('tempo-d').addEventListener('click',()=>changeTempo(-1));
   document.getElementById('tempo-u5').addEventListener('click',()=>changeTempo(5));
   document.getElementById('tempo-d5').addEventListener('click',()=>changeTempo(-5));
-  document.getElementById('tempo-mode-q').addEventListener('click',()=>{state.tempoDotted=false;render()});
-  document.getElementById('tempo-mode-qd').addEventListener('click',()=>{state.tempoDotted=true;render()});
+  {const ub=document.getElementById('tempo-unit-btn');if(ub)ub.addEventListener('click',()=>{
+    let selU=beatUnit();let dotted=beatDotted();
+    function body(){let btns='';TEMPO_UNITS.forEach((tu)=>{btns+='<button class="k tu-unit" data-u="'+tu.u+'" style="font-size:22px;">'+tu.sym+'<br><span style="font-size:13px;">'+tu.name+'</span></button>'});
+      return '<small>Unité de battue (vous pouvez battre à la mesure, ronde, etc.) :</small>'+
+      '<div class="row-grid row-5" style="margin:8px 0;">'+btns+'</div>'+
+      '<div class="row-grid"><button class="k" id="tu-dot" style="font-size:22px;">Pointé (× 1,5)</button></div>'+
+      '<small style="display:block;margin-top:10px;">Aperçu : <b id="tu-prev"></b></small>'}
+    function refresh(){
+      document.querySelectorAll('.tu-unit').forEach(b=>b.classList.toggle('active',Math.abs(parseFloat(b.dataset.u)-selU)<1e-9));
+      const bd=document.getElementById('tu-dot');if(bd)bd.classList.toggle('active',dotted);
+      const p=document.getElementById('tu-prev');if(p)p.textContent=beatSym(selU,dotted)+' '+beatName(selU,dotted)+' = '+Math.round(state.tempo/beatQuarters(selU,dotted))+' /min';}
+    openPanel({title:'Unité du tempo',body:body(),hideActions:true,extraButtons:['Annuler','Appliquer'],onMount:()=>{
+      document.querySelectorAll('.tu-unit').forEach(b=>b.addEventListener('click',()=>{selU=parseFloat(b.dataset.u);refresh()}));
+      document.getElementById('tu-dot').addEventListener('click',()=>{dotted=!dotted;refresh()});
+      refresh();
+    },onExtra:(w)=>{if(w==='Appliquer'){setBeat(selU,dotted);pushHistory();render()}closePanel()}});
+  });}
   document.getElementById('btn-play').addEventListener('click',()=>{if(audio.playing)stopPlayback(true);else playSchedule()});
   document.getElementById('btn-stop').addEventListener('click',()=>stopPlayback(true));
   document.getElementById('btn-loop').addEventListener('click',()=>{state.loop=!state.loop;document.getElementById('btn-loop').classList.toggle('active',state.loop)});
@@ -2140,18 +2192,47 @@
   function previewTuneAbc(text){const ns=parseAbcText(text);if(!ns)return false;Object.assign(state,ns);if(!state.parts)state.parts={};cleanupAccidentals();state.sel={m:0,s:0};render();return true}
   function chooseTune(tunes,fileName){
     const prevSnap=snapshot();
-    let selIdx=-1;
+    let selIdx=-1;                       // index reel (dans tunes) du morceau previsualise
+    let sortMode='file';                 // 'file' = ordre du fichier (defaut), 'alpha' = tri alphabetique par titre
     let header='<div class="row-grid row-2" style="margin-bottom:8px;">'+
       '<button class="k" id="ct-cancel">Annuler</button>'+
       '<button class="k primary" id="ct-open">Ouvrir</button></div>';
-    let lh=header+'<small>Plusieurs morceaux : cliquez pour prévisualiser, puis Ouvrir.</small><div class="save-list">';
-    tunes.forEach((t,i)=>{lh+='<div class="item" data-tune="'+i+'"><span>'+escXml((t.x?('X:'+t.x+' · '):'')+t.title)+'</span></div>'});
-    lh+='</div>';
-    function refreshSel(){document.querySelectorAll('.save-list .item[data-tune]').forEach(el=>{el.classList.toggle('active',parseInt(el.dataset.tune,10)===selIdx)})}
-    openPanel({title:'Choisir un morceau',body:lh,hideActions:true,onMount:()=>{
-      document.querySelectorAll('.save-list .item[data-tune]').forEach(el=>{
+    function buildOrder(){
+      const order=tunes.map((t,i)=>i);
+      if(sortMode==='alpha'){
+        order.sort((a,b)=>(tunes[a].title||'').localeCompare(tunes[b].title||'',undefined,{sensitivity:'base'}));
+      } else if(sortMode==='xnum'){
+        // Tri par X: : numerique si possible, sinon alphabetique sur le X: brut
+        function xkey(t){const x=(t.x||'').trim();const m=x.match(/^\s*(\d+)/);return m?parseInt(m[1],10):Number.MAX_SAFE_INTEGER}
+        order.sort((a,b)=>{const ka=xkey(tunes[a]),kb=xkey(tunes[b]);if(ka!==kb)return ka-kb;return (tunes[a].x||'').localeCompare(tunes[b].x||'')});
+      }
+      return order;
+    }
+    function renderList(){
+      const order=buildOrder();
+      let html='';
+      order.forEach(i=>{const t=tunes[i];html+='<div class="item" data-tune="'+i+'"><span>'+escXml((t.x?('X:'+t.x+' · '):'')+t.title)+'</span></div>'});
+      const cont=document.getElementById('ct-list');
+      if(cont){cont.innerHTML=html;bindItems();refreshSel()}
+    }
+    function bindItems(){
+      document.querySelectorAll('#ct-list .item[data-tune]').forEach(el=>{
         el.addEventListener('click',()=>{const idx=parseInt(el.dataset.tune,10);selIdx=idx;previewTuneAbc(tunes[idx].abc);refreshSel()});
       });
+    }
+    function refreshSel(){document.querySelectorAll('#ct-list .item[data-tune]').forEach(el=>{el.classList.toggle('active',parseInt(el.dataset.tune,10)===selIdx)})}
+    let lh=header+'<small>Plusieurs morceaux : cliquez pour prévisualiser, puis Ouvrir.</small>'+
+      '<div class="row-grid row-3" style="margin-bottom:8px;">'+
+      '<button class="k" id="ct-sort-file">Ordre fichier</button>'+
+      '<button class="k" id="ct-sort-xnum">Tri X:</button>'+
+      '<button class="k" id="ct-sort-alpha">Tri alpha</button></div>'+
+      '<div class="save-list" id="ct-list"></div>';
+    function refreshSortBtns(){const bf=document.getElementById('ct-sort-file'),bx=document.getElementById('ct-sort-xnum'),ba=document.getElementById('ct-sort-alpha');if(bf)bf.classList.toggle('primary',sortMode==='file');if(bx)bx.classList.toggle('primary',sortMode==='xnum');if(ba)ba.classList.toggle('primary',sortMode==='alpha')}
+    openPanel({title:'Choisir un morceau',body:lh,hideActions:true,onMount:()=>{
+      renderList();refreshSortBtns();
+      document.getElementById('ct-sort-file').addEventListener('click',()=>{sortMode='file';renderList();refreshSortBtns()});
+      document.getElementById('ct-sort-xnum').addEventListener('click',()=>{sortMode='xnum';renderList();refreshSortBtns()});
+      document.getElementById('ct-sort-alpha').addEventListener('click',()=>{sortMode='alpha';renderList();refreshSortBtns()});
       document.getElementById('ct-cancel').addEventListener('click',()=>{loadFrom(prevSnap);render();closePanel()});
       document.getElementById('ct-open').addEventListener('click',()=>{
         if(selIdx<0){alert('Cliquez d\u2019abord sur un morceau pour le prévisualiser.');return}
@@ -2164,7 +2245,7 @@
   const STORAGE_KEY='abc-editor-saves';
   function getSaves(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(_){return[]}}
   function setSaves(list){localStorage.setItem(STORAGE_KEY,JSON.stringify(list))}
-  function exportState(){return JSON.stringify({headers:state.headers,pieceMeter:state.pieceMeter,pieceUnit:state.pieceUnit,pieceKeySig:state.pieceKeySig,pieceClef:state.pieceClef,measures:state.measures,timeChanges:state.timeChanges,keyChanges:state.keyChanges,clefChanges:state.clefChanges,repeats:state.repeats,tempo:state.tempo})}
+  function exportState(){return JSON.stringify({headers:state.headers,pieceMeter:state.pieceMeter,pieceUnit:state.pieceUnit,pieceKeySig:state.pieceKeySig,pieceClef:state.pieceClef,measures:state.measures,timeChanges:state.timeChanges,keyChanges:state.keyChanges,clefChanges:state.clefChanges,repeats:state.repeats,tempo:state.tempo,tempoBeatUnit:beatUnit(),tempoBeatDotted:beatDotted()})}
   function importStateJson(json){try{const o=JSON.parse(json);Object.assign(state,o);state.openedFileName=null;state.sel={m:0,s:0};state.octave=0;pushHistory();render();return true}catch(e){return false}}
 
   document.getElementById('btn-saves').addEventListener('click',()=>{const saves=getSaves();let lh='<div class="save-list">';if(saves.length===0)lh+='<div class="item" style="color:#888780;cursor:default;">Aucune sauvegarde</div>';else saves.forEach((s,i)=>lh+='<div class="item" data-idx="'+i+'"><span>'+s.name+'</span><span class="del" data-del="'+i+'">×</span></div>');lh+='</div>';lh+='<div class="row"><span class="field-label">Nom:</span><input id="sn" type="text" value="'+(state.headers.T||'Morceau').replace(/"/g,'&quot;')+'"/></div>';openPanel({title:'Mémoires',body:lh,hideActions:true,extraButtons:['Annuler','Enregistrer'],onMount:()=>{document.querySelectorAll('.save-list .item[data-idx]').forEach(el=>{el.addEventListener('click',(ev)=>{if(ev.target.dataset.del!==undefined){const idx=parseInt(ev.target.dataset.del,10);const saves=getSaves();saves.splice(idx,1);setSaves(saves);closePanel();return}const idx=parseInt(el.dataset.idx,10);const saves=getSaves();if(saves[idx]&&importStateJson(saves[idx].data))closePanel()})})},onExtra:(w)=>{if(w==='Annuler'){closePanel();return}const name=document.getElementById('sn').value.trim()||'Morceau';const saves=getSaves();const ex=saves.findIndex(s=>s.name===name);const e={name,data:exportState(),date:new Date().toISOString()};if(ex>=0)saves[ex]=e;else saves.push(e);setSaves(saves);closePanel()}})});
@@ -2283,7 +2364,7 @@
         if(slot.orn&&slot.orn.length){
           let orns='';
           slot.orn.forEach(o=>{
-            if(o==='T')orns+='<trill-mark/>';
+            if(o==='~')orns+='<trill-mark/>';else if(o==='T')orns+='<trill-mark/>';
             else if(o==='M')orns+='<turn/>';
             else if(o==='H')nota+='<fermata/>';
             else if(o==='.')nota+='<articulations><staccato/></articulations>';
@@ -2543,6 +2624,7 @@
   document.querySelector('[data-hdr="T"]').addEventListener('click',headerPromptMulti('T','Titre'));
   document.querySelector('[data-hdr="C"]').addEventListener('click',headerPromptMulti('C','Compositeur'));
   document.querySelector('[data-hdr="N"]').addEventListener('click',headerPromptMulti('N','Commentaire'));
+  {const rb=document.querySelector('[data-hdr="R"]');if(rb)rb.addEventListener('click',headerPromptSimple('R','R: Type de rythme (Reel, Jig, Slide…)'));}
 
   // ⭐ Rythme : applique à partir de la mesure active uniquement
   document.querySelector('[data-hdr="M"]').addEventListener('click',()=>{
