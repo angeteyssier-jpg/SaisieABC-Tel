@@ -159,7 +159,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v0.98 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v1.02 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -1299,6 +1299,7 @@
     if(sl&&sl.type==='note'&&dedupeChord(sl))pushHistory();
   }
 
+  let chordPanelRefresh=null;  // refresh du panneau accord, défini quand le panneau est ouvert
   function setNoteAtSelection(n){
     const sl=selectedSlot();if(!sl)return;
     // ----- Mode édition d'accord -----
@@ -1322,7 +1323,7 @@
         chordWrite(sl,list);state._chordAddPending=false;
         const sig=keyAt(state.sel.m);const nl=chordList(sl);const tm=midiOfNote(n,oct,'',sig);
         let bi=0,bd=Infinity;nl.forEach((x,i)=>{const d=Math.abs(midiOfNote(x.note,x.octave,x.acc,sig)-tm);if(d<bd){bd=d;bi=i}});state.chordActive=bi;
-        pushHistory();previewNote(midiOfNote(n,oct,'',sig));render();return;
+        pushHistory();previewNote(midiOfNote(n,oct,'',sig));render();if(chordPanelRefresh)chordPanelRefresh();return;
       } else {
         // Remplacer la note active de l'accord par la note cliquée (à l'octave courante)
         const list=chordList(sl);const ai=chordActiveIdx(sl);
@@ -1330,7 +1331,7 @@
         chordWrite(sl,list);
         const sig=keyAt(state.sel.m);const nl=chordList(sl);const tm=midiOfNote(n,state.octave,'',sig);
         let bi=0,bd=Infinity;nl.forEach((x,i)=>{const d=Math.abs(midiOfNote(x.note,x.octave,x.acc,sig)-tm);if(d<bd){bd=d;bi=i}});state.chordActive=bi;
-        pushHistory();previewNote(midiOfNote(n,state.octave,'',sig));render();return;
+        pushHistory();previewNote(midiOfNote(n,state.octave,'',sig));render();if(chordPanelRefresh)chordPanelRefresh();return;
       }
     }
     const dur=sl.dur,dot=sl.dot;
@@ -1359,7 +1360,9 @@
     propagateTieReplacement(state.sel.m,state.sel.s,n,state.octave,acc);
     pushHistory();
     const midi=midiOfNote(n,state.octave,acc,keyAt(state.sel.m));previewNote(midi);
-    render();
+    // en mode accord, la pose de la note de base (sur un ex-silence) termine l'ajout
+    if(state._chordEditMode)state._chordAddPending=false;
+    render();if(chordPanelRefresh)chordPanelRefresh();
   }
   function findPreviousNote(mi,si){
     // Cherche en arrière dans la mesure courante puis dans les mesures précédentes
@@ -1398,7 +1401,15 @@
   function setDurAtSelection(d){const sl=selectedSlot();if(!sl)return;const oE=effDur(sl);sl.dur=d;rebalanceMeasure(state.sel.m,state.sel.s,oE);const nl=state.measures[state.sel.m].length;if(state.sel.s>=nl)state.sel.s=nl-1;pushHistory();const c=selectedSlot();if(c&&c.type==='note'){const meas=state.measures[state.sel.m];const sig=keyAt(state.sel.m);const midi=midiOfNote(c.note,c.octave,effectiveAcc(meas,state.sel.s,sig),sig);previewNote(midi,Math.min(0.4,effDur(c)*60/state.tempo))}render()}
   function toggleDotAtSelection(){const sl=selectedSlot();if(!sl)return;const oE=effDur(sl);sl.dot=!sl.dot;rebalanceMeasure(state.sel.m,state.sel.s,oE);const nl=state.measures[state.sel.m].length;if(state.sel.s>=nl)state.sel.s=nl-1;pushHistory();const c=selectedSlot();if(c&&c.type==='note'){const meas=state.measures[state.sel.m];const sig=keyAt(state.sel.m);const midi=midiOfNote(c.note,c.octave,effectiveAcc(meas,state.sel.s,sig),sig);previewNote(midi)}render()}
   function toggleAccAtSelection(acc){const sl=selectedSlot();if(sl&&sl.type==='note'){sl.acc=(sl.acc===acc)?'':acc;pushHistory();const midi=midiOfNote(sl.note,sl.octave,sl.acc,keyAt(state.sel.m));previewNote(midi);render()}}
-  function changeOctave(d){state.octave=Math.max(-2,Math.min(3,state.octave+d));const sl=selectedSlot();if(sl&&sl.type==='note'){sl.octave=Math.max(-2,Math.min(3,sl.octave+d));const midi=midiOfNote(sl.note,sl.octave,sl.acc,keyAt(state.sel.m));previewNote(midi)}pushHistory();render()}
+  function changeOctave(d){state.octave=Math.max(-2,Math.min(3,state.octave+d));const sl=selectedSlot();if(sl&&sl.type==='note'){
+    if(state._chordEditMode&&!state._chordAddPending){
+      const list=chordList(sl);const ai=chordActiveIdx(sl);const a=list[ai];
+      a.octave=Math.max(-2,Math.min(3,a.octave+d));
+      const sig=keyAt(state.sel.m);const tm=midiOfNote(a.note,a.octave,a.acc,sig);
+      chordWrite(sl,list);const nl=chordList(sl);let bi=0,bd=Infinity;nl.forEach((x,i)=>{const dd=Math.abs(midiOfNote(x.note,x.octave,x.acc,sig)-tm);if(dd<bd){bd=dd;bi=i}});state.chordActive=bi;
+      previewNote(tm);pushHistory();render();notifyPanelMeasureChanged&&notifyPanelMeasureChanged();return;
+    }
+    sl.octave=Math.max(-2,Math.min(3,sl.octave+d));const midi=midiOfNote(sl.note,sl.octave,sl.acc,keyAt(state.sel.m));previewNote(midi)}pushHistory();render()}
 
   function setActiveTab(name){
     const previous=state.activeTab;
@@ -2368,27 +2379,27 @@
   document.getElementById('btn-orn').addEventListener('click',()=>{let sl=selectedSlot();if(!sl||sl.type!=='note'){alert('Sélectionnez une note');return}sl.orn=sl.orn||[];function controls(){let h='<small>Cliquez pour activer/désactiver</small><div class="row-grid row-3">';ORNAMENTS.forEach(o=>h+='<button class="k" data-orn="'+o.code+'">'+o.label+'</button>');h+='</div><small>Actifs : <b id="orn-preview">'+(sl.orn.length?sl.orn.join(' '):'(aucun)')+'</b></small>';return h}function refresh(){document.querySelectorAll('[data-orn]').forEach(b=>b.classList.toggle('active',sl.orn&&sl.orn.includes(b.dataset.orn)));const p=document.getElementById('orn-preview');if(p)p.textContent=(sl.orn&&sl.orn.length)?sl.orn.join(' '):'(aucun)'}openPanel({title:'Ornement',body:controls(),hideActions:true,extraButtons:['Tout enlever','Fermer'],showMes:true,onMount:()=>{document.querySelectorAll('[data-orn]').forEach(b=>b.addEventListener('click',()=>{sl=selectedSlot();if(!sl||sl.type!=='note')return;sl.orn=sl.orn||[];const code=b.dataset.orn;const i=sl.orn.indexOf(code);if(i>=0)sl.orn.splice(i,1);else sl.orn.push(code);render();refresh()}));refresh()},onMeasureChange:()=>{sl=selectedSlot();if(sl&&sl.type==='note')sl.orn=sl.orn||[];refresh()},onExtra:(w)=>{if(w==='Tout enlever'){sl=selectedSlot();if(sl&&sl.type==='note'){sl.orn=[];pushHistory();render();refresh()}return}pushHistory();closePanel()}})});
 
     document.getElementById('btn-stack').addEventListener('click',()=>{
+    // Le bouton « empil. » sert d'interrupteur : s'il est déjà actif (bleu),
+    // un nouveau clic termine l'édition d'accord (= Fin).
+    if(state._chordEditMode){closePanel();return;}
     let sl=selectedSlot();
-    if(!sl||sl.type!=='note'){alert('Sélectionnez une note');return}
-    // Entrer en mode édition d'accord
-    state._chordEditMode=true;state.chordActive=0;state._chordAddPending=false;
-    {const a=activeChordNote(sl);if(a)state.octave=a.octave;}
+    if(!sl){alert('Sélectionnez d\u2019abord un emplacement dans la portée');return}
+    // Entrer en mode édition d'accord. Si le slot n'est pas encore une note
+    // (silence/vide), on démarre en mode "ajout" : la première note cliquée
+    // créera la note de base de l'accord.
+    state._chordEditMode=true;state.chordActive=0;
+    if(sl.type==='note'){state._chordAddPending=false;const a=activeChordNote(sl);if(a)state.octave=a.octave;}
+    else{state._chordAddPending=true;}
+    {const bsb=document.getElementById('btn-stack');if(bsb)bsb.classList.add('primary');}  // bouton bleu pendant le mode
     function controls(){
-      let h='<small>Accord : ▲/▼ choisit la note active · + ajoute · − retire · cliquez une note pour remplacer la note active. À l\u2019octave : 8va ▲/▼.</small>';
-      h+='<div class="row-grid" style="grid-template-columns:repeat(5,1fr);gap:4px;margin:6px 0;">';
+      let h='<small>Accord : ▲/▼ note active · + ajoute · − retire · cliquez une note (clavier) pour la poser/remplacer. Octave : boutons △▽ de l\u2019app. Re-tapez « empil. » pour terminer.</small>';
+      h+='<div class="row-grid" style="grid-template-columns:repeat(4,1fr);gap:4px;margin:6px 0;">';
       h+='<button class="k" id="st-minus" title="Retirer la note active">−</button>';
       h+='<button class="k" id="st-plus" title="Ajouter une note">+</button>';
       h+='<button class="k" id="st-up" title="Note du dessus">▲</button>';
       h+='<button class="k" id="st-down" title="Note du dessous">▼</button>';
-      h+='<button class="k" id="st-oct-info" disabled>8va <b id="st-oct">0</b></button>';
       h+='</div>';
-      h+='<div class="row-grid" style="grid-template-columns:repeat(2,1fr);gap:4px;margin:0 0 6px;">';
-      h+='<button class="k" id="st-oct-down">8va ▼</button><button class="k" id="st-oct-up">8va ▲</button>';
-      h+='</div>';
-      h+='<div class="chord-pad" style="grid-template-columns:repeat(7,1fr);gap:2px;">';
-      NOTES.forEach(n=>h+='<button class="k st-note" data-n="'+n.n+'" style="height:64px !important;padding:0 !important;"><span class="lbl" style="font-size:24px;">'+n.label+'</span><span class="sub" style="font-size:15px;">'+n.sub+'</span></button>');
-      h+='</div>';
-      h+='<small style="display:block;margin-top:8px;">Notes : <b id="st-list">(aucune)</b> · <span id="st-mode"></span></small>';
+      h+='<small style="display:block;margin-top:6px;">Notes : <b id="st-list">(aucune)</b> · <span id="st-mode"></span></small>';
       return h;
     }
     function listStr(){
@@ -2398,23 +2409,16 @@
     }
     function refresh(){
       const e=document.getElementById('st-list');if(e)e.innerHTML=listStr();
-      const o=document.getElementById('st-oct');if(o)o.textContent=state.octave;
       const md=document.getElementById('st-mode');if(md)md.textContent=state._chordAddPending?'(prêt à ajouter)':'';
-      const pb=document.getElementById('st-plus');if(pb)pb.classList.toggle('active',!!state._chordAddPending);
+      const pb=document.getElementById('st-plus');if(pb){if(state._chordAddPending){pb.classList.add('primary')}else{pb.classList.remove('primary')}}
     }
-    openPanel({title:'Accord (notes empilées)',body:controls(),hideActions:true,extraButtons:['Fin'],showMes:true,onMount:()=>{
-      document.getElementById('st-up').addEventListener('click',()=>{const cur=selectedSlot();if(!cur||cur.type!=='note')return;const n=chordList(cur).length;state.chordActive=Math.min(n-1,chordActiveIdx(cur)+1);state._chordAddPending=false;const a=activeChordNote(cur);if(a){state.octave=a.octave;previewNote(midiOfNote(a.note,a.octave,a.acc,keyAt(state.sel.m)))}render();refresh()});
-      document.getElementById('st-down').addEventListener('click',()=>{const cur=selectedSlot();if(!cur||cur.type!=='note')return;state.chordActive=Math.max(0,chordActiveIdx(cur)-1);state._chordAddPending=false;const a=activeChordNote(cur);if(a){state.octave=a.octave;previewNote(midiOfNote(a.note,a.octave,a.acc,keyAt(state.sel.m)))}render();refresh()});
-      document.getElementById('st-plus').addEventListener('click',()=>{state._chordAddPending=true;render();refresh()});
-      document.getElementById('st-minus').addEventListener('click',()=>{const cur=selectedSlot();if(!cur||cur.type!=='note')return;const l=chordList(cur);const ai=chordActiveIdx(cur);if(l.length<=1){const z=state.measures[state.sel.m][state.sel.s];const dur=z.dur,dot=z.dot;state.measures[state.sel.m][state.sel.s]={type:'rest',dur,dot};state.chordActive=0;state._chordAddPending=true;pushHistory();render();refresh();return}l.splice(ai,1);chordWrite(cur,l);state.chordActive=Math.max(0,Math.min(ai,l.length-1));state._chordAddPending=false;pushHistory();render();refresh()});
-      document.getElementById('st-oct-up').addEventListener('click',()=>{state.octave=Math.min(3,state.octave+1);const cur=selectedSlot();if(cur&&cur.type==='note'&&!state._chordAddPending){const l=chordList(cur);const ai=chordActiveIdx(cur);const a=l[ai];a.octave=state.octave;chordWrite(cur,l);const sig=keyAt(state.sel.m);const tm=midiOfNote(a.note,a.octave,a.acc,sig);const nl=chordList(cur);let bi=0,bd=Infinity;nl.forEach((x,i)=>{const dd=Math.abs(midiOfNote(x.note,x.octave,x.acc,sig)-tm);if(dd<bd){bd=dd;bi=i}});state.chordActive=bi;previewNote(tm);pushHistory()}render();refresh()});
-      document.getElementById('st-oct-down').addEventListener('click',()=>{state.octave=Math.max(-2,state.octave-1);const cur=selectedSlot();if(cur&&cur.type==='note'&&!state._chordAddPending){const l=chordList(cur);const ai=chordActiveIdx(cur);const a=l[ai];a.octave=state.octave;chordWrite(cur,l);const sig=keyAt(state.sel.m);const tm=midiOfNote(a.note,a.octave,a.acc,sig);const nl=chordList(cur);let bi=0,bd=Infinity;nl.forEach((x,i)=>{const dd=Math.abs(midiOfNote(x.note,x.octave,x.acc,sig)-tm);if(dd<bd){bd=dd;bi=i}});state.chordActive=bi;previewNote(tm);pushHistory()}render();refresh()});
-      document.querySelectorAll('.st-note').forEach(b=>b.addEventListener('click',()=>{
-        setNoteAtSelection(b.dataset.n);refresh();
-      }));
+    openPanel({title:'Accord (notes empilées)',body:controls(),hideActions:true,showMes:true,onMount:()=>{
+      document.getElementById('st-up').addEventListener('click',()=>{const cur=selectedSlot();if(!cur||cur.type!=='note')return;const n=chordList(cur).length;state.chordActive=Math.min(n-1,chordActiveIdx(cur)+1);state._chordAddPending=false;const a=activeChordNote(cur);if(a){state.octave=a.octave;previewNote(midiOfNote(a.note,a.octave,a.acc,keyAt(state.sel.m)))}renderScore();refresh()});
+      document.getElementById('st-down').addEventListener('click',()=>{const cur=selectedSlot();if(!cur||cur.type!=='note')return;state.chordActive=Math.max(0,chordActiveIdx(cur)-1);state._chordAddPending=false;const a=activeChordNote(cur);if(a){state.octave=a.octave;previewNote(midiOfNote(a.note,a.octave,a.acc,keyAt(state.sel.m)))}renderScore();refresh()});
+      document.getElementById('st-plus').addEventListener('click',()=>{state._chordAddPending=true;renderScore();refresh()});
+      document.getElementById('st-minus').addEventListener('click',()=>{const cur=selectedSlot();if(!cur||cur.type!=='note')return;const l=chordList(cur);const ai=chordActiveIdx(cur);if(l.length<=1){const z=state.measures[state.sel.m][state.sel.s];const dur=z.dur,dot=z.dot;state.measures[state.sel.m][state.sel.s]={type:'rest',dur,dot};state.chordActive=0;state._chordAddPending=true;pushHistory();renderScore();refresh();return}l.splice(ai,1);chordWrite(cur,l);state.chordActive=Math.max(0,Math.min(ai,l.length-1));state._chordAddPending=false;pushHistory();renderScore();refresh()});
+      chordPanelRefresh=refresh;   // pour que les boutons de notes de l'app mettent à jour le panneau
       refresh();
-    },onMeasureChange:()=>{const cur=selectedSlot();if(cur&&cur.type==='note'){state.chordActive=0;state._chordAddPending=false;const a=activeChordNote(cur);if(a)state.octave=a.octave}else{state._chordAddPending=true}refresh()},onExtra:(w)=>{
-      if(w==='Fin'){closePanel();return}
     }});
   });
 
@@ -2765,7 +2769,7 @@
       +'• Altérations ♯ ♭ ♮ et point pointé<br>'
       +'• ⌒ liaison, ⌫ remplace par silence<br>'
       +'• 3:2 ouvre le panneau n-uplet<br>'
-      +'• ⦂ empil. : empiler plusieurs notes en accord (+ ajoute, − retire, ▲▼ note active, 8va ▲▼ change l\'octave). On peut mettre la même note à deux octaves ; les doublons exacts sont fusionnés à la sortie<br>'
+      +'• ⦂ empil. : empiler plusieurs notes en accord (+ ajoute, − retire, ▲▼ note active). L\'octave de la note active se change avec les boutons △▽ de l\'app. On peut mettre la même note à deux octaves ; les doublons exacts sont fusionnés à la sortie<br>'
       +'• Cm bouton accord d\'accompagnement (texte) avec notes Do…Si + #/b/m/Maj…<br>'
       +'• ~T ornements (trille, fermata, staccato, etc.)<br>'
       +'• Transp. ↓↑ transpose tout le morceau<br>'
@@ -2839,7 +2843,7 @@
     if(onMount)setTimeout(onMount,50);
     if(extraButtons)setTimeout(()=>{panelBody.querySelectorAll('[data-extra]').forEach(b=>{b.addEventListener('click',()=>{if(cOnExtra)cOnExtra(b.dataset.extra)})})},50);
   }
-  function closePanel(){panel.classList.remove('open');document.getElementById('app').classList.remove('panel-open');cOnOk=null;cOnExtra=null;cOnMeasureChange=null;cShowMes=false;const wasChord=state._chordEditMode;if(wasChord){const sl=selectedSlot();if(sl&&sl.type==='note')dedupeChord(sl);}state._chordEditMode=false;state._chordAddPending=false;if(wasChord){pushHistory();render()}}
+  function closePanel(){panel.classList.remove('open');document.getElementById('app').classList.remove('panel-open');cOnOk=null;cOnExtra=null;cOnMeasureChange=null;cShowMes=false;chordPanelRefresh=null;{const bsb=document.getElementById('btn-stack');if(bsb)bsb.classList.remove('primary');}const wasChord=state._chordEditMode;if(wasChord){const sl=selectedSlot();if(sl&&sl.type==='note')dedupeChord(sl);}state._chordEditMode=false;state._chordAddPending=false;if(wasChord){pushHistory();render()}}
   function notifyPanelMeasureChanged(){
     if(!panel.classList.contains('open'))return;
     if(cShowMes)panelMes.textContent='Mes '+(state.sel.m+1);
