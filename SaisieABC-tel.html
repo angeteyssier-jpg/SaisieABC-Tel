@@ -212,113 +212,112 @@
 
   /* =====================================================================
      ===============  SURCOUCHE MOBILE (TEL) — v1.49 tel  ================
-     Le moteur et le HTML proviennent de la version PC v1.49 (toutes les
-     fonctionnalites). Ce bloc, place en dernier, reskinne l'interface en
-     mode telephone : gros boutons tactiles, mise en page verticale, la
-     portee occupe l'espace au-dessus des boutons, et les popups defilent.
+     Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
+     Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
+     tactiles, libelles agrandis et autorises a passer a la ligne (jamais
+     tronques), icones d'onglets agrandies, partition en haut, popups
+     defilables. Le rendu SVG de la partition n'est pas touche.
      ===================================================================== */
 
-  /* Empeche le zoom au double-tap sur les elements interactifs */
   .abc-app button, .abc-app .tab, .abc-app .k { touch-action: manipulation; }
 
-  /* Conteneur : pleine hauteur, colonne, encoche basse */
   .abc-app {
     padding: 4px;
     padding-bottom: max(4px, env(safe-area-inset-bottom));
     height: 100vh; height: 100dvh;
     display: flex; flex-direction: column;
     overflow-x: hidden; overflow-y: auto; }
-  /* Popup ouvert : on autorise le defilement de toute l'appli */
   .abc-app.panel-open { overflow-y: auto; height: auto;
     min-height: 100vh; min-height: 100dvh; display: block; }
   .abc-app.fullscreen { height: 100vh; height: 100dvh; }
 
-  /* Layout : empile verticalement, la PARTITION en haut occupe l'espace,
-     les controles (nav + onglets + panneaux) en dessous a taille naturelle */
+  /* Empilement vertical : partition en haut (occupe l'espace), controles dessous */
   .abc-app > .pc-layout { flex: 1 1 0; min-height: 0; }
-  .pc-layout { display: flex; flex-direction: column; gap: 6px;
-    min-height: 0; align-items: stretch; }
+  .pc-layout { display: flex; flex-direction: column; gap: 6px; min-height: 0; align-items: stretch; }
   .pc-right { order: 1; flex: 1 1 0; min-height: 130px; display: flex; }
   .pc-left  { order: 2; flex: 0 0 auto; display: flex; flex-direction: column; gap: 5px; }
-  .pc-right .abc-card { flex: 1 1 0; height: auto; display: flex;
-    align-items: stretch; padding: 4px; }
+  .pc-right .abc-card { flex: 1 1 0; height: auto; display: flex; align-items: stretch; padding: 4px; }
   .score-wrap { flex: 1 1 0; width: 100%; height: 100%; min-height: 0; overflow: auto; }
   .score-wrap svg { width: 100%; height: 100%; display: block; }
 
-  .ver-badge { font-size: 14px; padding: 5px 10px; margin-bottom: 4px; }
+  .ver-badge { font-size: 16px; padding: 5px 10px; margin-bottom: 4px; }
 
-  /* Boutons tactiles */
-  .abc-app button.k { height: 72px; padding: 0 4px; border-radius: 12px;
-    font-size: 50px; gap: 6px; }
+  /* --- Boutons tactiles : grands, multi-lignes autorisees, hauteur extensible --- */
+  .abc-app button.k {
+    height: auto; min-height: 76px; padding: 6px 5px; border-radius: 12px;
+    font-size: 50px; gap: 6px; line-height: 1.06;
+    white-space: normal; overflow: visible; text-overflow: clip; }
   .abc-app button.k.symbol { font-size: 50px; }
-  .abc-app button.k.clef-small { font-size: 36px; }
-  .note-btn { height: 98px !important; }
-  .note-btn .lbl { font-size: 40px; }
-  .note-btn .sub { font-size: 30px; }
+  .abc-app button.k.clef-small { font-size: 44px; }
+  .abc-app button.k.primary { font-size: 38px; }
+
+  .note-btn { min-height: 104px !important; height: auto !important; }
+  .note-btn .lbl { font-size: 48px !important; }
+  .note-btn .sub { font-size: 24px !important; }
 
   .row-grid { gap: 4px; }
 
-  /* Navigation : 6 gros boutons */
+  /* Navigation : 6 gros boutons (glyphes) */
   .nav-bar { gap: 4px; padding: 4px; }
-  .nav-bar .k { font-size: 40px; height: 58px; }
-  .nav-bar .k.dbtxt { font-size: 38px; }
+  .nav-bar .k { font-size: 44px; min-height: 62px; }
+  .nav-bar .k.dbtxt { font-size: 40px; }
 
-  /* Onglets : la version PC en a 8 — on les met sur une rangee tactile */
+  /* Onglets (8) : emoji + icones SVG agrandis, sur une rangee */
   .tabs { grid-template-columns: repeat(8, 1fr); gap: 3px; margin-bottom: 4px; }
-  .tab { height: 60px; font-size: 26px; border-radius: 10px 10px 0 0; padding: 0 1px; }
-  .tab svg { width: 100% !important; height: auto !important; max-height: 34px; }
+  .tab { min-height: 66px; height: auto; font-size: 40px; border-radius: 10px 10px 0 0; padding: 0 1px; }
+  .tab svg { width: auto; height: 36px; max-width: 100%; }
 
   /* Rangees octave / controles / transposition */
   .oct-row, .control-row { gap: 6px; padding: 4px; }
-  .oct-row .label, .control-row .label { font-size: 40px; }
-  .oct-row .label b, .control-row .label b { font-size: 44px; margin-left: 6px; }
+  .oct-row .label, .control-row .label { font-size: 42px; }
+  .oct-row .label b, .control-row .label b { font-size: 46px; margin-left: 6px; }
   .transpose-row { gap: 6px; padding: 4px; }
-  .transpose-row .label { font-size: 34px; }
+  .transpose-row .label { font-size: 38px; }
 
-  /* ---- Popups : pleine largeur, dans le flux, defilables (pas de position fixe PC) ---- */
+  /* --- Popups : pleine largeur, dans le flux, defilables --- */
   .panel { position: static !important;
     top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
     width: auto !important; max-width: none !important; max-height: none !important;
-    box-shadow: none; padding: 8px; margin-bottom: 8px; z-index: auto;
-    border-radius: 12px; }
+    box-shadow: none; padding: 8px; margin-bottom: 8px; z-index: auto; border-radius: 12px; }
   .panel-backdrop { display: none !important; }
   .panel .title-row { position: static; padding-top: 0; margin-bottom: 8px; }
-  .panel .title { font-size: 40px; }
-  .panel .title-mes { font-size: 38px; }
-  .panel-nav .k { min-width: 64px; }
-  .panel input, .panel textarea { min-height: 64px; font-size: 36px;
-    padding: 8px 12px; border-radius: 10px; }
+  .panel .title { font-size: 42px; }
+  .panel .title-mes { font-size: 40px; }
+  .panel-nav .k { min-width: 66px; }
+  .panel input, .panel textarea { min-height: 66px; font-size: 38px; padding: 8px 12px; border-radius: 10px; }
   .panel textarea { min-height: 220px; line-height: 1.25; }
-  .panel .field-label { font-size: 36px; min-width: 70px; }
+  .panel .field-label { font-size: 38px; min-width: 72px; }
   .panel .actions { gap: 8px; margin-top: 8px; }
-  .panel .actions .k { height: 64px !important; font-size: 28px !important; padding: 0 8px !important; }
-  .panel .stepper { grid-template-columns: 72px 1fr 72px; gap: 10px; }
-  .panel .stepper .k { height: 64px !important; font-size: 44px !important; }
-  .panel .stepper .val { font-size: 44px; }
-  .panel .stepper-label { font-size: 24px; }
-  .panel .rythme-compact .stepper-inline { grid-template-columns: 1fr 56px 72px 56px; gap: 6px; }
-  .panel .rythme-compact .si-label { font-size: 22px; }
-  .panel .rythme-compact .stepper-inline .k { height: 52px !important; font-size: 30px !important; }
-  .panel small { font-size: 22px; margin-bottom: 8px; }
+  .panel .actions .k { height: auto !important; min-height: 70px !important; font-size: 34px !important;
+    padding: 6px 8px !important; white-space: normal !important; }
+  .panel .stepper { grid-template-columns: 76px 1fr 76px; gap: 10px; }
+  .panel .stepper .k { height: 70px !important; min-height: 70px !important; font-size: 48px !important; }
+  .panel .stepper .val { font-size: 46px; }
+  .panel .stepper-label { font-size: 26px; }
+  .panel .rythme-compact .stepper-inline { grid-template-columns: 1fr 60px 80px 60px; gap: 6px; }
+  .panel .rythme-compact .si-label { font-size: 26px; }
+  .panel .rythme-compact .stepper-inline .k { height: 60px !important; min-height: 60px !important; font-size: 34px !important; }
+  .panel small { font-size: 24px; margin-bottom: 8px; }
   .panel .save-list { max-height: 50vh; min-height: 120px; }
-  .panel .save-list .item { padding: 14px 14px; font-size: 28px; }
-  .panel .save-list .item .del { font-size: 36px; padding: 0 12px; }
-  .panel .mes-active { font-size: 28px; padding: 10px; }
-  .panel .row-grid .k { height: 64px; font-size: 28px; }
-  .panel .row-grid .k.symbol { font-size: 40px; }
+  .panel .save-list .item { padding: 16px 14px; font-size: 32px; }
+  .panel .save-list .item .del { font-size: 40px; padding: 0 14px; }
+  .panel .mes-active { font-size: 32px; padding: 12px; }
+  .panel .row-grid .k { height: auto !important; min-height: 64px; font-size: 32px; white-space: normal; }
+  .panel .row-grid .k.symbol { font-size: 44px; }
 
   /* Accords */
-  .chord-input { min-height: 64px; font-size: 40px; }
-  .chord-pad .k { height: 56px !important; font-size: 28px !important; }
+  .chord-input { min-height: 66px; font-size: 44px; }
+  .chord-pad { grid-template-columns: repeat(4, 1fr); }
+  .chord-pad .k { height: auto !important; min-height: 64px !important; font-size: 34px !important; }
 
   /* Panneau Paroles */
-  .lyr-voice-tabs .k { min-width: 60px; height: 52px !important; font-size: 24px !important; }
-  .lyr-note-count { font-size: 22px; }
-  .lyr-textarea { min-height: 240px; font-size: 30px; padding: 8px 10px; line-height: 1.35; }
-  .lyr-hint { font-size: 20px; }
+  .lyr-voice-tabs .k { min-width: 64px; height: auto !important; min-height: 58px !important; font-size: 28px !important; }
+  .lyr-note-count { font-size: 24px; }
+  .lyr-textarea { min-height: 240px; font-size: 32px; padding: 8px 10px; line-height: 1.35; }
+  .lyr-hint { font-size: 22px; }
 
   /* Notification toast lisible sur telephone */
-  #toast { font-size: 26px; padding: 14px 22px; border-radius: 14px;
+  #toast { font-size: 28px; padding: 14px 22px; border-radius: 14px;
     max-width: calc(100vw - 24px); bottom: max(24px, env(safe-area-inset-bottom)); }
 </style>
 
@@ -326,7 +325,7 @@
 <div class="abc-app" id="app">
   <div class="ver-badge">
     <span>Éditeur ABC <b>v1.49 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
-    <span style="font-size:11px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
+    <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
   <!-- Panel d'édition en overlay centré -->
@@ -335,11 +334,11 @@
     <div class="title-row">
       <div class="title" id="panel-title">Édition</div>
       <div class="panel-nav" id="panel-nav" style="display:none;">
-        <button class="k" id="panel-nav-prev" style="height:36px;padding:0 10px;font-size:18px;width:auto;">−</button>
+        <button class="k" id="panel-nav-prev" style="height:36px;padding:0 10px;font-size:38px;width:auto;">−</button>
         <div class="title-mes" id="panel-mes"></div>
-        <button class="k" id="panel-nav-next" style="height:36px;padding:0 10px;font-size:18px;width:auto;">+</button>
+        <button class="k" id="panel-nav-next" style="height:36px;padding:0 10px;font-size:38px;width:auto;">+</button>
       </div>
-      <button class="k primary" id="panel-close-top" title="Fermer" style="display:none;width:auto;padding:0 14px;height:32px;font-size:16px;">✕ Fermer</button>
+      <button class="k primary" id="panel-close-top" title="Fermer" style="display:none;width:auto;padding:0 14px;height:32px;font-size:34px;">✕ Fermer</button>
     </div>
     <div id="panel-body"></div>
     <div class="actions">
@@ -364,12 +363,12 @@
       </div>
 
       <div class="tabs">
-        <button class="tab active" data-tab="notes" title="Notes" aria-label="Notes" style="font-size:22px;">♪</button>
+        <button class="tab active" data-tab="notes" title="Notes" aria-label="Notes" style="font-size:46px;">♪</button>
         <button class="tab" data-tab="mesure" title="Mesure" aria-label="Mesure"><svg width="26" height="16" viewBox="0 0 26 16" style="vertical-align:middle;"><g stroke="currentColor" stroke-width="1"><line x1="2" y1="2" x2="24" y2="2"/><line x1="2" y1="5" x2="24" y2="5"/><line x1="2" y1="8" x2="24" y2="8"/><line x1="2" y1="11" x2="24" y2="11"/><line x1="2" y1="14" x2="24" y2="14"/></g><g stroke="currentColor" stroke-width="1.6"><line x1="2" y1="2" x2="2" y2="14"/><line x1="13" y1="2" x2="13" y2="14"/><line x1="24" y1="2" x2="24" y2="14"/></g></svg></button>
         <button class="tab" data-tab="pistes" title="Pistes" aria-label="Pistes"><svg width="26" height="16" viewBox="0 0 26 16" style="vertical-align:middle;"><g stroke="currentColor" stroke-width="0.8"><line x1="2" y1="2" x2="24" y2="2"/><line x1="2" y1="4.5" x2="24" y2="4.5"/><line x1="2" y1="7" x2="24" y2="7"/><line x1="2" y1="11" x2="24" y2="11"/><line x1="2" y1="13.5" x2="24" y2="13.5"/></g></svg></button>
-        <button class="tab" data-tab="play" title="Play" aria-label="Play" style="font-size:20px;">▶</button>
-        <button class="tab" data-tab="titre" title="Titre" aria-label="Titre" style="font-size:20px;">✎</button>
-        <button class="tab" data-tab="fichier" title="Fichier" aria-label="Fichier" style="font-size:20px;">📂</button>
+        <button class="tab" data-tab="play" title="Play" aria-label="Play" style="font-size:42px;">▶</button>
+        <button class="tab" data-tab="titre" title="Titre" aria-label="Titre" style="font-size:42px;">✎</button>
+        <button class="tab" data-tab="fichier" title="Fichier" aria-label="Fichier" style="font-size:42px;">📂</button>
         <button class="tab" data-tab="partition" title="Modifier la partition" aria-label="Modifier la partition"><svg width="20" height="20" viewBox="0 0 24 24" style="vertical-align:middle;" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 13a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
         <button class="tab" data-tab="vue" title="Vue" aria-label="Vue">👁</button>
       </div>
@@ -417,7 +416,7 @@
           <button class="k" data-hdr="CLEF">Clé</button>
         </div>
         <div class="row-grid">
-          <button class="k" id="btn-tempo-change" style="font-size:15px;">♩= Tempo…</button>
+          <button class="k" id="btn-tempo-change" style="font-size:32px;">♩= Tempo…</button>
         </div>
         <div class="row-grid row-4">
           <button class="k" id="btn-rep-start">𝄆</button>
@@ -426,11 +425,11 @@
           <button class="k" id="btn-volta2">|2</button>
         </div>
         <div class="row-grid">
-          <button class="k" id="btn-part" style="font-size:16px;">Partie P: <span id="part-val">—</span></button>
+          <button class="k" id="btn-part" style="font-size:34px;">Partie P: <span id="part-val">—</span></button>
         </div>
         <div class="row-grid row-2">
-          <button class="k" id="btn-linebreak" title="Forcer une fin de ligne après cette mesure (mise en page, toutes voix)" style="font-size:13px;">⏎ Fin ligne</button>
-          <button class="k" id="btn-pagebreak" title="Forcer une fin de page après cette mesure (mise en page, toutes voix)" style="font-size:13px;">⤓ Fin page</button>
+          <button class="k" id="btn-linebreak" title="Forcer une fin de ligne après cette mesure (mise en page, toutes voix)" style="font-size:28px;">⏎ Fin ligne</button>
+          <button class="k" id="btn-pagebreak" title="Forcer une fin de page après cette mesure (mise en page, toutes voix)" style="font-size:28px;">⤓ Fin page</button>
         </div>
         <div class="row-grid">
           <button class="k" id="btn-shift">⇦ Décaler ⇨</button>
@@ -440,11 +439,11 @@
           <button class="k" id="btn-paste-mes">📥</button>
         </div>
         <div class="row-grid">
-          <button class="k" id="btn-noterange" title="Transposer / copier / coller une portion de notes (de la note X à la note Y)" style="font-size:13px;">✂ Portion de notes…</button>
+          <button class="k" id="btn-noterange" title="Transposer / copier / coller une portion de notes (de la note X à la note Y)" style="font-size:28px;">✂ Portion de notes…</button>
         </div>
         <div class="row-grid row-3">
           <button class="k" id="btn-undo-mes">↶</button>
-          <button class="k" id="btn-measnums-mes" title="Afficher / masquer les numéros de mesure" style="font-size:13px;">N° mes</button>
+          <button class="k" id="btn-measnums-mes" title="Afficher / masquer les numéros de mesure" style="font-size:28px;">N° mes</button>
           <button class="k" id="btn-redo-mes">↷</button>
         </div>
       </div>
@@ -476,51 +475,51 @@
           <button class="k" id="tempo-u10">+10</button>
         </div>
         <div class="row-grid">
-          <button class="k" id="tempo-unit-btn" style="font-size:14px;">Unité du tempo : <b id="tempo-unit-lbl">♩ noire</b></button>
+          <button class="k" id="tempo-unit-btn" style="font-size:30px;">Unité du tempo : <b id="tempo-unit-lbl">♩ noire</b></button>
         </div>
       </div>
 
       <div class="tab-panel" data-panel="titre">
-        <div class="row-grid"><button class="k" data-hdr="X" style="font-size:18px;">X: <span style="color:#185fa5;" id="hdr-x-val">1</span></button></div>
-        <div class="row-grid"><button class="k" data-hdr="T" style="font-size:18px;">Titre : <span id="hdr-t-val">—</span></button></div>
-        <div class="row-grid"><button class="k" data-hdr="C" style="font-size:16px;">Compositeur : <span id="hdr-c-val">—</span></button></div>
-        <div class="row-grid"><button class="k" data-hdr="N" style="font-size:16px;">Commentaire : <span id="hdr-n-val">—</span></button></div>
-        <div class="row-grid"><button class="k" data-hdr="R" style="font-size:16px;">Rythme : <span id="hdr-r-val">—</span></button></div>
+        <div class="row-grid"><button class="k" data-hdr="X" style="font-size:38px;">X: <span style="color:#185fa5;" id="hdr-x-val">1</span></button></div>
+        <div class="row-grid"><button class="k" data-hdr="T" style="font-size:38px;">Titre : <span id="hdr-t-val">—</span></button></div>
+        <div class="row-grid"><button class="k" data-hdr="C" style="font-size:34px;">Compositeur : <span id="hdr-c-val">—</span></button></div>
+        <div class="row-grid"><button class="k" data-hdr="N" style="font-size:34px;">Commentaire : <span id="hdr-n-val">—</span></button></div>
+        <div class="row-grid"><button class="k" data-hdr="R" style="font-size:34px;">Rythme : <span id="hdr-r-val">—</span></button></div>
         <div class="row-grid row-4">
-          <button class="k" data-hdr="H" style="font-size:13px;">Hist. <span id="hdr-h-val" style="color:#185fa5;">·</span></button>
-          <button class="k" data-hdr="F" style="font-size:13px;">URL <span id="hdr-f-val" style="color:#185fa5;">·</span></button>
-          <button class="k" data-hdr="Z" style="font-size:13px;">Transcr. <span id="hdr-z-val" style="color:#185fa5;">·</span></button>
-          <button class="k" data-hdr="P" style="font-size:13px;">Parties <span id="hdr-p-val" style="color:#185fa5;">·</span></button>
+          <button class="k" data-hdr="H" style="font-size:28px;">Hist. <span id="hdr-h-val" style="color:#185fa5;">·</span></button>
+          <button class="k" data-hdr="F" style="font-size:28px;">URL <span id="hdr-f-val" style="color:#185fa5;">·</span></button>
+          <button class="k" data-hdr="Z" style="font-size:28px;">Transcr. <span id="hdr-z-val" style="color:#185fa5;">·</span></button>
+          <button class="k" data-hdr="P" style="font-size:28px;">Parties <span id="hdr-p-val" style="color:#185fa5;">·</span></button>
         </div>
         <div class="row-grid row-2" style="margin-top:auto;">
-          <button class="k" data-hdr="W" style="font-size:13px;" title="Couplets supplémentaires (texte libre, non aligné sous les notes)">Couplets+ <span id="hdr-w-val">—</span></button>
-          <button class="k" id="btn-edit-lyrics" style="font-size:13px;">✎ Saisie Paroles…</button>
+          <button class="k" data-hdr="W" style="font-size:28px;" title="Couplets supplémentaires (texte libre, non aligné sous les notes)">Couplets+ <span id="hdr-w-val">—</span></button>
+          <button class="k" id="btn-edit-lyrics" style="font-size:28px;">✎ Saisie Paroles…</button>
         </div>
       </div>
 
       <div class="tab-panel" data-panel="fichier">
         <div class="row-grid row-3">
           <button class="k" id="btn-new">📄 Nouveau</button>
-          <button class="k" id="btn-open-file" title="Ouvrir un fichier (.abc, .xml, .mxl)" style="font-size:18px;">📂</button>
-          <button class="k" id="btn-list" title="Liste des morceaux du fichier" style="font-size:18px;">☰</button>
+          <button class="k" id="btn-open-file" title="Ouvrir un fichier (.abc, .xml, .mxl)" style="font-size:38px;">📂</button>
+          <button class="k" id="btn-list" title="Liste des morceaux du fichier" style="font-size:38px;">☰</button>
         </div>
         <div class="row-grid row-3">
-          <button class="k" id="btn-save-file" style="font-size:14px;">💾 ABC</button>
-          <button class="k" id="btn-export-mxl" style="font-size:14px;">💾 MXL</button>
-          <button class="k" id="btn-saves" style="font-size:14px;">⭐ mémo</button>
+          <button class="k" id="btn-save-file" style="font-size:30px;">💾 ABC</button>
+          <button class="k" id="btn-export-mxl" style="font-size:30px;">💾 MXL</button>
+          <button class="k" id="btn-saves" style="font-size:30px;">⭐ mémo</button>
         </div>
         <div class="row-grid row-2">
-          <button class="k" id="btn-export" style="font-size:16px;">ABC (code)</button>
-          <button class="k" id="btn-help" style="font-size:16px;">? Aide</button>
+          <button class="k" id="btn-export" style="font-size:34px;">ABC (code)</button>
+          <button class="k" id="btn-help" style="font-size:34px;">? Aide</button>
         </div>
       </div>
 
       <div class="tab-panel" data-panel="partition">
-        <div class="row-grid"><button class="k" id="btn-groove" style="font-size:15px;">⮂ Changer le groove…</button></div>
+        <div class="row-grid"><button class="k" id="btn-groove" style="font-size:32px;">⮂ Changer le groove…</button></div>
         <div style="border-top:1px solid #d8d6ce;margin:8px 0 4px;"></div>
         <div class="row-grid row-2" style="margin-bottom:5px;">
-          <button class="k" id="btn-scope-one" style="font-size:13px;" title="Transposer / Armure → C : voix active seulement">Voix active</button>
-          <button class="k" id="btn-scope-all" style="font-size:13px;" title="Transposer / Armure → C : toutes les voix">Toutes</button>
+          <button class="k" id="btn-scope-one" style="font-size:28px;" title="Transposer / Armure → C : voix active seulement">Voix active</button>
+          <button class="k" id="btn-scope-all" style="font-size:28px;" title="Transposer / Armure → C : toutes les voix">Toutes</button>
         </div>
         <div class="transpose-row">
           <div class="label">Transp.</div>
@@ -528,7 +527,7 @@
           <button class="k" id="btn-trans-up">↑</button>
         </div>
         <div class="row-grid">
-          <button class="k" id="btn-disarm" style="font-size:16px;">Armure → C majeur</button>
+          <button class="k" id="btn-disarm" style="font-size:34px;">Armure → C majeur</button>
         </div>
         <div style="border-top:1px solid #d8d6ce;margin:8px 0 4px;"></div>
         <div class="row-grid row-2">
@@ -554,13 +553,13 @@
           <button class="k" id="lyr-y-u" title="Descendre les paroles (plus loin de la portée)">+</button>
         </div>
         <div class="row-grid row-3">
-          <button class="k" id="btn-toggle-chords" style="font-size:14px;">Accords</button>
-          <button class="k" id="btn-toggle-text" style="font-size:14px;">Texte</button>
-          <button class="k" id="btn-toggle-lyrics" style="font-size:14px;">Paroles</button>
+          <button class="k" id="btn-toggle-chords" style="font-size:30px;">Accords</button>
+          <button class="k" id="btn-toggle-text" style="font-size:30px;">Texte</button>
+          <button class="k" id="btn-toggle-lyrics" style="font-size:30px;">Paroles</button>
         </div>
         <div class="row-grid row-2">
-          <button class="k" id="btn-toggle-parts" style="font-size:14px;">Parties</button>
-          <button class="k" id="btn-toggle-measnums" style="font-size:14px;">N° mesures</button>
+          <button class="k" id="btn-toggle-parts" style="font-size:30px;">Parties</button>
+          <button class="k" id="btn-toggle-measnums" style="font-size:30px;">N° mesures</button>
         </div>
         <div class="dim-info">
           <span>Zone : <b id="dim-w">0</b>×<b id="dim-h">0</b></span>
@@ -2194,7 +2193,7 @@
       const label=(tr.name||('V'+(i+1)))+(tr.mute?' [muet]':'');
       const border=isActive&&!single?'border:2px solid #185fa5;':'border:1px solid #d8d6ce;';
       const bg=isActive&&!single?'background:#f4f8fd;':'background:#ffffff;';
-      const labelHtml=single?'':'<div style="position:absolute;top:1px;left:8px;font-size:11px;font-weight:700;color:'+(isActive?'#0c447c':'#5f5e5a')+';z-index:2;">'+escXml(label)+'</div>';
+      const labelHtml=single?'':'<div style="position:absolute;top:1px;left:8px;font-size:24px;font-weight:700;color:'+(isActive?'#0c447c':'#5f5e5a')+';z-index:2;">'+escXml(label)+'</div>';
       blocks.push(
         '<div class="track-block" data-track="'+i+'" style="position:relative;'+border+bg+'border-radius:6px;'
         +'margin-bottom:'+GAP+'px;padding-top:'+(single?2:LABEL_PX)+'px;'
@@ -2213,7 +2212,7 @@
       const w=(state.headers.W||'').trim();
       if(w){
         const lines=w.split('\n').map(l=>escXml(l)).join('<br>');
-        wordsHtml='<div class="score-words" style="max-width:'+Math.max(contentPxW,320)+'px;margin:8px 2px 4px;padding:8px 12px;border-top:1px solid #e2e0d8;font-size:12px;line-height:1.5;color:#33312c;">'+lines+'</div>';
+        wordsHtml='<div class="score-words" style="max-width:'+Math.max(contentPxW,320)+'px;margin:8px 2px 4px;padding:8px 12px;border-top:1px solid #e2e0d8;font-size:26px;line-height:1.5;color:#33312c;">'+lines+'</div>';
       }
     }
     cont.innerHTML=blocks.join('')+wordsHtml;
@@ -2831,7 +2830,7 @@
     const body=document.getElementById('tracks-body');if(!body)return;
     const tr=state.tracks||[];
     let h='<small>Pistes (max '+MAX_TRACKS+'). Cliquez sur une piste pour l\u2019éditer ; les autres restent visibles si l\u2019œil est ouvert.</small>';
-    h+='<div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><b style="font-size:12px;color:#0c447c;">▶ Lecture</b><button class="k" id="tk-all-play" style="font-size:12px;padding:2px 8px;width:auto;" title="Inclure toutes les pistes dans la lecture">Toutes</button><button class="k" id="tk-none-play" style="font-size:12px;padding:2px 8px;width:auto;" title="N’en lire aucune">Aucune</button></div>';
+    h+='<div style="display:flex;align-items:center;gap:6px;margin-top:6px;"><b style="font-size:26px;color:#0c447c;">▶ Lecture</b><button class="k" id="tk-all-play" style="font-size:26px;padding:2px 8px;width:auto;" title="Inclure toutes les pistes dans la lecture">Toutes</button><button class="k" id="tk-none-play" style="font-size:26px;padding:2px 8px;width:auto;" title="N’en lire aucune">Aucune</button></div>';
     tr.forEach((t,i)=>{
       const active=(i===state.activeTrack);
       const visible=t.visible!==false;
@@ -2840,24 +2839,24 @@
       const playOn=!t.mute;const vol=(t.vol!==undefined)?t.vol:100;
       h+='<div class="tk-row" data-idx="'+i+'" style="display:flex;flex-direction:column;gap:4px;padding:5px;border-radius:6px;margin-top:4px;'+(active?'background:#e7eef8;border:1px solid #185fa5;':'background:#f4f3ec;border:1px solid #d6d3c3;')+'">';
       h+='<div style="display:flex;align-items:center;gap:4px;">';
-      h+='<button class="k tk-select" data-idx="'+i+'" style="flex:1;text-align:left;font-size:13px;padding:6px 8px;'+(active?'color:#0c447c;font-weight:700;':'')+'" title="Éditer cette piste">V'+(i+1)+' · '+escXml(name)+' <span style="opacity:0.7;font-weight:400;">('+clef+')</span></button>';
-      h+='<button class="k tk-vis" data-idx="'+i+'" '+(active?'disabled':'')+' style="width:34px;font-size:14px;'+(active?'opacity:0.5;':'')+'" title="'+(active?'La piste active reste toujours visible':'Afficher/masquer')+'">'+(visible||active?'👁':'∅')+'</button>';
-      h+='<button class="k tk-rename" data-idx="'+i+'" style="width:34px;font-size:14px;" title="Renommer">✎</button>';
-      if(tr.length>1)h+='<button class="k tk-del" data-idx="'+i+'" style="width:34px;font-size:14px;color:#a33;" title="Supprimer cette piste">🗑</button>';
+      h+='<button class="k tk-select" data-idx="'+i+'" style="flex:1;text-align:left;font-size:28px;padding:6px 8px;'+(active?'color:#0c447c;font-weight:700;':'')+'" title="Éditer cette piste">V'+(i+1)+' · '+escXml(name)+' <span style="opacity:0.7;font-weight:400;">('+clef+')</span></button>';
+      h+='<button class="k tk-vis" data-idx="'+i+'" '+(active?'disabled':'')+' style="width:34px;font-size:30px;'+(active?'opacity:0.5;':'')+'" title="'+(active?'La piste active reste toujours visible':'Afficher/masquer')+'">'+(visible||active?'👁':'∅')+'</button>';
+      h+='<button class="k tk-rename" data-idx="'+i+'" style="width:34px;font-size:30px;" title="Renommer">✎</button>';
+      if(tr.length>1)h+='<button class="k tk-del" data-idx="'+i+'" style="width:34px;font-size:30px;color:#a33;" title="Supprimer cette piste">🗑</button>';
       h+='</div>';
       h+='<div style="display:flex;align-items:center;gap:6px;padding:0 2px;">';
-      h+='<label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" class="tk-play" data-idx="'+i+'" '+(playOn?'checked':'')+'/> Lire</label>';
-      h+='<span style="font-size:12px;opacity:0.7;">🔊</span>';
+      h+='<label style="display:flex;align-items:center;gap:4px;font-size:26px;cursor:pointer;white-space:nowrap;"><input type="checkbox" class="tk-play" data-idx="'+i+'" '+(playOn?'checked':'')+'/> Lire</label>';
+      h+='<span style="font-size:26px;opacity:0.7;">🔊</span>';
       h+='<input type="range" class="tk-vol" data-idx="'+i+'" min="0" max="100" value="'+vol+'" style="flex:1;min-width:60px;" title="Volume de la piste"/>';
-      h+='<b class="tk-vol-v" data-idx="'+i+'" style="font-size:11px;width:26px;text-align:right;">'+vol+'</b>';
+      h+='<b class="tk-vol-v" data-idx="'+i+'" style="font-size:24px;width:26px;text-align:right;">'+vol+'</b>';
       h+='</div>';
       h+='</div>';
     });
     if(tr.length<MAX_TRACKS){
-      h+='<div style="margin-top:8px;"><button class="k" id="tk-add" style="width:100%;font-size:14px;">+ Ajouter une piste</button></div>';
+      h+='<div style="margin-top:8px;"><button class="k" id="tk-add" style="width:100%;font-size:30px;">+ Ajouter une piste</button></div>';
     }
     if(tr.length>=2){
-      h+='<div style="margin-top:6px;"><button class="k" id="tk-merge" style="width:100%;font-size:14px;">⚇ Réunir des voix…</button></div>';
+      h+='<div style="margin-top:6px;"><button class="k" id="tk-merge" style="width:100%;font-size:30px;">⚇ Réunir des voix…</button></div>';
     }
     body.innerHTML=h;
     body.querySelectorAll('.tk-select').forEach(b=>b.addEventListener('click',(e)=>{e.stopPropagation();const i=parseInt(b.dataset.idx,10);if(i!==state.activeTrack){state.activeTrack=i;state.sel={m:0,s:0};render();renderTracksPanel();}}));
@@ -3594,11 +3593,11 @@
   // Bouton Groove : fenêtre regroupant les conversions de rythme
   document.getElementById('btn-groove').addEventListener('click',()=>{
     const body='<small>Conversions appliquées à tout le morceau :</small>'+
-      '<div class="row-grid" style="margin-top:8px;"><button class="k" id="gv-dot" style="font-size:15px;">2 ♪ égales → ♪. 𝅘𝅥𝅯 (pointé)</button></div>'+
-      '<div class="row-grid"><button class="k" id="gv-triplet" style="font-size:15px;">2 ♪ égales → ♩ ♪ en triolet</button></div>'+
+      '<div class="row-grid" style="margin-top:8px;"><button class="k" id="gv-dot" style="font-size:32px;">2 ♪ égales → ♪. 𝅘𝅥𝅯 (pointé)</button></div>'+
+      '<div class="row-grid"><button class="k" id="gv-triplet" style="font-size:32px;">2 ♪ égales → ♩ ♪ en triolet</button></div>'+
       '<div style="height:6px;"></div>'+
-      '<div class="row-grid"><button class="k" id="gv-undot" style="font-size:15px;">♪. 𝅘𝅥𝅯 (pointé) → 2 ♪ égales</button></div>'+
-      '<div class="row-grid"><button class="k" id="gv-untriplet" style="font-size:15px;">♩ ♪ triolet → 2 ♪ égales</button></div>';
+      '<div class="row-grid"><button class="k" id="gv-undot" style="font-size:32px;">♪. 𝅘𝅥𝅯 (pointé) → 2 ♪ égales</button></div>'+
+      '<div class="row-grid"><button class="k" id="gv-untriplet" style="font-size:32px;">♩ ♪ triolet → 2 ♪ égales</button></div>';
     openPanel({title:'Changer le groove',body:body,hideActions:true,extraButtons:['Fin'],onMount:()=>{
       document.getElementById('gv-dot').addEventListener('click',grooveDot);
       document.getElementById('gv-triplet').addEventListener('click',grooveTriplet);
@@ -4014,7 +4013,7 @@
       h+='<button class="k" id="shift-scope-one" title="Décaler la voix active uniquement">Voix active</button>';
       h+='<button class="k" id="shift-scope-all" title="Décaler toutes les voix à la même position">Toutes</button>';
       h+='</div>';
-      h+='<div style="font-size:14px;margin-bottom:8px;">Durée du décalage :</div>';
+      h+='<div style="font-size:30px;margin-bottom:8px;">Durée du décalage :</div>';
       h+='<div class="row-grid row-6" style="margin-bottom:8px;">';
       DURS.forEach(d=>h+='<button class="k symbol" data-shdur="'+d.d+'">'+d.label+'</button>');
       h+='</div>';
@@ -4333,10 +4332,10 @@
   {const b=document.getElementById('tempo-d10');if(b)b.addEventListener('click',()=>changeTempo(-10));}
   {const ub=document.getElementById('tempo-unit-btn');if(ub)ub.addEventListener('click',()=>{
     let selU=beatUnit();let dotted=beatDotted();
-    function body(){let btns='';TEMPO_UNITS.forEach((tu,i)=>{btns+='<button class="k tu-unit" data-u="'+tu.u+'" style="font-size:18px;">'+tu.sym+'<br><span style="font-size:11px;">'+tu.name+'</span></button>'});
+    function body(){let btns='';TEMPO_UNITS.forEach((tu,i)=>{btns+='<button class="k tu-unit" data-u="'+tu.u+'" style="font-size:38px;">'+tu.sym+'<br><span style="font-size:24px;">'+tu.name+'</span></button>'});
       return '<small>Unité de battue (vous pouvez battre à la mesure, ronde, etc.) :</small>'+
       '<div class="row-grid row-5" style="margin:8px 0;">'+btns+'</div>'+
-      '<div class="row-grid"><button class="k" id="tu-dot" style="font-size:16px;">Pointé (× 1,5)</button></div>'+
+      '<div class="row-grid"><button class="k" id="tu-dot" style="font-size:34px;">Pointé (× 1,5)</button></div>'+
       '<small style="display:block;margin-top:10px;">Aperçu : <b id="tu-prev"></b></small>'}
     function refresh(){
       document.querySelectorAll('.tu-unit').forEach(b=>b.classList.toggle('active',Math.abs(parseFloat(b.dataset.u)-selU)<1e-9));
@@ -4369,10 +4368,10 @@
       let h='<div class="stepper-label" style="text-align:left;">Accord d\'accompagnement (au-dessus)</div>';
       h+='<input class="chord-input" id="chord-free" type="text" value="'+freeText.replace(/"/g,'&quot;')+'"/>';
       h+='<div class="chord-pad" style="grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px;">';
-      NOTES.forEach(n=>h+='<button class="k note-btn" data-add="'+n.n+'" style="height:40px !important;padding:0 !important;"><span class="lbl" style="font-size:15px;">'+n.label+'</span><span class="sub" style="font-size:11px;">'+n.sub+'</span></button>');
+      NOTES.forEach(n=>h+='<button class="k note-btn" data-add="'+n.n+'" style="height:40px !important;padding:0 !important;"><span class="lbl" style="font-size:32px;">'+n.label+'</span><span class="sub" style="font-size:24px;">'+n.sub+'</span></button>');
       h+='</div>';
       h+='<div class="chord-pad" style="gap:4px;">';
-      CHORD_BTNS.forEach(b=>h+='<button class="k" data-add="'+b+'" style="height:34px !important;font-size:14px !important;">'+b+'</button>');
+      CHORD_BTNS.forEach(b=>h+='<button class="k" data-add="'+b+'" style="height:34px !important;font-size:30px !important;">'+b+'</button>');
       h+='<button class="k" data-add="__BS__" style="height:34px !important;">⌫</button>';
       h+='</div>';
       h+='<div class="stepper-label" style="text-align:left;margin-top:8px;">Texte libre au-dessus (annotation)</div>';
@@ -5236,7 +5235,7 @@
         h += '<div class="item" data-vm="' + i + '" style="' + (on ? 'background:#d3e6fa;outline:2px solid #378add;outline-offset:-2px;' : '') + '">'
           + '<span><input type="checkbox" ' + (on ? 'checked' : '') + ' style="margin-right:8px;"/>'
           + escXml(t.name || ('V' + (i + 1))) + '</span>'
-          + '<span style="font-size:11px;color:#5f5e5a;">' + nNotes + ' notes</span></div>';
+          + '<span style="font-size:24px;color:#5f5e5a;">' + nNotes + ' notes</span></div>';
       });
       h += '</div>';
       h += '<div class="mes-active" style="margin-top:6px;">Voix actuelles : <b>' + working.length + '</b> / ' + MAX_TRACKS + '</div>';
@@ -5818,7 +5817,7 @@
 
   // Point 9 : Bouton Aide
   document.getElementById('btn-help').addEventListener('click',()=>{
-    const helpText='<div style="font-size:13px;line-height:1.4;font-weight:600;text-align:left;">'
+    const helpText='<div style="font-size:28px;line-height:1.4;font-weight:600;text-align:left;">'
       +'<b style="color:#0c447c;">Onglet Notes</b><br>'
       +'• 7 boutons Do…Si pour saisir une note<br>'
       +'• Durées : ronde, blanche, noire, croche, double, triple<br>'
@@ -5908,17 +5907,17 @@
       clamp();
       function fieldRow(which,label,val){
         // Ligne sélectionnable : libellé + valeur. Un clic la rend « active ».
-        return '<button class="k rg-field" data-rg="'+which+'" style="display:grid;grid-template-columns:1fr auto;align-items:center;width:100%;height:30px;font-size:13px;font-weight:700;text-align:left;padding:0 10px;margin-top:3px;">'
-          +'<span>'+label+'</span><span class="rg-val" data-rg="'+which+'" style="font-size:15px;">'+val+'</span></button>';
+        return '<button class="k rg-field" data-rg="'+which+'" style="display:grid;grid-template-columns:1fr auto;align-items:center;width:100%;height:30px;font-size:28px;font-weight:700;text-align:left;padding:0 10px;margin-top:3px;">'
+          +'<span>'+label+'</span><span class="rg-val" data-rg="'+which+'" style="font-size:32px;">'+val+'</span></button>';
       }
       // Une SEULE ligne de boutons partagée : −10 −1 déb fin +1 +10, agissant sur le champ sélectionné.
       const stepRow='<div class="rg-steps" style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-top:4px;">'
-        +'<button class="k rg-step" data-d="-10" style="font-size:12px;padding:0;">−10</button>'
-        +'<button class="k rg-step" data-d="-1" style="font-size:13px;padding:0;">−1</button>'
-        +'<button class="k rg-step" data-set="min" style="font-size:12px;padding:0;">déb</button>'
-        +'<button class="k rg-step" data-set="max" style="font-size:12px;padding:0;">fin</button>'
-        +'<button class="k rg-step" data-d="1" style="font-size:13px;padding:0;">+1</button>'
-        +'<button class="k rg-step" data-d="10" style="font-size:12px;padding:0;">+10</button>'
+        +'<button class="k rg-step" data-d="-10" style="font-size:26px;padding:0;">−10</button>'
+        +'<button class="k rg-step" data-d="-1" style="font-size:28px;padding:0;">−1</button>'
+        +'<button class="k rg-step" data-set="min" style="font-size:26px;padding:0;">déb</button>'
+        +'<button class="k rg-step" data-set="max" style="font-size:26px;padding:0;">fin</button>'
+        +'<button class="k rg-step" data-d="1" style="font-size:28px;padding:0;">+1</button>'
+        +'<button class="k rg-step" data-d="10" style="font-size:26px;padding:0;">+10</button>'
         +'</div>';
       return '<div class="rg-wrap">'+fieldRow('from','De la mesure',from)+fieldRow('to','à la mesure',to)+stepRow+'</div>';
     }
@@ -6049,7 +6048,7 @@
       title:title,
       compact:!big,
       body:'<textarea id="hi" rows="'+rows+'" style="'+taStyle+'">'+((state.headers[key]||'')+'').replace(/</g,'&lt;')+'</textarea>'+
-        (big?'':'<div class="row-grid" style="margin-top:8px;"><button class="k" id="newline-btn" style="font-size:14px;">↵ Nouvelle ligne</button></div>'),
+        (big?'':'<div class="row-grid" style="margin-top:8px;"><button class="k" id="newline-btn" style="font-size:30px;">↵ Nouvelle ligne</button></div>'),
       onMount:()=>{
         const ta=document.getElementById('hi');
         ta.focus();
@@ -6131,7 +6130,7 @@
       onChange:(f,t,focus)=>{const m=(focus==='from'?f:t)-1;if(m>=0&&m<state.measures.length){state.sel={m,s:0};sig=keyAt(m);const sv=document.getElementById('sig-v');if(sv)sv.textContent=keyMajMinLabel(sig);renderScore();renderState();ensureSelectionVisible();}}});
     function controls(){
       return '<div class="mes-active" style="color:#8a5a00;">⊕ S\'applique à <b>toutes les voix</b></div>'+rg.html()+
-        '<div class="stepper-label">Armure (Majeur / mineur)</div><div class="stepper"><button class="k" id="sig-d">♭</button><div class="val"><b id="sig-v" style="font-size:13px;">'+keyMajMinLabel(sig)+'</b></div><button class="k" id="sig-u">♯</button></div>';
+        '<div class="stepper-label">Armure (Majeur / mineur)</div><div class="stepper"><button class="k" id="sig-d">♭</button><div class="val"><b id="sig-v" style="font-size:28px;">'+keyMajMinLabel(sig)+'</b></div><button class="k" id="sig-u">♯</button></div>';
     }
     function rebind(){
       rg.bind(document.getElementById('panel-body'));
@@ -6172,7 +6171,7 @@
       const showOthers=(pick==='alto'||pick==='tenor');
       return '<div class="mes-active" style="color:#0c6b2f;">◆ S\'applique à la <b>voix active</b></div>'+rg.html()+
       '<div class="stepper-label">Clé</div>'+
-      '<div class="row-grid row-4" id="clef-pick"><button class="k clef-small" data-clef="treble">𝄞</button><button class="k clef-small" data-clef="treble8" title="Sol octaviée (sonne une octave plus bas)"><svg width="20" height="30" viewBox="0 0 20 30" style="vertical-align:middle;"><text x="10" y="21" font-size="23" font-family="serif" text-anchor="middle" fill="currentColor">𝄞</text><text x="10" y="29" font-size="8" font-weight="bold" font-family="serif" text-anchor="middle" fill="currentColor">8</text></svg></button><button class="k clef-small" data-clef="bass">𝄢</button><button class="k" id="clef-others" title="Clés d\'ut (alto, ténor)" style="font-size:12px;">Autres ▾</button></div>'+
+      '<div class="row-grid row-4" id="clef-pick"><button class="k clef-small" data-clef="treble">𝄞</button><button class="k clef-small" data-clef="treble8" title="Sol octaviée (sonne une octave plus bas)"><svg width="20" height="30" viewBox="0 0 20 30" style="vertical-align:middle;"><text x="10" y="21" font-size="23" font-family="serif" text-anchor="middle" fill="currentColor">𝄞</text><text x="10" y="29" font-size="8" font-weight="bold" font-family="serif" text-anchor="middle" fill="currentColor">8</text></svg></button><button class="k clef-small" data-clef="bass">𝄢</button><button class="k" id="clef-others" title="Clés d\'ut (alto, ténor)" style="font-size:26px;">Autres ▾</button></div>'+
       '<div class="row-grid row-2" id="clef-others-row" style="margin-top:3px;'+(showOthers?'':'display:none;')+'">'+
         '<button class="k clef-small" data-clef="alto" title="Clé d\'ut 3e ligne (alto)"><svg width="34" height="30" viewBox="0 0 34 30" style="vertical-align:middle;"><text x="11" y="15" font-size="21" font-family="serif" text-anchor="middle" dominant-baseline="central" fill="currentColor">𝄡</text><text x="26" y="15" font-size="9" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="currentColor">alto</text></svg></button>'+
         '<button class="k clef-small" data-clef="tenor" title="Clé d\'ut 4e ligne (ténor)"><svg width="40" height="30" viewBox="0 0 40 30" style="vertical-align:middle;"><text x="11" y="15" font-size="21" font-family="serif" text-anchor="middle" dominant-baseline="central" fill="currentColor">𝄡</text><text x="29" y="15" font-size="9" font-weight="bold" font-family="sans-serif" text-anchor="middle" dominant-baseline="central" fill="currentColor">tén.</text></svg></button>'+
