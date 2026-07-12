@@ -212,7 +212,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.25 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.26 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -370,7 +370,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.25 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.26 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -567,7 +567,7 @@
         <div class="row-grid row-4">
           <button class="k" id="btn-save-file" style="font-size:30px;">💾 ABC</button>
           <button class="k" id="btn-export-mxl" style="font-size:30px;">💾 MXL</button>
-          <button class="k" id="btn-save-atm" title="Enregistrer morceau + mise en page (.atm)" style="font-size:30px;">💾 ATM</button>
+          <button class="k" id="btn-save-atm" title="Enregistrer morceau + mise en page (.atm)" style="font-size:30px;">💾 ATM</button><button class="k" id="btn-pdf-gf" style="font-size:30px;color:#b3261e;font-weight:700;" title="Exporter la vue A4 en PDF (impression du navigateur)">PDF</button>
           <button class="k" id="btn-saves" style="font-size:30px;">⭐ mémo</button>
         </div>
         <div class="row-grid row-2">
@@ -2844,20 +2844,20 @@
       tr.tabCustom=tabCustomFromMidis([40,45,50,55,59,64]);
     }
     var mids=tr.tabCustom.open.slice(), n=mids.length;
-    var h='<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">'
-      +'<span style="font-size:11px;color:#5f5e5a;">Cordes :</span>'
-      +'<button class="k" id="tab-cn-d" style="font-size:12px;min-width:26px;">\u2212</button>'
-      +'<span style="font-size:12px;min-width:20px;text-align:center;">'+n+'</span>'
-      +'<button class="k" id="tab-cn-u" style="font-size:12px;min-width:26px;">+</button>'
-      +'<span style="font-size:10px;color:#8a8880;">(2 \u00e0 10, grave en bas)</span></div>'+'<div style="font-size:10px;color:#8a8880;margin:0 0 6px;">Octave : do central = C4, mi grave (guitare) = E2.</div>';
+    var h='<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:5px;">'
+      +'<span style="font-size:24px;color:#5f5e5a;white-space:nowrap;flex-shrink:0;">Cordes :</span>'
+      +'<button class="k" id="tab-cn-d" style="width:60px;min-width:60px;flex:0 0 auto;font-size:26px;padding:0;">\u2212</button>'
+      +'<span style="font-size:26px;min-width:40px;text-align:center;flex-shrink:0;">'+n+'</span>'
+      +'<button class="k" id="tab-cn-u" style="width:60px;min-width:60px;flex:0 0 auto;font-size:26px;padding:0;">+</button>'
+      +'<span style="font-size:17px;color:#8a8880;flex-basis:100%;">(2 \u00e0 10, grave en bas)</span></div>'+'<div style="font-size:17px;color:#8a8880;margin:0 0 6px;">Octave : do central = C4, mi grave (guitare) = E2.</div>';
     var noteOpt=function(sel){var o='';for(var k=0;k<TAB_NOTES.length;k++){o+='<option'+(TAB_NOTES[k]===sel?' selected':'')+'>'+TAB_NOTES[k]+'</option>';}return o;};
     var octOpt=function(sel,nm){var o='';for(var v=0;v<=8;v++){o+='<option value="'+v+'"'+(v===sel?' selected':'')+'>'+nm+v+'</option>';}return o;};
     for(var i=n-1;i>=0;i--){
       var p=midiToParts(mids[i]);
       h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">'
-        +'<span style="font-size:10px;color:#8a8880;min-width:64px;">Corde '+(i+1)+(i===0?' (bas)':(i===n-1?' (haut)':''))+'</span>'
-        +'<select class="tab-cnote" data-i="'+i+'" style="font-size:12px;width:56px;">'+noteOpt(p.name)+'</select>'
-        +'<select class="tab-coct" data-i="'+i+'" style="font-size:12px;">'+octOpt(p.oct,p.name)+'</select></div>';
+        +'<span style="font-size:22px;color:#8a8880;white-space:nowrap;min-width:120px;flex-shrink:0;">Corde '+(i+1)+(i===0?' (bas)':(i===n-1?' (haut)':''))+'</span>'
+        +'<select class="tab-cnote" data-i="'+i+'" style="font-size:24px;width:110px;flex:0 0 auto;">'+noteOpt(p.name)+'</select>'
+        +'<select class="tab-coct" data-i="'+i+'" style="font-size:24px;width:110px;flex:0 0 auto;">'+octOpt(p.oct,p.name)+'</select></div>';
     }
     host.innerHTML=h;
     function commit(mids2){var _t=activeTrackObj(); if(!_t)return; _t.tabCustom=tabCustomFromMidis(mids2); _t.tabKind='custom'; renderTabPanel(); render();}
@@ -2875,9 +2875,9 @@
       opts+='<option value="'+k+'"'+(k===cur?' selected':'')+'>'+escXml(TAB_PRESETS[k].label)+'</option>';
     });
     opts+='<option value="custom"'+(cur==='custom'?' selected':'')+'>Personnalis\u00e9\u2026</option>';
-    var h='<div style="display:flex;align-items:center;gap:6px;">'
-      +'<span style="font-size:11px;color:#5f5e5a;">Accordage :</span>'
-      +'<select id="tab-tuning" style="flex:1;font-size:12px;padding:2px;">'+opts+'</select></div>';
+    var h='<div style="margin-bottom:4px;">'
+      +'<span style="font-size:24px;color:#5f5e5a;">Accordage :</span>'
+      +'<select id="tab-tuning" style="display:block;width:100%;font-size:22px;padding:6px;">'+opts+'</select></div>';
     if(cur==='custom'){
       h+='<div id="tab-custom-builder" style="margin-top:6px;"></div>';
     }
@@ -4245,7 +4245,7 @@
   bindToggle('btn-toggle-chords','chords');
   {const _bl=document.getElementById('btn-layout-line');if(_bl)_bl.addEventListener('click',()=>{if((state.scoreLayout||'line')!=='line'){state.scoreLayout='line';render();}});}
   {const _bp=document.getElementById('btn-layout-page');if(_bp)_bp.addEventListener('click',()=>{if((state.scoreLayout||'line')!=='page'){state.scoreLayout='page';if(state._pageCache)state._pageCache=null;render();}});}
-  {const _ba=document.getElementById('btn-layout-a4');if(_ba)_ba.addEventListener('click',()=>{if((state.scoreLayout||'line')!=='a4'){state.scoreLayout='a4';if(state._pageCache)state._pageCache=null;render();}});}/*v359*/{function __pdfGo(){var sheets=document.querySelectorAll('#score .a4-sheet');if(!sheets.length){alert('Aucune page A4 a imprimer');return;}var sw=sheets[0].getBoundingClientRect().width||900;var PW=794,PH=1123;var f=PW/sw;var w=window.open('','_blank');if(!w){alert('Fenetre bloquee : autorisez les popups pour exporter en PDF');return;}var css='@page{size:A4;margin:0}'+'html,body{margin:0;padding:0;background:#fff}'+'.pw{width:'+PW+'px;height:'+PH+'px;overflow:hidden;position:relative;page-break-after:always;break-after:page;}'+'.pw:last-child{page-break-after:auto;break-after:auto;}'+'.pw>.a4-sheet{transform:scale('+f+');transform-origin:top left;box-shadow:none !important;border:0 !important;margin:0 !important;}'+'.pw .track-block{border:0 !important;background:#fff !important;box-shadow:none !important;}';var body='';for(var k=0;k<sheets.length;k++)body+='<div class="pw">'+sheets[k].outerHTML+'</div>';var ttl=escXml(((state.headers.T||'Partition').split('\n')[0])||'Partition');w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+ttl+'</title><style>'+css+'</style></head><body>'+body+'</body></html>');w.document.close();w.focus();setTimeout(function(){try{w.print();}catch(e){}},350);}const _bpdf=document.getElementById('btn-pdf');if(_bpdf)_bpdf.addEventListener('click',()=>{if((state.scoreLayout||'line')!=='a4'){state.scoreLayout='a4';if(state._pageCache)state._pageCache=null;render();setTimeout(__pdfGo,120);}else{__pdfGo();}});}
+  {const _ba=document.getElementById('btn-layout-a4');if(_ba)_ba.addEventListener('click',()=>{if((state.scoreLayout||'line')!=='a4'){state.scoreLayout='a4';if(state._pageCache)state._pageCache=null;render();}});}/*v359*/{function __pdfGo(){var sheets=document.querySelectorAll('#score .a4-sheet');if(!sheets.length){alert('Aucune page A4 a imprimer');return;}var sw=sheets[0].getBoundingClientRect().width||900;var PW=794,PH=1123;var f=PW/sw;var w=window.open('','_blank');if(!w){alert('Fenetre bloquee : autorisez les popups pour exporter en PDF');return;}var css='@page{size:A4;margin:0}'+'html,body{margin:0;padding:0;background:#fff}'+'.pw{width:'+PW+'px;height:'+PH+'px;overflow:hidden;position:relative;page-break-after:always;break-after:page;}'+'.pw:last-child{page-break-after:auto;break-after:auto;}'+'.pw>.a4-sheet{transform:scale('+f+');transform-origin:top left;box-shadow:none !important;border:0 !important;margin:0 !important;}'+'.pw .track-block{border:0 !important;background:#fff !important;box-shadow:none !important;}'+'.pw [fill="#e24b4a" i]{fill:#000 !important}'+'.pw [stroke="#e24b4a" i]{stroke:#000 !important}'+'.pw circle[stroke="#e24b4a" i]{display:none !important}';var body='';for(var k=0;k<sheets.length;k++)body+='<div class="pw">'+sheets[k].outerHTML+'</div>';var ttl=escXml(((state.headers.T||'Partition').split('\n')[0])||'Partition');w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+ttl+'</title><style>'+css+'</style></head><body>'+body+'</body></html>');w.document.close();w.focus();setTimeout(function(){try{w.print();}catch(e){}},350);}const _bpdf=document.getElementById('btn-pdf');if(_bpdf)_bpdf.addEventListener('click',()=>{if((state.scoreLayout||'line')!=='a4'){state.scoreLayout='a4';if(state._pageCache)state._pageCache=null;render();setTimeout(__pdfGo,120);}else{__pdfGo();}});const _bpdf2=document.getElementById('btn-pdf-gf');if(_bpdf2)_bpdf2.addEventListener('click',()=>{if((state.scoreLayout||'line')!=='a4'){state.scoreLayout='a4';if(state._pageCache)state._pageCache=null;render();setTimeout(__pdfGo,120);}else{__pdfGo();}});}
   {const _tg=document.getElementById('btn-tab-guitar');if(_tg)_tg.addEventListener('click',()=>{const _t=activeTrackObj();if(!_t)return;if((TAB_PRESETS[_t.tabKind]||{}).fam!=='guitare')_t.tabKind='guitar';renderTabPanel();renderDiatoPanel();render();});}
   {const _tb=document.getElementById('btn-tab-banjo');if(_tb)_tb.addEventListener('click',()=>{const _t=activeTrackObj();if(!_t)return;if((TAB_PRESETS[_t.tabKind]||{}).fam!=='banjo')_t.tabKind='banjo';renderTabPanel();renderDiatoPanel();render();});}
     {const _tbs=document.getElementById('btn-tab-bass');if(_tbs)_tbs.addEventListener('click',()=>{const _t=activeTrackObj();if(!_t)return;if((TAB_PRESETS[_t.tabKind]||{}).fam!=='basse')_t.tabKind='bass4';renderTabPanel();renderDiatoPanel();render();});}
