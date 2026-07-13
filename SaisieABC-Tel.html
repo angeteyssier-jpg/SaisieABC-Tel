@@ -349,6 +349,7 @@
   #oeil-tab-tracks button.k, #oeil-piste-tracks button.k{
     min-width:86px !important; padding:0 18px !important; font-size:30px !important; }
   .row-grid.row-3:has(> .label) > button.k{ min-width:96px; padding:0 18px; }
+    .tab-cnote option, .tab-coct option{ font-size:18px; }
   /* v3.50 : en-tetes de sections de l'Oeil resserres */
   #oeil-sys-head, #oeil-piste-head, #oeil-acc-head,
   #oeil-txt-head, #oeil-par-head, #oeil-tab-head{
@@ -703,7 +704,7 @@
         </div>
       </div>
       <div class="tab-panel" data-panel="tab">
-        <div style="font-size:12px;color:#5f5e5a;margin:2px 0 8px;">Tablature sous la portée</div>
+        <div style="font-size:22px;color:#5f5e5a;margin:2px 0 8px;">Tablature sous la portée</div>
         <div class="row-grid row-2" style="grid-template-columns:1fr 1fr;">
           <button class="k" id="btn-tab-guitar" style="font-size:17px;" title="Tablature guitare 6 cordes (E A D G B E)">🎸 Guitare</button>
           <button class="k" id="btn-tab-banjo" style="font-size:17px;" title="Banjo ténor irlandais 4 cordes (G D A E)">🪕 Banjo</button>
@@ -2897,15 +2898,15 @@
     var _atk=state.tracks[state.activeTrack];if(!(_atk&&(TAB_PRESETS[_atk.tabKind]||_atk.tabKind==='custom'))){host.innerHTML='';if(_twrap)_twrap.innerHTML='';return;}
     if(_twrap)renderTabTuning(_twrap,_atk);
     const tracks=state.tracks||[];
-    let h='<div style="font-size:11px;color:#5f5e5a;margin-bottom:6px;">Voix en tablature (défaut : toutes) &amp; octave propre à la tab :</div>';
+    let h='<div style="font-size:20px;color:#5f5e5a;margin-bottom:6px;">Voix en tablature (défaut : toutes) &amp; octave propre à la tab :</div>';
     tracks.forEach((t,i)=>{
       const on=t.tabShow!==false, oct=t.tabOctave||0, nm=escXml(t.name||('V'+(i+1)));
       h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px;">'
-        +'<button class="k tabv-show'+(on?' active':'')+'" data-i="'+i+'" style="font-size:12px;min-width:30px;" title="Afficher/masquer la tablature de cette voix">'+(on?'\u2611':'\u2610')+'</button>'
-        +'<span style="flex:1;font-size:12px;'+(on?'':'opacity:0.45;')+'">'+nm+'</span>'
-        +'<button class="k tabv-octd" data-i="'+i+'" style="font-size:11px;min-width:30px;" title="Octave tab \u22121">\u22128va</button>'
-        +'<span style="font-size:11px;min-width:26px;text-align:center;">'+(oct>0?'+':'')+oct+'</span>'
-        +'<button class="k tabv-octu" data-i="'+i+'" style="font-size:11px;min-width:30px;" title="Octave tab +1">+8va</button>'
+        +'<button class="k tabv-show'+(on?' active':'')+'" data-i="'+i+'" style="font-size:22px;min-width:48px;" title="Afficher/masquer la tablature de cette voix">'+(on?'\u2611':'\u2610')+'</button>'
+        +'<span style="flex:1;font-size:22px;'+(on?'':'opacity:0.45;')+'">'+nm+'</span>'
+        +'<button class="k tabv-octd" data-i="'+i+'" style="font-size:20px;min-width:52px;" title="Octave tab \u22121">\u22128va</button>'
+        +'<span style="font-size:20px;min-width:40px;text-align:center;">'+(oct>0?'+':'')+oct+'</span>'
+        +'<button class="k tabv-octu" data-i="'+i+'" style="font-size:20px;min-width:52px;" title="Octave tab +1">+8va</button>'
         +'</div>';
     });
     host.innerHTML=h;
