@@ -230,7 +230,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.464 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.472 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -406,7 +406,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.464 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.472 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -5628,8 +5628,8 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       }
     }
     if(cur)out.push(cur);
-    return out.map(function(o){
-      return {f:chemin,x:o.x,t:o.t,r:o.r,abc:o.d.join('\n')};});
+    return out.map(function(o,_i){
+      return {f:chemin,x:o.x,t:o.t,r:o.r,i:_i,abc:o.d.join('\n')};});
   }
 
   /* ---- designer un dossier ---- */
@@ -5651,15 +5651,19 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     if(!fs.length){dire('Aucun fichier choisi.');return null;}
     var gardes=fs.filter(function(f){return /\.(abc|atm|atmz)$/i.test(f.name||'');});
     if(!gardes.length){dire('Rien a lire ici : aucun .abc, .atm ou .atmz.');return null;}
-    var t0=Date.now(),morceaux=[],ratees=0;
+    var t0=Date.now(),morceaux=[],ratees=0,atms={};
     for(var i=0;i<gardes.length;i++){
       dire('Lecture '+(i+1)+'/'+gardes.length+'  '+gardes[i].name);
       try{
         var txt=await _lire(gardes[i]);
-        morceaux=morceaux.concat(_decoupe(txt,gardes[i].webkitRelativePath||gardes[i].name));
+        var _nm=gardes[i].webkitRelativePath||gardes[i].name;
+        /* un .atm porte sa mise en page : on garde le texte entier pour
+           pouvoir le rouvrir par loadAtm, tablature comprise */
+        if(/\.(atm|atmz)$/i.test(gardes[i].name||''))atms[_nm]=txt;/*SCENE_4470_ATM*/
+        morceaux=morceaux.concat(_decoupe(txt,_nm));
       }catch(e){ratees++;}
     }
-    var lib={quand:new Date().toISOString(),nf:gardes.length,m:morceaux};
+    var lib={quand:new Date().toISOString(),nf:gardes.length,m:morceaux,atm:atms};
     await window.__scPut(lib);
     dire('Range : '+gardes.length+' fichiers, '+morceaux.length+' morceaux, '
          +(Math.round((Date.now()-t0)/100)/10)+' s'
@@ -5745,8 +5749,18 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     ['Mazurka',           ['mazurka','mazurca'],[]],
     ['Polka',             ['polka','polkka'],[]],
     ['Gavotte',           ['gavotte'],[]],
+    ['Waltz',             ['waltz'],[]],/*SCENE_4469_IRL*/
     ['Valse',             ['valse'],[]],
-    ['Sp\u00e9cifique',   ['specifique'],[]]
+    ['Sp\u00e9cifique',   ['specifique'],[]],
+    ['Slip Jig',          ['slip jig','slipjig'],[]],
+    ['Jig',               ['jig'],[]],
+    ['Reel',              ['reel'],[]],
+    ['Hornpipe',          ['hornpipe'],[]],
+    ['Barndance',         ['barndance','barn dance'],[]],
+    ['Fling',             ['fling'],[]],
+    ['Slide',             ['slide'],[]],
+    ['Oldtime',           ['oldtime','old time','old timey'],[]],
+    ['Chorale',           ['chorale','choral','choeur'],[]]
   ];
   var SCLIB=null,SCPAR=null,SCSEL=null,SCTOUT=false;
 
@@ -5829,6 +5843,8 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       ((SCPAR[o.f]||1)<=4?mien:rec).push(o);
     }
     h.rs.innerHTML='';
+    /* rien chez toi mais du monde dans les recueils : on deplie tout seul */
+    if(!mien.length&&rec.length)SCTOUT=true;/*SCENE_4469_AUTO*/
     var tot=mien.length+rec.length;
     var t=document.createElement('div');
     t.style.cssText='margin:6px 0;font-weight:700;';
@@ -5876,24 +5892,50 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
 
   /* ---- affichage du morceau : rien n'est ecrit, tout est rendu ---- */
   var SCSAUVE=null,SCCACHE=null,SCPAD=null;
+  /*SCENE_4467_FULL plein ecran : classe fullscreen + regles sc-solo*/
+  var SCNID=null;
+  /*SCENE_4468_MOVE on deplace le noeud au lieu de plier la mise en page*/
+  function _scSolo(on){
+    var sc=document.getElementById('score');if(!sc)return;
+    if(on){
+      if(SCNID)return;
+      /* on note EXACTEMENT d'ou il vient : meme parent, meme voisin suivant */
+      SCNID={p:sc.parentNode,s:sc.nextSibling,h:sc.style.height,m:sc.style.maxHeight};
+      var h=document.getElementById('sc-play');
+      if(!h){
+        h=document.createElement('div');h.id='sc-play';
+        h.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:99997;'
+          +'overflow:auto;background:#faf8f2;padding:6px;';
+        document.body.appendChild(h);
+      }
+      h.style.display='';h.appendChild(sc);
+      sc.style.height='auto';sc.style.maxHeight='none';
+      _scHaut();
+      /* la barre n'est construite qu'apres : on refait la mesure au tour suivant */
+      setTimeout(_scHaut,0);
+    }else{
+      if(!SCNID)return;
+      var hh=document.getElementById('sc-play');
+      if(SCNID.p)SCNID.p.insertBefore(sc,SCNID.s||null);
+      sc.style.height=SCNID.h;sc.style.maxHeight=SCNID.m;
+      if(hh)hh.style.display='none';
+      SCNID=null;
+    }
+  }
+  function _scHaut(){
+    var h=document.getElementById('sc-play');if(!h)return;
+    var b=document.getElementById('sc-bar2');
+    h.style.top=(((b&&b.style.display!=='none')?b.offsetHeight:0)+2)+'px';
+  }
+
   function _solo(on){
-    var app=document.getElementById('app');
     if(on){
       if(SCCACHE)return;
-      var n=document.getElementById('score');
-      if(!n||!app)return;
-      SCCACHE=[];
-      while(n&&n!==app&&n.parentNode){
-        var p=n.parentNode,ch=p.children,i;
-        for(i=0;i<ch.length;i++){
-          if(ch[i]!==n){SCCACHE.push([ch[i],ch[i].style.display]);ch[i].style.display='none';}
-        }
-        n=p;
-      }
+      SCCACHE=true;_scSolo(true);/*SCENE_4467_ON*/
     }else{
       if(!SCCACHE)return;
-      for(var j=0;j<SCCACHE.length;j++)SCCACHE[j][0].style.display=SCCACHE[j][1];
-      SCCACHE=null;
+      SCCACHE=null;_scSolo(false);/*SCENE_4467_OFF*/
+      var app=document.getElementById('app');
       if(app&&SCPAD!==null){app.style.paddingTop=SCPAD;SCPAD=null;}
     }
   }
@@ -5910,7 +5952,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       r.title='Revenir a la liste';x.title='Revenir a l\'editeur';
       t.style.cssText='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;';
       r.style.cssText=x.style.cssText='font:inherit;background:#fff;color:inherit;'
-        +'border:1px solid #d8d6ce;border-radius:9px;padding:8px 12px;';
+        +'border:1px solid #d8d6ce;border-radius:10px;'+BSTY;r.style.fontSize=x.style.fontSize=BFS+'px';/*SCENE_4465_BAR*/
       b.appendChild(r);b.appendChild(x);b.appendChild(t);
       document.body.appendChild(b);
       r.addEventListener('click',function(){
@@ -5925,15 +5967,31 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   }
   function _montrer(o){
     if(!o||!o.abc)return;
-    /* l'etat d'avant, pile d'annulation comprise : c'est lui qu'on rendra */
-    if(!SCSAUVE)SCSAUVE={e:snapshot(),p:history.stack,i:history.pos};
-    if(!previewTuneAbc(o.abc)){
+    /* l'etat d'avant, pile d'annulation comprise : c'est lui qu'on rendra.
+       lastMultiTunes / lastMultiIndex / lastMultiFileName vivent HORS de
+       state : snapshot ne les voit pas, il faut les sauver a la main. */
+    if(!SCSAUVE)SCSAUVE={e:snapshot(),p:history.stack,i:history.pos,
+      mt:(typeof lastMultiTunes!=='undefined')?lastMultiTunes:null,
+      mi:(typeof lastMultiIndex!=='undefined')?lastMultiIndex:-1,
+      mf:(typeof lastMultiFileName!=='undefined')?lastMultiFileName:null};
+    var ok=false;
+    var brut=(SCLIB&&SCLIB.atm)?SCLIB.atm[o.f]:null;
+    if(brut&&typeof loadAtm==='function'){
+      /* .atm : on rouvre le fichier entier, donc mise en page et tablature */
+      try{
+        loadAtm(brut,o.f);
+        if(o.i>0&&typeof __gotoTune==='function')__gotoTune(o.i);
+        ok=true;
+      }catch(e){ok=false;}
+    }
+    if(!ok)ok=!!previewTuneAbc(o.abc);   /* .abc : le chemin d'avant suffit */
+    if(!ok){
       var lg=document.getElementById('sc-log');
       if(lg)lg.textContent='Morceau illisible : '+(o.t||o.f);
       return;
     }
     var ov=document.getElementById('sc-ovl');if(ov)ov.style.display='none';
-    _solo(true);_barre(o);
+    _scPage();_solo(true);_barre(o);/*SCENE_4465_FIT*//*SCENE_4470_ATM_SHOW*/
   }
   function _rendre(){
     try{if(typeof stopPlayback==='function'&&typeof audio==='object'&&audio&&audio.playing)
@@ -5943,19 +6001,45 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     if(SCSAUVE){
       var k=SCSAUVE;SCSAUVE=null;
       loadFrom(k.e);history.stack=k.p;history.pos=k.i;
+      /* les globales de recueil ne sont pas dans state : on les rend aussi,
+         sinon l'editeur repartirait avec le recueil ouvert par la scene */
+      if(k.mt!==undefined){
+        try{lastMultiTunes=k.mt;lastMultiIndex=k.mi;lastMultiFileName=k.mf;
+          if(typeof updateListBtn==='function')updateListBtn();}catch(e){}
+      }/*SCENE_4470_ATM_BACK*/
       render();
     }
   }
   window.__scMontrer=_montrer;window.__scRendre=_rendre;
   /*SCENE_4464_TOOLS reglages de scene : ecart, tonalite, affichage, lecture*/
   var SCTON=null;
+  /*SCENE_4465_TEL commandes au doigt, partition en mode Page*/
+  var BFS=32,BSTY='padding:14px 16px;min-height:56px;',BCOL=3;
+  /* La mise en page A4 reserve la hauteur d'une feuille : sur un telephone la
+     partition tiendrait dans le quart haut. Le mode Page replie les systemes
+     sur la largeur de l'ecran. Provisoire : loadFrom rend l'etat d'avant. */
+  function _scPage(){/*SCENE_4466_PAGE*/
+    try{if(state.scoreLayout!=='page'){state.scoreLayout='page';render();}}catch(e){}
+  }
+
   function _bt(lab,titre,fn){
     var b=_bouton(lab);b.title=titre;
     b.style.cssText='font:inherit;background:#fff;color:inherit;'
-      +'border:1px solid #d8d6ce;border-radius:9px;padding:8px 10px;';
+      +'border:1px solid #d8d6ce;border-radius:10px;'+BSTY;b.style.fontSize=BFS+'px';/*SCENE_4465_BT*/
     b.addEventListener('click',fn);return b;
   }
   /* memes bornes et meme pas que les boutons size-d / size-u de l'oeil */
+  /*SCENE_4471_SYS ecart entre systemes : state.view.systemGap*/
+  /* L'oeil ne borne pas cette valeur (vg-sys-d / vg-sys-u la laissent filer).
+     Ici on borne a -40..40 : le negatif rapproche les systemes au-dela du
+     zero, ce qui reste lisible sur bien des morceaux et fait tenir la
+     partition d'un coup d'oeil. Pas de 2 et defaut 14, comme l'original. */
+  function _scSys(d){
+    if(!state.view)state.view={};
+    var v=(state.view.systemGap!==undefined)?state.view.systemGap:14;
+    state.view.systemGap=Math.max(-40,Math.min(40,v+(d>0?2:-2)));/*SCENE_4472_NEG*/
+    render();_scLabels();
+  }
   function _scEcart(d){
     state.scoreScale=(d>0)?Math.min(250,(state.scoreScale||100)+10)
                           :Math.max(40,(state.scoreScale||100)-10);
@@ -5982,7 +6066,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     p=document.createElement('div');p.id='sc-ton-pop';
     p.style.cssText='position:fixed;z-index:99999;background:#fff;'
       +'border:1px solid #d8d6ce;border-radius:10px;padding:6px;display:grid;gap:4px;'
-      +'grid-template-columns:repeat(5,auto);box-shadow:0 2px 10px rgba(0,0,0,.18);'
+      +'grid-template-columns:repeat('+BCOL+',auto);box-shadow:0 2px 10px rgba(0,0,0,.18);'/*SCENE_4465_POP*/
       +'font:'+FS+'px/1.3 system-ui,-apple-system,sans-serif;';
     for(var i=0;i<cibles.length;i++){(function(t){
       var b=_bt(t.lab,'Transposer vers '+t.lab,function(){
@@ -5999,7 +6083,10 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   }
   function _scLabels(){
     var e=document.getElementById('sc-ec');
-    if(e)e.textContent=(state.scoreScale||100);
+    if(e)e.textContent='\u2194 '+(state.scoreScale||100);
+    var sy=document.getElementById('sc-sy');
+    if(sy)sy.textContent='\u2195 '+((state.view&&state.view.systemGap!==undefined)
+      ?state.view.systemGap:14);/*SCENE_4471_LAB*/
     var v=document.getElementById('sc-aff');
     if(v){
       var t=null;try{t=activeTrackObj();}catch(x){}
@@ -6020,13 +6107,19 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       g.style.cssText='display:flex;gap:6px;align-items:center;flex-wrap:wrap;';
       var moins=_bt('\u2212','Notes plus serrees',function(){_scEcart(-1);});
       var val=document.createElement('span');val.id='sc-ec';
-      val.style.cssText='min-width:2.6em;text-align:center;';
+      val.style.cssText='min-width:2.6em;text-align:center;font-size:'+BFS+'px;';/*SCENE_4465_VAL*/
       val.title='Ecart des notes';
       var plus=_bt('+','Notes plus espacees',function(){_scEcart(1);});
       var ton=_bt('Ton','Changer de tonalite',function(){_scTon(ton);});ton.id='sc-tn';
       var aff=_bt('Les deux','Tablature, solfege, ou les deux',_scAff);aff.id='sc-aff';
       var lir=_bt('\u25b6','Ecouter',_scLire);lir.id='sc-lir';
+      var smoins=_bt('\u2212','Systemes plus serres',function(){_scSys(-1);});
+      var sval=document.createElement('span');sval.id='sc-sy';
+      sval.style.cssText='min-width:2.6em;text-align:center;font-size:'+BFS+'px;';
+      sval.title='Ecart entre systemes';
+      var splus=_bt('+','Systemes plus espaces',function(){_scSys(1);});
       g.appendChild(moins);g.appendChild(val);g.appendChild(plus);
+      g.appendChild(smoins);g.appendChild(sval);g.appendChild(splus);/*SCENE_4471_BAR*/
       g.appendChild(ton);g.appendChild(aff);g.appendChild(lir);
       var t=document.getElementById('sc-ttl');
       if(t&&t.parentNode===b){t.style.flexBasis='100%';t.style.order='9';
