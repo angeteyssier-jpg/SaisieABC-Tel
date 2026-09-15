@@ -230,7 +230,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.463 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.464 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -406,7 +406,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.463 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.464 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -5918,7 +5918,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       x.addEventListener('click',function(){_rendre();_fermer();});
     }
     b.style.display='';
-    document.getElementById('sc-ttl').textContent=o.t||o.f;
+    document.getElementById('sc-ttl').textContent=o.t||o.f;_scOutils(b);/*SCENE_4464_BAR*/
     var app=document.getElementById('app');
     if(app){if(SCPAD===null)SCPAD=app.style.paddingTop;
       app.style.paddingTop=(b.offsetHeight+6)+'px';}
@@ -5938,7 +5938,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   function _rendre(){
     try{if(typeof stopPlayback==='function'&&typeof audio==='object'&&audio&&audio.playing)
       stopPlayback(true);}catch(e){}
-    var b=document.getElementById('sc-bar2');if(b)b.style.display='none';
+    var b=document.getElementById('sc-bar2');if(b)b.style.display='none';var _p=document.getElementById('sc-ton-pop');if(_p&&_p.parentNode)_p.parentNode.removeChild(_p);/*SCENE_4464_POP*/
     _solo(false);
     if(SCSAUVE){
       var k=SCSAUVE;SCSAUVE=null;
@@ -5947,6 +5947,96 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     }
   }
   window.__scMontrer=_montrer;window.__scRendre=_rendre;
+  /*SCENE_4464_TOOLS reglages de scene : ecart, tonalite, affichage, lecture*/
+  var SCTON=null;
+  function _bt(lab,titre,fn){
+    var b=_bouton(lab);b.title=titre;
+    b.style.cssText='font:inherit;background:#fff;color:inherit;'
+      +'border:1px solid #d8d6ce;border-radius:9px;padding:8px 10px;';
+    b.addEventListener('click',fn);return b;
+  }
+  /* memes bornes et meme pas que les boutons size-d / size-u de l'oeil */
+  function _scEcart(d){
+    state.scoreScale=(d>0)?Math.min(250,(state.scoreScale||100)+10)
+                          :Math.max(40,(state.scoreScale||100)-10);
+    render();_scLabels();
+  }
+  /* le cycle exact du bouton d'origine : les deux -> solfege -> tablature */
+  function _scAff(){
+    var t=null;try{t=activeTrackObj();}catch(e){}
+    if(!t||!t.tabKind)return;
+    var c=t.staffView||'both';
+    t.staffView=(c==='both')?'staff':(c==='staff')?'tab':'both';
+    try{if(typeof renderTabPanel==='function')renderTabPanel();}catch(e){}
+    render();_scLabels();
+  }
+  function _scLire(){
+    try{if(audio&&audio.playing)stopPlayback(true);else playSchedule();}catch(e){}
+    setTimeout(_scLabels,80);
+  }
+  function _scTon(anc){
+    var p=document.getElementById('sc-ton-pop');
+    if(p){if(p.parentNode)p.parentNode.removeChild(p);return;}
+    var cibles=null;try{cibles=KQ_T;}catch(e){}
+    if(!cibles||!cibles.length)return;
+    p=document.createElement('div');p.id='sc-ton-pop';
+    p.style.cssText='position:fixed;z-index:99999;background:#fff;'
+      +'border:1px solid #d8d6ce;border-radius:10px;padding:6px;display:grid;gap:4px;'
+      +'grid-template-columns:repeat(5,auto);box-shadow:0 2px 10px rgba(0,0,0,.18);'
+      +'font:'+FS+'px/1.3 system-ui,-apple-system,sans-serif;';
+    for(var i=0;i<cibles.length;i++){(function(t){
+      var b=_bt(t.lab,'Transposer vers '+t.lab,function(){
+        try{__kqGo(t);SCTON=t.lab;}catch(e){}
+        var q=document.getElementById('sc-ton-pop');
+        if(q&&q.parentNode)q.parentNode.removeChild(q);
+        _scLabels();});
+      b.style.padding='8px 6px';
+      p.appendChild(b);})(cibles[i]);}
+    document.body.appendChild(p);
+    var r=anc.getBoundingClientRect(),w=p.offsetWidth||200;
+    p.style.left=Math.max(4,Math.min(r.left,window.innerWidth-w-4))+'px';
+    p.style.top=(r.bottom+4)+'px';
+  }
+  function _scLabels(){
+    var e=document.getElementById('sc-ec');
+    if(e)e.textContent=(state.scoreScale||100);
+    var v=document.getElementById('sc-aff');
+    if(v){
+      var t=null;try{t=activeTrackObj();}catch(x){}
+      var sv=(t&&t.staffView)||'both';
+      v.textContent=(sv==='tab')?'Tab':(sv==='staff')?'Solf\u00e8ge':'Les deux';
+      v.disabled=!(t&&t.tabKind);          /* grise comme le bouton d'origine */
+      v.style.opacity=v.disabled?'0.45':'';
+    }
+    var l=document.getElementById('sc-lir');
+    if(l){var j=false;try{j=!!(audio&&audio.playing);}catch(x){}
+      l.textContent=j?'\u23f8':'\u25b6';}
+    var n=document.getElementById('sc-tn');
+    if(n)n.textContent=SCTON||'Ton';
+  }
+  function _scOutils(b){
+    if(!document.getElementById('sc-ec')){
+      var g=document.createElement('span');
+      g.style.cssText='display:flex;gap:6px;align-items:center;flex-wrap:wrap;';
+      var moins=_bt('\u2212','Notes plus serrees',function(){_scEcart(-1);});
+      var val=document.createElement('span');val.id='sc-ec';
+      val.style.cssText='min-width:2.6em;text-align:center;';
+      val.title='Ecart des notes';
+      var plus=_bt('+','Notes plus espacees',function(){_scEcart(1);});
+      var ton=_bt('Ton','Changer de tonalite',function(){_scTon(ton);});ton.id='sc-tn';
+      var aff=_bt('Les deux','Tablature, solfege, ou les deux',_scAff);aff.id='sc-aff';
+      var lir=_bt('\u25b6','Ecouter',_scLire);lir.id='sc-lir';
+      g.appendChild(moins);g.appendChild(val);g.appendChild(plus);
+      g.appendChild(ton);g.appendChild(aff);g.appendChild(lir);
+      var t=document.getElementById('sc-ttl');
+      if(t&&t.parentNode===b){t.style.flexBasis='100%';t.style.order='9';
+        b.insertBefore(g,t);}
+      else b.appendChild(g);
+    }
+    SCTON=null;            /* nouveau morceau : tonalite de depart inconnue */
+    _scLabels();
+  }
+
 
 
   /* ---- l'onglet, herite du style de son voisin ---- */
