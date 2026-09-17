@@ -230,7 +230,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.488 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.490 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -406,7 +406,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.488 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.490 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -5647,7 +5647,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     return new Promise(function(res){
       var inp=document.createElement('input');
       inp.type='file';inp.multiple=true;
-      try{inp.webkitdirectory=true;}catch(e){}
+      var _sd=!!window.__scSansDossier;window.__scSansDossier=false;if(!_sd){try{inp.webkitdirectory=true;}catch(e){}}/*SCFILES_4489_W*/
       inp.style.display='none';
       inp.addEventListener('change',function(){
         res(Array.prototype.slice.call(inp.files||[]));
@@ -5706,9 +5706,43 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     o.innerHTML='<div class="sc-bar">'
       +'<button id="sc-close" title="Revenir a l\'editeur">\u2715</button>'
       +'<button id="sc-dir">\uD83D\uDCC2 Dossier\u2026</button>'
+      +'<button id="sc-files">\uD83D\uDCC4 Fichiers\u2026</button>'
+      +'<button id="sc-doc">\uD83D\uDCD6 Document ouvert</button>'/*SCFILES_4489_UI*/
       +'</div><div class="sc-st" id="sc-st"></div><div class="sc-log" id="sc-log"></div>';
     document.body.appendChild(o);
     document.getElementById('sc-close').addEventListener('click',_fermer);
+    {var _bf=document.getElementById('sc-files');
+     if(_bf)_bf.addEventListener('click',function(){
+       var _lg=document.getElementById('sc-log');_lg.textContent='';
+       window.__scSansDossier=true;   /* un seul coup : _fichiers le remet a faux */
+       window.__scScan(function(s){_lg.textContent+=s+'\n';})
+         .then(function(lib){if(lib){_etat(lib);_scVue(lib);}})
+         .catch(function(e){window.__scSansDossier=false;_lg.textContent+='Echec : '+e+'\n';});
+     });}
+    {var _bd=document.getElementById('sc-doc');
+     if(_bd)_bd.addEventListener('click',function(){
+       var _lg=document.getElementById('sc-log');_lg.textContent='';
+       var _mt=(typeof lastMultiTunes!=='undefined')?lastMultiTunes:null;
+       var _nom=((typeof lastMultiFileName!=='undefined')&&lastMultiFileName)?lastMultiFileName:'Document ouvert';
+       var _m=[],_k,_e,_u;
+       if(_mt&&_mt.length){
+         for(_k=0;_k<_mt.length;_k++){
+           _u=_decoupe((_mt[_k]&&_mt[_k].abc)||'',_nom);
+           _e=_u[0]||{f:_nom,x:'',t:'',r:'',i:0,abc:(_mt[_k]&&_mt[_k].abc)||''};
+           _e.f=_nom;_e.i=_k;_e.doc=true;
+           if(!_e.t&&_mt[_k]&&_mt[_k].title)_e.t=_mt[_k].title;
+           _m.push(_e);
+         }
+       }else{
+         _u=_decoupe((typeof buildAbcText==='function')?buildAbcText():'',_nom);
+         if(_u.length){_u[0].i=0;_u[0].doc=true;_m.push(_u[0]);}
+       }
+       if(!_m.length){_lg.textContent='Rien a lire : aucun morceau ouvert.\n';return;}
+       var _lib={quand:new Date().toISOString(),nf:1,m:_m,atm:{}};
+       _etat(_lib);_scVue(_lib);   /* volatile : jamais range dans IndexedDB */
+       try{var _h=_hote();if(_h&&typeof _rangee==='function'){_h.rs.innerHTML='';_rangee(_h.rs,_m,200);}}catch(_x){}
+       _lg.textContent+=_m.length+' morceau'+(_m.length>1?'x':'')+' dans '+_nom+'\n';
+     });}/*SCFILES_4489_BTN*/
     document.getElementById('sc-dir').addEventListener('click',function(){
       var lg=document.getElementById('sc-log');lg.textContent='';
       window.__scScan(function(s){lg.textContent+=s+'\n';})
@@ -6030,7 +6064,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       mi:(typeof lastMultiIndex!=='undefined')?lastMultiIndex:-1,
       mf:(typeof lastMultiFileName!=='undefined')?lastMultiFileName:null};
     var ok=false;
-    var brut=(SCLIB&&SCLIB.atm)?SCLIB.atm[o.f]:null;
+    if(o.doc){var _dmt=(typeof lastMultiTunes!=='undefined')?lastMultiTunes:null;if(_dmt&&_dmt.length&&typeof __gotoTune==='function'){try{__gotoTune(o.i);ok=true;}catch(e){ok=false;}}else ok=true;}/*SCDOC_4489_GO*/var brut=(SCLIB&&SCLIB.atm)?SCLIB.atm[o.f]:null;
     if(brut&&typeof loadAtm==='function'){
       /* .atm : on rouvre le fichier entier, donc mise en page et tablature */
       try{
@@ -6046,7 +6080,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       return;
     }
     var ov=document.getElementById('sc-ovl');if(ov)ov.style.display='none';
-    SCMAN=null;_scPage();_scProfil();_solo(true);_barre(o);_scAjuste();/*SCENE_4487_FIT*//*SCENE_4465_FIT*//*SCENE_4470_ATM_SHOW*/
+    SCMAN=(SCMAN&&SCMAN.n)?{n:SCMAN.n}:null;/*SCMAN_4490_N chiffres gardes, zoom recalcule*/_scPage();_scProfil();_solo(true);_barre(o);_scAjuste();/*SCENE_4487_FIT*//*SCENE_4465_FIT*//*SCENE_4470_ATM_SHOW*/
   }
   function _rendre(){
     try{if(typeof stopPlayback==='function'&&typeof audio==='object'&&audio&&audio.playing)
