@@ -230,7 +230,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.496 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.497 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -406,7 +406,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.496 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.497 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -6234,7 +6234,8 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       _scPadApp();if(SCMAN)SCMAN.z=null;_scAjuste();
     });tog.id='sc-tog';
     t.style.flexBasis='auto';t.style.order='';t.style.flex='1 1 0';t.style.minWidth='0';
-    [back,quit,pre,suiv,lir,tog,t].forEach(function(e){if(e){_scTaille(e);r1.appendChild(e);}});
+    var pfs=_scFSbtn();/*SCFS_4497_BTN plein ecran : tout a gauche de la 1re rangee*/
+    [pfs,back,quit,pre,suiv,lir,tog,t].forEach(function(e){if(e){_scTaille(e);r1.appendChild(e);}});
     var zd=_bt('\u2212','Zoom : reduire',function(){_scZoom(-1);}),zv=_scVal('sc-zv','Zoom'),
         zu=_bt('+','Zoom : agrandir',function(){_scZoom(1);});
     var nd=_bt('1\u2212','Chiffres plus petits',function(){_scNum(-1);}),nv=_scVal('sc-nv','Taille des chiffres'),
@@ -6243,8 +6244,8 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
         pv=_scVal('sc-pv','Plancher (px) \u00b7 hauteur mesuree d\'un chiffre'),
         pu=_bt('+','Plancher de lisibilite : monter',function(){_scPl(1);});
     var fit=_bt('\u2922','Tout remettre au depart',function(){SCMAN=null;SCPL=null;_scProfil();_scAjuste();});/*SCFIT_4491*/
-    var pfs=_scFSbtn();/*SCFS_4496_BTN bouton plein ecran, en tete de la 2e rangee*/
-    [pfs,ton,aff,moins,val,plus,smoins,sval,splus,zd,zv,zu,nd,nv,nu,pd,pv,pu,fit].forEach(function(e){
+    /*SCFS_4497_MOVE le bouton plein ecran a quitte cette rangee (la 4.496 le posait ici)*/
+    [ton,aff,moins,val,plus,smoins,sval,splus,zd,zv,zu,nd,nv,nu,pd,pv,pu,fit].forEach(function(e){
       if(e){_scTaille(e);r2.appendChild(e);}});
     [aff,moins,plus,smoins,splus].forEach(function(e){
       if(e&&e.tagName==='BUTTON')e.addEventListener('click',function(){if(SCMAN)SCMAN.z=null;_scAjuste();});});
