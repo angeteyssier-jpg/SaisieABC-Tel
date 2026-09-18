@@ -230,7 +230,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.490 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.496 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -406,7 +406,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.490 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.496 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -2559,7 +2559,7 @@ function nominalDur(t){var _dn=(+t.dot||0);return t.dur*(_dn>=2?1.75:(_dn>=1?1.5
     for(var k=0;k<mIdxs.length;k++){
       var mi=mIdxs[k],m=measures?measures[mi]:null;
       if(vf.parts&&state.parts&&state.parts[mi])bump(14+oP+szP);
-      if(mi===0||(state.tempoChanges&&state.tempoChanges[mi]!==undefined))bump(23+oTp+szTp);
+      if((state.viewFlags&&state.viewFlags.tempo===false)?false:(mi===0||(state.tempoChanges&&state.tempoChanges[mi]!==undefined)))bump(23+oTp+szTp);/*TEMPOFF_4493_RISE*/
       if(state.repeats&&state.repeats[mi]&&state.repeats[mi].volta)bump(11+vO+2);
       if(m){var hasC=false,hasT=false;for(var s=0;s<m.length;s++){var t=m[s];if(!t)continue;if(t.chord)hasC=true;if(t.text)hasT=true;}
         if(chordsAbove&&hasC)bump(3+aC+szC);
@@ -3220,7 +3220,7 @@ if(+t.dot>=1)svg+='<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>
             // Affichée sur la voix VISIBLE LA PLUS HAUTE (pas forcément la voix active).
             const tc=state.tempoChanges||{};
             const isTopVoice=(layout&&layout._topVisible!==undefined&&layout._renderTrack!==undefined)?(layout._renderTrack===layout._topVisible):isActiveVoice;
-            if((mIdx===0||tc[mIdx]!==undefined)&&isTopVoice){
+            if((mIdx===0||tc[mIdx]!==undefined)&&isTopVoice&&!(state.viewFlags&&state.viewFlags.tempo===false)){/*TEMPOFF_4493_DRAW*/
               var _tqTb=(state.tempoBeat||{})[mIdx]||{};var _tqU=(mIdx>0&&_tqTb.u!=null)?_tqTb.u:beatUnit();var _tqD=(mIdx>0&&_tqTb.dot!=null)?_tqTb.dot:beatDotted();const bpm=Math.round(tempoAt(mIdx)/beatQuarters(_tqU,_tqD));
               // y normalement au-dessus de la portée ; sur la 1re ligne l'espace est réduit (viewBox
               // commence à 0), donc on borne à une valeur VISIBLE. On décale aussi en x pour ne pas
@@ -3435,7 +3435,7 @@ if(+t.dot>=1)svg+='<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>
     systems.forEach((sys,si)=>{
       const isLast=(si===systems.length-1);
       const sum=sys.reduce((a,mi)=>a+wu[mi],0)||1;
-      const _jm=_a4Mode?((state.pageLayout&&state.pageLayout.justify!=null)?state.pageLayout.justify:((state.view&&state.view.a4&&state.view.a4.justify)||0)):0;/*PAGELAYOUT_4313_REND*/const _doJust=(_jm===2)||(_jm===1&&!isLast);var _uSys=Math.max(40,sysUnitsW-((si===0)?headerStart:(headerStart-12))-RIGHT_PAD);/*A4START_4220 : largeur utile mesuree depuis le depart reel du systeme -> fin justifiee pile a la marge*/const scale=_doJust?(_uSys/sum):Math.min(_uSys/sum,refScale);
+      const _jm=_a4Mode?((state.pageLayout&&state.pageLayout.justify!=null)?state.pageLayout.justify:((state.view&&state.view.a4&&state.view.a4.justify)||0)):(window.__scJust?2:0);/*SCJUST_4491_R*//*PAGELAYOUT_4313_REND*/const _doJust=(_jm===2)||(_jm===1&&!isLast);var _uSys=Math.max(40,sysUnitsW-((si===0)?headerStart:(headerStart-12))-RIGHT_PAD);/*A4START_4220 : largeur utile mesuree depuis le depart reel du systeme -> fin justifiee pile a la marge*/const scale=_doJust?(_uSys/sum):Math.min(_uSys/sum,refScale);
       const _sysStart=(si===0)?headerStart:(headerStart-12); // B : lignes sans 4/4 serrees
       const bounds={}; let curX=_sysStart;
       sys.forEach(mi=>{const w=wu[mi]*scale;bounds[mi]={xL:curX,xR:curX+w,measureW:w};curX+=w;});
@@ -5710,7 +5710,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       +'<button id="sc-doc">\uD83D\uDCD6 Document ouvert</button>'/*SCFILES_4489_UI*/
       +'</div><div class="sc-st" id="sc-st"></div><div class="sc-log" id="sc-log"></div>';
     document.body.appendChild(o);
-    document.getElementById('sc-close').addEventListener('click',_fermer);
+    document.getElementById('sc-close').addEventListener('click',function(){_scFS(false);_fermer();});/*SCFS_4496_CLOSE*/
     {var _bf=document.getElementById('sc-files');
      if(_bf)_bf.addEventListener('click',function(){
        var _lg=document.getElementById('sc-log');_lg.textContent='';
@@ -6046,7 +6046,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       document.body.appendChild(b);
       r.addEventListener('click',function(){
         _rendre();var o2=document.getElementById('sc-ovl');if(o2)o2.style.display='';});
-      x.addEventListener('click',function(){_rendre();_fermer();});
+      x.addEventListener('click',function(){_rendre();_scFS(false);_fermer();});/*SCFS_4496_QUIT*/
     }
     b.style.display='';
     SCCUR=o;document.getElementById('sc-ttl').textContent=o.t||o.f;_scVueApp();_scOutils(b);_scRangs(b);/*SCENE_4487_BAR*//*SCENE_4464_BAR*//*SCENE_4474_CUR*//*SCENE_4475_APP*/
@@ -6086,7 +6086,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     try{if(typeof stopPlayback==='function'&&typeof audio==='object'&&audio&&audio.playing)
       stopPlayback(true);}catch(e){}
     var b=document.getElementById('sc-bar2');if(b)b.style.display='none';var _p=document.getElementById('sc-ton-pop');if(_p&&_p.parentNode)_p.parentNode.removeChild(_p);/*SCENE_4464_POP*/
-    _solo(false);SCCUR=null;/*SCENE_4474_FIN*/
+    window.__scJust=false;/*SCJUST_4491_OFF*/_solo(false);SCCUR=null;/*SCENE_4474_FIN*/
     if(SCSAUVE){
       var k=SCSAUVE;SCSAUVE=null;
       loadFrom(k.e);history.stack=k.p;history.pos=k.i;
@@ -6109,7 +6109,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
      sur la largeur de l'ecran. Provisoire : loadFrom rend l'etat d'avant. */
     /*SCENE_4487_BLOC scene ajustee au morceau et a l'ecran : profil resserre, zoom calcule, barre sur deux rangees*/
   /* SCPROF : les nombres a retoucher apres essai (aucun n'est enregistre nulle part) */
-  var SCPROF={zMin:50,zMax:300,pas:5,num:22,gapNum:0.62,sys:-40,vox:0,ss:90,plancher:12};/*SCENE_4488_PROF*/
+  var SCPROF={zMin:50,zMax:300,pas:5,num:22,gapOff:3,sys:-40,vox:0,ss:90,plancher:12,parts:true,partSz:10};/*SCPROF_4494*//*SCPROF_4491*//*SCENE_4488_PROF*/
   var SCMAN=null,SCPL=null,SCRZ=null;
   function _scEstTab(t){
     if(!t||!t.tabKind)return false;
@@ -6118,16 +6118,16 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   }
   function _scNumApp(n){
     var v=state.view=state.view||{};
-    v.tabNumSize=n;v.tabLineGap=Math.max(11,Math.round(n*SCPROF.gapNum));
+    v.tabNumSize=n;v.tabLineGap=Math.max(9,n-SCPROF.gapOff);/*SCGAP_4491 pente 1 : un appui = un cran*/
   }
   function _scProfil(){
     try{
       var vf=state.viewFlags=state.viewFlags||{};
-      vf.chords=false;vf.text=false;vf.lyrics=false;vf.parts=false;vf.measureNums=false;
+      vf.chords=false;vf.text=false;vf.lyrics=false;vf.parts=(SCPROF.parts!==false);/*SCPART_4494_VF*/vf.measureNums=false;vf.tempo=false;/*TEMPOFF_4493_SC*/
       var v=state.view=state.view||{};
-      v.wordsShow=false;v.systemGap=SCPROF.sys;v.voiceGap=SCPROF.vox;
+      v.wordsShow=false;v.systemGap=SCPROF.sys;v.voiceGap=SCPROF.vox;v.partSize=SCPROF.partSz;v.partOffset=0;/*SCPART_4494_SZ*/
       _scNumApp((SCMAN&&SCMAN.n)?SCMAN.n:SCPROF.num);
-      state.scoreScale=SCPROF.ss;
+      state.scoreScale=SCPROF.ss;window.__scJust=true;/*SCJUST_4491_ON*/
       state.hdrCfg=Object.assign({},state.hdrCfg||{},{tS:0,cS:0});
       (state.tracks||[]).forEach(function(t){
         if(!_scEstTab(t))return;
@@ -6142,7 +6142,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   }
   function _scChiffre(){
     var sc=document.getElementById('score');if(!sc)return 0;
-    var el=sc.querySelector('text.tabfret');if(!el)return 0;
+    var el=sc.querySelector('text.tabfret')||sc.querySelector('.voice-svg text');if(!el){var _n=(state.view&&state.view.tabNumSize)||SCPROF.num;return _n*0.8*Math.max(70,Math.round(150*(state.zoom||100)/100))/92;}/*SCPX_4491*/
     try{return el.getBoundingClientRect().height||0;}catch(e){return 0;}
   }
   function _scPlancher(){return (SCPL!=null)?SCPL:SCPROF.plancher;}
@@ -6154,17 +6154,22 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     var P=SCPROF.pas,lo=SCPROF.zMin,hi=SCPROF.zMax,best=lo,vis=h.style.visibility;
     h.style.visibility='hidden';
     try{
-      _scZ(hi);
-      if(_scTient())best=hi;
-      else{
-        _scZ(lo);
-        if(_scTient()){
-          var a=lo,b=hi;
-          while(b-a>P){var m=a+Math.max(1,Math.floor((b-a)/(2*P)))*P;_scZ(m);if(_scTient())a=m;else b=m;}
-          best=a;
-        }
+      /*SCFIT_4492 estimation puis verification : 3 a 4 rendus au lieu de 9*/
+      var z0=Math.max(lo,Math.min(hi,state.zoom||100));
+      _scZ(z0);
+      var _c=h.scrollHeight,_a=h.clientHeight;
+      best=Math.round(z0*Math.sqrt(_a/Math.max(1,_c))/P)*P;
+      best=Math.max(lo,Math.min(hi,best));
+      if(best!==z0)_scZ(best);
+      var _k=0;
+      if(_scTient()){
+        /* ca tient : on tente de monter, deux crans au plus */
+        while(_k<2&&best+P<=hi){_scZ(best+P);if(_scTient()){best+=P;_k++;}else{_scZ(best);break;}}
+      }else{
+        /* ca deborde : on descend jusqu'a ce que ca tienne */
+        while(_k<6&&best-P>=lo){best-=P;_scZ(best);_k++;if(_scTient())break;}
+        if(!_scTient()){best=lo;_scZ(lo);}
       }
-      _scZ(best);
       /* plancher : la hauteur d'un chiffre suit voicePxH=max(70,round(150*zoom/100)) */
       var px=_scChiffre(),pl=_scPlancher(),k=0;
       while(px>0&&px<pl&&best<hi&&k<4){
@@ -6200,7 +6205,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     var nv=document.getElementById('sc-nv');
     if(nv)nv.textContent=''+((state.view&&state.view.tabNumSize)||SCPROF.num);
     var pv=document.getElementById('sc-pv');
-    if(pv){var px=_scChiffre();pv.textContent='\u2265'+_scPlancher()+(px?(' \u00b7 '+Math.round(px)):'');}
+    if(pv){var px=_scChiffre();pv.textContent='\u2265'+_scPlancher()+' \u00b7 '+Math.round(px||0);}/*SCLAB_4491*/
   }
   function _scTaille(el){
     el.style.fontSize=Math.min(BFS,22)+'px';
@@ -6237,8 +6242,9 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     var pd=_bt('\u2212','Plancher de lisibilite : baisser',function(){_scPl(-1);}),
         pv=_scVal('sc-pv','Plancher (px) \u00b7 hauteur mesuree d\'un chiffre'),
         pu=_bt('+','Plancher de lisibilite : monter',function(){_scPl(1);});
-    var fit=_bt('\u2922','Reajuster a l\'ecran',function(){if(SCMAN)SCMAN.z=null;_scAjuste();});
-    [ton,aff,moins,val,plus,smoins,sval,splus,zd,zv,zu,nd,nv,nu,pd,pv,pu,fit].forEach(function(e){
+    var fit=_bt('\u2922','Tout remettre au depart',function(){SCMAN=null;SCPL=null;_scProfil();_scAjuste();});/*SCFIT_4491*/
+    var pfs=_scFSbtn();/*SCFS_4496_BTN bouton plein ecran, en tete de la 2e rangee*/
+    [pfs,ton,aff,moins,val,plus,smoins,sval,splus,zd,zv,zu,nd,nv,nu,pd,pv,pu,fit].forEach(function(e){
       if(e){_scTaille(e);r2.appendChild(e);}});
     [aff,moins,plus,smoins,splus].forEach(function(e){
       if(e&&e.tagName==='BUTTON')e.addEventListener('click',function(){if(SCMAN)SCMAN.z=null;_scAjuste();});});
@@ -6252,6 +6258,54 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       if(!SCCACHE)return;if(SCRZ)clearTimeout(SCRZ);
       SCRZ=setTimeout(function(){SCRZ=null;if(SCMAN)SCMAN.z=null;_scPadApp();_scAjuste();},300);
     });}
+  /*SCFS_4496_BLOC plein ecran du navigateur en mode Scene : on gagne la hauteur
+    des barres (adresse + systeme), que _scAjuste rend aussitot en zoom.*/
+  var SCFSB=null;
+  function _scFSok(){
+    var e=document.documentElement;
+    return !!(e.requestFullscreen||e.webkitRequestFullscreen||e.msRequestFullscreen);
+  }
+  function _scFSon(){
+    return !!(document.fullscreenElement||document.webkitFullscreenElement
+      ||document.msFullscreenElement);
+  }
+  function _scFSlab(){
+    if(!SCFSB)return;
+    var on=_scFSon();
+    SCFSB.title=on?'Quitter le plein ecran':'Plein ecran';
+    SCFSB.style.background=on?'#e8e4d8':'#fff';
+  }
+  function _scFS(v){
+    /* v===false : sortir ; v===true : entrer ; v absent : basculer */
+    var e=document.documentElement,on=_scFSon(),veut=(v===undefined)?!on:!!v,p;
+    try{
+      if(veut&&!on){
+        var f=e.requestFullscreen||e.webkitRequestFullscreen||e.msRequestFullscreen;
+        if(f){p=f.call(e);if(p&&p['catch'])p['catch'](function(){});}
+      }else if(!veut&&on){
+        var g=document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen;
+        if(g){p=g.call(document);if(p&&p['catch'])p['catch'](function(){});}
+      }
+    }catch(x){}
+  }
+  function _scFSbtn(){
+    if(!_scFSok())return null;      /* navigateur sans l'API : aucun bouton */
+    SCFSB=_bt('\u26f6','Plein ecran',function(){_scFS();});
+    SCFSB.id='sc-fs';_scFSlab();return SCFSB;
+  }
+  if(!window.__scFsBound){window.__scFsBound=true;
+    var _scFsGo=function(){
+      _scFSlab();
+      if(!SCCACHE)return;
+      if(SCRZ)clearTimeout(SCRZ);
+      SCRZ=setTimeout(function(){SCRZ=null;if(SCMAN)SCMAN.z=null;_scPadApp();_scAjuste();},300);
+    };
+    document.addEventListener('fullscreenchange',_scFsGo);
+    document.addEventListener('webkitfullscreenchange',_scFsGo);
+    try{var _scFsSt=document.createElement('style');
+      _scFsSt.textContent=':fullscreen{background:#faf8f2;}';
+      document.head.appendChild(_scFsSt);}catch(x){}
+  }
   function _scPage(){/*SCENE_4466_PAGE*/
     try{if(state.scoreLayout!=='page'){state.scoreLayout='page';render();}}catch(e){}
   }
@@ -8236,6 +8290,45 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   function flatIndexOf(m,s){let idx=0;for(let mi=0;mi<m;mi++)idx+=state.measures[mi].length;return idx+s;}
   // Liste à plat [{m,s,slot}] de la voix active.
   function flatSlots(){const out=[];state.measures.forEach((meas,mi)=>meas.forEach((slot,si)=>out.push({m:mi,s:si,slot})));return out;}
+  /*PASTEKEY_4495_FN armure emportee par le presse-papier de notes*/
+  var noteClipSig=null;
+  function __armureNom(s){return s>0?(s+' diese'):(s<0?((-s)+' bemol'):'do majeur');}
+  function __sigALaDate(t0){
+    var f=flatSlots(),v=voiceAbsTimes(state.measures),i=0;
+    while(i<f.length&&v[i]&&v[i].t0<t0-1e-6)i++;
+    return f[i]?keyAt(f[i].m):null;
+  }
+  function __poserArmureCollee(t0,len,toutesVoix){
+    if(noteClipSig===null||noteClipSig===undefined)return;
+    var f=flatSlots(),v=voiceAbsTimes(state.measures),i0=0;
+    while(i0<f.length&&v[i0]&&v[i0].t0<t0-1e-6)i0++;
+    if(i0>=f.length)return;
+    var i1=i0;while(i1<f.length&&v[i1]&&v[i1].t0<t0+len-1e-6)i1++;
+    var startM=f[i0].m,dernier=f[Math.max(i0,i1-1)];
+    var endM=dernier?dernier.m:startM;
+    if(keyAt(startM)===noteClipSig)return;
+    if(f[i0].s!==0){
+      flash('Colle — armure de la source ('+__armureNom(noteClipSig)+') NON posee : '
+            +'le collage ne commence pas sur une mesure.');
+      return;
+    }
+    var actif=state.activeTrack;
+    applyToAllTracks(function(i){
+      var fin=Math.min(endM,state.measures.length-1);
+      var sigAfter=keyAt(Math.min(fin+1,state.measures.length-1));
+      var had=state.keyChanges[fin+1]!==undefined;
+      /* les notes collees portent deja l'ecriture de la source : on ne les reecrit pas.
+         Les pistes qui n'ont rien recu, si : leurs hauteurs doivent survivre. */
+      if(!toutesVoix&&i!==actif)respellRangeForKey(startM,fin,noteClipSig);
+      if(startM===0){state.pieceKeySig=noteClipSig;delete state.keyChanges[0];}
+      else state.keyChanges[startM]=noteClipSig;
+      for(var mi=startM+1;mi<=fin;mi++)delete state.keyChanges[mi];
+      if(fin+1<state.measures.length&&!had&&sigAfter!==noteClipSig)state.keyChanges[fin+1]=sigAfter;
+      cleanupAccidentals();
+    });
+    flash('Colle — armure de la source ('+__armureNom(noteClipSig)+') posee sur la portion, '
+          +'armure du document rendue ensuite.');
+  }
   // Clone profond d'un slot (note/silence/accord).
   function cloneSlot(s){const c=Object.assign({},s);if(Array.isArray(s.stack))c.stack=s.stack.map(x=>Object.assign({},x));if(Array.isArray(s.verses))c.verses=s.verses.slice();if(Array.isArray(s.orn))c.orn=s.orn.slice();return c;}
   // Transpose une note (tête ou note d'accord) de n demi-tons, en figistant l'altération absolue.
@@ -8288,6 +8381,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     const flat=flatSlots();
     if(fromIdx>toIdx){const t=fromIdx;fromIdx=toIdx;toIdx=t;}
     noteClip=[];
+    noteClipSig=flat[fromIdx]?keyAt(flat[fromIdx].m):null;/*PASTEKEY_4495_CP1*/
     for(let i=fromIdx;i<=toIdx&&i<flat.length;i++)noteClip.push(cloneSlot(flat[i].slot));
   }
   // Colle (ÉCRASE) la portion à partir de l'index global startIdx, sans changer la grille de mesures :
@@ -8310,6 +8404,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     while(capSum<totalDur-1e-6){caps.push(lastCap);capSum+=lastCap;}
     state.measures=rebuildMeasuresFromSlots(newSlots.map(s=>({slot:s})),caps);consolidateRhythm(true);/*CONSO-COLLE-4104*/
     __padAllVoicesToMax();   // le collage a pu allonger cette voix : aligner les autres
+    __poserArmureCollee(_t0,_clipLen,false);/*PASTEKEY_4495_PS1*/
     cleanupAccidentals();
     cleanupTies();
     return true;
@@ -8547,9 +8642,9 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   // Les notes des AUTRES voix qui depassent une borne sont coupees a la duree exacte de la fenetre (aucun decalage).
   let clipFlatAll=null,clipFlatLen=0;
   function clipTrackToWindow(measures,t0,t1){const eps=1e-6;const vt=voiceAbsTimes(measures);const out=[];for(const e of vt){if(e.t1<=t0+eps||e.t0>=t1-eps)continue;const sl=measures[e.m][e.s];const lo=Math.max(e.t0,t0),hi=Math.min(e.t1,t1),d=+(hi-lo).toFixed(6);if(d<=eps)continue;if(Math.abs(d-(e.t1-e.t0))<eps)out.push(cloneSlot(sl));else durToSlots(sl,d).forEach(p=>out.push(p));}if(out.length){delete out[out.length-1].tieToNext;delete out[out.length-1].linkToNext;}return out;}
-  function copyAllVoicesTime(t0,t1){clipFlatAll=[];clipFlatLen=+(t1-t0).toFixed(6);applyToAllTracks(()=>{clipFlatAll.push(clipTrackToWindow(state.measures,t0,t1));});return clipFlatLen>1e-6;}
+  function copyAllVoicesTime(t0,t1){clipFlatAll=[];clipFlatLen=+(t1-t0).toFixed(6);noteClipSig=__sigALaDate(t0);/*PASTEKEY_4495_CP2*/applyToAllTracks(()=>{clipFlatAll.push(clipTrackToWindow(state.measures,t0,t1));});return clipFlatLen>1e-6;}
   function overwriteTimeRegionTrack(measures,atTime,L,insertSlots){const eps=1e-6;const tEnd=atTime+L;const vt=voiceAbsTimes(measures);const head=[],tail=[];for(const e of vt){const sl=measures[e.m][e.s];if(e.t1<=atTime+eps){head.push(cloneSlot(sl));}else if(e.t0>=tEnd-eps){tail.push(cloneSlot(sl));}else{if(e.t0<atTime-eps){const d=+(atTime-e.t0).toFixed(6);durToSlots(sl,d).forEach(p=>head.push(p));}if(e.t1>tEnd+eps){const d=+(e.t1-tEnd).toFixed(6);durToSlots(sl,d).forEach(p=>tail.push(p));}}}return head.concat(insertSlots.map(cloneSlot),tail);}
-  function pasteAllVoicesTime(atTime){if(!clipFlatAll||!clipFlatAll.length)return false;applyToAllTracks((i)=>{const ins=clipFlatAll[i]||[];const seq=overwriteTimeRegionTrack(state.measures,atTime,clipFlatLen,ins);const caps=state.measures.map((_,mi)=>measureCapacity(meterAt(mi)));const lastCap=measureCapacity(meterAt(Math.max(0,state.measures.length-1)))||4;const totalDur=seq.reduce((a,s)=>a+effDur(s),0);let capSum=caps.reduce((a,b)=>a+b,0);while(capSum<totalDur-1e-6){caps.push(lastCap);capSum+=lastCap;}state.measures=rebuildMeasuresFromSlots(seq.map(s=>({slot:s})),caps);consolidateRhythm(true);cleanupAccidentals();});cleanupTies();return true;}
+  function pasteAllVoicesTime(atTime){if(!clipFlatAll||!clipFlatAll.length)return false;applyToAllTracks((i)=>{const ins=clipFlatAll[i]||[];const seq=overwriteTimeRegionTrack(state.measures,atTime,clipFlatLen,ins);const caps=state.measures.map((_,mi)=>measureCapacity(meterAt(mi)));const lastCap=measureCapacity(meterAt(Math.max(0,state.measures.length-1)))||4;const totalDur=seq.reduce((a,s)=>a+effDur(s),0);let capSum=caps.reduce((a,b)=>a+b,0);while(capSum<totalDur-1e-6){caps.push(lastCap);capSum+=lastCap;}state.measures=rebuildMeasuresFromSlots(seq.map(s=>({slot:s})),caps);consolidateRhythm(true);cleanupAccidentals();});__poserArmureCollee(atTime,clipFlatLen,true);/*PASTEKEY_4495_PS2*/cleanupTies();return true;}
   function openDecalerPanel(){
     const sc=makeScopeNoteSel();
     const DURS=[{label:'\u{1D15D}',d:4},{label:'\u{1D15E}',d:2},{label:'\u2669',d:1},{label:'\u266A',d:0.5},{label:'\u266C',d:0.25},{label:'\u{1D160}',d:0.125}];
