@@ -231,7 +231,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.676 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.677 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -414,7 +414,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.676 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.677 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -6455,7 +6455,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       s.style.cssText='font-size:80%;color:#5f5e5a;margin-top:2px;';
       s.textContent=(o.r?('R:'+o.r+'  \u2014  '):'')+o.f;
       b.appendChild(t);b.appendChild(s);
-      (function(it){b.addEventListener('click',function(){_scFS(true);/*V4676_FSA : plein ecran automatique au toucher d'un morceau (TODO 207)*/_montrer(it);});})(o);
+      (function(it){b.addEventListener('click',function(){if(_scFSok()&&!_scFSon())window.__scFSt=Date.now();/*V4677_FST*/_scFS(true);/*V4676_FSA : plein ecran automatique au toucher d'un morceau (TODO 207)*/_montrer(it);});})(o);
       hote.appendChild(b);
     }
     if(liste.length>cap){
@@ -6722,30 +6722,76 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     try{return el.getBoundingClientRect().height||0;}catch(e){return 0;}
   }
   function _scPlancher(){return (SCPL!=null)?SCPL:SCPROF.plancher;}
-  function _scAjuste(){
+  /*V4677_FN : reglage automatique de la Scene (TODO 208, 159).*/
+  function _scFitZ(h){
+    /* le plus grand zoom (pas SCPROF.pas) ou le morceau tient. On part du zoom courant, on avance par pas doubles
+       jusqu'a encadrer la limite, puis on coupe en deux. L'ancienne estimation lisait scrollHeight du cadre, jamais
+       plus petit que sa hauteur visible : c'etait le 159. Et la hauteur d'un morceau ne suit pas le zoom en
+       proportion : il y a plus de lignes, et des lignes plus hautes. */
+    var P=SCPROF.pas,lo=SCPROF.zMin,hi=SCPROF.zMax,g=null,b=null,s=P,n,m;
+    var t=function(z){_scZ(z);return _scTient();};
+    var z=Math.max(lo,Math.min(hi,Math.round((state.zoom||100)/P)*P));
+    if(t(z)){
+      g=z;while(g<hi){n=Math.min(hi,g+s);if(t(n)){g=n;s*=2;}else{b=n;break;}}
+      if(b===null)return g;
+    }else{
+      b=z;while(b>lo){n=Math.max(lo,b-s);if(t(n)){g=n;break;}b=n;s*=2;}
+      if(g===null)return lo;
+    }
+    while(b-g>P){m=Math.round((g+b)/2/P)*P;if(m<=g)m=g+P;if(m>=b)break;if(t(m))g=m;else b=m;}
+    if(state.zoom!==g)_scZ(g);
+    return g;
+  }
+  function _scEcartMin(){
+    /* le plus petit blanc entre deux chiffres voisins d'une meme corde, en hauteur de chiffre ; null sans tablature */
+    var L=[].slice.call(document.querySelectorAll('#score text.tabfret')).filter(function(t){
+      return t.getClientRects().length&&(t.textContent||'').replace(/\s/g,'')!=='';});
+    if(L.length<2)return null;
+    var R=L.map(function(t){return t.getBoundingClientRect();});
+    var hs=R.map(function(r){return r.height;}).sort(function(x,y){return x-y;}),hm=hs[Math.floor(hs.length/2)]||1;
+    var rows={},m=null,key,X,j,g;
+    R.forEach(function(r){if(r.height<hm*0.8)return;   /* petites notes : hors compte */
+      key=Math.round((r.top+r.bottom)/2);(rows[key]=rows[key]||[]).push(r);});
+    for(key in rows){X=rows[key].sort(function(x,y){return x.left-y.left;});
+      for(j=1;j<X.length;j++){g=(X[j].left-X[j-1].right)/hm;if(m===null||g<m)m=g;}}
+    return m;
+  }
+  function _scAutoE(h){
+    /* l'ecart <-> le plus petit qui laisse un demi-chiffre ; un quart si le demi passe sous le plancher.
+       De 20 en 20 depuis l'ecart de depart, puis le cran de 10 juste avant celui qu'on garde. */
+    var e0=SCPROF.ss,res={},A=null,B=null,e,o,c,lim;
+    var essai=function(x){if(res[x])return res[x];state.scoreScale=x;
+      var r={e:x,z:_scFitZ(h),g:_scEcartMin(),px:_scChiffre()};res[x]=r;return r;};
+    o=essai(e0);
+    if(o.g===null)return;                   /* pas de tablature : l'ecart de depart */
+    if(o.g>=0.25)B=o;if(o.g>=0.5)A=o;
+    for(e=e0+20;!A&&e<=200;e+=20){o=essai(e);if(!B&&o.g>=0.25)B=o;if(o.g>=0.5)A=o;}
+    c=(A&&A.px>=_scPlancher())?A:(B||A);
+    if(c&&c.e-10>e0&&!res[c.e-10]){
+      lim=(c===A)?0.5:0.25;o=essai(c.e-10);
+      if(o.g>=lim&&(c!==A||o.px>=_scPlancher()))c=o;
+    }
+    if(!c){c=o;for(e in res)if(res[e].g>c.g)c=res[e];}
+    if(state.scoreScale!==c.e||state.zoom!==c.z){state.scoreScale=c.e;_scZ(c.z);}
+  }
+  function _scAjuste(){/*V4677_AJ : 1. tout le morceau sur un ecran ; 2. un demi-chiffre entre chiffres voisins ;
+      3. un quart si le demi fait passer sous le plancher (TEYSSIER, 17/10). Remplace l'estimation SCFIT_4492.*/
     if(!SCCACHE)return;
     var h=document.getElementById('sc-play');if(!h)return;
     _scHaut();
     if(SCMAN&&SCMAN.z){_scZ(SCMAN.z);_scLabels();return;}
-    var P=SCPROF.pas,lo=SCPROF.zMin,hi=SCPROF.zMax,best=lo,vis=h.style.visibility;
+    var P=SCPROF.pas,hi=SCPROF.zMax,best,vis=h.style.visibility;
     h.style.visibility='hidden';
     try{
-      /*SCFIT_4492 estimation puis verification : 3 a 4 rendus au lieu de 9*/
-      var z0=Math.max(lo,Math.min(hi,state.zoom||100));
-      _scZ(z0);
-      var _c=h.scrollHeight,_a=h.clientHeight;
-      best=Math.round(z0*Math.sqrt(_a/Math.max(1,_c))/P)*P;
-      best=Math.max(lo,Math.min(hi,best));
-      if(best!==z0)_scZ(best);
-      var _k=0;
-      if(_scTient()){
-        /* ca tient : on tente de monter, deux crans au plus */
-        while(_k<2&&best+P<=hi){_scZ(best+P);if(_scTient()){best+=P;_k++;}else{_scZ(best);break;}}
-      }else{
-        /* ca deborde : on descend jusqu'a ce que ca tienne */
-        while(_k<6&&best-P>=lo){best-=P;_scZ(best);_k++;if(_scTient())break;}
-        if(!_scTient()){best=lo;_scZ(lo);}
-      }
+      var att=window.__scFSt&&(Date.now()-window.__scFSt<2500)&&!_scFSon();
+      if(SCMAN&&SCMAN.e){state.scoreScale=SCMAN.e;_scFitZ(h);}
+      else if(att){
+        /* le plein ecran est en route (4.676) : un zoom vite trouve, le calcul complet viendra avec lui ;
+           s'il ne vient pas, on le fait quand meme */
+        _scFitZ(h);
+        setTimeout(function(){if(window.__scFSt&&!_scFSon()){window.__scFSt=0;if(SCMAN)SCMAN.z=null;_scAjuste();}},2600);
+      }else{window.__scFSt=0;_scAutoE(h);}
+      best=state.zoom||100;
       /* plancher : la hauteur d'un chiffre suit voicePxH=max(70,round(150*zoom/100)) */
       var px=_scChiffre(),pl=_scPlancher(),k=0;
       while(px>0&&px<pl&&best<hi&&k<4){
@@ -6907,7 +6953,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   }
   function _scEcart(d){
     state.scoreScale=(d>0)?Math.min(250,(state.scoreScale||100)+10)
-                          :Math.max(40,(state.scoreScale||100)-10);
+                          :Math.max(40,(state.scoreScale||100)-10);SCMAN=SCMAN||{};SCMAN.e=state.scoreScale;/*V4677_EM*/
     render();_scLabels();
   }
   /* le cycle exact du bouton d'origine : les deux -> solfege -> tablature */
