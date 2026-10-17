@@ -231,7 +231,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.681 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.682 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -414,7 +414,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.681 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.682 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -6246,7 +6246,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     return o;
   }
   function _ouvrir(){
-    _scKMaj();/*V4675_OUV*/var o=_ecran();o.style.display='';
+    _scKMaj();/*V4675_OUV*/_scDefaut(1);/*V4682_OUV*/var o=_ecran();o.style.display='';
     var e=document.getElementById('sc-st');
     if(e)e.textContent='Lecture de la bibliotheque\u2026';
     window.__scGet().then(function(_l){_etat(_l);_scVue(_l);})/*SCENE_4463_OPEN*/.catch(function(x){
@@ -6577,8 +6577,8 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       b.appendChild(r);b.appendChild(x);b.appendChild(t);
       document.body.appendChild(b);
       r.addEventListener('click',function(){
-        _rendre();var o2=document.getElementById('sc-ovl');if(o2)o2.style.display='';});
-      x.addEventListener('click',function(){_rendre();_scFS(false);_fermer();});/*SCFS_4496_QUIT*/
+        _scPopFerme();_scDefaut(1);/*V4682_RET*/_rendre();var o2=document.getElementById('sc-ovl');if(o2)o2.style.display='';});
+      x.addEventListener('click',function(){_scPopFerme();/*V4682_QUIT*/_rendre();_scFS(false);_fermer();});/*SCFS_4496_QUIT*/
     }
     b.style.display='';
     _scKMaj();/*V4675_BAR*/{var _pp=document.getElementById('sc-pis-pop');if(_pp&&_pp.parentNode)_pp.parentNode.removeChild(_pp);}/*V4679_NEW*/SCCUR=o;document.getElementById('sc-ttl').textContent=o.t||o.f;_scVueApp();_scOutils(b);_scRangs(b);/*SCENE_4487_BAR*//*SCENE_4464_BAR*//*SCENE_4474_CUR*//*SCENE_4475_APP*/
@@ -6853,7 +6853,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     var tog=_bt('\u25be','Plus de reglages',function(){
       var o=(r2.style.display==='none');r2.style.display=o?'flex':'none';
       tog.textContent=o?'\u25b4':'\u25be';
-      _scPadApp();if(SCMAN)SCMAN.z=null;_scAjuste();
+      _scPopFerme();_scPadApp();_scAjuste();/*V4682_TOG : le zoom choisi a la main reste*/
     });tog.id='sc-tog';
     t.style.flexBasis='auto';t.style.order='';t.style.flex='1 1 0';t.style.minWidth='0';
     var pfs=_scFSbtn();/*SCFS_4497_BTN plein ecran : tout a gauche de la 1re rangee*/
@@ -6865,7 +6865,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     var pd=_bt('\u2212','Plancher de lisibilite : baisser',function(){_scPl(-1);}),
         pv=_scVal('sc-pv','Plancher (px) \u00b7 hauteur mesuree d\'un chiffre'),
         pu=_bt('+','Plancher de lisibilite : monter',function(){_scPl(1);});
-    var fit=_bt('\u2922','Tout remettre au depart',function(){SCMAN=null;SCPL=null;_scProfil();_scAjuste();});/*SCFIT_4491*/
+    var fit=_bt('\u2922','Tout remettre au depart',function(){_scDefaut();/*V4682_FIT*/_scProfil();_scAjuste();});/*SCFIT_4491*/
     /*SCFS_4497_MOVE le bouton plein ecran a quitte cette rangee (la 4.496 le posait ici)*/
     var pis=_bt('Pistes','Pistes a voir',function(){_scPistes(pis);});pis.id='sc-pis';/*V4679_BT*/[ton,aff,pis,moins,val,plus,smoins,sval,splus,zd,zv,zu,nd,nv,nu,pd,pv,pu,fit].forEach(function(e){
       if(e){_scTaille(e);r2.appendChild(e);}});
@@ -6980,7 +6980,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     try{if(audio&&audio.playing)stopPlayback(true);else playSchedule();}catch(e){}
     setTimeout(_scLabels,80);
   }
-  /*V4679_FN : Scene, choisir les pistes a voir (TODO 205). Rien n'est ecrit dans le morceau.*/function _scPisNom(t,i){var nm=((t&&t.name)||'').trim()||((t&&t.tabKind)?t.tabKind:((t&&t.pieceClef==='perc')?'percussion':''));return 'Piste '+(i+1)+(nm?' \u00b7 '+nm:'');}function _scPisMaj(){var T=state.tracks||[];for(var i=0;i<T.length;i++){var b=document.getElementById('sc-pis-'+i);if(!b)continue;var v=T[i].visible!==false;b.textContent=(v?'\u2713 ':'\u2717 ')+_scPisNom(T[i],i);b.style.opacity=v?'':'0.5';}}function _scPisTog(i){var T=state.tracks||[],t=T[i];if(!t)return;var vis=function(k){return T[k].visible!==false;};if(vis(i)){var aut=[];for(var k=0;k<T.length;k++)if(k!==i&&vis(k))aut.push(k);if(!aut.length)return;t.visible=false;if(state.activeTrack===i)state.activeTrack=aut[0];}else t.visible=true;if(SCMAN)SCMAN.z=null;_scAjuste();_scPisMaj();}function _scPistes(anc){var p=document.getElementById('sc-pis-pop');if(p){if(p.parentNode)p.parentNode.removeChild(p);return;}var T=state.tracks||[];if(T.length<2)return;p=document.createElement('div');p.id='sc-pis-pop';p.style.cssText='position:fixed;z-index:99999;background:#fff;border:1px solid #d8d6ce;border-radius:10px;padding:6px;display:grid;gap:4px;grid-template-columns:auto;box-shadow:0 2px 10px rgba(0,0,0,.18);font:'+FS+'px/1.3 system-ui,-apple-system,sans-serif;';for(var i=0;i<T.length;i++){(function(k){var b=_bt('','Montrer ou cacher cette piste',function(){_scPisTog(k);});b.id='sc-pis-'+k;b.style.textAlign='left';p.appendChild(b);})(i);}document.body.appendChild(p);_scPisMaj();var r=anc.getBoundingClientRect(),w=p.offsetWidth||200;p.style.left=Math.max(4,Math.min(r.left,window.innerWidth-w-4))+'px';p.style.top=(r.bottom+4)+'px';}function _scTon(anc){
+  /*V4679_FN : Scene, choisir les pistes a voir (TODO 205). Rien n'est ecrit dans le morceau.*/function _scPisNom(t,i){var nm=((t&&t.name)||'').trim()||((t&&t.tabKind)?t.tabKind:((t&&t.pieceClef==='perc')?'percussion':''));return 'Piste '+(i+1)+(nm?' \u00b7 '+nm:'');}function _scPisMaj(){var T=state.tracks||[];for(var i=0;i<T.length;i++){var b=document.getElementById('sc-pis-'+i);if(!b)continue;var v=T[i].visible!==false;b.textContent=(v?'\u2713 ':'\u2717 ')+_scPisNom(T[i],i);b.style.opacity=v?'':'0.5';}}function _scPisTog(i){var T=state.tracks||[],t=T[i];if(!t)return;var vis=function(k){return T[k].visible!==false;};if(vis(i)){var aut=[];for(var k=0;k<T.length;k++)if(k!==i&&vis(k))aut.push(k);if(!aut.length)return;t.visible=false;if(state.activeTrack===i)state.activeTrack=aut[0];}else t.visible=true;if(SCMAN)SCMAN.z=null;_scAjuste();_scPisMaj();}function _scPistes(anc){var p=document.getElementById('sc-pis-pop');if(p){if(p.parentNode)p.parentNode.removeChild(p);return;}var T=state.tracks||[];if(T.length<2)return;p=document.createElement('div');p.id='sc-pis-pop';p.style.cssText='position:fixed;z-index:99999;background:#fff;border:1px solid #d8d6ce;border-radius:10px;padding:6px;display:grid;gap:4px;grid-template-columns:auto;box-shadow:0 2px 10px rgba(0,0,0,.18);font:'+FS+'px/1.3 system-ui,-apple-system,sans-serif;';for(var i=0;i<T.length;i++){(function(k){var b=_bt('','Montrer ou cacher cette piste',function(){_scPisTog(k);});b.id='sc-pis-'+k;b.style.textAlign='left';p.appendChild(b);})(i);}document.body.appendChild(p);_scPisMaj();var r=anc.getBoundingClientRect(),w=p.offsetWidth||200;p.style.left=Math.max(4,Math.min(r.left,window.innerWidth-w-4))+'px';p.style.top=(r.bottom+4)+'px';}/*V4682_FN : retour aux reglages de depart ; fermeture des petites fenetres Pistes et Ton*/function _scDefaut(rep){SCMAN=null;SCPL=null;SCVUE=null;if(rep){var r2=document.getElementById('sc-r2'),tg=document.getElementById('sc-tog');if(r2&&r2.style.display!=='none'){r2.style.display='none';if(tg)tg.textContent='\u25be';}}}function _scPopFerme(e){[['sc-pis-pop','sc-pis'],['sc-ton-pop','sc-tn']].forEach(function(c){var p=document.getElementById(c[0]);if(!p)return;if(e){var a=document.getElementById(c[1]);if(p.contains(e.target)||(a&&a.contains(e.target)))return;}if(p.parentNode)p.parentNode.removeChild(p);});}if(!window.__scPop4682){window.__scPop4682=1;document.addEventListener('pointerdown',function(e){try{_scPopFerme(e);}catch(_x){}},true);}function _scTon(anc){
     var p=document.getElementById('sc-ton-pop');
     if(p){if(p.parentNode)p.parentNode.removeChild(p);return;}
     var cibles=null;try{cibles=KQ_T;}catch(e){}
