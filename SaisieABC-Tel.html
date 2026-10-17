@@ -231,7 +231,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.680 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.681 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -414,7 +414,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.680 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.681 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -3198,7 +3198,7 @@ if(+t.dot>=1)svg+='<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>
     const ink='#1a1a1a',sel='#e24b4a',dim='#888780';const _szC=(state.view&&state.view.chordSize!=null)?state.view.chordSize:9;const _szT=(state.view&&state.view.textSize!=null)?state.view.textSize:9;const _szL=(state.view&&state.view.lyricSize!=null)?state.view.lyricSize:9;const _aOff=(state.view&&state.view.aboveOffset!=null)?state.view.aboveOffset:0;const _aOffT=(state.view&&state.view.aboveTextOffset!=null)?state.view.aboveTextOffset:_aOff;const _vOff=(state.view&&state.view.voltaOffset!=null)?state.view.voltaOffset:6;const _szP=(state.view&&state.view.partSize!=null)?state.view.partSize:11;const _offP=(state.view&&state.view.partOffset!=null)?state.view.partOffset:0;const _szO=(state.view&&state.view.ornSize!=null)?state.view.ornSize:13;const _offO=(state.view&&state.view.ornOffset!=null)?state.view.ornOffset:-10;const _szTp=(state.view&&state.view.tempoSize!=null)?state.view.tempoSize:10;const _offTp=(state.view&&state.view.tempoOffset!=null)?state.view.tempoOffset:0;const _offTu=(state.view&&state.view.tupOffset!=null)?state.view.tupOffset:0;/*TUPCFG_4401_CFG*/
     const _topExtra=(layout&&layout._forceTopExtra!=null)?layout._forceTopExtra:Math.max(maxTopExtra(state.measures,(pageLines[0]||{}).mIdxs||[]),annoTopRise(state.measures,(pageLines[0]||{}).mIdxs||[]));/*CADRE_TOP_4167*/
     const scoreH=(STAFF_TOP_Y+_topExtra)+linesShown*STAFF_SP+10;
-    let svg='<svg viewBox="0 0 '+SCORE_W+' '+scoreH+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet">';
+    const _dx4681=(layout&&layout._scDX)||0;/*V4681_VB : la Scene peut couper le blanc de gauche*/let svg='<svg viewBox="'+_dx4681+' 0 '+(SCORE_W-_dx4681)+' '+scoreH+'" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet">';
     // === Scale de reference : on prend le scale des lignes "pleines" (le plus petit) ===
     // pour ne pas etaler les mesures de la derniere ligne incomplete sur toute la largeur.
     let refScale=Infinity;
@@ -3756,13 +3756,13 @@ if(+t.dot>=1)svg+='<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>
     const numV=visibleIdx.length;
     const LABEL_PX=0,GAP=((state.view&&state.view.voiceGap!==undefined)?state.view.voiceGap:4),SYS_GAP=((state.view&&state.view.systemGap!==undefined)?state.view.systemGap:14);
     const zoomF=(state.zoom||100)/100;
-    let voicePxH=Math.max(70,Math.round(150*zoomF));
+    let voicePxH=Math.max(window.__scJust?40:70,Math.round(150*zoomF));/*V4681_VP*/
     const cw=cont.clientWidth||600;
     const pxPerUnit=voicePxH/voiceUnitH;
-    const _a4Mode=(state.scoreLayout==='a4');const _a4V=(state.view&&state.view.a4)||{};const _a4OuterW=_a4Mode?Math.max(240,(_a4V.maxW!==undefined?_a4V.maxW:900)):0;/*A4FIXW_4336_W*/const _a4PxPerMm=_a4OuterW/210;const _a4mL=(_a4V.marginLeft!=null?_a4V.marginLeft:15),_a4mR=(_a4V.marginRight!=null?_a4V.marginRight:15),_a4mT=(_a4V.marginTop!=null?_a4V.marginTop:15),_a4mB=(_a4V.marginBottom!=null?_a4V.marginBottom:15);const _a4PadL=_a4Mode?Math.round(_a4mL*_a4PxPerMm):0,_a4PadR=_a4Mode?Math.round(_a4mR*_a4PxPerMm):0,_a4PadT=_a4Mode?Math.round(_a4mT*_a4PxPerMm):0,_a4PadB=_a4Mode?Math.round(_a4mB*_a4PxPerMm):0;const sysPxW=_a4Mode?(_a4OuterW-_a4PadL-_a4PadR):Math.max(220,cw-22); // réserve pour l'ascenseur vertical
-    const sysUnitsW=sysPxW/pxPerUnit;
+    const _a4Mode=(state.scoreLayout==='a4');const _a4V=(state.view&&state.view.a4)||{};const _a4OuterW=_a4Mode?Math.max(240,(_a4V.maxW!==undefined?_a4V.maxW:900)):0;/*A4FIXW_4336_W*/const _a4PxPerMm=_a4OuterW/210;const _a4mL=(_a4V.marginLeft!=null?_a4V.marginLeft:15),_a4mR=(_a4V.marginRight!=null?_a4V.marginRight:15),_a4mT=(_a4V.marginTop!=null?_a4V.marginTop:15),_a4mB=(_a4V.marginBottom!=null?_a4V.marginBottom:15);const _a4PadL=_a4Mode?Math.round(_a4mL*_a4PxPerMm):0,_a4PadR=_a4Mode?Math.round(_a4mR*_a4PxPerMm):0,_a4PadT=_a4Mode?Math.round(_a4mT*_a4PxPerMm):0,_a4PadB=_a4Mode?Math.round(_a4mB*_a4PxPerMm):0;const sysPxW=_a4Mode?(_a4OuterW-_a4PadL-_a4PadR):Math.max(220,cw-(window.__scJust?4:22))/*V4681_RS*/; // réserve pour l'ascenseur vertical
+    let sysUnitsW=sysPxW/pxPerUnit;/*V4681_LU*/
     const base=computeSharedLayout(visibleIdx);
-    const wu=base.widthUnits, N=base.N, headerStart=base.firstX;
+    const wu=base.widthUnits, N=base.N, headerStart=base.firstX;const _scDX=(window.__scJust&&!_a4Mode&&visibleIdx.length>0&&visibleIdx.every(function(ti){var t=tracks[ti];return !!t&&t.staffView==='tab'&&t.tabShow!==false&&t.pieceClef!=='perc'&&(!!TAB_PRESETS[t.tabKind]||t.tabKind==='custom'||t.tabKind==='diato');}))?Math.max(0,Math.floor(headerStart-30)):0;sysUnitsW+=_scDX;/*V4681_DX : Scene, tablature seule : on coupe le blanc de gauche (la place de la cle) ; les noms des cordes sont a 24 unites avant le debut de la 1re ligne, 21 avant les suivantes*/
     const usableW=Math.max(40,sysUnitsW-headerStart-RIGHT_PAD);
     // 1) découpage en systèmes (largeurs partagées → barres alignées)
     const systems=[]; let cur=[],curW=0;
@@ -3789,10 +3789,10 @@ if(+t.dot>=1)svg+='<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>
       const bounds={}; let curX=_sysStart;
       sys.forEach(mi=>{const w=wu[mi]*scale;bounds[mi]={xL:curX,xR:curX+w,measureW:w};curX+=w;});
       const sysViewW=isLast?Math.min(sysUnitsW,curX+RIGHT_PAD):sysUnitsW;
-      const blockPxW=Math.round(sysViewW*pxPerUnit);
+      const blockPxW=Math.round((sysViewW-_scDX)*pxPerUnit);/*V4681_BW*/
       const layout={single:false,N:N,widthUnits:wu,firstX:_sysStart,totalUnits:sysViewW,headerUnits:base.headerUnits,
         _pageSystem:{mIdxs:sys,isFirst:(si===0)},_pageBounds:bounds,_pageViewW:sysViewW,_pageRefScale:refScale,
-        _activeTrack:saved,_realActive:saved,_topVisible:topVisible};sysLayouts[si]=layout;
+        _activeTrack:saved,_realActive:saved,_topVisible:topVisible,_scDX:_scDX/*V4681_LY*/};sysLayouts[si]=layout;
       let sysHtml='<div class="page-system" data-sys="'+si+'" style="position:relative;margin-bottom:'+SYS_GAP+'px;">';let _sysPxH=SYS_GAP;let _barX=null,_barTop=null,_barBot=null,_barYacc=0,_barN=0;
       const _sysVis=(state.view&&state.view.hideEmptyStaves)?(function(){const v=visibleIdx.filter(function(ti){const tr=state.tracks[ti];if(!tr||!tr.measures)return false;for(let k=0;k<sys.length;k++){const m=tr.measures[sys[k]];if(!m)continue;for(let j=0;j<m.length;j++){if(m[j]&&m[j].type==='note')return true;}}return false;});return v.length?v:visibleIdx;})():visibleIdx;
       layout._forceTopExtra=Math.max(0,..._sysVis.map(function(vi){return Math.max(maxTopExtra((state.tracks[vi]||{}).measures,sys),annoTopRise((state.tracks[vi]||{}).measures,sys));}));/*CADRE_TOP_4167*/
@@ -3806,7 +3806,7 @@ if(+t.dot>=1)svg+='<circle cx="'+(cx+7)+'" cy="'+y+'" r="1.2" fill="'+color+'"/>
         const border=isActive&&!single?'border:2px solid #185fa5;':'border:1px solid #d8d6ce;';
         const bg=isActive&&!single?'background:#f4f8fd;':'background:#ffffff;';
         const labelHtml=(__trkLblOff()/*TRKLBL1_4533_USE*/)?'':/*F4444_LBL*//*MONOLBL_4213*/'<div style="position:absolute;top:'+(((STAFF_TOP_Y+(layout._lastTopExtra!=null?layout._lastTopExtra:(layout._forceTopExtra||0))/*V4588_PGL*/)*pxPerUnit)-20-(((state.view&&state.view.trackLabelOff!=null)?state.view.trackLabelOff:0)))+'px/*LBLFIX_4271*/;left:8px;font-size:11px;font-weight:700;color:'+(isActive?'#0c447c':'#5f5e5a')+';z-index:2;">'+escXml(label)+'</div>';/*PGLBL_4269*/
-        sysHtml+='<div class="track-block" data-track="'+i+'" style="position:relative;'+border+bg+(_ov4603?(((isActive&&!single)?'background:rgba(72,138,222,0.06);':'background:transparent;')+'border-top-color:transparent;'):'')+((GAP+_g4603<0)?'border-bottom-color:transparent;':'')/*V4603_BLK*/+'border-radius:6px;margin-bottom:'+(GAP+_g4603)+'px;padding-top:'+(single?2:LABEL_PX)+'px;width:'+blockPxW+'px;height:'+bH+'px;box-sizing:content-box;">'+labelHtml+'<div class="voice-svg" style="width:'+blockPxW+'px;height:'+bH+'px;overflow:hidden;">'+svg.replace('preserveAspectRatio="xMinYMin meet">','preserveAspectRatio="xMinYMin meet" style="display:block;width:100%;height:100%">')+'</div></div>';{var _bw=(isActive&&!single)?2:1;var _txP=(layout._lastTopExtra!=null)?layout._lastTopExtra:(layout._forceTopExtra||0);/*V4588_PGB : en page, nom de piste et barre qui relie les portees suivent la place reellement prise (la nouvelle passe peut l'agrandir)*/if(_barTop===null){_barTop=_barYacc+_bw+(STAFF_TOP_Y+_txP)*pxPerUnit;_barX=Math.round(_sysStart*pxPerUnit);}_barBot=_barYacc+_bw+(STAFF_TOP_Y+_txP+4*LINE_GAP)*pxPerUnit;_barN++;_barYacc+=2*_bw+bH+GAP+_g4603;/*V4603_BAR*/}
+        sysHtml+='<div class="track-block" data-track="'+i+'" style="position:relative;'+border+bg+(_ov4603?(((isActive&&!single)?'background:rgba(72,138,222,0.06);':'background:transparent;')+'border-top-color:transparent;'):'')+((GAP+_g4603<0)?'border-bottom-color:transparent;':'')/*V4603_BLK*/+'border-radius:6px;margin-bottom:'+(GAP+_g4603)+'px;padding-top:'+(single?2:LABEL_PX)+'px;width:'+blockPxW+'px;height:'+bH+'px;box-sizing:content-box;">'+labelHtml+'<div class="voice-svg" style="width:'+blockPxW+'px;height:'+bH+'px;overflow:hidden;">'+svg.replace('preserveAspectRatio="xMinYMin meet">','preserveAspectRatio="xMinYMin meet" style="display:block;width:100%;height:100%">')+'</div></div>';{var _bw=(isActive&&!single)?2:1;var _txP=(layout._lastTopExtra!=null)?layout._lastTopExtra:(layout._forceTopExtra||0);/*V4588_PGB : en page, nom de piste et barre qui relie les portees suivent la place reellement prise (la nouvelle passe peut l'agrandir)*/if(_barTop===null){_barTop=_barYacc+_bw+(STAFF_TOP_Y+_txP)*pxPerUnit;_barX=Math.round((_sysStart-_scDX)*pxPerUnit);/*V4681_BX*/}_barBot=_barYacc+_bw+(STAFF_TOP_Y+_txP+4*LINE_GAP)*pxPerUnit;_barN++;_barYacc+=2*_bw+bH+GAP+_g4603;/*V4603_BAR*/}
       });
       sysHtml+='</div>';
       const _lastM=sys[sys.length-1];const _pbk=!!(state.breaks&&state.breaks[_lastM]&&state.breaks[_lastM].page);if(_barN>1){var _bi=sysHtml.lastIndexOf('</div>');sysHtml=sysHtml.slice(0,_bi)+'<div style="position:absolute;left:'+_barX+'px;top:'+_barTop+'px;height:'+(_barBot-_barTop)+'px;border-left:1.6px solid #1a1a1a;pointer-events:none;"></div>'+sysHtml.slice(_bi);}sysBlocks.push({html:sysHtml,h:_sysPxH,pb:_pbk});
@@ -6481,7 +6481,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       if(!h){
         h=document.createElement('div');h.id='sc-play';
         h.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:99997;'
-          +'overflow:auto;background:#faf8f2;padding:6px;';
+          +'overflow:auto;background:#faf8f2;padding:2px;scrollbar-gutter:stable;'/*V4681_PAD*/;
         document.body.appendChild(h);
       }
       h.style.display='';h.appendChild(sc);
@@ -6685,7 +6685,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
      sur la largeur de l'ecran. Provisoire : loadFrom rend l'etat d'avant. */
     /*SCENE_4487_BLOC scene ajustee au morceau et a l'ecran : profil resserre, zoom calcule, barre sur deux rangees*/
   /* SCPROF : les nombres a retoucher apres essai (aucun n'est enregistre nulle part) */
-  var SCPROF={zMin:50,zMax:300,pas:5,num:22,gapOff:3,sys:-25,/*V4678_SP : -40 coupait la tablature sous Z 150*/vox:0,ss:90,plancher:12,parts:true,partSz:10};/*SCPROF_4494*//*SCPROF_4491*//*SCENE_4488_PROF*/
+  var SCPROF={zMin:50,zTab:30,/*V4681_ZM : zMin reste le plancher du reglage automatique sans tablature ; zTab : celui du zoom a la main, et du reglage automatique quand des chiffres de tablature sont dessines*/zMax:300,pas:5,num:22,gapOff:3,sys:-25,/*V4678_SP : -40 coupait la tablature sous Z 150*/vox:0,ss:90,plancher:12,parts:true,partSz:10};/*SCPROF_4494*//*SCPROF_4491*//*SCENE_4488_PROF*/
   var SCMAN=null,SCPL=null,SCRZ=null;
   function _scEstTab(t){
     if(!t||!t.tabKind)return false;
@@ -6718,7 +6718,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   }
   function _scChiffre(){
     var sc=document.getElementById('score');if(!sc)return 0;
-    var el=sc.querySelector('text.tabfret')||sc.querySelector('.voice-svg text');if(!el){var _n=(state.view&&state.view.tabNumSize)||SCPROF.num;return _n*0.8*Math.max(70,Math.round(150*(state.zoom||100)/100))/92;}/*SCPX_4491*/
+    var el=sc.querySelector('text.tabfret')||sc.querySelector('.voice-svg text');if(!el){var _n=(state.view&&state.view.tabNumSize)||SCPROF.num;return _n*0.8*Math.max(40,Math.round(150*(state.zoom||100)/100))/92;/*V4681_VP3*/}/*SCPX_4491*/
     try{return el.getBoundingClientRect().height||0;}catch(e){return 0;}
   }
   function _scPlancher(){return (SCPL!=null)?SCPL:SCPROF.plancher;}
@@ -6728,7 +6728,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
        jusqu'a encadrer la limite, puis on coupe en deux. L'ancienne estimation lisait scrollHeight du cadre, jamais
        plus petit que sa hauteur visible : c'etait le 159. Et la hauteur d'un morceau ne suit pas le zoom en
        proportion : il y a plus de lignes, et des lignes plus hautes. */
-    var P=SCPROF.pas,lo=SCPROF.zMin,hi=SCPROF.zMax,g=null,b=null,s=P,n,m;
+    var P=SCPROF.pas,lo=(document.querySelector('#score text.tabfret')?SCPROF.zTab:SCPROF.zMin)/*V4681_LO*/,hi=SCPROF.zMax,g=null,b=null,s=P,n,m;
     var t=function(z){_scZ(z);return _scTient();};
     var z=Math.max(lo,Math.min(hi,Math.round((state.zoom||100)/P)*P));
     if(t(z)){
@@ -6795,7 +6795,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       /* plancher : la hauteur d'un chiffre suit voicePxH=max(70,round(150*zoom/100)) */
       var px=_scChiffre(),pl=_scPlancher(),k=0;
       while(px>0&&px<pl&&best<hi&&k<4){
-        var vp=Math.max(70,Math.round(150*best/100));
+        var vp=Math.max(40,Math.round(150*best/100));/*V4681_VP2*/
         var z2=Math.ceil(vp*pl/px/1.5/P)*P;
         if(z2<=best)z2=best+P;
         best=Math.min(hi,z2);_scZ(best);px=_scChiffre();k++;
@@ -6810,7 +6810,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   }
   function _scZoom(d){
     SCMAN=SCMAN||{};
-    var z=Math.max(SCPROF.zMin,Math.min(SCPROF.zMax,(state.zoom||100)+d*10));
+    var z=Math.max(SCPROF.zTab,Math.min(SCPROF.zMax,(state.zoom||100)+d*10));/*V4681_ZD*/
     SCMAN.z=z;_scZ(z);_scLabels();
   }
   function _scNum(d){
