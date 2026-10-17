@@ -231,7 +231,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.677 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.678 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -414,7 +414,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.677 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.678 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -6685,7 +6685,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
      sur la largeur de l'ecran. Provisoire : loadFrom rend l'etat d'avant. */
     /*SCENE_4487_BLOC scene ajustee au morceau et a l'ecran : profil resserre, zoom calcule, barre sur deux rangees*/
   /* SCPROF : les nombres a retoucher apres essai (aucun n'est enregistre nulle part) */
-  var SCPROF={zMin:50,zMax:300,pas:5,num:22,gapOff:3,sys:-40,vox:0,ss:90,plancher:12,parts:true,partSz:10};/*SCPROF_4494*//*SCPROF_4491*//*SCENE_4488_PROF*/
+  var SCPROF={zMin:50,zMax:300,pas:5,num:22,gapOff:3,sys:-25,/*V4678_SP : -40 coupait la tablature sous Z 150*/vox:0,ss:90,plancher:12,parts:true,partSz:10};/*SCPROF_4494*//*SCPROF_4491*//*SCENE_4488_PROF*/
   var SCMAN=null,SCPL=null,SCRZ=null;
   function _scEstTab(t){
     if(!t||!t.tabKind)return false;
@@ -6701,7 +6701,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       var vf=state.viewFlags=state.viewFlags||{};
       vf.chords=false;vf.text=false;vf.lyrics=false;vf.parts=(SCPROF.parts!==false);/*SCPART_4494_VF*/vf.measureNums=false;vf.tempo=false;/*TEMPOFF_4493_SC*/
       var v=state.view=state.view||{};
-      v.wordsShow=false;v.systemGap=SCPROF.sys;v.voiceGap=SCPROF.vox;v.partSize=SCPROF.partSz;v.partOffset=0;/*SCPART_4494_SZ*/
+      v.wordsShow=false;SCSB=SCPROF.sys;v.systemGap=Math.round(SCSB*(state.zoom||100)/100);/*V4678_PRF*/v.voiceGap=SCPROF.vox;v.partSize=SCPROF.partSz;v.partOffset=0;/*SCPART_4494_SZ*/
       _scNumApp((SCMAN&&SCMAN.n)?SCMAN.n:SCPROF.num);
       state.scoreScale=SCPROF.ss;window.__scJust=true;/*SCJUST_4491_ON*/
       state.hdrCfg=Object.assign({},state.hdrCfg||{},{tS:0,cS:0});
@@ -6711,7 +6711,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       });
     }catch(e){}
   }
-  function _scZ(z){state.zoom=z;try{render();}catch(e){}}
+  var SCSB=null;/*V4678_SB : ecart entre lignes de la Scene, donne pour Z 100 (TODO 160)*/function _scZ(z){state.zoom=z;if(SCSB!==null){if(!state.view)state.view={};state.view.systemGap=Math.round(SCSB*z/100);}/*V4678_SZ*/try{render();}catch(e){}}
   function _scTient(){
     var h=document.getElementById('sc-play');if(!h)return true;
     return h.scrollHeight<=h.clientHeight+1;
@@ -6948,7 +6948,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   function _scSys(d){
     if(!state.view)state.view={};
     var v=(state.view.systemGap!==undefined)?state.view.systemGap:14;
-    state.view.systemGap=Math.max(-120,Math.min(40,v+(d>0?4:-4)));/*SCENE_4488_SYS*//*SCENE_4472_NEG*/
+    SCSB=Math.max(-120,Math.min(40,((SCSB!==null)?SCSB:v)+(d>0?4:-4)));state.view.systemGap=Math.round(SCSB*(state.zoom||100)/100);/*V4678_SYS*//*SCENE_4488_SYS*//*SCENE_4472_NEG*/
     render();_scLabels();
   }
   function _scEcart(d){
@@ -7008,7 +7008,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     if(e)e.textContent='\u2194 '+(state.scoreScale||100);
     var sy=document.getElementById('sc-sy');
     if(sy)sy.textContent='\u2195 '+((state.view&&state.view.systemGap!==undefined)
-      ?state.view.systemGap:14);/*SCENE_4471_LAB*/
+      ?((SCSB!==null)?SCSB:state.view.systemGap):14);/*SCENE_4471_LAB*//*V4678_LAB*/
     var v=document.getElementById('sc-aff');
     if(v){
       var t=null;try{t=activeTrackObj();}catch(x){}
