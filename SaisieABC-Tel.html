@@ -231,7 +231,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.674 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.675 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -414,7 +414,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.674 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.675 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -6060,7 +6060,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
 /*SCENE_4462_JS mode Scene : onglet, ecran de recouvrement, bibliotheque*/
 (function(){
   if(window.__scBound)return;window.__scBound=true;
-  var SCK=2;var FS=Math.round(26*SCK);/*V4674_SCK : Scene sur Tel, boutons x2 (TODO 203)*/
+  var SCK=_scKcalc();var FS=Math.round(26*SCK);/*V4674_SCK : Scene sur Tel, boutons x2 (TODO 203)*//*V4675_K*/function _scKcalc(){/*V4675_KFN : facteur de taille de la Scene sur Tel (TODO 203). 0,75 / reduction de la page, borne entre 1 et 2 : x2 en portrait normal, x1,15 en paysage, x1 en plein ecran.*/var s=0;try{s=(window.visualViewport&&window.visualViewport.scale)||0;}catch(e){}if(!(s>0)){var sw=screen.width||0,sh=screen.height||0,iw=window.innerWidth||980,pay=(window.innerWidth>window.innerHeight),dw=pay?Math.max(sw,sh):Math.min(sw,sh);s=dw>0?dw/iw:0.367;}var k=Math.max(1,Math.min(2,0.75/s));return Math.round(k*20)/20;}function _scKMaj(){var k=_scKcalc();if(Math.abs(k-SCK)<0.05)return;SCK=k;FS=Math.round(26*SCK);BFS=Math.round(32*SCK);BSTY='padding:'+Math.round(14*SCK)+'px '+Math.round(16*SCK)+'px;min-height:'+Math.round(56*SCK)+'px;';var st=document.getElementById('sc-css');if(st)st.textContent=st.textContent.replace(/(#sc-ovl[{][^}]*font:)[0-9]+px/,'$1'+FS+'px').replace(/(border-radius:9px;padding:)[0-9]+px [0-9]+px/,'$1'+Math.round(10*SCK)+'px '+Math.round(14*SCK)+'px').replace(/(sc-log[{][^}]*font-size:)[0-9]+px/,'$1'+(FS-2)+'px');var b2=document.getElementById('sc-bar2');if(b2)b2.style.fontSize=FS+'px';['sc-r1','sc-r2'].forEach(function(id){var r=document.getElementById(id);if(r)[].forEach.call(r.children,function(e){_scTaille(e);});});var pp=document.getElementById('sc-ton-pop');if(pp&&pp.parentNode)pp.parentNode.removeChild(pp);}
   var DBN='saisieabc-scene',STN='lib';
 
   /* ---- rangement (IndexedDB) ---- */
@@ -6246,7 +6246,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     return o;
   }
   function _ouvrir(){
-    var o=_ecran();o.style.display='';
+    _scKMaj();/*V4675_OUV*/var o=_ecran();o.style.display='';
     var e=document.getElementById('sc-st');
     if(e)e.textContent='Lecture de la bibliotheque\u2026';
     window.__scGet().then(function(_l){_etat(_l);_scVue(_l);})/*SCENE_4463_OPEN*/.catch(function(x){
@@ -6581,7 +6581,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       x.addEventListener('click',function(){_rendre();_scFS(false);_fermer();});/*SCFS_4496_QUIT*/
     }
     b.style.display='';
-    SCCUR=o;document.getElementById('sc-ttl').textContent=o.t||o.f;_scVueApp();_scOutils(b);_scRangs(b);/*SCENE_4487_BAR*//*SCENE_4464_BAR*//*SCENE_4474_CUR*//*SCENE_4475_APP*/
+    _scKMaj();/*V4675_BAR*/SCCUR=o;document.getElementById('sc-ttl').textContent=o.t||o.f;_scVueApp();_scOutils(b);_scRangs(b);/*SCENE_4487_BAR*//*SCENE_4464_BAR*//*SCENE_4474_CUR*//*SCENE_4475_APP*/
     var app=document.getElementById('app');
     if(app){if(SCPAD===null)SCPAD=app.style.paddingTop;
       app.style.paddingTop=(b.offsetHeight+6)+'px';}
@@ -6832,8 +6832,8 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   }
   if(!window.__scRzBound){window.__scRzBound=true;
     window.addEventListener('resize',function(){
-      if(!SCCACHE)return;if(SCRZ)clearTimeout(SCRZ);
-      SCRZ=setTimeout(function(){SCRZ=null;if(SCMAN)SCMAN.z=null;_scPadApp();_scAjuste();},300);
+      setTimeout(_scKMaj,350);/*V4675_RZ0*/if(!SCCACHE)return;if(SCRZ)clearTimeout(SCRZ);
+      SCRZ=setTimeout(function(){SCRZ=null;if(SCMAN)SCMAN.z=null;_scKMaj();_scPadApp();_scAjuste();},300);/*V4675_RZ1*/
     });}
   /*SCFS_4496_BLOC plein ecran du navigateur en mode Scene : on gagne la hauteur
     des barres (adresse + systeme), que _scAjuste rend aussitot en zoom.*/
@@ -6875,7 +6875,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       _scFSlab();
       if(!SCCACHE)return;
       if(SCRZ)clearTimeout(SCRZ);
-      SCRZ=setTimeout(function(){SCRZ=null;if(SCMAN)SCMAN.z=null;_scPadApp();_scAjuste();},300);
+      SCRZ=setTimeout(function(){SCRZ=null;if(SCMAN)SCMAN.z=null;_scKMaj();_scPadApp();_scAjuste();},300);/*V4675_RZ2*/
     };
     document.addEventListener('fullscreenchange',_scFsGo);
     document.addEventListener('webkitfullscreenchange',_scFsGo);
