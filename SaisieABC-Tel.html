@@ -231,7 +231,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.728 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.730 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -414,7 +414,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.728 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.730 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -6169,9 +6169,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       await window.__scPut(lib);
       dire('Cet appareil ne sait pas garder les fichiers non-ABC : ils sont écartés.');
     }/*SCBIN_4498_PUT*/
-    dire('Range : '+gardes.length+' fichiers, '+morceaux.length+' morceaux, '
-         +(Math.round((Date.now()-t0)/100)/10)+' s'
-         +(ratees?('  ('+ratees+' illisible(s))'):''));
+    var _f4729=[];if(ratees)_f4729.push(ratees+(ratees>1?' fichiers illisibles':' fichier illisible')+'.');if(!lib.bin&&Object.keys(bins).length)_f4729.push('Cet appareil ne sait pas garder les fichiers non-ABC : ils sont \u00e9cart\u00e9s.');dire(_f4729.join('\n'));/*V4729_BILAN*/
     return lib;
   };
 
@@ -6209,7 +6207,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
      if(_bf)_bf.addEventListener('click',function(){
        var _lg=document.getElementById('sc-log');_lg.textContent='';
        window.__scSansDossier=true;   /* un seul coup : _fichiers le remet a faux */
-       window.__scScan(function(s){_lg.textContent+=s+'\n';})
+       window.__scScan(function(s){_lg.textContent=s?(s+'\n'):'';}/*V4729_DIRF*/)
          .then(function(lib){if(lib){_etat(lib);_scVue(lib);}})
          .catch(function(e){window.__scSansDossier=false;_lg.textContent+='Échec : '+e+'\n';});
      });}
@@ -6239,14 +6237,14 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
      });}/*SCFILES_4489_BTN*/
     document.getElementById('sc-dir').addEventListener('click',function(){
       var lg=document.getElementById('sc-log');lg.textContent='';
-      window.__scScan(function(s){lg.textContent+=s+'\n';})
+      window.__scScan(function(s){lg.textContent=s?(s+'\n'):'';}/*V4729_DIRD*/)
         .then(function(lib){if(lib){_etat(lib);_scVue(lib);}})/*SCENE_4463_SCAN*/
         .catch(function(e){lg.textContent+='Échec : '+e+'\n';});
     });
     return o;
   }
   function _ouvrir(){
-    _scKMaj();/*V4675_OUV*/_scDefaut(1);/*V4682_OUV*/SCINST=null;/*V4684_OUV*/var o=_ecran();o.style.display='';
+    _scKMaj();/*V4675_OUV*/_scDefaut(1);/*V4682_OUV*/SCINST=null;/*V4684_OUV*/var o=_ecran();o.style.display='';var _l4729=document.getElementById('sc-log');if(_l4729)_l4729.textContent='';/*V4729_OUV*/
     var e=document.getElementById('sc-st');
     if(e)e.textContent='Lecture de la bibliothèque\u2026';
     window.__scGet().then(function(_l){_etat(_l);_scVue(_l);})/*SCENE_4463_OPEN*/.catch(function(x){
@@ -6255,7 +6253,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   function _fermer(){
     var o=document.getElementById('sc-ovl');if(o)o.style.display='none';
   }
-  window.__scOuvrir=_ouvrir;window.__scFermer=_fermer;
+  function __scSelPeint4729(){/*V4729_PEINT : TODO 161 c, le bouton choisi marque comme le format ; le groupe Trad / Irlandais aussi*/document.querySelectorAll('#sc-dz [data-sctop],#sc-dz [data-scsub]').forEach(function(x){var t=x.getAttribute('data-sctop'),k=t||x.getAttribute('data-scsub');x.style.background=((t&&t===SCGRP)||k===SCSEL)?'#e8e4d8':'#fff';});}window.__scOuvrir=_ouvrir;window.__scFermer=_fermer;
   /*SCENE_4463_UI recherche : danses, frappe libre, resultats, affichage*/
   /* La table. L'ordre compte : le PREMIER qui accroche gagne, donc le plus
      precis en haut (Bourree 2T avant Bourree, Fandango avant Basque divers).
@@ -6311,7 +6309,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
     if(o._k==null)o._k=_pli(o.f)+' '+_pli(o.t)+' '+_pli(o.r);
     return o._k;
   }
-  var SCSTOP={de:1,du:1,des:1,la:1,le:1,les:1,en:1,et:1,a:1,au:1,aux:1,d:1,l:1,pour:1,sur:1,avec:1,ou:1,the:1,of:1,and:1,'in':1};function _scDm(h){var i,j,k,mo,ex,kw;for(i=0;i<SCD.length;i++){mo=SCD[i][1];ex=SCD[i][2];kw=null;for(j=0;j<mo.length;j++){if(h.indexOf(mo[j])>=0){kw=mo[j];break;}}if(kw===null)continue;for(k=0;k<ex.length;k++){if(h.indexOf(ex[k])>=0){kw=null;break;}}if(kw!==null)return [SCD[i][0],kw];}return null;}var SCGRP=null;var SCTOP=[['Chorale',['chorale','choral','choeur']],['Oldtime',['oldtime','old time']],['D\u00e9masqu\u00e9s',['demasques','demasque']],['Guitare',['guitare']],['Banjo 5c',['banjo 5c','banjo 5 c','banjo 5 cordes']]/*V4713_BJ*/];var SCTRAD=[['Bourr\u00e9e 2T',['bourree 2t','bourree 2 t','bourree a 2','bourree deux temps']],['Bourr\u00e9e 3T',['bourree 3t','bourree 3 t','bourree a 3','bourree trois temps']],['Bourr\u00e9e divers',['bourree','bourrees']],['Basque, B\u00e9arn',['basque','basques','bearn','bearnaise','fandango','arin arin','arinarin','euskal']],['Ronde du Quercy',['ronde du quercy','quercy']],['Anterdro',['hanter dro','hanterdro','anterdro','anter dro']],['Andro',['andro','an dro']],['Trikot',['trikot']],['Chapeloise',['chapeloise','chapelloise']],['Mara\u00eechines',['maraichine','maraichines']],['Varsovienne',['varsovienne','varsoviana']],['Sauti\u00e8re',['sautiere']],['Congo',['congo']],['Cercle',['cercle','circassien']],['Mixer',['mixer']],['Quadrille',['quadrille']],['Rondeau',['rondeau']],['Branle',['branle','branles']],['Farandole',['farandole','farandoles']],['Pas',['pas']],['Marche',['marche','marches']],['Scottish',['scottish','scottiche','scotish']],['Mazurka',['mazurka','mazurca']],['Polka',['polka','polkka']],['Gavotte (Caresse)',['gavotte','gavottes','caresse']],['Menuet',['menuet','menuets']]/*V4713_GV*/,['Valse',['valse','valses']],['Sp\u00e9cifique',['specifique']],['Divers Trad',['divers trad']]];var SCIRL=[['Waltz',['waltz']],['Slip Jig',['slip jig','slipjig']],['Jig',['jig','jigs']],['Reel',['reel','reels']],['Hornpipe',['hornpipe']],['Barndance',['barndance','barn dance']],['Fling',['fling','flings']]/*V4713_FL*/,['Slide',['slide']]];function _scW(h,kw){return (' '+h+' ').indexOf(' '+kw+' ')>=0;}function _scTags(o){if(o._tg2)return o._tg2;var T=[],r=_pli(String(o.r||'').replace(/\u0153/g,'oe').replace(/\u0152/g,'OE')),i,j,k;if(r){for(i=0;i<SCTOP.length;i++){for(j=0;j<SCTOP[i][1].length;j++){var kw=SCTOP[i][1][j];if(r===kw||r.indexOf(kw+' ')===0){T.push(SCTOP[i][0]);break;}}}var G=[['Trad',SCTRAD],['Irlandais',SCIRL]];for(i=0;i<G.length;i++){var LL=G[i][1],hit=null;for(j=0;j<LL.length&&!hit;j++){for(k=0;k<LL[j][1].length;k++){if(_scW(r,LL[j][1][k])){hit=LL[j][0];break;}}}if(hit){T.push(G[i][0]);T.push(G[i][0]+'/'+hit);}}}return (o._tg2=T);}function __scSub(h,c2){document.querySelectorAll('[data-sctop]').forEach(function(x){x.style.background=(x.getAttribute('data-sctop')===SCGRP)?'#e8e4d8':'#fff';});var sb=document.getElementById('sc-sub');if(!sb)return;sb.innerHTML='';if(!SCGRP)return;var lb=document.createElement('span');lb.textContent=SCGRP+' :';lb.style.cssText='align-self:center;color:#5f5e5a;margin-right:2px;';sb.appendChild(lb);var LL=(SCGRP==='Trad')?SCTRAD:SCIRL;LL.slice().sort(function(a,b){return a[0].localeCompare(b[0],'fr',{sensitivity:'base'});})/*V4714_ABC*/.forEach(function(d){var k=SCGRP+'/'+d[0],n=c2[k];if(!n)return;var b=_bouton(d[0]+'  '+n);b.style.fontSize='92%';b.addEventListener('click',function(){SCSEL=k;SCTOUT=false;SCFMT=null;_scFmtPeint();if(h.q)h.q.value='';_liste();});sb.appendChild(b);});}/*V4712_TAG*/function __scBt(h,nm,n,ti){var b=_bouton(nm+'  '+n);if(ti)b.title=ti;b.addEventListener('click',function(){SCSEL=nm;SCTOUT=false;SCFMT=null;_scFmtPeint();if(h.q)h.q.value='';_liste();});h.dz.appendChild(b);return b;}/*V4704_TAG*/function _danse(o){
+  var SCSTOP={de:1,du:1,des:1,la:1,le:1,les:1,en:1,et:1,a:1,au:1,aux:1,d:1,l:1,pour:1,sur:1,avec:1,ou:1,the:1,of:1,and:1,'in':1};function _scDm(h){var i,j,k,mo,ex,kw;for(i=0;i<SCD.length;i++){mo=SCD[i][1];ex=SCD[i][2];kw=null;for(j=0;j<mo.length;j++){if(h.indexOf(mo[j])>=0){kw=mo[j];break;}}if(kw===null)continue;for(k=0;k<ex.length;k++){if(h.indexOf(ex[k])>=0){kw=null;break;}}if(kw!==null)return [SCD[i][0],kw];}return null;}var SCGRP=null;var SCTOP=[['Chorale',['chorale','choral','choeur']],['Oldtime',['oldtime','old time']],['D\u00e9masqu\u00e9s',['demasques','demasque']],['Guitare',['guitare']],['Banjo 5c',['banjo 5c','banjo 5 c','banjo 5 cordes']]/*V4713_BJ*/];var SCTRAD=[['Bourr\u00e9e 2T',['bourree 2t','bourree 2 t','bourree a 2','bourree deux temps']],['Bourr\u00e9e 3T',['bourree 3t','bourree 3 t','bourree a 3','bourree trois temps']],['Bourr\u00e9e divers',['bourree','bourrees']],['Basque, B\u00e9arn',['basque','basques','bearn','bearnaise','fandango','arin arin','arinarin','euskal']],['Ronde du Quercy',['ronde du quercy','quercy']],['Anterdro',['hanter dro','hanterdro','anterdro','anter dro']],['Andro',['andro','an dro']],['Trikot',['trikot']],['Chapeloise',['chapeloise','chapelloise']],['Mara\u00eechines',['maraichine','maraichines']],['Varsovienne',['varsovienne','varsoviana']],['Sauti\u00e8re',['sautiere']],['Congo',['congo']],['Cercle',['cercle','circassien']],['Mixer',['mixer']],['Quadrille',['quadrille']],['Rondeau',['rondeau']],['Branle',['branle','branles']],['Farandole',['farandole','farandoles']],['Pas',['pas']],['Marche',['marche','marches']],['Scottish',['scottish','scottiche','scotish']],['Mazurka',['mazurka','mazurca']],['Polka',['polka','polkka']],['Gavotte (Caresse)',['gavotte','gavottes','caresse']],['Menuet',['menuet','menuets']]/*V4713_GV*/,['Valse',['valse','valses']],['Sp\u00e9cifique',['specifique']],['Divers Trad',['divers trad']]];var SCIRL=[['Waltz',['waltz']],['Slip Jig',['slip jig','slipjig']],['Jig',['jig','jigs']],['Reel',['reel','reels']],['Hornpipe',['hornpipe']],['Barndance',['barndance','barn dance']],['Fling',['fling','flings']]/*V4713_FL*/,['Slide',['slide']]];function _scW(h,kw){return (' '+h+' ').indexOf(' '+kw+' ')>=0;}function _scTags(o){if(o._tg2)return o._tg2;var T=[],r=_pli(String(o.r||'').replace(/\u0153/g,'oe').replace(/\u0152/g,'OE')),i,j,k;if(r){for(i=0;i<SCTOP.length;i++){for(j=0;j<SCTOP[i][1].length;j++){var kw=SCTOP[i][1][j];if(r===kw||r.indexOf(kw+' ')===0){T.push(SCTOP[i][0]);break;}}}var G=[['Trad',SCTRAD],['Irlandais',SCIRL]];for(i=0;i<G.length;i++){var LL=G[i][1],hit=null;for(j=0;j<LL.length&&!hit;j++){for(k=0;k<LL[j][1].length;k++){if(_scW(r,LL[j][1][k])){hit=LL[j][0];break;}}}if(hit){T.push(G[i][0]);T.push(G[i][0]+'/'+hit);}}}return (o._tg2=T);}function __scSub(h,c2){__scSelPeint4729();/*V4729_GRP*/var sb=document.getElementById('sc-sub');if(!sb)return;sb.innerHTML='';if(!SCGRP)return;var lb=document.createElement('span');lb.textContent=SCGRP+' :';lb.style.cssText='align-self:center;color:#5f5e5a;margin-right:2px;';sb.appendChild(lb);var LL=(SCGRP==='Trad')?SCTRAD:SCIRL;LL.slice().sort(function(a,b){return a[0].localeCompare(b[0],'fr',{sensitivity:'base'});})/*V4714_ABC*/.forEach(function(d){var k=SCGRP+'/'+d[0],n=c2[k];if(!n)return;var b=_bouton(d[0]+'  '+n);b.style.fontSize='92%';b.setAttribute('data-scsub',k);/*V4729_ATTR*/b.addEventListener('click',function(){SCSEL=k;SCTOUT=false;SCFMT=null;_scFmtPeint();if(h.q)h.q.value='';_liste();});sb.appendChild(b);});__scSelPeint4729();/*V4729_SUBZ*/}/*V4712_TAG*/function __scBt(h,nm,n,ti){var b=_bouton(nm+'  '+n);if(ti)b.title=ti;b.addEventListener('click',function(){SCSEL=nm;SCTOUT=false;SCFMT=null;_scFmtPeint();if(h.q)h.q.value='';_liste();});h.dz.appendChild(b);return b;}/*V4704_TAG*/function _danse(o){
     var h=_cle(o),i,j,k,mo,ex,vu;
     for(i=0;i<SCD.length;i++){
       mo=SCD[i][1];ex=SCD[i][2];vu=false;
@@ -6342,7 +6340,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       +'style="width:100%;box-sizing:border-box;font:inherit;padding:10px;'
       +'border:1px solid #d8d6ce;border-radius:9px;background:#fff;color:inherit;">'
       +'<div id="sc-rs" style="margin:10px 0;"></div>';
-    st.parentNode.insertBefore(w,st.nextSibling);
+    var _lg4729=document.getElementById('sc-log');(_lg4729||st).parentNode.insertBefore(w,(_lg4729||st).nextSibling);/*V4729_HOTE*/
     var q=document.getElementById('sc-q');
     q.addEventListener('input',function(){SCSEL=null;SCTOUT=false;_liste();});
     return {dz:document.getElementById('sc-dz'),rs:document.getElementById('sc-rs'),q:q};
@@ -6409,7 +6407,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
   function _liste(){
     var h=_hote();if(!h||!SCLIB)return;
     var q=_pli(h.q?h.q.value:'');
-    var mien=[],rec=[],i,o;
+    var mien=[],rec=[],i,o;__scSelPeint4729();/*V4729_LISTE*/
     if(!SCSEL&&!q&&!SCFMT){h.rs.innerHTML='';return;}/*SCFMT_4499_VIDE*/
     for(i=0;i<SCLIB.m.length;i++){
       o=SCLIB.m[i];
@@ -6771,7 +6769,7 @@ render=function(){if(state&&state.recueil&&!state.__inRecueil){try{state.__inRec
       lim=(c===A)?0.5:0.25;o=essai(c.e-10);
       if(o.g>=lim&&(c!==A||o.px>=_scPlancher()))c=o;
     }
-    if(!c){c=o;for(e in res)if(res[e].g>c.g)c=res[e];}
+    if(!c){c=o;for(e in res)if(res[e].g>c.g)c=res[e];}if(c.g<0.25&&c.px>=_scPlancher()){/*V4730_ZBAS : TODO 161 a, quand ecarter ne suffit plus (moins d'un quart de chiffre), on baisse le zoom (ecart garde) jusqu'au premier quart de chiffre, sinon le meilleur blanc ; jamais sous le plancher ni le zoom mini ; le morceau tient a l'ecran*/var _pl4730=_scPlancher(),_lo4730=_scATab()?SCPROF.zTab:SCPROF.zMin,_Q4730=null,_B4730=c,_z4730,_r4730;state.scoreScale=c.e;for(_z4730=c.z-SCPROF.pas;_z4730>=_lo4730;_z4730-=SCPROF.pas){_scZ(_z4730);_r4730={e:c.e,z:_z4730,g:_scEcartMin(),px:_scChiffre()};if(_r4730.g===null||_r4730.px<_pl4730)break;if(!_scTient())continue;if(_r4730.g>=0.25){_Q4730=_r4730;break;}if(_r4730.g>_B4730.g)_B4730=_r4730;}c=_Q4730||_B4730;}
     if(state.scoreScale!==c.e||state.zoom!==c.z){state.scoreScale=c.e;_scZ(c.z);}
   }
   function _scAjuste(){/*V4677_AJ : 1. tout le morceau sur un ecran ; 2. un demi-chiffre entre chiffres voisins ;
