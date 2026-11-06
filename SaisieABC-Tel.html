@@ -231,7 +231,7 @@
 
 
   /* =====================================================================
-     ===============  SURCOUCHE MOBILE (TEL) — v4.790 tel  ================
+     ===============  SURCOUCHE MOBILE (TEL) — v4.793 tel  ================
      Moteur + HTML : version PC v1.49 (toutes les fonctionnalites).
      Ce bloc (place en dernier) reskinne en mode telephone : gros boutons
      tactiles, libelles agrandis et autorises a passer a la ligne (jamais
@@ -414,7 +414,7 @@
 
 <div class="abc-app" id="app">
   <div class="ver-badge">
-    <span>Éditeur ABC <b>v4.790 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
+    <span>Éditeur ABC <b>v4.793 tel</b><b id="ver-title" style="color:#185fa5;margin-left:10px;"></b></span>
     <span style="font-size:24px;">win <b id="ww-tag">0</b>×<b id="wh-tag">0</b></span>
   </div>
 
@@ -1205,7 +1205,7 @@
     return s.substring(0,120);
   }
   // Nom de fichier proposé : le nom du fichier ouvert s'il existe, sinon le titre (espaces conservés).
-  function proposedBaseName(){
+  function __recMulti4792(){try{return !!(typeof lastMultiTunes!=='undefined'&&lastMultiTunes&&lastMultiTunes.length>1);}catch(e){return false;}}function __recTitre4792(){if(!__recMulti4792())return '';var t=String((state.headers&&state.headers.T)||'').trim().split('\n')[0].trim();return t?sanitizeFilenameKeepSpaces(t):'';}function __recMxl4792(e){var x=String(e||'').toLowerCase();return (x==='.mxl'||x==='.xml'||x==='.musicxml')&&__recMulti4792();}/*V4792_FN : recueil, MXL et MID au nom du morceau, MXL = export (TODO 171)*/function proposedBaseName(){
     const title=(state.headers.T&&state.headers.T.trim().split('\n')[0])||'';
     if(state.openedFileName&&!state.nameFromTitle)return sanitizeFilenameKeepSpaces(state.openedFileName);
     if(title)return sanitizeFilenameKeepSpaces(title);
@@ -1422,7 +1422,7 @@
         const realExt=mm?mm[1].toLowerCase():ext;
         const b=await build(realExt);
         const w=await handle.createWritable(); await w.write(new Blob([b.data],{type:b.ctype})); await w.close();
-        if(FAM(realExt)==='mid'){flash('Exporté : '+nm);return;}/*V4602_PK*/savedFileHandle=handle; savedFileHandleExt=realExt;
+        if(FAM(realExt)==='mid'||__recMxl4792(realExt)/*V4792_PK*/){flash('Exporté : '+nm);return;}/*V4602_PK*/savedFileHandle=handle; savedFileHandleExt=realExt;
         state.openedFileName=nm.replace(/\.[^.]+$/,''); state.openedFileExt=realExt; state.nameFromTitle=false; render();
         __histReset();/*HISTRESET_4408*/
         flash('Enregistre : '+nm); return;
@@ -1432,11 +1432,11 @@
     const b=await build(ext);
     const blob=new Blob([b.data],{type:b.ctype});
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=base+ext;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-    if(FAM(ext)==='mid'){flash('Téléchargé : '+base+ext);return;}/*V4602_DL*/state.openedFileName=base; state.openedFileExt=ext; state.nameFromTitle=false; render(); __histReset();/*HISTRESET_4408*/ flash('Téléchargé : '+base+ext);
+    if(FAM(ext)==='mid'||__recMxl4792(ext)/*V4792_DL*/){flash('Téléchargé : '+base+ext);return;}/*V4602_DL*/state.openedFileName=base; state.openedFileExt=ext; state.nameFromTitle=false; render(); __histReset();/*HISTRESET_4408*/ flash('Téléchargé : '+base+ext);
   }
   function openSavePanel(kind){window.__midSel4670=null;window.__midLive4670=0;/*V4670_RST*/
     const ext=(kind==='mxl')?'.mxl':(kind==='mid')?'.mid':(kind==='atm')?((state.openedFileExt==='.atmz')?'.atmz':'.atm'):'.abc';/*SAVE4394_PAN*/
-    const base=proposedBaseName();
+    const base=((kind==='mxl'||kind==='mid')&&__recTitre4792())||proposedBaseName();/*V4792_NOM*/
     const body='<div class="row" style="display:flex;align-items:center;gap:6px;"><span class="field-label">Nom :</span>'
       +'<input id="save-name" type="text" value="'+base.replace(/"/g,'&quot;')+'" style="flex:1;"/>'
       +'<span style="color:#888;font-weight:600;">'+(kind==='mxl'?'.mxl / .xml / .musicxml':(kind==='mid'?'.mid / .midi':ext))+'</span></div>'
@@ -2220,7 +2220,7 @@ function nominalDur(t){var _dn=(+t.dot||0);return t.dur*(_dn>=2?1.75:(_dn>=1?1.5
     state.activeTrack=0;
     h+='M:'+meterAt(0)+'\n';/*ABCHDR0_4530_M : la metrique REELLE de la mesure 0 (cf. keyChanges[0] invisible a buildInlineFor)*/
     h+='L:'+state.pieceUnit+'\n';if(Object.keys(state.breaks||{}).some(function(_k){var _b=state.breaks[_k];return _b&&_b.line&&!_b.page;}))h+='I:linebreak $\n';/*V4625_LB*/
-    if((state.tracks||[]).some(function(_t){return ((_t&&_t.measures)||[]).some(function(_m){return (_m||[]).some(function(_s){return _s&&_s.orn&&_s.orn.indexOf('dead')>=0;});});}))h+='%%deco head-x 0 dsh0 0 0 0\n';/*V4621_DECO*/if(state.beamPatterns){Object.keys(state.beamPatterns).forEach(function(mt){var p=state.beamPatterns[mt];if(p&&p.length)h+='%%beam '+mt+' '+p.join('+')+'\n';});}
+    if((state.tracks||[]).some(function(_t){return ((_t&&_t.measures)||[]).some(function(_m){return (_m||[]).some(function(_s){return _s&&_s.orn&&_s.orn.indexOf('dead')>=0;});});}))h+='%%deco head-x 0 dsh0 0 0 0\n';/*V4621_DECO*/['harm','octv'].forEach(function(_o){if((state.tracks||[]).some(function(_t){return ((_t&&_t.measures)||[]).some(function(_m){return (_m||[]).some(function(_s){return _s&&_s.type==='note'&&_s.orn&&_s.orn.indexOf(_o)>=0;});});}))h+='%%deco '+_o+' 3 crdc 20 0 20 '+_o+'.\n';});/*V4793_DECO : harmoniques definies pour abcm2ps / EasyABC (TODO 170)*/if(state.beamPatterns){Object.keys(state.beamPatterns).forEach(function(mt){var p=state.beamPatterns[mt];if(p&&p.length)h+='%%beam '+mt+' '+p.join('+')+'\n';});}
     if((state.tracks||[]).some(function(_t){return _t&&_t.tabKind==='diato';})){h+='%%diato sys='+(state.diatoSystem||'corgeron')+' outer='+(state.diatoOuter||55)+' rows='+(state.diatoRows||2)+' strat='+(state.diatoStrategy||'tirepousse')+'\n';var _dov=state.diatoOv||{};var _dk=Object.keys(_dov);if(_dk.length)h+='%%diato-ov '+_dk.map(function(k){var o=_dov[k];return k+'='+o.row+','+o.btn+','+(o.pull?1:0);}).join(';')+'\n';}{var _tv=[];(state.tracks||[]).forEach(function(_t,_i){if(_t&&(TAB_PRESETS[_t.tabKind]||_t.tabKind==='custom'||_t.tabKind==='diato')){var _k=_t.tabKind;/*DIATOSAVE_4226*/if(_k==='custom'&&_t.tabCustom&&_t.tabCustom.open)_k='custom:'+_t.tabCustom.open.join(',');if(_t.tabOctave)_k+='@'+_t.tabOctave;if(_t.staffView&&_t.staffView!=='both')_k+='#'+_t.staffView;/*TRACKVIEW_4172*/_tv.push(_i+'='+_k);}});if(_tv.length)h+='%%tab '+_tv.join(';')+'\n';}
     h+='Q:'+beatAbcFraction()+'='+Math.round(state.tempo/beatQuarters())+'\n';
     h+='K:'+(clefAt(0)==='perc'?keyAbc(keyAt(0)):__kName4741(keyAt(0)))/*V4741_WH*/+clefAbcSuffix(clefAt(0))+((state.tracks.length<=1&&trackTransp(0))?(' transpose='+trackTransp(0)):'')+'\n';/*V4616_ABCK*//*ABCHDR0_4530_K : l'armure et la cle REELLES de la mesure 0*/
@@ -11462,7 +11462,7 @@ function __appDepuisFichier(){
   }
 
   // Charge un fichier ArrayBuffer MXL (ZIP) → extrait score.xml → parseMusicXml
-  async function loadMxlFile(buffer, fileName) {
+  async function __mxlLire4791(b){try{var td=new TextDecoder('utf-8'),u16=function(o){return b[o]|(b[o+1]<<8);},u32=function(o){return (b[o]|(b[o+1]<<8)|(b[o+2]<<16)|(b[o+3]<<24))>>>0;},E=[],e=-1,k;for(k=b.length-22;k>=0&&k>=b.length-65557;k--){if(u32(k)===0x06054B50){e=k;break;}}if(e>=0){var n=u16(e+10),p=u32(e+16);for(var j=0;j<n&&p+46<=b.length;j++){if(u32(p)!==0x02014B50)break;var nl=u16(p+28),xl=u16(p+30),cl=u16(p+32);E.push({n:td.decode(b.subarray(p+46,p+46+nl)),m:u16(p+10),c:u32(p+20),o:u32(p+42)});p+=46+nl+xl+cl;}}if(!E.length){var i=0;while(i+30<=b.length&&u32(i)===0x04034B50){var nl2=u16(i+26),xl2=u16(i+28),c2=u32(i+18);E.push({n:td.decode(b.subarray(i+30,i+30+nl2)),m:u16(i+8),c:c2,o:i});i+=30+nl2+xl2+c2;}}var lire=async function(x){var o=x.o;if(u32(o)!==0x04034B50)return null;var d=o+30+u16(o+26)+u16(o+28),raw=b.subarray(d,d+x.c);if(x.m===0)return td.decode(raw);if(x.m!==8)return null;var ds=new DecompressionStream('deflate-raw'),w=ds.writable.getWriter();w.write(raw);w.close();return td.decode(new Uint8Array(await new Response(ds.readable).arrayBuffer()));};var cible=null,ct=E.filter(function(x){return /^META-INF\/container\.xml$/i.test(x.n);})[0];if(ct){var t=await lire(ct),m=t&&t.match(/<rootfile\b[^>]*\bfull-path\s*=\s*[\"']([^\"']+)[\"']/i);if(m)cible=E.filter(function(x){return x.n===m[1];})[0]||null;}if(!cible)cible=E.filter(function(x){return /\.(xml|musicxml)$/i.test(x.n)&&!/^META-INF\//i.test(x.n);})[0]||null;return cible?await lire(cible):null;}catch(err){return null;}}/*V4791_FN : MXL, la partition d'apres META-INF/container.xml (TODO 169)*/async function loadMxlFile(buffer, fileName) {
     try {
       // Lire le ZIP minimal : trouver score.xml (ou le rootfile) dans le ZIP
       const bytes = new Uint8Array(buffer);
@@ -11476,7 +11476,7 @@ function __appDepuisFichier(){
       function readUint16LE(b, o) { return b[o] | (b[o+1]<<8); }
       function readUint32LE(b, o) { return (b[o]|(b[o+1]<<8)|(b[o+2]<<16)|(b[o+3]<<24))>>>0; }
       let i = 0;
-      let scoreXmlData = null;
+      let scoreXmlData = await __mxlLire4791(bytes); if (scoreXmlData) return parseMusicXml(scoreXmlData, fileName);/*V4791_L*/
       while (i < bytes.length - 4) {
         const sig = readUint32LE(bytes, i);
         if (sig !== 0x04034B50) break; // Local File Header signature
@@ -11521,7 +11521,7 @@ function __appDepuisFichier(){
           break;
         }
       }
-      if (!scoreXmlData) { alert('score.xml introuvable dans le fichier MXL.'); return false; }
+      if (!scoreXmlData) { alert('Partition MusicXML introuvable dans le fichier MXL.'); return false;/*V4791_MSG*/ }
       return parseMusicXml(scoreXmlData, fileName);
     } catch(e) {
       alert('Erreur lecture MXL : ' + e.message); return false;
